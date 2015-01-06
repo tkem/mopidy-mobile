@@ -4,20 +4,21 @@ Mopidy-Mobile
 Mopidy-Mobile is a Mopidy_ Web extension for mobile devices, currently
 iOS 6+ and Android >=4.1, and (some day) an Android client app.
 
-.. note::
-
-   This project is in early development.  Currently, it is not more
-   than a UI mockup/prototype, and will not connect to your Mopidy
-   installation.  Initial working releases will be announced via the
-   Mopidy announcement mailing list and/or discussion forum.
+This project is in early development.  Currently, it is not more than
+a UI mockup/prototype, and will not connect to your Mopidy
+installation.  Initial working releases will be announced via the
+Mopidy announcement mailing list and/or discussion forum.
 
 
 Installation
 ------------------------------------------------------------------------
 
-Mopidy-Mobile can be installed using pip_ by running::
+To build Mopidy-Mobile from source, you need to have at least npm_
+installed.  Then run::
 
-    pip install Mopidy-Mobile
+  sudo npm install -g ionic gulp
+  npm install
+  gulp dist
 
 
 Configuration
@@ -61,6 +62,7 @@ Licensed under the `Apache License, Version 2.0`_.
 .. _Mopidy: http://www.mopidy.com/
 
 .. _pip: https://pip.pypa.io/en/latest/
+.. _npm: http://www.npmjs.org/
 
 .. _Issue Tracker: https://github.com/tkem/mopidy-mobile/issues/
 .. _Source Code: https://github.com/tkem/mopidy-mobile/
