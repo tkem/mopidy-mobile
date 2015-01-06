@@ -1,0 +1,40 @@
+<ion-view hide-nav-bar="true" view-title="Playback">
+  <ion-header-bar class="range">
+    0:43
+    <input type="range" name="time">
+    1:15:42
+  </ion-header-bar>
+
+  <ion-content class="has-subfooter">
+    <div style="text-align: center">
+      <h2 id="track">Every Single Night</h1>
+      <h3 id="artist">Fiona Apple</h2>
+      <p id="album">
+        The Idler Wheel Is Wiser Than the Driver of the Screw and
+        Whipping Cords Will Serve You More Than Ropes Will Ever Do
+      </p>
+      <img src="http://coverartarchive.org/release-group/6086062c-f943-4b85-b1cb-43558425ec1c/front-250.jpg">
+    </div>
+  </ion-content>
+
+  <ion-footer-bar class="bar-subfooter">
+    <div class="button-bar">
+      <button class="button button-icon icon ion-skip-backward"></button>
+      <button class="button button-icon icon ion-play"></button>
+      <button class="button button-icon icon ion-pause"></button>
+      <button class="button button-icon icon ion-stop"></button>
+      <button class="button button-icon icon ion-skip-forward"></button>
+    </div>
+  </ion-footer-bar>
+
+  <ion-footer-bar>
+    <div class="buttons">
+      <button class="button button-icon icon ion-volume-mute"></button>
+    </div>
+    <div class="range" style="width: 100%">
+      <i class="icon ion-volume-low"></i>
+      <input type="range" name="volume" min="0" max="100">
+      <i class="icon ion-volume-high"></i>
+    </div>
+  </ion-footer-bar>
+</ion-view>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, height=device-height">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Mopidy Mobile (dev)">
+    <link rel="apple-touch-icon" href="images/mopidy.png" />
+    <link rel="apple-touch-startup-image" href="images/mopidy.png">
+
+    <title>Mopidy Mobile</title>
+
+    <script>
+      if (window.localStorage && window.localStorage['theme']) {
+        document.write('<link id="theme" rel="stylesheet" href="css/' + window.localStorage['theme'] + '.app.css">');
+      } else {
+        document.write('<link id="theme" rel="stylesheet" href="css/ionic.app.css">');
+      }
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/services.js"></script>
+  </head>
+
+  <body ng-app="app">
+    <ion-nav-bar class="bar-stable">
+      <ion-nav-back-button></ion-nav-back-button>
+    </ion-nav-bar>
+    <ion-tabs class="tabs-icon-top tabs-color-active-positive">
+      <ion-tab title="Playback" icon="ion-music-note" href="#/playback">
+        <ion-nav-view name="playback"></ion-nav-view>
+      </ion-tab>
+      <ion-tab title="Tracklist" icon="ion-navicon" href="#/tracklist">
+        <ion-nav-view name="tracklist"></ion-nav-view>
+      </ion-tab>
+      <ion-tab title="Library" icon="ion-home" href="#/library">
+        <ion-nav-view name="library"></ion-nav-view>
+      </ion-tab>
+      <ion-tab title="Playlists" icon="ion-star" href="#/playlists">
+        <ion-nav-view name="playlists"></ion-nav-view>
+      </ion-tab>
+      <ion-tab title="Settings" icon="ion-gear-a" href="#/settings">
+        <ion-nav-view name="settings"></ion-nav-view>
+      </ion-tab>
+    </ion-tabs>
+  </body>
+</html>

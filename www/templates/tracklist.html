@@ -1,0 +1,70 @@
+<ion-view view-title="Tracklist">
+  <ion-nav-title>
+    {{currentTlTrack ? index(currentTlTrack) + 1 : 'None'}} of {{tlTracks.length}}
+  </ion-nav-title>
+
+  <!-- FIXME: too many buttons/move to side menu? -->
+  <ion-nav-buttons side="primary">
+    <!-- FIXME: consume icon -> pacman, single? -->
+    <button class="button icon ion-pizza"
+            ng-class="{'button-positive': consume}"
+            ng-click="$parent.consume = !consume">
+    </button>
+    <button class="button icon ion-pin"
+            ng-class="{'button-positive': single}"
+            ng-click="$parent.single = !single">
+    </button>
+  </ion-nav-buttons>
+
+  <ion-nav-buttons side="secondary">
+    <button class="button icon ion-loop"
+            ng-class="{'button-positive': repeat}"
+            ng-click="$parent.repeat = !repeat">
+    </button>
+    <button class="button icon ion-shuffle"
+            ng-class="{'button-positive': random}"
+            ng-click="$parent.random = !random">
+    </button>
+  </ion-nav-buttons>
+
+  <ion-header-bar class="bar-subheader">
+    <div class="button-bar">
+      <button class="button button-clear button-positive" ng-click="edit = !edit">
+        Edit
+      </button>
+      <button class="button button-clear button-positive" ng-click="tlTracks = []">
+        Clear
+      </button>
+      <button class="button button-clear button-positive">
+        Save
+      </button>
+    </div>
+  </ion-header-bar>
+
+  <ion-content>
+    <!-- FIXME: delete+reorder doesn't work yet: https://github.com/driftyco/ionic/issues/768 -->
+    <ion-list show-delete="false" show-reorder="edit">
+      <ion-item class="item-thumbnail-left"
+                ng-class="{'item-positive': tlTrack.tlid == currentTlTrack.tlid}"
+                ng-click="play(tlTrack)"
+                ng-repeat="tlTrack in tlTracks">
+        <img ng-src="{{tlTrack.track.album.images[0]}}">
+        <h2>{{tlTrack.track.name}}</h2>
+        <p>
+          {{tlTrack.track.artists[0].name}}
+          <br>
+          {{tlTrack.track.album.name}}
+        </p>
+        <ion-option-button class="button-assertive" ng-click="remove(tlTrack)">
+          Remove
+        </ion-option-button>
+        <ion-delete-button class="ion-minus-circled"
+                           ng-click="remove(tlTrack)">
+        </ion-delete-button>
+        <ion-reorder-button class="ion-navicon"
+                            on-reorder="move(tlTrack, $fromIndex, $toIndex)">
+        </ion-reorder-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

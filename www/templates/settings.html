@@ -1,0 +1,22 @@
+<ion-view view-title="Settings">
+  <ion-content>
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Language
+      </div>
+      <select>
+        <option value="en">English</option>
+      </select>
+    </label>
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Theme
+      </div>
+      <select ng-model="$parent.style" ng-change="updateStyle()">
+        <option value="ionic">Ionic default theme</option>
+        <option value="test">Test theme</option>
+      </select>
+    </label>
+  </ion-content>
+
+</ion-view>

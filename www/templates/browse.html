@@ -1,0 +1,22 @@
+<ion-view view-title="{{name || 'Library'}}">
+  <ion-content>
+    <ion-refresher
+       pulling-text="Pull to refresh library..."
+       on-refresh="refresh()">
+    </ion-refresher>
+
+    <form ng-submit="search()">
+      <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" placeholder="Search here...">
+      </label>
+    </form>
+
+    <ion-list>
+      <ion-item href="#/library/browse/{{ref.uri}}"
+                ng-repeat="ref in refs">
+        {{ref.name}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
