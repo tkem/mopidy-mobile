@@ -18,6 +18,7 @@ installed.  Then run::
 
   sudo npm install -g ionic gulp
   npm install
+  gulp install
   gulp dist
 
 
