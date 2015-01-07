@@ -45,7 +45,7 @@ var dirmap = {
 
 angular.module('app.controllers', [])
 
-.controller('PlaybackCtrl', function($scope) {})
+.controller('PlaybackCtrl', function() {})
 
 .controller('TracklistCtrl', function($scope) {
   $scope.edit = false;
@@ -101,7 +101,7 @@ angular.module('app.controllers', [])
   $scope.refresh = function() {
     $timeout(function() {
       $scope.$broadcast('scroll.refreshComplete');
-    }, 1000)
+    }, 1000);
   };
 })
 
@@ -113,19 +113,16 @@ angular.module('app.controllers', [])
   $scope.refresh = function() {
     $timeout(function() {
       $scope.$broadcast('scroll.refreshComplete');
-    }, 1000)
+    }, 1000);
   };
 })
 
-.controller('SettingsCtrl', function($scope, $log) {
+.controller('SettingsCtrl', function($scope, $log, Config) {
   var link = angular.element(document.getElementById('theme'));
-  $scope.style = link.attr('href').match(/css\/(.*).app.css/)[1];
-  $log.log('style', $scope.style);
-
-  $scope.updateStyle = function() {
-    if (window.localStorage) {
-      window.localStorage['theme'] = $scope.style;
-    }
-    link.attr('href', 'css/' + $scope.style + '.app.css');
+  $scope.theme = Config.get('theme', 'ionic');
+  $log.log('theme', $scope.theme, link.attr('href'));
+  $scope.updateTheme = function() {
+    Config.set('theme', $scope.theme);
+    link.attr('href', 'css/' + $scope.theme + '.css');
   };
 });

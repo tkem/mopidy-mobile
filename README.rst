@@ -2,10 +2,11 @@ Mopidy-Mobile
 ========================================================================
 
 Mopidy-Mobile is a Mopidy_ Web extension for mobile devices, currently
-iOS 6+ and Android >=4.1, and (some day) an Android client app.
+targeting iOS 7+ and Android 4.4, and - some day, maybe - a hybrid
+mobile client app.
 
 This project is in early development.  Currently, it is not more than
-a UI mockup/prototype, and will not connect to your Mopidy
+a UI mockup/prototype, and will not even connect to your Mopidy
 installation.  Initial working releases will be announced via the
 Mopidy announcement mailing list and/or discussion forum.
 

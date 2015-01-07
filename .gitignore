@@ -4,9 +4,8 @@ mopidy_mobile/www/
 node_modules/
 platforms/
 plugins/
+www/css/
 www/lib/
-www/css/*.app.css
-www/css/*.app.min.css
 *.egg-info
 *.pyc
 .coverage
