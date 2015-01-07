@@ -16,7 +16,7 @@ Installation
 To build Mopidy-Mobile from source, you need to have at least npm_
 installed.  Then run::
 
-  sudo npm install -g ionic gulp
+  npm install -g ionic gulp
   npm install
   gulp install
   gulp dist
