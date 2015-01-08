@@ -16,3 +16,4 @@ class ExtensionTest(unittest.TestCase):
     def test_get_config_schema(self):
         ext = Extension()
         schema = ext.get_config_schema()
+        self.assertIn('title', schema)

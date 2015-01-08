@@ -45,7 +45,26 @@ var dirmap = {
 
 angular.module('app.controllers', [])
 
-.controller('PlaybackCtrl', function() {})
+.controller('PlaybackCtrl', function($scope, Mopidy) {
+    $scope.state = 'init';
+    $scope.track = {};
+    Mopidy.on('state:online', function() {
+        $scope.state = 'online';
+        $scope.$apply();
+    });
+    Mopidy.on('state:offline', function() {
+        $scope.state = 'offline';
+        $scope.$apply();
+    });
+    Mopidy.on('event:trackPlaybackStarted', function(event) {
+        $scope.track = event.tl_track.track;
+        $scope.$apply();
+    });
+    Mopidy.on('event:trackPlaybackEnded', function() {
+        $scope.track = {};
+        $scope.$apply();
+    });
+})
 
 .controller('TracklistCtrl', function($scope) {
   $scope.edit = false;

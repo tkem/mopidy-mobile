@@ -7,13 +7,11 @@
 
   <ion-content class="has-subfooter">
     <div style="text-align: center">
-      <h2 id="track">Every Single Night</h1>
-      <h3 id="artist">Fiona Apple</h2>
-      <p id="album">
-        The Idler Wheel Is Wiser Than the Driver of the Screw and
-        Whipping Cords Will Serve You More Than Ropes Will Ever Do
-      </p>
-      <img src="http://coverartarchive.org/release-group/6086062c-f943-4b85-b1cb-43558425ec1c/front-250.jpg">
+      {{state}}
+      <h2>{{track.name || 'Nothing playing'}}</h2>
+      <h3>{{track.artists[0].name}}</h3>
+      <p>{{track.album.name}}</p>
+      <img ng-src="{{track.album.images[0]}}">
     </div>
   </ion-content>
 

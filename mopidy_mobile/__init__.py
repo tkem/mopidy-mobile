@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from mopidy import config, ext
 
-__version__ = '0.0.0'
+__version__ = '0.0.1'
 
 
 class Extension(ext.Extension):
@@ -18,6 +18,7 @@ class Extension(ext.Extension):
 
     def get_config_schema(self):
         schema = super(Extension, self).get_config_schema()
+        schema['title'] = config.String()
         return schema
 
     def setup(self, registry):

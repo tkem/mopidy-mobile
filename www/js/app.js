@@ -1,17 +1,13 @@
-angular.module('app', [
-  'ionic',
-  'app.controllers',
-  'app.services'
-])
+angular.module('app', ['ionic', 'app.controllers', 'app.services'])
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
-
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, MopidyProvider) {
   $stateProvider
-    .state('playback', {
+    .state('tabs', {
+      abstract: true,
+      url: '/tabs',
+      templateUrl: 'templates/tabs.html'
+    })
+    .state('tabs.playback', {
       url: '/playback',
       views: {
         'playback': {
@@ -20,7 +16,7 @@ angular.module('app', [
         }
       }
     })
-    .state('tracklist', {
+    .state('tabs.tracklist', {
       url: '/tracklist',
       views: {
         'tracklist': {
@@ -29,7 +25,7 @@ angular.module('app', [
         }
       }
     })
-    .state('library', {
+    .state('tabs.library', {
       abstract: true,
       url: '/library',
       views: {
@@ -38,25 +34,25 @@ angular.module('app', [
         }
       }
     })
-    .state('library.root', {
+    .state('tabs.library.root', {
       url: '',
       templateUrl: 'templates/browse.html',
       controller: 'LibraryCtrl',
       data: { 'handler': 'root' },
     })
-    .state('library.browse', {
+    .state('tabs.library.browse', {
       url: '/browse/:uri',
       templateUrl: 'templates/browse.html',
       controller: 'LibraryCtrl',
       data: { 'handler': 'browse' },
     })
-    .state('library.search', {
+    .state('tabs.library.search', {
       url: '/search/?q',
-      templateUrl: 'templates/browse.html',
+      templateUrl: 'templates/search.html',
       controller: 'LibraryCtrl',
       data: { 'handler': 'search' },
     })
-    .state('playlists', {
+    .state('tabs.playlists', {
       url: '/playlists',
       views: {
         'playlists': {
@@ -65,7 +61,7 @@ angular.module('app', [
         }
       }
     })
-    .state('settings', {
+    .state('tabs.settings', {
       url: '/settings',
       views: {
         'settings': {
@@ -75,11 +71,16 @@ angular.module('app', [
       }
     });
 
+  $urlRouterProvider.otherwise('/tabs/playback');
+
   // TODO: platform defaults/configurable?
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');
 
-  $urlRouterProvider.otherwise('/playback.html');
+  // mopidy defaults
+  MopidyProvider.settings.backoffDelayMin = 250;
+  MopidyProvider.settings.backoffDelayMax = 1000;
+  MopidyProvider.settings.callingConvention = 'by-position-or-by-name';
 })
 
 .run(function($ionicPlatform) {

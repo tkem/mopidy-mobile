@@ -53,9 +53,11 @@ gulp.task('watch', function() {
 });
 
 gulp.task('dist', ['sass'], function() {
+  gulp.src('www/tornado.html')
+    .pipe(rename('index.html'))
+    .pipe(gulp.dest(paths.dist));
   // FIXME: only copy minified files
   gulp.src([
-    'www/index.html',
     'www/{css,js,images,templates}/*',
     'www/lib/ionic/js/ionic.bundle.js',
     'www/lib/ionic/fonts/*'

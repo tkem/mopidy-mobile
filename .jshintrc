@@ -16,6 +16,7 @@
   "sub": true,
   "browser": true,
   "globals": {
-    "angular": false
+    "angular": false,
+    "Mopidy": false
   }
 }
