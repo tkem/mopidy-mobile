@@ -2,7 +2,6 @@
   "name": "mopidy-mobile",
   "private": "true",
   "devDependencies": {
-    "ionic": "driftyco/ionic-bower#1.0.0-beta.14",
-    "ionic-contrib-frosted-glass": "driftyco/ionic-contrib-frosted-glass"
+    "ionic": "driftyco/ionic-bower#1.0.0-beta.14"
   }
 }
