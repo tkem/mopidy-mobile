@@ -1,3 +1,43 @@
+$mopidy-icon-playback:          ion-music-note !default;
+$mopidy-icon-tracklist:         ion-navicon !default;
+$mopidy-icon-library:           ion-home !default;
+$mopidy-icon-playlists:         ion-star !default;
+$mopidy-icon-settings:          ion-gear-a !default;
+
+$mopidy-icon-album:             ion-disc !default;
+$mopidy-icon-artist:            ion-person !default;
+$mopidy-icon-directory:         ion-folder !default;
+$mopidy-icon-track:             ion-music-note !default;
+
+.mopidy-icon-playback {
+  @extend .#{$mopidy-icon-playback};
+}
+.mopidy-icon-tracklist {
+  @extend .#{$mopidy-icon-tracklist};
+}
+.mopidy-icon-library {
+  @extend .#{$mopidy-icon-library};
+}
+.mopidy-icon-playlists {
+  @extend .#{$mopidy-icon-playlists};
+}
+.mopidy-icon-settings {
+  @extend .#{$mopidy-icon-settings};
+}
+
+.mopidy-icon-album {
+  @extend .#{$mopidy-icon-album};
+}
+.mopidy-icon-artist {
+  @extend .#{$mopidy-icon-artist};
+}
+.mopidy-icon-directory {
+  @extend .#{$mopidy-icon-directory};
+}
+.mopidy-icon-track {
+  @extend .#{$mopidy-icon-track};
+}
+
 .bar-subfooter.has-tabs {
   bottom: $tabs-height + $bar-footer-height;
 }

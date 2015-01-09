@@ -22,11 +22,11 @@
         <i ng-if="ref.type != 'track'" class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
 -->
-      <ion-item ng-repeat="ref in refs"
-                ng-class="{'item-icon-right': ref.type != 'track'}"
-                ng-href="{{ref.type != 'track' ? '#/tabs/library/browse?name=' + (ref.name | encode) + '&uri=' + (ref.uri | encode) : '#'}}"
-                ng-click="ref.type == 'track' ? play(ref) : null"
-                >
+      <mopidy-item ng-repeat="ref in refs" ng-model="ref"
+                   ng-class="{'item-icon-right': ref.type != 'track'}"
+                   ng-href="{{ref.type != 'track' ? '#/tabs/library/browse?name=' + (ref.name | encode) + '&uri=' + (ref.uri | encode) : '#'}}"
+                   ng-click="ref.type == 'track' ? play(ref) : null"
+                   >
         {{ref.name}}
         <i ng-if="ref.type != 'track'" class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>

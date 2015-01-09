@@ -1,4 +1,9 @@
-angular.module('app', ['ionic', 'app.controllers', 'app.services'])
+angular.module('app', [
+  'ionic',
+  'app.controllers',
+  'app.directives',
+  'app.services'
+])
 
 .filter('encode', function() {
   return window.encodeURIComponent;

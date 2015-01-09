@@ -15,7 +15,7 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
-// tkem
+// testing
 $positive:                        #ff0000 !default;
 
 $item-thumbnail-width:            64px !default;
@@ -33,6 +33,9 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
+
+// Override mopidy variables for testing
+$mopidy-icon-playback: ion-headphone;
 
 // Include application styles
 @import "app";
