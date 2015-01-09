@@ -33,15 +33,6 @@ var tlTracks = [
   { tlid: 8, track: tracks[8] },
   { tlid: 9, track: tracks[9] },
 ];
-var dirmap = {
-  'local:directory:1': [
-    { uri: tracks[0].uri, name: tracks[0].name },
-    { uri: tracks[1].uri, name: tracks[1].name },
-  ],
-  'local:directory:2': [
-    { uri: tracks[2].uri, name: tracks[2].name },
-  ],
-};
 
 angular.module('app.controllers', [])
 
@@ -125,22 +116,25 @@ angular.module('app.controllers', [])
   };
 })
 
-.controller('LibraryCtrl', function($scope, $state, $stateParams, $log, $ionicPopup, $timeout) {
-  //$log.info('library state:', $state.current.data.handler);
-  //$log.info('library:', angular.toJson($stateParams));
+.controller('LibraryCtrl', function($scope, $state, $stateParams, $log, $timeout, Mopidy) {
   var uri = $stateParams.uri;
+  $log.info('browse uri', uri);
+  $log.info('browse name', name);
   $scope.uri = uri;
-  $scope.name = uri;
+  $scope.name = $stateParams.name;
   $scope.handler = $state.current.data.handler;
+  $scope.refs = [];
 
-  if (uri) {
-    $scope.refs = dirmap[uri];
-  } else {
-    $scope.refs = [
-      { uri: 'local:directory:1', name: 'Directory #1' },
-      { uri: 'local:directory:2', name: 'Directory #2' },
-    ];
-  }
+  Mopidy.library.browse({uri: uri || null}).then(function(refs) {
+    $scope.refs = refs;
+    $scope.$apply();
+  });
+  $scope.play = function(ref) {
+    $log.log('play', ref);
+    Mopidy.tracklist.add({uri: ref.uri}).then(function(tlTracks) {
+      Mopidy.playback.play({tl_track: tlTracks[tlTracks.length - 1]});
+    });
+  };
   $scope.search = function() {
     $state.go('^.search');
   };

@@ -13,10 +13,24 @@
     </form>
 
     <ion-list>
-      <ion-item href="#/tabs/library/browse/{{ref.uri}}"
-                ng-repeat="ref in refs">
+<!--
+      <ion-item ng-repeat="ref in refs"
+                ng-href="#/tabs/library/browse?name={{ref.name | encode}}&uri={{ref.uri | encode}}"
+                ng-class="{'item-icon-right': ref.type != 'track'}"
+                >
         {{ref.name}}
+        <i ng-if="ref.type != 'track'" class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
+-->
+      <ion-item ng-repeat="ref in refs"
+                ng-class="{'item-icon-right': ref.type != 'track'}"
+                ng-href="{{ref.type != 'track' ? '#/tabs/library/browse?name=' + (ref.name | encode) + '&uri=' + (ref.uri | encode) : '#'}}"
+                ng-click="ref.type == 'track' ? play(ref) : null"
+                >
+        {{ref.name}}
+        <i ng-if="ref.type != 'track'" class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+
     </ion-list>
   </ion-content>
 </ion-view>

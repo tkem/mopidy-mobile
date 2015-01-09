@@ -1,5 +1,9 @@
 angular.module('app', ['ionic', 'app.controllers', 'app.services'])
 
+.filter('encode', function() {
+  return window.encodeURIComponent;
+})
+
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, MopidyProvider) {
   $stateProvider
     .state('tabs', {
@@ -41,7 +45,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
       data: { 'handler': 'root' },
     })
     .state('tabs.library.browse', {
-      url: '/browse/:uri',
+      url: '/browse?name&uri',
       templateUrl: 'templates/browse.html',
       controller: 'LibraryCtrl',
       data: { 'handler': 'browse' },
