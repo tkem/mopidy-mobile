@@ -2,17 +2,21 @@ Mopidy-Mobile
 ========================================================================
 
 Mopidy-Mobile is a Mopidy_ Web extension for mobile devices, currently
-targeting iOS 7+ and Android 4.4, and - some day, maybe - a hybrid
-mobile client app.
+supporting iOS 7+ and Android 4.4.
 
-This project is in early development.  Currently, it is not more than
-a UI mockup/prototype, and will not even connect to your Mopidy
-installation.  Initial working releases will be announced via the
-Mopidy announcement mailing list and/or discussion forum.
+This project is in early development.  Currently, it is not much more
+than a UI mockup/prototype, and most features will not work as
+expected.  Initial working releases will be announced on the Mopidy
+mailing list and/or discussion forum.
 
 
 Installation
 ------------------------------------------------------------------------
+
+Pre-releases can be installed at your own risk from testpypi_ by
+running::
+
+  pip install -i https://testpypi.python.org/pypi Mopidy-Mobile
 
 To build Mopidy-Mobile from source, you need to have at least npm_
 installed.  Then run::
@@ -64,6 +68,7 @@ Licensed under the `Apache License, Version 2.0`_.
 .. _Mopidy: http://www.mopidy.com/
 
 .. _pip: https://pip.pypa.io/en/latest/
+.. _testpypi: https://wiki.python.org/moin/TestPyPI
 .. _npm: http://www.npmjs.org/
 
 .. _Issue Tracker: https://github.com/tkem/mopidy-mobile/issues/
