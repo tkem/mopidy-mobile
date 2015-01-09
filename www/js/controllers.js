@@ -46,24 +46,51 @@ var dirmap = {
 angular.module('app.controllers', [])
 
 .controller('PlaybackCtrl', function($scope, Mopidy) {
-    $scope.state = 'init';
+  function formatTime(ms) {
+    var sec = parseInt(ms / 1000) % 60;
+    var min = parseInt(ms / 60000);
+    return min + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  $scope.state = 'init';
+  // TODO
+  $scope.timePos = '0:00';
+  $scope.timeEnd = 'n/a';
+
+  $scope.track = {};
+  $scope.play = function() {
+    Mopidy.playback.play();
+  };
+  $scope.pause = function() {
+    Mopidy.playback.pause();
+  };
+  $scope.stop = function() {
+    Mopidy.playback.stop();
+  };
+  $scope.next = function() {
+    Mopidy.playback.next();
+  };
+  $scope.previous = function() {
+    Mopidy.playback.previous();
+  };
+  Mopidy.on('state:online', function() {
+    $scope.state = 'online';
+    $scope.$apply();
+  });
+  Mopidy.on('state:offline', function() {
+    $scope.state = 'offline';
+    $scope.$apply();
+  });
+  Mopidy.on('event:trackPlaybackStarted', function(event) {
+    $scope.track = event.tl_track.track;
+    $scope.timeEnd = formatTime(event.tl_track.track.length);
+    $scope.$apply();
+  });
+  Mopidy.on('event:trackPlaybackEnded', function() {
     $scope.track = {};
-    Mopidy.on('state:online', function() {
-        $scope.state = 'online';
-        $scope.$apply();
-    });
-    Mopidy.on('state:offline', function() {
-        $scope.state = 'offline';
-        $scope.$apply();
-    });
-    Mopidy.on('event:trackPlaybackStarted', function(event) {
-        $scope.track = event.tl_track.track;
-        $scope.$apply();
-    });
-    Mopidy.on('event:trackPlaybackEnded', function() {
-        $scope.track = {};
-        $scope.$apply();
-    });
+    $scope.timeEnd = 'n/a';
+    $scope.$apply();
+  });
 })
 
 .controller('TracklistCtrl', function($scope) {

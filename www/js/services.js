@@ -18,23 +18,17 @@ angular.module('app.services', [])
 .provider('Mopidy', function() {
   var provider = this;
   provider.settings = {};
-
-  function isMopidyWebExtension() {
-    // TODO: better way?
+  provider.isWebExtension = function() {
     var scripts = window.document.scripts;
     for (var i = 0; i != scripts.length; ++i) {
-      var src = scripts[i].src || '';
-      if (/lib\/mopidy\/.*mopidy\.(min\.)?js$/.test(src)) {
-        return false;
-      } else if (/mopidy\.(min\.)?js$/.test(src)) {
+      if (/\/mopidy\/mopidy\.(min\.)?js$/.test(scripts[i].src || '')) {
         return true;
       }
     }
     return false;
-  }
-
+  };
   provider.$get = function($log) {
-    if (!isMopidyWebExtension() && !provider.settings.webSocketUrl) {
+    if (!provider.settings.webSocketUrl && !provider.isWebExtension()) {
       // TODO: handle via settings
       provider.settings.webSocketUrl = window.prompt(
         'Mopidy WebSocket URL',
