@@ -1,15 +1,16 @@
-<ion-view view-title="Settings">
+<ion-view view-title="{{'Settings' | translate}}">
   <ion-content>
     <label class="item item-input item-select">
-      <div class="input-label">
+      <div class="input-label" translate>
         Language
       </div>
-      <select>
+      <select ng-model="$parent.language" ng-change="updateLanguage()">
+        <option value="de">Deutsch</option>
         <option value="en">English</option>
       </select>
     </label>
     <label class="item item-input item-select">
-      <div class="input-label">
+      <div class="input-label" translate>
         Theme
       </div>
       <select ng-model="$parent.theme" ng-change="updateTheme()">

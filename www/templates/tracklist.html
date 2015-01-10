@@ -1,6 +1,6 @@
-<ion-view view-title="Tracklist">
+<ion-view view-title="{{'Tracklist' | translate}}">
   <ion-nav-title>
-    {{currentTlTrack ? index(currentTlTrack) + 1 : 'None'}} of {{tlTracks.length}}
+    {{currentTlTrack ? index(currentTlTrack) + 1 : ('None' | translate)}} / {{tlTracks.length}}
   </ion-nav-title>
 
   <!-- FIXME: too many buttons/move to side menu? -->
@@ -29,13 +29,13 @@
 
   <ion-header-bar class="bar-subheader">
     <div class="button-bar">
-      <button class="button button-clear button-positive" ng-click="edit = !edit">
+      <button class="button button-clear button-positive" ng-click="$parent.edit = !edit" translate>
         Edit
       </button>
-      <button class="button button-clear button-positive" ng-click="tlTracks = []">
+      <button class="button button-clear button-positive" ng-click="$parent.tlTracks = []" translate>
         Clear
       </button>
-      <button class="button button-clear button-positive">
+      <button class="button button-clear button-positive" translate>
         Save
       </button>
     </div>
@@ -55,7 +55,7 @@
           <br>
           {{tlTrack.track.album.name}}
         </p>
-        <ion-option-button class="button-assertive" ng-click="remove(tlTrack)">
+        <ion-option-button class="button-assertive" ng-click="remove(tlTrack)" translate>
           Remove
         </ion-option-button>
         <ion-delete-button class="ion-minus-circled"

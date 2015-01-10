@@ -1,4 +1,4 @@
-<ion-view view-title="{{name || 'Library'}}">
+<ion-view view-title="{{name || ('Library' | translate)}}">
   <ion-content>
     <ion-refresher
        pulling-text="Pull to refresh library..."
@@ -8,7 +8,7 @@
     <form ng-submit="search()">
       <label class="item item-input">
         <i class="icon ion-search placeholder-icon"></i>
-        <input type="search" placeholder="Search here...">
+        <input type="search" placeholder="{{'Search here...' | translate}}">
       </label>
     </form>
 

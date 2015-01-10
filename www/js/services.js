@@ -1,18 +1,20 @@
 angular.module('app.services', [])
 
-.factory('Config', function($window) {
-    return {
-        set: function(key, value) {
-            $window.localStorage[key] = value;
-        },
-        get: function(key, defaultValue) {
-            if (key in $window.localStorage) {
-                return $window.localStorage[key];
-            } else {
-                return defaultValue;
-            }
-        }
-    };
+.provider('Config', function() {
+  var provider = this;
+  provider.get = function(key, defaultValue) {
+    if (key in window.localStorage) {
+      return window.localStorage[key];
+    } else {
+      return defaultValue;
+    }
+  };
+  provider.set = function(key, value) {
+    window.localStorage[key] = value;
+  };
+  provider.$get = function() {
+    return provider;
+  };
 })
 
 .provider('Mopidy', function() {
@@ -27,7 +29,7 @@ angular.module('app.services', [])
     }
     return false;
   };
-  provider.$get = function($log) {
+  provider.$get = function($q, $log) {
     if (!provider.settings.webSocketUrl && !provider.isWebExtension()) {
       // TODO: handle via settings
       provider.settings.webSocketUrl = window.prompt(
@@ -35,8 +37,14 @@ angular.module('app.services', [])
         'ws://localhost:6680/mopidy/ws/'
       );
     }
+    provider.settings.autoConnect = false;
     var mopidy = new Mopidy(provider.settings);
     mopidy.on($log.log.bind($log));
-    return mopidy;
+    return $q(function(resolve/*, reject*/) {
+      mopidy.on('state:online', function() {
+        resolve(mopidy);
+      });
+      mopidy.connect();
+    });
   };
 });

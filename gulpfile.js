@@ -59,6 +59,7 @@ gulp.task('dist', ['sass'], function() {
   // FIXME: only copy minified files
   gulp.src([
     'www/{css,js,images,templates}/*',
+    'www/lib/angular-translate/angular-translate.js',
     'www/lib/ionic/js/ionic.bundle.js',
     'www/lib/ionic/fonts/*'
   ], {base: 'www'})

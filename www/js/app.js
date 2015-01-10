@@ -1,5 +1,6 @@
 angular.module('app', [
   'ionic',
+  'pascalprecht.translate',
   'app.controllers',
   'app.directives',
   'app.services'
@@ -9,7 +10,7 @@ angular.module('app', [
   return window.encodeURIComponent;
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, MopidyProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $translateProvider, ConfigProvider, MopidyProvider) {
   $stateProvider
     .state('tabs', {
       abstract: true,
@@ -85,6 +86,45 @@ angular.module('app', [
   // TODO: platform defaults/configurable?
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');
+
+  // TODO: move to external ressoucres?
+  $translateProvider.translations('en', {
+    'Playback': 'Playback',
+    'Tracklist': 'Tracklist',
+    'Library': 'Library',
+    'Playlists': 'Playlists',
+    'Settings': 'Settings',
+    'Language': 'Language',
+    'Theme': 'Theme',
+    'Nothing playing': 'Nothing playling',
+    'Pull to refresh': 'Pull to refresh',
+    'Search here...': 'Search here...',
+    'Edit': 'Edit',
+    'Clear': 'Clear',
+    'Save': 'Save',
+    'Remove': 'Remove',
+    'None': 'None',  // FIXME
+  });
+
+  $translateProvider.translations('de', {
+    'Playback': 'Wiedergabe',
+    'Tracklist': 'Titel',
+    'Library': 'Bibliothek',
+    'Playlists': 'Listen',
+    'Settings': 'Einstellungen',
+    'Language': 'Sprache',
+    'Theme': 'Thema',
+    'Nothing playing': 'Nichts spielt',
+    'Pull to refresh': 'Ziehen zum Aktualisieren',
+    'Search here...': 'Hier suchen...',
+    'Edit': 'Bearbeiten',
+    'Clear': 'Leeren',
+    'Save': 'Speichern',
+    'Remove': 'Löschen',
+    'None': 'Nix',  // FIXME
+  });
+
+  $translateProvider.preferredLanguage(ConfigProvider.get('language', 'en'));
 
   // mopidy defaults
   MopidyProvider.settings.backoffDelayMin = 250;

@@ -9,11 +9,11 @@
 </style>
 
 
-<ion-view hide-nav-bar="true" view-title="Playback">
+<ion-view hide-nav-bar="true" view-title="{{'Playback' | translate}}">
   <ion-header-bar class="range">
-    {{timePos}}
+    {{formatTime(timePos)}}
     <input type="range" name="time">
-    {{timeEnd}}
+    {{formatTime(track.length)}}
   </ion-header-bar>
 
   <ion-content class="has-subfooter">
@@ -22,13 +22,12 @@
         <img ng-src="{{track.album.images[0]}}">
       </p>
       <p>
-        <strong>{{track.name || 'Nothing playing'}}</strong>
+        <strong>{{track.name || ('Nothing playing' | translate)}}</strong>
         <br>
         {{track.artists[0].name}}
         <br>
         {{track.album.name}}
       </p>
-      {{state}}
     </div>
   </ion-content>
 
@@ -58,7 +57,7 @@
     </div>
     <div class="range" style="width: 100%">
       <i class="icon ion-volume-low"></i>
-      <input type="range" name="volume" min="0" max="100">
+      <input type="range" name="volume" min="0" max="100" ng-model="volume">
       <i class="icon ion-volume-high"></i>
     </div>
   </ion-footer-bar>
