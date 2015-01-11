@@ -3,45 +3,31 @@
     {{currentTlTrack ? index(currentTlTrack) + 1 : ('None' | translate)}} / {{tlTracks.length}}
   </ion-nav-title>
 
-  <!-- FIXME: too many buttons/move to side menu? -->
   <ion-nav-buttons side="primary">
-    <!-- FIXME: consume icon -> pacman, single? -->
-    <button class="button icon ion-pizza"
-            ng-class="{'button-positive': consume}"
-            ng-click="$parent.consume = !consume">
-    </button>
-    <button class="button icon ion-pin"
-            ng-class="{'button-positive': single}"
-            ng-click="$parent.single = !single">
+    <button class="button button-icon ion-edit" ng-click="$parent.edit = !edit">
     </button>
   </ion-nav-buttons>
 
   <ion-nav-buttons side="secondary">
-    <button class="button icon ion-loop"
-            ng-class="{'button-positive': repeat}"
-            ng-click="$parent.repeat = !repeat">
-    </button>
-    <button class="button icon ion-shuffle"
-            ng-class="{'button-positive': random}"
-            ng-click="$parent.random = !random">
+    <button class="button button-icon ion-more" ng-click="options.show($event)">
     </button>
   </ion-nav-buttons>
 
-  <ion-header-bar class="bar-subheader">
+  <ion-header-bar class="bar-subheader" ng-if="edit">
     <div class="button-bar">
-      <button class="button button-clear button-positive" ng-click="$parent.edit = !edit" translate>
-        Edit
-      </button>
-      <button class="button button-clear button-positive" ng-click="$parent.tlTracks = []" translate>
+      <button class="button button-clear button-positive" ng-click="$parent.$parent.tlTracks = []" translate>
         Clear
       </button>
       <button class="button button-clear button-positive" translate>
         Save
       </button>
+      <button class="button button-clear button-positive" ng-click="$parent.$parent.edit = false" translate>
+        Done
+      </button>
     </div>
   </ion-header-bar>
 
-  <ion-content>
+  <ion-content ng-class="{'has-subheader': edit}">
     <!-- FIXME: delete+reorder doesn't work yet: https://github.com/driftyco/ionic/issues/768 -->
     <ion-list show-delete="false" show-reorder="edit">
       <ion-item class="item-thumbnail-left"

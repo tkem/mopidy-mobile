@@ -1,3 +1,14 @@
+var clickActions = {
+  'add': function(mopidy, uri) {
+    mopidy.tracklist.add({uri: uri});
+  },
+  'add+play': function(mopidy, uri) {
+    mopidy.tracklist.add({uri: uri}).then(function(tlTracks) {
+      mopidy.playback.play({tl_track: tlTracks[tlTracks.length - 1]});
+    });
+  }
+};
+
 angular.module('app.controllers', [])
 
 .controller('PlaybackCtrl', function($scope, $log, Mopidy) {
@@ -90,15 +101,25 @@ angular.module('app.controllers', [])
   };
 })
 
-.controller('TracklistCtrl', function($scope, Mopidy) {
-  $scope.edit = false;
+.controller('TracklistCtrl', function($scope, $ionicPopover, Mopidy) {
+  $scope.consume = false;
   $scope.random = false;
   $scope.repeat = false;
   $scope.single = false;
-  $scope.consume = false;
+
+  $scope.edit = false;
 
   $scope.tlTracks = [];
   $scope.currentTlTrack = null;
+
+  $ionicPopover.fromTemplateUrl('templates/options.html', {
+    scope: $scope,
+  }).then(function(popover) {
+    $scope.options = popover;
+  });
+  $scope.$on('$destroy', function() {
+    $scope.options.remove();
+  });
 
   function updateOptions(tracklist) {
     tracklist.getConsume().then(function(consume) {
@@ -174,10 +195,9 @@ angular.module('app.controllers', [])
   };
 })
 
-.controller('LibraryCtrl', function($scope, $state, $stateParams, $log, $timeout, Mopidy) {
+.controller('LibraryCtrl', function($scope, $state, $stateParams, $log, $timeout, Config, Mopidy) {
   var uri = $stateParams.uri;
   $log.info('browse uri', uri);
-  $log.info('browse name', name);
   $scope.uri = uri;
   $scope.name = $stateParams.name;
   $scope.handler = $state.current.data.handler;
@@ -193,11 +213,7 @@ angular.module('app.controllers', [])
   $scope.play = function(ref) {
     $log.log('play', ref);
     Mopidy.then(function(mopidy) {
-      $log.log('play: got mopidy', ref);
-      mopidy.tracklist.add({uri: ref.uri}).then(function(tlTracks) {
-        $log.log('play: added track', ref);
-        mopidy.playback.play({tl_track: tlTracks[tlTracks.length - 1]});
-      });
+      clickActions[Config.get('action', 'add+play')](mopidy, ref.uri);
     });
   };
   $scope.search = function() {
@@ -210,8 +226,15 @@ angular.module('app.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope, $timeout) {
+.controller('PlaylistsCtrl', function($scope, $timeout, Mopidy) {
   $scope.playlists = [];
+  Mopidy.then(function(mopidy) {
+      mopidy.playlists.getPlaylists().then(function(playlists) {
+        $scope.playlists = playlists;
+        $scope.$apply();
+      });
+  });
+
   $scope.refresh = function() {
     $timeout(function() {
       $scope.$broadcast('scroll.refreshComplete');
@@ -219,10 +242,36 @@ angular.module('app.controllers', [])
   };
 })
 
+.controller('PlaylistCtrl', function($scope, $stateParams, $log, Config, Mopidy) {
+  var uri = $stateParams.uri;
+  $log.info('playlist uri', uri);
+  $scope.name = $stateParams.name;
+  $scope.playlist = null;
+  Mopidy.then(function(mopidy) {
+    mopidy.playlists.getPlaylists().then(function(playlists) {
+      for (var i = 0; i != playlists.length; ++i) {
+        if (playlists[i].uri == uri) {
+          $log.log('Playlist', playlists[i]);
+          $scope.playlist = playlists[i];
+          $scope.$apply();
+          break;
+        }
+      }
+    });
+  });
+  $scope.play = function(track) {
+    $log.log('play', track);
+    Mopidy.then(function(mopidy) {
+      clickActions[Config.get('action', 'add+play')](mopidy, track.uri);
+    });
+  };
+})
+
 .controller('SettingsCtrl', function($scope, $state, $log, $ionicHistory, $translate, Config) {
   var link = angular.element(document.getElementById('theme'));
   $scope.language = Config.get('language', 'en');
   $scope.theme = Config.get('theme', 'ionic');
+  $scope.action = Config.get('action', 'add+play');
   $log.log('theme', $scope.theme, link.attr('href'));
 
   $scope.updateTheme = function() {
@@ -236,5 +285,8 @@ angular.module('app.controllers', [])
     //window.location.reload(true);
     //$ionicHistory.clearCache();
     //$state.go($state.current, {}, {reload: true});
+  };
+  $scope.updateAction = function() {
+    Config.set('action', $scope.action);
   };
 });

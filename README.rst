@@ -1,22 +1,25 @@
 Mopidy-Mobile
 ========================================================================
 
-Mopidy-Mobile is a Mopidy_ Web extension for mobile devices, currently
-supporting iOS 7+ and Android 4.4.
+Mopidy-Mobile is a Mopidy_ Web extension and hybrid mobile app,
+currently supporting iOS 7+ and Android 4.4.
 
-This project is in early development.  Currently, it is not much more
-than a UI mockup/prototype, and most features will not work as
-expected.  Initial working releases will be announced on the Mopidy
-mailing list and/or discussion forum.
+This project is in early development.  At this time it is not much
+more than a UI mockup/prototype, and most features will not work as
+expected.  Initial working releases will be announced on the `Mopidy
+mailing list`_ and/or `discussion forum`_.
 
 
 Installation
 ------------------------------------------------------------------------
 
-Pre-releases can be installed at your own risk from testpypi_ by
-running::
+Pre-releases can be installed from testpypi_ by running::
 
   pip install -i https://testpypi.python.org/pypi Mopidy-Mobile
+
+For now, the Android app is available for alpha testing for members of
+the `Mopidy mailing list`_ only; if you are already a member and want
+to participate in testing, please follow `these instructions`_.
 
 To build Mopidy-Mobile from source, you need to have at least npm_
 installed.  Then run::
@@ -70,6 +73,10 @@ Licensed under the `Apache License, Version 2.0`_.
 .. _pip: https://pip.pypa.io/en/latest/
 .. _testpypi: https://wiki.python.org/moin/TestPyPI
 .. _npm: http://www.npmjs.org/
+.. _these instructions: https://play.google.com/apps/testing/com.ionicframework.mopidymobile190318
+
+.. _Mopidy mailing list: https://groups.google.com/d/forum/mopidy
+.. _discussion forum: https://discuss.mopidy.com/
 
 .. _Issue Tracker: https://github.com/tkem/mopidy-mobile/issues/
 .. _Source Code: https://github.com/tkem/mopidy-mobile/

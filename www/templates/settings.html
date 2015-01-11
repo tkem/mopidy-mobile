@@ -18,6 +18,15 @@
         <option value="test">Test theme</option>
       </select>
     </label>
+    <label class="item item-input item-select">
+      <div class="input-label" translate>
+        Click Action
+      </div>
+      <select ng-model="$parent.action" ng-change="updateAction()">
+        <option value="add">Add Track</option>
+        <option value="add+play">Add and Play Track</option>
+      </select>
+    </label>
   </ion-content>
 
 </ion-view>

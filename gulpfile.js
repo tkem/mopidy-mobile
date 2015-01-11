@@ -14,6 +14,7 @@ var paths = {
   css: 'www/css/',
   js: 'www/js/',
   images: 'www/images',
+  locales: 'www/locales',
   dist: 'mopidy_mobile/www/'
 };
 
@@ -56,10 +57,11 @@ gulp.task('dist', ['sass'], function() {
   gulp.src('www/tornado.html')
     .pipe(rename('index.html'))
     .pipe(gulp.dest(paths.dist));
-  // FIXME: only copy minified files
+  // FIXME: copy/concat minified files...
   gulp.src([
-    'www/{css,js,images,templates}/*',
+    'www/{css,js,images,locales,templates}/*',
     'www/lib/angular-translate/angular-translate.js',
+    'www/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
     'www/lib/ionic/js/ionic.bundle.js',
     'www/lib/ionic/fonts/*'
   ], {base: 'www'})

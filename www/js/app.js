@@ -40,7 +40,7 @@ angular.module('app', [
       url: '/library',
       views: {
         'library': {
-          template: '<ion-nav-view></ion-nav-view>(Library)',
+          template: '<ion-nav-view></ion-nav-view>',
         }
       }
     })
@@ -63,13 +63,23 @@ angular.module('app', [
       data: { 'handler': 'search' },
     })
     .state('tabs.playlists', {
+      abstract: true,
       url: '/playlists',
       views: {
         'playlists': {
-          templateUrl: 'templates/playlists.html',
-          controller: 'PlaylistsCtrl'
+          template: '<ion-nav-view></ion-nav-view>',
         }
       }
+    })
+    .state('tabs.playlists.root', {
+      url: '',
+      templateUrl: 'templates/playlists.html',
+      controller: 'PlaylistsCtrl'
+    })
+    .state('tabs.playlists.playlist', {
+      url: '/playlist?name&uri',
+      templateUrl: 'templates/playlist.html',
+      controller: 'PlaylistCtrl'
     })
     .state('tabs.settings', {
       url: '/settings',
@@ -87,43 +97,10 @@ angular.module('app', [
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');
 
-  // TODO: move to external ressoucres?
-  $translateProvider.translations('en', {
-    'Playback': 'Playback',
-    'Tracklist': 'Tracklist',
-    'Library': 'Library',
-    'Playlists': 'Playlists',
-    'Settings': 'Settings',
-    'Language': 'Language',
-    'Theme': 'Theme',
-    'Nothing playing': 'Nothing playling',
-    'Pull to refresh': 'Pull to refresh',
-    'Search here...': 'Search here...',
-    'Edit': 'Edit',
-    'Clear': 'Clear',
-    'Save': 'Save',
-    'Remove': 'Remove',
-    'None': 'None',  // FIXME
+  $translateProvider.useStaticFilesLoader({
+    prefix: 'locales/',
+    suffix: '.json'
   });
-
-  $translateProvider.translations('de', {
-    'Playback': 'Wiedergabe',
-    'Tracklist': 'Titel',
-    'Library': 'Bibliothek',
-    'Playlists': 'Listen',
-    'Settings': 'Einstellungen',
-    'Language': 'Sprache',
-    'Theme': 'Thema',
-    'Nothing playing': 'Nichts spielt',
-    'Pull to refresh': 'Ziehen zum Aktualisieren',
-    'Search here...': 'Hier suchen...',
-    'Edit': 'Bearbeiten',
-    'Clear': 'Leeren',
-    'Save': 'Speichern',
-    'Remove': 'Löschen',
-    'None': 'Nix',  // FIXME
-  });
-
   $translateProvider.preferredLanguage(ConfigProvider.get('language', 'en'));
 
   // mopidy defaults

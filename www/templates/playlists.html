@@ -5,8 +5,11 @@
        on-refresh="refresh()">
     </ion-refresher>
     <ion-list>
-      <ion-item ng-repeat="playlist in playlists">
-        <h2>{{playlist.name}}</h2>
+      <ion-item class="item-icon-right"
+                ng-repeat="playlist in playlists"
+                ng-href="#/tabs/playlists/playlist?name={{playlist.name | encode}}&uri={{playlist.uri | encode}}">
+        {{playlist.name}}
+        <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
     </ion-list>
   </ion-content>
