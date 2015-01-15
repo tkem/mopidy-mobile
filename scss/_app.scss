@@ -44,3 +44,9 @@ $mopidy-icon-track:             ion-music-note !default;
 .has-subfooter.has-tabs {
   bottom: $tabs-height + $bar-footer-height + $bar-subfooter-height;
 }
+
+.browse-item {
+  left: 0;
+  right: 0;
+  height: 50;
+}

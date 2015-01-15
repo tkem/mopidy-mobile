@@ -12,25 +12,19 @@
       </label>
     </form>
 
-    <ion-list>
-<!--
-      <ion-item ng-repeat="ref in refs"
-                ng-href="#/tabs/library/browse?name={{ref.name | encode}}&uri={{ref.uri | encode}}"
-                ng-class="{'item-icon-right': ref.type != 'track'}"
-                >
+    <div class="list">
+      <a class="item item-icon-left browse-item"
+         collection-repeat="ref in refs"
+         collection-item-width="'100%'"
+         collection-item-height="50"
+         ng-class="{'item-icon-right': ref.type != 'track'}"
+         ng-click="ref.type == 'track' ? play(ref) : null"
+         ng-href="{{ref.type != 'track' ? '#/tabs/library/browse?name=' + (ref.name | encode) + '&uri=' + (ref.uri | encode) : '#'}}"
+         >
+        <i class="icon" ng-class="'mopidy-icon-' + ref.type"></i>
         {{ref.name}}
         <i ng-if="ref.type != 'track'" class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
--->
-      <mopidy-item ng-repeat="ref in refs" ng-model="ref"
-                   ng-class="{'item-icon-right': ref.type != 'track'}"
-                   ng-href="{{ref.type != 'track' ? '#/tabs/library/browse?name=' + (ref.name | encode) + '&uri=' + (ref.uri | encode) : '#'}}"
-                   ng-click="ref.type == 'track' ? play(ref) : null"
-                   >
-        {{ref.name}}
-        <i ng-if="ref.type != 'track'" class="icon ion-chevron-right icon-accessory"></i>
-      </ion-item>
-
-    </ion-list>
+      </a>
+    </div>
   </ion-content>
 </ion-view>

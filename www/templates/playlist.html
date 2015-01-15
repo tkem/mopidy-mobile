@@ -1,4 +1,4 @@
-<ion-view view-title="{{name || 'Playlist'}}">
+<ion-view view-title="{{playlist.name || playlist.uri || 'Playlist'}}">
   <ion-content>
     <ion-list>
       <ion-item ng-repeat="track in playlist.tracks" ng-click="play(track)">

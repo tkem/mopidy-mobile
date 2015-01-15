@@ -26,6 +26,7 @@ angular.module('app', [
         }
       }
     })
+
     .state('tabs.tracklist', {
       url: '/tracklist',
       views: {
@@ -35,6 +36,7 @@ angular.module('app', [
         }
       }
     })
+
     .state('tabs.library', {
       abstract: true,
       url: '/library',
@@ -62,25 +64,27 @@ angular.module('app', [
       controller: 'LibraryCtrl',
       data: { 'handler': 'search' },
     })
+
     .state('tabs.playlists', {
       abstract: true,
       url: '/playlists',
       views: {
         'playlists': {
           template: '<ion-nav-view></ion-nav-view>',
+          controller: 'PlaylistsCtrl'
         }
       }
     })
     .state('tabs.playlists.root', {
       url: '',
       templateUrl: 'templates/playlists.html',
-      controller: 'PlaylistsCtrl'
     })
     .state('tabs.playlists.playlist', {
-      url: '/playlist?name&uri',
+      url: '/:uri',
       templateUrl: 'templates/playlist.html',
       controller: 'PlaylistCtrl'
     })
+
     .state('tabs.settings', {
       url: '/settings',
       views: {

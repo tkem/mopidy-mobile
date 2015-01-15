@@ -195,7 +195,7 @@ angular.module('app.controllers', [])
   };
 })
 
-.controller('LibraryCtrl', function($scope, $state, $stateParams, $log, $timeout, Config, Mopidy) {
+.controller('LibraryCtrl', function($scope, $state, $stateParams, $log, $timeout, $window, Config, Mopidy) {
   var uri = $stateParams.uri;
   $log.info('browse uri', uri);
   $scope.uri = uri;
@@ -210,6 +210,7 @@ angular.module('app.controllers', [])
       $scope.$apply();
     });
   });
+
   $scope.play = function(ref) {
     $log.log('play', ref);
     Mopidy.then(function(mopidy) {
@@ -226,39 +227,91 @@ angular.module('app.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope, $timeout, Mopidy) {
+.controller('PlaylistsCtrl', function($scope, $timeout, $log, $ionicListDelegate, $ionicPopup, Mopidy) {
   $scope.playlists = [];
   Mopidy.then(function(mopidy) {
+
+    mopidy.on('event:playlistChanged', function(playlist) {
+      $log.log('playlist changed:', playlist);
+    });
+    mopidy.on('event:playlistsLoaded', function() {
+      $log.log('playlists loaded');
       mopidy.playlists.getPlaylists().then(function(playlists) {
         $scope.playlists = playlists;
         $scope.$apply();
       });
+    });
+
+    mopidy.playlists.getPlaylists().then(function(playlists) {
+      $scope.playlists = playlists;
+      $scope.$apply();
+    });
   });
 
+
+  $scope.getPlaylist = function(uri) {
+    var playlists = $scope.playlists;
+    for (var i = 0; i != playlists.length; ++i) {
+      if (playlists[i].uri == uri) {
+        return playlists[i];
+      }
+    }
+    return null;
+  };
+
+  $scope.deletePlaylist = function(uri) {
+    Mopidy.then(function(mopidy) {
+      mopidy.playlists.delete({uri: uri}).then(function() {
+        $log.log('playlist deleted');
+        $scope.playlists = $scope.playlists.filter(function(playlist) {
+          return playlist.uri != uri;
+        });
+        $scope.$apply();
+      });
+    });
+  };
+
+  $scope.renamePlaylist = function(uri) {
+    var playlist = $scope.getPlaylist(uri);
+    $ionicPopup.prompt({
+      title: 'New name for ' + playlist.name
+    }).then(function(name) {
+      if (name) {
+        playlist.name = name;
+        Mopidy.then(function(mopidy) {
+          mopidy.playlists.save({playlist: angular.copy(playlist)})
+            .then(function(newPlaylist) {
+              if (newPlaylist) {
+                $log.log('playlist saved as', newPlaylist);
+              } else {
+                $log.log('playlist nod saved');
+              }
+              $ionicListDelegate.closeOptionButtons();  // use $getByHandle(handle)
+            }, function(error) {
+              $log.log('Error saving playlist', error);
+              $ionicListDelegate.closeOptionButtons();  // use $getByHandle(handle)
+            });
+        });
+      }
+    });
+  };
+
   $scope.refresh = function() {
-    $timeout(function() {
-      $scope.$broadcast('scroll.refreshComplete');
-    }, 1000);
+    Mopidy.then(function(mopidy) {
+      mopidy.playlists.refresh({uri_scheme: null}).then(function() {
+        $log.log('playlists refresh complete');
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    });
   };
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams, $log, Config, Mopidy) {
   var uri = $stateParams.uri;
   $log.info('playlist uri', uri);
-  $scope.name = $stateParams.name;
-  $scope.playlist = null;
-  Mopidy.then(function(mopidy) {
-    mopidy.playlists.getPlaylists().then(function(playlists) {
-      for (var i = 0; i != playlists.length; ++i) {
-        if (playlists[i].uri == uri) {
-          $log.log('Playlist', playlists[i]);
-          $scope.playlist = playlists[i];
-          $scope.$apply();
-          break;
-        }
-      }
-    });
-  });
+  $scope.playlist = $scope.getPlaylist(uri);
+  //Mopidy.then(function(mopidy) {
+  //});
   $scope.play = function(track) {
     $log.log('play', track);
     Mopidy.then(function(mopidy) {
