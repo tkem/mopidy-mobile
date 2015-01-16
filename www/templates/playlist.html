@@ -1,8 +1,19 @@
-<ion-view view-title="{{playlist.name || playlist.uri || 'Playlist'}}">
-  <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="track in playlist.tracks" ng-click="play(track)">
+<ion-view view-title="{{playlist.name || playlist.uri}}">
+  <ion-nav-buttons side="secondary">
+    <button class="button button-clear icon mopidy-icon-more"
+            ng-click="popover.show($event)"
+            >
+    </button>
+  </ion-nav-buttons>
+  <ion-content ng-class="{'has-subheader': edit}"
+    <!-- FIXME: delete+reorder doesn't work yet: https://github.com/driftyco/ionic/issues/768 -->
+    <ion-list show-delete="edit" show-reorder="edit">
+      <ion-item ng-click="play(track)" ng-repeat="track in playlist.tracks">
         {{track.name}}
+        <ion-delete-button class="ion-minus-circled" ng-click="remove(track)">
+        </ion-delete-button>
+        <ion-reorder-button class="ion-navicon" on-reorder="move(track, $fromIndex, $toIndex)">
+        </ion-reorder-button>
       </ion-item>
     </ion-list>
   </ion-content>

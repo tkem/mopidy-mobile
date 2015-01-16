@@ -8,13 +8,13 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sh = require('shelljs');
+var uglify = require('gulp-uglifyjs');
 
 var paths = {
   sass: ['scss/**/*.scss'],
   css: 'www/css/',
   js: 'www/js/',
   images: 'www/images',
-  locales: 'www/locales',
   dist: 'mopidy_mobile/www/'
 };
 
@@ -29,16 +29,14 @@ gulp.task('sass', function(done) {
   gulp.src('scss/[^_]*.scss')
     .pipe(sass())
     .pipe(gulp.dest('www/css/'))
-    .pipe(minifyCss({
-      keepSpecialComments: 0
-    }))
+    .pipe(minifyCss({keepSpecialComments: 0}))
     .pipe(rename({ extname: '.min.css' }))
     .pipe(gulp.dest(paths.css))
     .on('end', done);
 });
 
 gulp.task('jshint', function() {
-  return gulp.src(['www/js/**/*.js'])
+  return gulp.src(['www/js/*.js', '!www/js/*.min.js'])
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter(require('jshint-summary')({
       fileColCol: ',bold',
@@ -49,27 +47,35 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
+gulp.task('uglify', function(done) {
+  gulp.src('www/js/*.js')
+    .pipe(uglify('app.min.js', {mangle: false}))
+    .pipe(gulp.dest(paths.js))
+    .on('end', done);
 });
 
-gulp.task('dist', ['sass'], function() {
+gulp.task('dist', ['sass', 'uglify'], function() {
   gulp.src('www/tornado.html')
     .pipe(rename('index.html'))
     .pipe(gulp.dest(paths.dist));
-  // FIXME: copy/concat minified files...
-  gulp.src([
-    'www/{css,js,images,locales,templates}/*',
-    'www/lib/angular-translate/angular-translate.js',
-    'www/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-    'www/lib/ionic/js/ionic.bundle.js',
-    'www/lib/ionic/fonts/*'
-  ], {base: 'www'})
+  gulp.src('www/{images,templates,lib/ionic/fonts}/*', {base: 'www'})
     .pipe(gulp.dest(paths.dist));
+  gulp.src('www/css/*.min.css', {base: 'www'})
+    .pipe(gulp.dest(paths.dist));
+  gulp.src([
+    'www/js/app.min.js',
+    'www/lib/angular-translate/angular-translate.min.js',
+    'www/lib/ionic/js/ionic.bundle.min.js',
+  ])
+    .pipe(gulp.dest(paths.dist + '/js/'));
 });
 
 gulp.task('clean', function(cb) {
-  del([paths.dist, paths.css], cb);
+  del([paths.dist, paths.css, paths.js + '/*.min.js'], cb);
+});
+
+gulp.task('watch', function() {
+  gulp.watch(paths.sass, ['sass']);
 });
 
 gulp.task('default', ['sass', 'jshint']);

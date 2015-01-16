@@ -1,0 +1,107 @@
+/* The path to the ionicons font files, relative to the built CSS in www/css */
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+
+/* Include all of Ionic */
+@import "www/lib/ionic/scss/ionic";
+
+/* Include default variables */
+@import "variables";
+
+/* Icons */
+.mopidy-icon-playback {
+    @extend .#{$mopidy-icon-playback};
+}
+.mopidy-icon-tracklist {
+    @extend .#{$mopidy-icon-tracklist};
+}
+.mopidy-icon-library {
+    @extend .#{$mopidy-icon-library};
+}
+.mopidy-icon-playlists {
+    @extend .#{$mopidy-icon-playlists};
+}
+.mopidy-icon-settings {
+    @extend .#{$mopidy-icon-settings};
+}
+
+.mopidy-icon-play {
+    @extend .#{$mopidy-icon-play};
+}
+.mopidy-icon-pause {
+    @extend .#{$mopidy-icon-pause};
+}
+.mopidy-icon-stop {
+    @extend .#{$mopidy-icon-stop};
+}
+.mopidy-icon-next {
+    @extend .#{$mopidy-icon-next};
+}
+.mopidy-icon-previous {
+    @extend .#{$mopidy-icon-previous};
+}
+
+.mopidy-icon-random {
+    @extend .#{$mopidy-icon-random};
+}
+.mopidy-icon-repeat {
+    @extend .#{$mopidy-icon-repeat};
+}
+
+.mopidy-icon-mute {
+    @extend .#{$mopidy-icon-mute};
+}
+.mopidy-icon-volume-low {
+    @extend .#{$mopidy-icon-volume-low};
+}
+.mopidy-icon-volume-high {
+    @extend .#{$mopidy-icon-volume-high};
+}
+
+.mopidy-icon-album {
+    @extend .#{$mopidy-icon-album};
+}
+.mopidy-icon-artist {
+    @extend .#{$mopidy-icon-artist};
+}
+.mopidy-icon-directory {
+    @extend .#{$mopidy-icon-directory};
+}
+.mopidy-icon-track {
+    @extend .#{$mopidy-icon-track};
+}
+
+.mopidy-icon-search {
+    @extend .#{$mopidy-icon-search};
+}
+.mopidy-icon-more {
+    @extend .#{$mopidy-icon-more};
+}
+
+/* see https://github.com/driftyco/ionic/issues/2932 */
+.bar-subfooter.has-tabs {
+  bottom: $tabs-height + $bar-footer-height;
+}
+.has-subfooter.has-tabs {
+  bottom: $tabs-height + $bar-footer-height + $bar-subfooter-height;
+}
+
+/* FIXME: bug? */
+.bar .button.button-small.button-icon:before {
+    font-size: $button-icon-size;
+}
+
+/* TODO: configurable? */
+.mopidy-trackview {
+    text-align: center;
+}
+.mopidy-trackview img {
+    width: 75%;
+    height: 75%;
+}
+
+/* TODO: collection-repeat items -- configurable? */
+.browse-item {
+  left: 0;
+  right: 0;
+  height: 50;
+}

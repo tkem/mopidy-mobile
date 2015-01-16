@@ -1,29 +1,18 @@
 <ion-view view-title="{{'Playlists' | translate}}">
   <ion-content>
     <ion-refresher
+       on-refresh="refresh()"
        pulling-text="{{'Pull to refresh' | translate}}"
-       on-refresh="refresh()">
+       >
     </ion-refresher>
-    <ion-list>
-      <ion-item class="item-icon-right"
-                ng-repeat="playlist in playlists"
-                ng-href="#/tabs/playlists/{{playlist.uri | encode}}"
-                >
+    <div class="list">
+      <a class="item item-icon-right"
+         ng-repeat="playlist in playlists"
+         ui-sref="tabs.playlists.playlist({uri: playlist.uri})"
+         >
         {{playlist.name}}
-        <i class="icon ion-chevron-right icon-accessory"></i>
-        <ion-option-button class="button-positive"
-                           ng-click="renamePlaylist(playlist.uri)"
-                           translate
-                           >
-          Rename
-        </ion-option-button>
-        <ion-option-button class="button-assertive"
-                           ng-click="deletePlaylist(playlist.uri)"
-                           translate
-                           >
-          Delete
-        </ion-option-button>
-      </ion-item>
-    </ion-list>
+        <i class="icon icon-accessory ion-chevron-right"></i>
+      </a>
+    </div>
   </ion-content>
 </ion-view>

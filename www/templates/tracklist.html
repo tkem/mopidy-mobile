@@ -1,40 +1,36 @@
-<ion-view view-title="{{'Tracklist' | translate}}">
-  <ion-nav-title>
-    {{currentTlTrack ? index(currentTlTrack) + 1 : ('None' | translate)}} / {{tlTracks.length}}
+<ion-view>
+  <ion-nav-title ng-switch="tlTracks.length">
+    <span ng-switch-when="0" translate>
+      Empty
+    </span>
+    <span ng-switch-default>
+      <span ng-if="currentTlTrack"
+            translate
+            translate-values="{count: tlTracks.length, index: index(currentTlTrack) + 1}"
+            >
+        {index} of {count}
+      </span>
+      <span ng-if="!currentTlTrack"
+            translate
+            translate-values="{count: tlTracks.length}"
+            >
+        {count} Tracks
+      </span>
+    </span>
   </ion-nav-title>
-
-  <ion-nav-buttons side="primary">
-    <button class="button button-icon ion-edit" ng-click="$parent.edit = !edit">
-    </button>
-  </ion-nav-buttons>
-
   <ion-nav-buttons side="secondary">
-    <button class="button button-icon ion-more" ng-click="options.show($event)">
+    <button class="button button-clear icon mopidy-icon-more"
+            ng-click="popover.show($event)"
+            >
     </button>
   </ion-nav-buttons>
-
-  <ion-header-bar class="bar-subheader" ng-if="edit">
-    <div class="button-bar">
-      <button class="button button-clear button-positive" ng-click="$parent.$parent.tlTracks = []" translate>
-        Clear
-      </button>
-      <button class="button button-clear button-positive" translate>
-        Save
-      </button>
-      <button class="button button-clear button-positive" ng-click="$parent.$parent.edit = false" translate>
-        Done
-      </button>
-    </div>
-  </ion-header-bar>
-
-  <ion-content ng-class="{'has-subheader': edit}">
-    <!-- FIXME: delete+reorder doesn't work yet: https://github.com/driftyco/ionic/issues/768 -->
-    <ion-list show-delete="false" show-reorder="edit">
+  <ion-content>
+    <ion-list>
       <ion-item class="item-thumbnail-left"
                 ng-class="{'item-positive': tlTrack.tlid == currentTlTrack.tlid}"
                 ng-click="play(tlTrack)"
                 ng-repeat="tlTrack in tlTracks">
-        <img ng-src="{{tlTrack.track.album.images[0]}}">
+        <img ng-src="{{getImageURI(tlTrack.track)}}">
         <h2>{{tlTrack.track.name}}</h2>
         <p>
           {{tlTrack.track.artists[0].name}}
@@ -44,12 +40,6 @@
         <ion-option-button class="button-assertive" ng-click="remove(tlTrack)" translate>
           Remove
         </ion-option-button>
-        <ion-delete-button class="ion-minus-circled"
-                           ng-click="remove(tlTrack)">
-        </ion-delete-button>
-        <ion-reorder-button class="ion-navicon"
-                            on-reorder="move(tlTrack, $fromIndex, $toIndex)">
-        </ion-reorder-button>
       </ion-item>
     </ion-list>
   </ion-content>

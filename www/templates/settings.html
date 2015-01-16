@@ -1,32 +1,36 @@
 <ion-view view-title="{{'Settings' | translate}}">
   <ion-content>
+
     <label class="item item-input item-select">
       <div class="input-label" translate>
         Language
       </div>
-      <select ng-model="$parent.language" ng-change="updateLanguage()">
-        <option value="de">Deutsch</option>
-        <option value="en">English</option>
+      <select ng-model="settings.locale"
+              ng-options="id as locale.displayName for (id, locale) in locales"
+              >
       </select>
     </label>
+
     <label class="item item-input item-select">
       <div class="input-label" translate>
         Theme
       </div>
-      <select ng-model="$parent.theme" ng-change="updateTheme()">
-        <option value="ionic">Ionic default theme</option>
-        <option value="test">Test theme</option>
+      <select ng-model="settings.theme">
+        <option value="ionic">Ionic</option>
+        <option value="ionic-ios">Ionic iOS</option>
       </select>
     </label>
+
     <label class="item item-input item-select">
       <div class="input-label" translate>
         Click Action
       </div>
-      <select ng-model="$parent.action" ng-change="updateAction()">
+      <select ng-model="settings.action">
         <option value="add">Add Track</option>
         <option value="add+play">Add and Play Track</option>
       </select>
     </label>
+
   </ion-content>
 
 </ion-view>

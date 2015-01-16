@@ -1,99 +1,20 @@
 angular.module('app', [
   'ionic',
-  'pascalprecht.translate',
-  'app.controllers',
-  'app.directives',
-  'app.services'
+  'app.playback',
+  'app.tracklist',
+  'app.library',
+  'app.playlists',
+  'app.settings',
+  'app.services',
+  'app.locales'
 ])
 
-.filter('encode', function() {
-  return window.encodeURIComponent;
-})
-
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $translateProvider, ConfigProvider, MopidyProvider) {
-  $stateProvider
-    .state('tabs', {
-      abstract: true,
-      url: '/tabs',
-      templateUrl: 'templates/tabs.html'
-    })
-    .state('tabs.playback', {
-      url: '/playback',
-      views: {
-        'playback': {
-          templateUrl: 'templates/playback.html',
-          controller: 'PlaybackCtrl'
-        }
-      }
-    })
-
-    .state('tabs.tracklist', {
-      url: '/tracklist',
-      views: {
-        'tracklist': {
-          templateUrl: 'templates/tracklist.html',
-          controller: 'TracklistCtrl'
-        }
-      }
-    })
-
-    .state('tabs.library', {
-      abstract: true,
-      url: '/library',
-      views: {
-        'library': {
-          template: '<ion-nav-view></ion-nav-view>',
-        }
-      }
-    })
-    .state('tabs.library.root', {
-      url: '',
-      templateUrl: 'templates/browse.html',
-      controller: 'LibraryCtrl',
-      data: { 'handler': 'root' },
-    })
-    .state('tabs.library.browse', {
-      url: '/browse?name&uri',
-      templateUrl: 'templates/browse.html',
-      controller: 'LibraryCtrl',
-      data: { 'handler': 'browse' },
-    })
-    .state('tabs.library.search', {
-      url: '/search/?q',
-      templateUrl: 'templates/search.html',
-      controller: 'LibraryCtrl',
-      data: { 'handler': 'search' },
-    })
-
-    .state('tabs.playlists', {
-      abstract: true,
-      url: '/playlists',
-      views: {
-        'playlists': {
-          template: '<ion-nav-view></ion-nav-view>',
-          controller: 'PlaylistsCtrl'
-        }
-      }
-    })
-    .state('tabs.playlists.root', {
-      url: '',
-      templateUrl: 'templates/playlists.html',
-    })
-    .state('tabs.playlists.playlist', {
-      url: '/:uri',
-      templateUrl: 'templates/playlist.html',
-      controller: 'PlaylistCtrl'
-    })
-
-    .state('tabs.settings', {
-      url: '/settings',
-      views: {
-        'settings': {
-          templateUrl: 'templates/settings.html',
-          controller: 'SettingsCtrl'
-        }
-      }
-    });
+  $stateProvider.state('tabs', {
+    abstract: true,
+    url: '/tabs',
+    templateUrl: 'templates/tabs.html'
+  });
 
   $urlRouterProvider.otherwise('/tabs/playback');
 
@@ -101,16 +22,21 @@ angular.module('app', [
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');
 
-  $translateProvider.useStaticFilesLoader({
-    prefix: 'locales/',
-    suffix: '.json'
-  });
-  $translateProvider.preferredLanguage(ConfigProvider.get('language', 'en'));
+  // TODO: determine browser language
+  $translateProvider.preferredLanguage(ConfigProvider.get('locale', 'en'));
 
-  // mopidy defaults
-  MopidyProvider.settings.backoffDelayMin = 250;
-  MopidyProvider.settings.backoffDelayMax = 1000;
-  MopidyProvider.settings.callingConvention = 'by-position-or-by-name';
+  // TODO: check behavior
+  MopidyProvider.settings.backoffDelayMin(250);
+  MopidyProvider.settings.backoffDelayMax(1000);
+
+  // FIXME: move to settings page/config
+  if (!ConfigProvider.get('webSocketUrl') && !MopidyProvider.isWebExtension()) {
+    var webSocketUrl = window.prompt(
+      'Mopidy WebSocket URL',
+      'ws://' + (location.hostname || 'localhost') + ':6680/mopidy/ws/'
+    );
+    MopidyProvider.settings.webSocketUrl(webSocketUrl);
+  }
 })
 
 .run(function($ionicPlatform) {

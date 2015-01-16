@@ -1,5 +1,30 @@
-<ion-view view-title="Search Results">
+<ion-view>
+  <ion-nav-title>Search Results for "{{q}}"</ion-nav-title>
   <ion-content>
-    <h1>Search Results</h1>
+    <div class="list" ng-repeat="result in results">
+      <div class="list">
+        <a class="item item-icon-left"
+           ng-click="play(artist.uri)"
+           ng-repeat="artist in result.artists"
+           >
+          <i class="icon mopidy-icon-artist"></i>
+          {{artist.name}}
+        </a>
+        <a class="item item-icon-left"
+           ng-click="play(album.uri)"
+           ng-repeat="album in result.albums"
+           >
+          <i class="icon mopidy-icon-album"></i>
+          {{album.name}}
+        </a>
+        <a class="item item-icon-left"
+           ng-click="play(track.uri)"
+           ng-repeat="track in result.tracks"
+           >
+          <i class="icon mopidy-icon-track"></i>
+          {{track.name}}
+        </a>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

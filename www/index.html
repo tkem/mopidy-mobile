@@ -7,17 +7,20 @@
     <script>
       ;(function() {
         var theme = window.localStorage['theme'] || 'ionic';
-        document.write('<link id="theme" rel="stylesheet" href="css/' + theme + '.css">');
+        document.write('<link id="theme" rel="stylesheet" href="css/' + theme + '.min.css">');
       })();
     </script>
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/angular-translate/angular-translate.js"></script>
-    <script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
     <script src="lib/mopidy/dist/mopidy.js"></script>
     <script src="cordova.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="js/directives.js"></script>
+    <script src="js/locales.js"></script>
+    <script src="js/playback.js"></script>
+    <script src="js/tracklist.js"></script>
+    <script src="js/library.js"></script>
+    <script src="js/playlists.js"></script>
+    <script src="js/settings.js"></script>
     <script src="js/services.js"></script>
   </head>
   <body ng-app="app">

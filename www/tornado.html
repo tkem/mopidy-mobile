@@ -12,17 +12,13 @@
     <script>
       ;(function() {
         var theme = window.localStorage['theme'] || 'ionic';
-        document.write('<link id="theme" rel="stylesheet" href="css/' + theme + '.css">');
+        document.write('<link id="theme" rel="stylesheet" href="css/' + theme + '.min.css">');
       })();
     </script>
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
-    <script src="lib/angular-translate/angular-translate.js"></script>
-    <script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
     <script src="/mopidy/mopidy.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="js/directives.js"></script>
-    <script src="js/services.js"></script>
+    <script src="js/ionic.bundle.min.js"></script>
+    <script src="js/angular-translate.min.js"></script>
+    <script src="js/app.min.js"></script>
   </head>
   <body ng-app="app">
     <ion-nav-bar class="bar-stable">

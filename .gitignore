@@ -5,6 +5,7 @@ node_modules/
 platforms/
 plugins/
 www/css/
+www/js/*.min.js
 www/lib/
 *.egg-info
 *.pyc
