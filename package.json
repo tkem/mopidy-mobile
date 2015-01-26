@@ -1,6 +1,6 @@
 {
   "name": "mopidy-mobile",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "mopidy-mobile: An Ionic project",
   "repository": {
     "url": "https://github.com/tkem/mopidy-mobile/"
