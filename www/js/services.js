@@ -48,19 +48,28 @@ angular.module('app.services', [])
   };
 
   provider.$get = function($q, $log, $ionicLoading) {
-    var mopidy = new Mopidy(settings),
-        pending = {};
+    var mopidy = new Mopidy(settings);
+    var pending = {};
+    var reconnects = 0;
     mopidy.on($log.debug.bind($log));
     mopidy.on('websocket:outgoingMessage', function(event) {
       $ionicLoading.show();  // FIXME: template, delay?
       pending[event.id] = event;
     });
     mopidy.on('websocket:incomingMessage', function(event) {
-        var data = angular.fromJson(event.data);
-        if (data.id in pending) {
-          delete pending[data.id];
-          $ionicLoading.hide();
-        }
+      var data = angular.fromJson(event.data);
+      if (data.id in pending) {
+        delete pending[data.id];
+        $ionicLoading.hide();
+      }
+      reconnects = 0;
+    });
+    // FIXME: improve reconnect handling
+    mopidy.on('reconnectionPending', function(event) {
+      if (++reconnects > 3) {
+        location.hash = '';
+        location.reload(true);
+      }
     });
 
     var promise = $q(function(resolve/*, reject*/) {
