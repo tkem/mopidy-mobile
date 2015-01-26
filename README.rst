@@ -13,9 +13,9 @@ mailing list`_ and/or `discussion forum`_.
 Installation
 ------------------------------------------------------------------------
 
-Pre-releases can be installed from testpypi_ by running::
+The Web extension can be installed using pip_ by running::
 
-  pip install -i https://testpypi.python.org/pypi Mopidy-Mobile
+  pip install Mopidy-Mobile
 
 For now, the Android app is available for alpha testing for members of
 the `Mopidy mailing list`_ only; if you are already a member and want
@@ -71,7 +71,6 @@ Licensed under the `Apache License, Version 2.0`_.
 .. _Mopidy: http://www.mopidy.com/
 
 .. _pip: https://pip.pypa.io/en/latest/
-.. _testpypi: https://wiki.python.org/moin/TestPyPI
 .. _npm: http://www.npmjs.org/
 .. _these instructions: https://play.google.com/apps/testing/com.ionicframework.mopidymobile190318
 
