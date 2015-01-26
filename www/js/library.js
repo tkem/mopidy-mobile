@@ -102,7 +102,7 @@ angular.module('app.library', ['ionic', 'app.services'])
     };
 
     $scope.search = function(q) {
-      $state.go('^.search', {q: q, uri: $scope.ref.uri});
+      $state.go('^.search', {q: q, uri: $scope.ref ? $scope.ref.uri : null});
     };
   })
 
