@@ -1,13 +1,13 @@
 <ion-popover-view class="mopidy-menu">
   <ion-content scroll="false">
     <div class="list">
-      <button class="item mopidy-menu-button" ng-click="popover.hide() && play()" ng-disabled="!trackUris.length" translate>
+      <button class="item mopidy-menu-button" ng-click="popover.hide() && play()" ng-disabled="!tracks.length" translate>
         Play All Tracks
       </button>
-      <button class="item mopidy-menu-button" ng-click="popover.hide() && add()" ng-disabled="!trackUris.length" translate>
+      <button class="item mopidy-menu-button" ng-click="popover.hide() && add()" ng-disabled="!track.length" translate>
         Add Tracks to Tracklist
       </ion-item>
-      <button class="item mopidy-menu-button" ng-click="popover.hide() && replace()" ng-disabled="!trackUris.length" translate>
+      <button class="item mopidy-menu-button" ng-click="popover.hide() && replace()" ng-disabled="!tracks.length" translate>
         Replace Current Tracklist
       </button>
     </div>

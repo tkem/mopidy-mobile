@@ -82,11 +82,15 @@ angular.module('mopidy-mobile.library', [
 .controller('BrowseCtrl', function($scope, $state, $ionicPopover, settings, mopidy, ref, refs) {
   $scope.ref = ref;
   $scope.refs = refs;
-  $scope.trackUris = [];
-
+  // FIXME: tracklist.add should *really* handle multiple URIs...
+  $scope.tracks = [];
   for (var i = 0, length = refs.length; i !== length; ++i) {
     if (refs[i].type === 'track') {
-      $scope.trackUris.push(refs[i].uri);
+      $scope.tracks.push({
+        __model__: "Track",
+        name: refs[i].name,
+        uri: refs[i].uri
+      });
     }
   }
 
@@ -97,7 +101,7 @@ angular.module('mopidy-mobile.library', [
   });
 
   $scope.add = function() {
-    mopidy.tracklist.add({uris: angular.copy($scope.trackUris)});
+    mopidy.tracklist.add({tracks: angular.copy($scope.tracks)});
   };
 
   $scope.click = function(ref) {
@@ -106,7 +110,7 @@ angular.module('mopidy-mobile.library', [
 
   $scope.play = function() {
     mopidy.tracklist.add({
-      uris: angular.copy($scope.trackUris)
+      tracks: angular.copy($scope.tracks)
     }).then(function(tlTracks) {
       mopidy.playback.play({tl_track: tlTracks[0]});
     });
@@ -121,7 +125,7 @@ angular.module('mopidy-mobile.library', [
   $scope.replace = function() {
     mopidy.tracklist.clear({
     }).then(function() {
-      return mopidy.tracklist.add({uris: angular.copy($scope.trackUris)});
+      return mopidy.tracklist.add({tracks: angular.copy($scope.tracks)});
     }).then(function(tlTracks) {
       mopidy.playback.play({tl_track: tlTracks[0]});
     });

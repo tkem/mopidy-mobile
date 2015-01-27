@@ -82,33 +82,7 @@ angular.module('mopidy-mobile.connection', [])
             return uri;
           }
         });
-        var tracklist = angular.copy(mopidy.tracklist);
         angular.extend(mopidy.tracklist, {
-          add: function(params) {
-            // tracklist.add() should *really* handle multiple URIs...
-            var uris = params.uris;
-            var at_position = params.at_position;
-            var results = [];
-            if (uris) {
-              return mopidy.iterate(function(i) {
-                return i + 1;
-              }, function(i) {
-                return i === uris.length;
-              }, function(i) {
-                $log.debug('add uri #' + i);
-                return tracklist.add({
-                  uri: uris[i],
-                  at_position: at_position === undefined ? undefined : at_position + results.length
-                }).then(function(tlTracks) {
-                  Array.prototype.push.apply(results, tlTracks);
-                });
-              }, 0).then(function() {
-                return results;
-              });
-            } else {
-              return tracklist.add(params);
-            }
-          },
           tracks: function(params) {
             return mopidy.join(
               mopidy.tracklist.eotTrack(params),
