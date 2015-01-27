@@ -5,25 +5,25 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title>Mopidy Mobile</title>
     <script>
-      ;(function() {
-        var theme = window.localStorage['theme'] || 'ionic';
-        document.write('<link id="theme" rel="stylesheet" href="css/' + theme + '.min.css">');
-      })();
+      ;(function(storage) {
+        var href = storage['mopidy-mobile.stylesheet'] || 'css/ionic.min.css';
+        document.write('<link id="stylesheet" rel="stylesheet" href="' + href + '">');
+      })(window.localStorage || {});
     </script>
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/angular-translate/angular-translate.js"></script>
     <script src="lib/mopidy/dist/mopidy.js"></script>
     <script src="cordova.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/connection.js"></script>
     <script src="js/locales.js"></script>
     <script src="js/playback.js"></script>
     <script src="js/tracklist.js"></script>
     <script src="js/library.js"></script>
     <script src="js/playlists.js"></script>
     <script src="js/settings.js"></script>
-    <script src="js/services.js"></script>
   </head>
-  <body ng-app="app">
+  <body ng-app="mopidy-mobile">
     <ion-nav-bar class="bar-stable">
       <ion-nav-back-button></ion-nav-back-button>
     </ion-nav-bar>

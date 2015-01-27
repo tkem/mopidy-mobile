@@ -1,4 +1,4 @@
-angular.module('app.playback', ['ionic', 'app.services'])
+angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
 
   .config(function($stateProvider) {
     $stateProvider.state('tabs.playback', {
@@ -186,13 +186,13 @@ angular.module('app.playback', ['ionic', 'app.services'])
       update($window.parseInt(volume.value));
       defer.promise.then(
         function() {
-          $log.log('volume done');
+          $log.debug('volume done');
           volume.pending = false;
         }, function() {
-          $log.log('volume error');
+          $log.debug('volume error');
           volume.pending = false;
         }, function() {
-          $log.log('volume pending: ' + volume.value);
+          $log.debug('volume pending: ' + volume.value);
           update($window.parseInt(volume.value));
         }
       );

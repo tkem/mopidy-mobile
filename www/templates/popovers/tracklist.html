@@ -1,25 +1,21 @@
-<ion-popover-view>
+<ion-popover-view class="mopidy-menu">
   <ion-content>
     <div class="list">
-      <a class="item" href="" ng-click="clear()" translate>
-        Clear...
-      </a>
-      <a class="item" href="" ng-click="save()" translate>
-        Save as...
-      </a>
-
+      <button class="item mopidy-menu-button" ng-click="popover.hide() && clear()" ng-disabled="!tlTracks.length">
+        <span translate>Clear</span>&hellip;
+      </button>
+      <button class="item mopidy-menu-button" ng-click="popover.hide() && save()" ng-disabled="!tlTracks.length">
+        <span translate>Save as</span>&hellip;
+      </button>
       <ion-checkbox ng-change="setOptions({consume: options.consume})" ng-model="options.consume">
         <span translate>Consume</span>
       </ion-checkbox>
-
       <ion-checkbox ng-change="setOptions({random: options.random})" ng-model="options.random">
         <span translate>Random</span>
       </ion-checkbox>
-
       <ion-checkbox ng-change="setOptions({repeat: options.repeat})" ng-model="options.repeat">
         <span translate>Repeat</span>
       </ion-checkbox>
-
       <ion-checkbox ng-change="setOptions({single: options.single})" ng-model="options.single">
         <span translate>Single</span>
       </ion-checkbox>

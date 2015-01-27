@@ -4,21 +4,21 @@
     <div class="list" ng-repeat="result in results">
       <div class="list">
         <a class="item item-icon-left"
-           ng-click="play(artist.uri)"
+           ng-click="click(artist)"
            ng-repeat="artist in result.artists"
            >
           <i class="icon mopidy-icon-artist"></i>
           {{artist.name}}
         </a>
         <a class="item item-icon-left"
-           ng-click="play(album.uri)"
+           ng-click="click(album)"
            ng-repeat="album in result.albums"
            >
           <i class="icon mopidy-icon-album"></i>
           {{album.name}}
         </a>
         <a class="item item-icon-left"
-           ng-click="play(track.uri)"
+           ng-click="click(track)"
            ng-repeat="track in result.tracks"
            >
           <i class="icon mopidy-icon-track"></i>

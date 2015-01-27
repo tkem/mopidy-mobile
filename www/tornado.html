@@ -10,17 +10,17 @@
     <link rel="apple-touch-startup-image" href="images/mopidy.png">
     <title>{{title}}</title>
     <script>
-      ;(function() {
-        var theme = window.localStorage['theme'] || 'ionic';
-        document.write('<link id="theme" rel="stylesheet" href="css/' + theme + '.min.css">');
-      })();
+      ;(function(storage) {
+        var href = storage['mopidy-mobile.stylesheet'] || 'css/ionic.min.css';
+        document.write('<link id="stylesheet" rel="stylesheet" href="' + href + '">');
+      })(window.localStorage || {});
     </script>
     <script src="/mopidy/mopidy.js"></script>
     <script src="js/ionic.bundle.min.js"></script>
     <script src="js/angular-translate.min.js"></script>
-    <script src="js/app.min.js"></script>
+    <script src="js/mopidy-mobile.min.js"></script>
   </head>
-  <body ng-app="app">
+  <body ng-app="mopidy-mobile">
     <ion-nav-bar class="bar-stable">
       <ion-nav-back-button></ion-nav-back-button>
     </ion-nav-bar>

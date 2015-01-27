@@ -27,7 +27,7 @@
         <p>Previous: {{tlTracks.previous.tlid}}</p>
       </div>
 
-      <div>
+      <div ng-if="track.album.images.length">
         <img ng-src="{{getImageURI(track)}}">
       </div>
     </div>

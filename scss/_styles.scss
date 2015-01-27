@@ -79,15 +79,33 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 /* see https://github.com/driftyco/ionic/issues/2932 */
 .bar-subfooter.has-tabs {
-  bottom: $tabs-height + $bar-footer-height;
+    bottom: $tabs-height + $bar-footer-height;
 }
 .has-subfooter.has-tabs {
-  bottom: $tabs-height + $bar-footer-height + $bar-subfooter-height;
+    bottom: $tabs-height + $bar-footer-height + $bar-subfooter-height;
 }
 
-/* FIXME: bug? */
+/* FIXME: ionic bug? */
 .bar .button.button-small.button-icon:before {
     font-size: $button-icon-size;
+}
+
+/* see http://forum.ionicframework.com/t/popover-sizing/8251/8 */
+ion-popover-view.mopidy-menu {
+    height: auto !important;
+    min-height: 100px !important;
+    max-height: 80% !important;
+}
+ion-popover-view.mopidy-menu ion-content {
+    position: relative !important;
+}
+.platform-android ion-popover-view.mopidy-menu {
+    margin-top: 10px !important;
+}
+
+.mopidy-menu-button {
+    @extend .button-full;
+    text-align: left !important;
 }
 
 /* TODO: configurable? */

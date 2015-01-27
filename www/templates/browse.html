@@ -1,4 +1,11 @@
 <ion-view view-title="{{ref.name || ref.uri || ('Library' | translate)}}">
+  <ion-nav-buttons side="secondary">
+    <button class="button button-clear icon mopidy-icon-more"
+            ng-click="popover.show($event)"
+            ng-disabled="!popover"
+            >
+    </button>
+  </ion-nav-buttons>
   <ion-content>
     <ion-refresher
        on-refresh="refresh()"
@@ -8,7 +15,7 @@
     <form ng-submit="search(q)">
       <label class="item item-input">
         <i class="icon mopidy-icon-search placeholder-icon"></i>
-        <input type="search" placeholder="{{'Search here...' | translate}}" ng-model="q">
+        <input type="search" placeholder="{{'Search here' | translate}}..." ng-model="q">
       </label>
     </form>
     <div class="list">
@@ -22,7 +29,7 @@
            >
         <a class="item-content"
            href=""
-           ng-click="play(ref.uri)"
+           ng-click="click(ref)"
            ng-switch-when="track"
            >
           <i class="icon mopidy-icon-track"></i>

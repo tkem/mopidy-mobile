@@ -1,21 +1,4 @@
-angular.module('app.services', [])
-
-.provider('Config', function() {
-  var provider = this;
-  provider.get = function(key, defaultValue) {
-    if (key in window.localStorage) {
-      return window.localStorage[key];
-    } else {
-      return defaultValue;
-    }
-  };
-  provider.set = function(key, value) {
-    window.localStorage[key] = value;
-  };
-  provider.$get = function() {
-    return provider;
-  };
-})
+angular.module('mopidy-mobile.connection', [])
 
 .provider('Mopidy', function() {
   var provider = this;
@@ -47,7 +30,7 @@ angular.module('app.services', [])
     return false;
   };
 
-  provider.$get = function($q, $log, $ionicLoading) {
+  provider.$get = function($q, $log, $window, $ionicLoading) {
     var mopidy = new Mopidy(settings);
     var pending = {};
     var reconnects = 0;
@@ -65,7 +48,7 @@ angular.module('app.services', [])
       reconnects = 0;
     });
     // FIXME: improve reconnect handling
-    mopidy.on('reconnectionPending', function(event) {
+    mopidy.on('reconnectionPending', function() {
       if (++reconnects > 3) {
         location.hash = '';
         location.reload(true);
@@ -83,12 +66,13 @@ angular.module('app.services', [])
         }
 
         // FIXME: see https://github.com/mopidy/mopidy.js/issues/1
-        var all = mopidy.getVersion().__proto__.constructor.all;
+        var when = mopidy.getVersion().__proto__.constructor;
         // convenience methods
         angular.extend(mopidy, {
-          all: all,
+          all: when.all,
+          iterate: when.iterate,
 	  join: function(/* promises */) {
-	    return all(arguments);
+	    return mopidy.all(arguments);
 	  },
           resolveURI: function(uri) {
             if (settings.webSocketUrl && isUriRefRegExp.test(uri)) {
@@ -98,7 +82,33 @@ angular.module('app.services', [])
             return uri;
           }
         });
+        var tracklist = angular.copy(mopidy.tracklist);
         angular.extend(mopidy.tracklist, {
+          add: function(params) {
+            // tracklist.add() should *really* handle multiple URIs...
+            var uris = params.uris;
+            var at_position = params.at_position;
+            var results = [];
+            if (uris) {
+              return mopidy.iterate(function(i) {
+                return i + 1;
+              }, function(i) {
+                return i === uris.length;
+              }, function(i) {
+                $log.debug('add uri #' + i);
+                return tracklist.add({
+                  uri: uris[i],
+                  at_position: at_position === undefined ? undefined : at_position + results.length
+                }).then(function(tlTracks) {
+                  Array.prototype.push.apply(results, tlTracks);
+                });
+              }, 0).then(function() {
+                return results;
+              });
+            } else {
+              return tracklist.add(params);
+            }
+          },
           tracks: function(params) {
             return mopidy.join(
               mopidy.tracklist.eotTrack(params),
@@ -146,7 +156,6 @@ angular.module('app.services', [])
         var defer = $q.defer();
         promise.then(function(mopidy) {
           callback(mopidy).then(function(result) {
-            $log.log('Mopidy deferred result', result);
             defer.resolve(result);
           });
         });
@@ -156,7 +165,11 @@ angular.module('app.services', [])
       }
     };
 
-    return factory;
+    return angular.extend(factory, {
+      reconnect: function(webSocketUrl) {
+        $window.location.reload(true); // FIXME!!!
+      }
+    });
   };
 })
 ;

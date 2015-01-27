@@ -1,3 +1,15 @@
+0.2.0 2015-01-27
+----------------
+
+- Add connection configuration.
+
+- Fix click in search results.
+
+- Restructure JS source files.
+
+- Various UI improvements/fixes.
+
+
 0.1.3 2015-01-27
 ----------------
 

@@ -48,8 +48,8 @@ gulp.task('jshint', function() {
 });
 
 gulp.task('uglify', function(done) {
-  gulp.src('www/js/*.js')
-    .pipe(uglify('app.min.js', {mangle: false}))
+  gulp.src(['www/js/*.js', '!www/js/*.min.js'])
+    .pipe(uglify('mopidy-mobile.min.js', {mangle: false}))
     .pipe(gulp.dest(paths.js))
     .on('end', done);
 });
@@ -63,7 +63,7 @@ gulp.task('dist', ['sass', 'uglify'], function() {
   gulp.src('www/css/*.min.css', {base: 'www'})
     .pipe(gulp.dest(paths.dist));
   gulp.src([
-    'www/js/app.min.js',
+    'www/js/mopidy-mobile.min.js',
     'www/lib/angular-translate/angular-translate.min.js',
     'www/lib/ionic/js/ionic.bundle.min.js',
   ])

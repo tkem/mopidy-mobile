@@ -1,28 +1,39 @@
-angular.module('app.locales', ['pascalprecht.translate'])
-
+angular.module('mopidy-mobile.locales', ['pascalprecht.translate'])
   .constant('locales', {
     'en': {
       displayName: 'English',
       messages: {
+        'Add Tracks to Tracklist': 'Add Tracks to Tracklist',
+        'Add to Tracklist': 'Add to Tracklist',
+        'Cancel': 'Cancel',
         'Clear Tracklist': 'Clear Tracklist',
         'Clear': 'Clear',
-        'Clear...': 'Clear&hellip;',
+        'Connection': 'Connection',
         'Consume': 'Consume',
+        'Default Click Action': 'Default Click Action',
         'Edit': 'Edit',
         'Empty': 'Empty',
+        'Error saving playlist': 'Error saving playlist',
         'Language': 'Language',
         'Library': 'Library',
         'Nothing playing': 'Nothing playling',
+        'OK': 'OK',
+        'Play All Tracks': 'Play All Tracks',
         'Play All': 'Play All',
+        'Play Track': 'Play Track',
         'Playback': 'Playback',
+        'Playlist Name': 'Playlist Name',
+        'Playlist saved': 'Playlist saved',
         'Playlists': 'Playlists',
         'Pull to refresh': 'Pull to refresh',
         'Random': 'Random',
         'Remove': 'Remove',
         'Repeat': 'Repeat',
-        'Save as...': 'Save as&hellip;',
+        'Replace Current Tracklist': 'Replace Current Tracklist',
+        'Save as Playlist': 'Save as Playlist',
+        'Save as': 'Save as',
         'Save': 'Save',
-        'Search here...': 'Search here...',
+        'Search here': 'Search here',
         'Settings': 'Settings',
         'Single': 'Single',
         'Theme': 'Theme',
@@ -31,28 +42,41 @@ angular.module('app.locales', ['pascalprecht.translate'])
         '{index} of {count}': '{{index}} of {{count}}',
       }
     },
+
     'de': {
       displayName: 'Deutsch',
       messages: {
+        'Add Tracks to Tracklist': 'Titel hinzufügen',
+        'Add to Tracklist': 'Titel hinzufügen',
+        'Cancel': 'Abbrechen',
         'Clear Tracklist': 'Titel löschen',
         'Clear': 'Leeren',
-        'Clear...': 'Leeren&hellip;',
+        'Connection': 'Verbindung',
         'Consume': 'Verbrauchsmodus',  // FIXME!
+        'Default Click Action': 'Beim Klicken',
         'Edit': 'Bearbeiten',
         'Empty': 'Leer',
+        'Error saving playlist': 'Fehler beim Speichern der Playlist',
         'Language': 'Sprache',
         'Library': 'Bibliothek',
-        'Nothing playing': 'Nichts spielt',
+        'Nothing playing': 'Nichts spielt',  // FIXMEQ
+        'OK': 'OK',
+        'Play All Tracks': 'Alle Titel abspielen',
         'Play All': 'Alle abspielen',
+        'Play Track': 'Titel abspielen',
         'Playback': 'Wiedergabe',
+        'Playlist Name': 'Name der Playlist',
+        'Playlist saved': 'Playlist gespeichert',
         'Playlists': 'Listen',
         'Pull to refresh': 'Zum Aktualisieren ziehen',
         'Random': 'Zufällig',
         'Remove': 'Löschen',
         'Repeat': 'Wiederholen',
-        'Save as...': 'Speichern unter&hellip;',
+        'Replace Current Tracklist': 'Titel ersetzen',
+        'Save as Playlist': 'Als Playlist speichern',
+        'Save as': 'Speichern unter',
         'Save': 'Speichern',
-        'Search here...': 'Hier suchen...',
+        'Search here': 'Hier suchen',
         'Settings': 'Einstellungen',
         'Single': 'Einzelmodus',
         'Theme': 'Design',  // FIXME!
@@ -79,7 +103,6 @@ angular.module('app.locales', ['pascalprecht.translate'])
       var sec = s % 60;
       var min = parseInt(s / 60);
       var value = min + ':' + (sec < 10 ? '0' : '') + sec;
-      //$log.log('duration', ms, value);
       return value;
     };
   })

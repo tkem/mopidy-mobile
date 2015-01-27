@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from mopidy import config, ext
 
-__version__ = '0.1.3'
+__version__ = '0.2.0'
 
 
 class Extension(ext.Extension):

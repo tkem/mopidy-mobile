@@ -1,6 +1,15 @@
 <ion-view view-title="{{'Settings' | translate}}">
   <ion-content>
 
+    <form ng-submit="updateWebSocketUrl()" ng-if="settings.webSocketUrl">
+      <label class="item item-input">
+        <div class="input-label" translate>
+          Connection
+        </div>
+        <input ng-model="settings.webSocketUrl" style="text-align: right" type="text">
+      </label>
+    </form>
+
     <label class="item item-input item-select">
       <div class="input-label" translate>
         Language
@@ -15,19 +24,19 @@
       <div class="input-label" translate>
         Theme
       </div>
-      <select ng-model="settings.theme">
-        <option value="ionic">Ionic</option>
-        <option value="ionic-ios">Ionic iOS</option>
+      <select ng-model="settings.stylesheet">
+        <option value="css/ionic.min.css">Ionic</option>
+        <option value="css/ionic-ios.min.css">Ionic iOS</option>
       </select>
     </label>
 
     <label class="item item-input item-select">
       <div class="input-label" translate>
-        Click Action
+        Default Click Action
       </div>
       <select ng-model="settings.action">
-        <option value="add">Add Track</option>
-        <option value="add+play">Add and Play Track</option>
+        <option value="add" translate>Add to Tracklist</option>
+        <option value="add+play" translate>Play Track</option>
       </select>
     </label>
 

@@ -1,4 +1,7 @@
-angular.module('app.tracklist', ['ionic', 'app.services'])
+angular.module('mopidy-mobile.tracklist', [
+  'ionic',
+  'mopidy-mobile.connection'
+])
 
   .config(function($stateProvider) {
     $stateProvider.state('tabs.tracklist', {
@@ -25,6 +28,17 @@ angular.module('app.tracklist', ['ionic', 'app.services'])
               return Mopidy(function(mopidy) {
                 return mopidy.tracklist.getTlTracks();
               });
+            },
+            msg: function($q, $translate) {
+              return $q.all({
+                'Cancel': $translate('Cancel'),
+                'Clear Tracklist': $translate('Clear Tracklist'),
+                'Save as Playlist': $translate('Save as Playlist'),
+                'OK': $translate('OK'),
+                'Playlist Name': $translate('Playlist Name'),
+                'Playlist saved': $translate('Playlist saved'),
+                'Error saving playlist': $translate('Error saving playlist')
+              });
             }
           }
         }
@@ -32,7 +46,7 @@ angular.module('app.tracklist', ['ionic', 'app.services'])
     });
   })
 
-  .controller('TracklistCtrl', function($scope, $log, $ionicPopover, $ionicPopup, mopidy, currentTlTrack, options, tlTracks) {
+  .controller('TracklistCtrl', function($scope, $ionicPopover, $ionicPopup, mopidy, msg, currentTlTrack, options, tlTracks) {
     var handlers = {
       'event:optionsChanged': function() {
         mopidy.tracklist.getOptions().then(function(options) {
@@ -74,7 +88,7 @@ angular.module('app.tracklist', ['ionic', 'app.services'])
       }
     };
 
-    $ionicPopover.fromTemplateUrl('templates/tracklist.popover.html', {
+    $ionicPopover.fromTemplateUrl('templates/popovers/tracklist.html', {
       scope: $scope,
     }).then(function(popover) {
       $scope.popover = popover;
@@ -87,9 +101,9 @@ angular.module('app.tracklist', ['ionic', 'app.services'])
     $scope.clear = function() {
       // TODO: i18n
       $ionicPopup.confirm({
-        title: 'Clear Tracklist',
-        okText: 'OK',
-        cancelText: 'Cancel'
+        title: msg['Clear Tracklist'],
+        okText: msg['OK'],
+        cancelText: msg['Cancel']
       }).then(function(result) {
         if (result) {
           mopidy.tracklist.clear();
@@ -128,9 +142,10 @@ angular.module('app.tracklist', ['ionic', 'app.services'])
     $scope.save = function() {
       // TODO: i18n
       $ionicPopup.prompt({
-        title: 'Playlist Name',
-        okText: 'OK',
-        cancelText: 'Cancel'
+        title: msg['Save as Playlist'],
+        template: msg['Playlist Name'],
+        okText: msg['OK'],
+        cancelText: msg['Cancel']
       }).then(function(name) {
         if (name) {
           mopidy.playlists.create({
@@ -139,17 +154,18 @@ angular.module('app.tracklist', ['ionic', 'app.services'])
             playlist.tracks = $scope.getTracks();
             return mopidy.playlists.save({playlist: playlist});
           }).then(
-            function(playlist) {
+            function() {
               $ionicPopup.alert({
-                title: 'Playlist ' + playlist.name + ' saved',
-                okText: 'OK'
+                title: msg['Playlist saved'],
+                okText: msg['OK']
               });
             },
             function(error) {
               $ionicPopup.alert({
-                title: 'Error saving playlist',
+                title: msg['Error saving playlist'],
                 subTitle: error.message,
-                okText: 'OK'
+                template: '<pre>' + error.data.message + '</pre>',
+                okText: msg['OK']
               });
             }
           );
@@ -165,7 +181,7 @@ angular.module('app.tracklist', ['ionic', 'app.services'])
       if (track.album && track.album.images && track.album.images.length) {
         return mopidy.resolveURI(track.album.images[0]);
       } else {
-        return '';
+        return 'images/mopidy.png';
       }
     };
 
