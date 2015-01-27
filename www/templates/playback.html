@@ -44,8 +44,8 @@
               ng-disabled="!tlTracks.previous"
               >
       </button>
-      <button class="button button-icon icon mopidy-icon-pause"
-              ng-class="{'mopidy-icon-play': state != 'playing'}"
+      <button class="button button-icon icon"
+              ng-class="state != 'playing' ? 'mopidy-icon-play' : 'mopidy-icon-pause'"
               ng-click="state != 'playing' ? play() : pause()"
               >
       </button>
