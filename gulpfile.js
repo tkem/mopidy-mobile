@@ -58,7 +58,7 @@ gulp.task('dist', ['sass', 'uglify'], function() {
   gulp.src('www/tornado.html')
     .pipe(rename('index.html'))
     .pipe(gulp.dest(paths.dist));
-  gulp.src('www/{images,templates,lib/ionic/fonts}/*', {base: 'www'})
+  gulp.src('www/{images,templates,lib/ionic/fonts}/**', {base: 'www'})
     .pipe(gulp.dest(paths.dist));
   gulp.src('www/css/*.min.css', {base: 'www'})
     .pipe(gulp.dest(paths.dist));
