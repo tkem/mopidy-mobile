@@ -20,14 +20,14 @@ angular.module('mopidy-mobile.library', [
       templateUrl: 'templates/browse.html',
       controller: 'BrowseCtrl',
       resolve: {
-        mopidy: function(Mopidy) {
-          return Mopidy();
+        mopidy: function(connection) {
+          return connection();
         },
         ref: function() {
           return null;
         },
-        refs: function(Mopidy) {
-          return Mopidy(function(mopidy) {
+        refs: function(connection) {
+          return connection(function(mopidy) {
             return mopidy.library.browse({uri: null});
           });
         }
@@ -38,8 +38,8 @@ angular.module('mopidy-mobile.library', [
       controller: 'BrowseCtrl',
       templateUrl: 'templates/browse.html',
       resolve: {
-        mopidy: function(Mopidy) {
-          return Mopidy();
+        mopidy: function(connection) {
+          return connection();
         },
         ref: function($stateParams) {
           return {
@@ -48,8 +48,8 @@ angular.module('mopidy-mobile.library', [
             uri: $stateParams.uri,
           };
         },
-        refs: function($stateParams, Mopidy) {
-          return Mopidy(function(mopidy) {
+        refs: function($stateParams, connection) {
+          return connection(function(mopidy) {
             return mopidy.library.browse({uri: $stateParams.uri});
           });
         }
@@ -60,14 +60,14 @@ angular.module('mopidy-mobile.library', [
       controller: 'SearchCtrl',
       templateUrl: 'templates/search.html',
       resolve: {
-        mopidy: function(Mopidy) {
-          return Mopidy();
+        mopidy: function(connection) {
+          return connection();
         },
         q: function($stateParams) {
           return $stateParams.q;
         },
-        results: function($stateParams, Mopidy) {
-          return Mopidy(function(mopidy) {
+        results: function($stateParams, connection) {
+          return connection(function(mopidy) {
             return mopidy.library.search({
               query: {any: $stateParams.q},
               uris: $stateParams.uri ? [$stateParams.uri] : null
@@ -82,17 +82,7 @@ angular.module('mopidy-mobile.library', [
 .controller('BrowseCtrl', function($scope, $state, $ionicPopover, settings, mopidy, ref, refs) {
   $scope.ref = ref;
   $scope.refs = refs;
-  // FIXME: tracklist.add should *really* handle multiple URIs...
-  $scope.tracks = [];
-  for (var i = 0, length = refs.length; i !== length; ++i) {
-    if (refs[i].type === 'track') {
-      $scope.tracks.push({
-        __model__: "Track",
-        name: refs[i].name,
-        uri: refs[i].uri
-      });
-    }
-  }
+  $scope.tracks = refs.filter(function(ref) { return ref.type === 'track'; });
 
   $ionicPopover.fromTemplateUrl('templates/popovers/library.html', {
     scope: $scope,
@@ -101,7 +91,9 @@ angular.module('mopidy-mobile.library', [
   });
 
   $scope.add = function() {
-    mopidy.tracklist.add({tracks: angular.copy($scope.tracks)});
+    mopidy.tracklist.add({
+      uris: $scope.tracks.map(function(ref) { return ref.uri; })
+    });
   };
 
   $scope.click = function(ref) {
@@ -110,7 +102,7 @@ angular.module('mopidy-mobile.library', [
 
   $scope.play = function() {
     mopidy.tracklist.add({
-      tracks: angular.copy($scope.tracks)
+      uris: $scope.tracks.map(function(ref) { return ref.uri; })
     }).then(function(tlTracks) {
       mopidy.playback.play({tl_track: tlTracks[0]});
     });
@@ -125,7 +117,9 @@ angular.module('mopidy-mobile.library', [
   $scope.replace = function() {
     mopidy.tracklist.clear({
     }).then(function() {
-      return mopidy.tracklist.add({tracks: angular.copy($scope.tracks)});
+      return mopidy.tracklist.add({
+        uris: $scope.tracks.map(function(ref) { return ref.uri; })
+      });
     }).then(function(tlTracks) {
       mopidy.playback.play({tl_track: tlTracks[0]});
     });

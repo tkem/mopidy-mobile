@@ -20,11 +20,11 @@ angular.module('mopidy-mobile.playlists', [
       controller: 'PlaylistsCtrl',
       templateUrl: 'templates/playlists.html',
       resolve: {
-        mopidy: function(Mopidy) {
-          return Mopidy();
+        mopidy: function(connection) {
+          return connection();
         },
-        playlists: function(Mopidy) {
-          return Mopidy(function(mopidy) {
+        playlists: function(connection) {
+          return connection(function(mopidy) {
             return mopidy.playlists.getPlaylists();
           });
         }
@@ -35,11 +35,11 @@ angular.module('mopidy-mobile.playlists', [
       controller: 'PlaylistCtrl',
       templateUrl: 'templates/playlist.html',
       resolve: {
-        mopidy: function(Mopidy) {
-          return Mopidy();
+        mopidy: function(connection) {
+          return connection();
         },
-        playlist: function($stateParams, Mopidy) {
-          return Mopidy(function(mopidy) {
+        playlist: function($stateParams, connection) {
+          return connection(function(mopidy) {
             return mopidy.playlists.lookup({uri: $stateParams.uri});
           });
         }

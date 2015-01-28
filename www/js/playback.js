@@ -8,35 +8,33 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
           templateUrl: 'templates/playback.html',
           controller: 'PlaybackCtrl',
           resolve: {
-            mopidy: function(Mopidy) {
-              return Mopidy();
+            mopidy: function(connection) {
+              return connection();
             },
-            mute: function(Mopidy) {
-              return Mopidy(function(mopidy) {
+            mute: function(connection) {
+              return connection(function(mopidy) {
                 return mopidy.playback.getMute();
               });
             },
-            options: function(Mopidy) {
-              return Mopidy(function(mopidy) {
+            options: function(connection) {
+              return connection(function(mopidy) {
                 return mopidy.tracklist.getOptions();
               });
             },
-            state: function(Mopidy) {
-              return Mopidy(function(mopidy) {
+            state: function(connection) {
+              return connection(function(mopidy) {
                 return mopidy.playback.getState();
               });
             },
-            tlTracks: function(Mopidy) {
-              return Mopidy(function(mopidy) {
-                return mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {
-                  // FIXME: better ways with when.js?
-                  return mopidy.join(
-                    mopidy.tracklist.tracks({tl_track: tlTrack}),
-                    tlTrack
-                  );
-                }).then(function(results) {
-                  return angular.extend(results[0], {current: results[1]});
-                });
+            tlTracks: function(connection) {
+              return connection(function(mopidy) {
+                  var currentTlTrack;
+                  return mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {
+                      currentTlTrack = tlTrack;
+                      return mopidy.tracklist.getPlaybackTlTracks({tl_track: tlTrack});
+                  }).then(function(tlTracks) {
+                      return angular.extend(tlTracks, {current: currentTlTrack});
+                  });
               });
             }
           }
@@ -51,7 +49,7 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
         if (!tlTrack || !scope.tlTracks.current || tlTrack.tlid !== scope.tlTracks.current.tlid) {
           scope.tlTracks = {current: tlTrack};
           scope.track = tlTrack ? tlTrack.track : null;
-          mopidy.tracklist.tracks({tl_track: tlTrack}).then(function(tlTracks) {
+          mopidy.tracklist.getPlaybackTlTracks({tl_track: tlTrack}).then(function(tlTracks) {
             scope.$apply(function(scope) {
               if (!scope.track && tlTracks.eot) {
                 scope.track = tlTracks.eot.track;

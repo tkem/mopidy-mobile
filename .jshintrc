@@ -12,12 +12,11 @@
   "undef": true,
   "unused": true,
   "latedef": true,
-  "newcap": false,
+  "newcap": true,
   "sub": true,
   "browser": true,
   "globals": {
     "angular": false,
-    "Mopidy": false,
-    "when": false
+    "Mopidy": false
   }
 }

@@ -1,28 +1,32 @@
-$mopidy-icon-playback:          ion-ios7-musical-notes !default;
-// $mopidy-icon-tracklist:         ion-ios7-navicon !default;
-$mopidy-icon-library:           ion-ios7-home !default;
-$mopidy-icon-playlists:         ion-ios7-star !default;
-$mopidy-icon-settings:          ion-ios7-settings !default;
 
-$mopidy-icon-play:              ion-ios7-play !default;
-$mopidy-icon-pause:             ion-ios7-pause !default;
-// $mopidy-icon-stop:              ion-ios7-stop !default;
-$mopidy-icon-next:              ion-ios7-skipforward !default;
-$mopidy-icon-previous:          ion-ios7-skipbackward !default;
+$mopidy-mobile-icon-playback:           ion-ios7-musical-notes !default;
+// $mopidy-mobile-icon-tracklist:       ion-ios7-navicon !default;
+$mopidy-mobile-icon-library:            ion-ios7-home !default;
+$mopidy-mobile-icon-playlists:          ion-ios7-star !default;
+$mopidy-mobile-icon-settings:           ion-ios7-settings !default;
 
-// $mopidy-icon-random:            ion-ios7-shuffle !default;
-// $mopidy-icon-repeat:            ion-ios7-loop !default;
+$mopidy-mobile-icon-play:               ion-ios7-play !default;
+$mopidy-mobile-icon-pause:              ion-ios7-pause !default;
+// $mopidy-mobile-icon-stop:            ion-ios7-stop !default;
+$mopidy-mobile-icon-next:               ion-ios7-skipforward !default;
+$mopidy-mobile-icon-previous:           ion-ios7-skipbackward !default;
 
-// $mopidy-icon-mute:              ion-ios7-volume-mute !default;
-$mopidy-icon-volume-low:        ion-ios7-volume-low !default;
-$mopidy-icon-volume-high:       ion-ios7-volume-high !default;
+// $mopidy-mobile-icon-random:          ion-ios7-shuffle !default;
+// $mopidy-mobile-icon-repeat:          ion-ios7-loop !default;
 
-// $mopidy-icon-album:             ion-ios7-disc !default;
-$mopidy-icon-artist:            ion-ios7-person !default;
-$mopidy-icon-directory:         ion-ios7-folder !default;
-$mopidy-icon-track:             ion-ios7-musical-note !default;
+// $mopidy-mobile-icon-mute:            ion-ios7-volume-mute !default;
+$mopidy-mobile-icon-volume-low:         ion-ios7-volume-low !default;
+$mopidy-mobile-icon-volume-high:        ion-ios7-volume-high !default;
 
-$mopidy-icon-search:            ion-ios7-search !default;
-$mopidy-icon-more:              ion-ios7-more !default;
+// $mopidy-mobile-icon-album:           ion-ios7-disc !default;
+$mopidy-mobile-icon-artist:             ion-ios7-person !default;
+$mopidy-mobile-icon-directory:          ion-ios7-folder !default;
+$mopidy-mobile-icon-track:              ion-ios7-musical-note !default;
+
+$mopidy-mobile-icon-search:             ion-ios7-search !default;
+$mopidy-mobile-icon-more:               ion-ios7-more !default;
+
+$item-thumbnail-width:                  64px;
+$item-thumbnail-height:                 64px;
 
 @import "styles";

@@ -1,3 +1,15 @@
+0.3.0 2015-01-28
+----------------
+
+- Refactor connection service.
+
+- Add ``item-icon-right`` to all collection items.
+
+- CSS cleanup: class names, thumbnail size, menu styles.
+
+- Check for missing resources in `setup.py`.
+
+
 0.2.2 2015-01-27
 ----------------
 

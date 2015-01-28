@@ -1,6 +1,6 @@
 angular.module('mopidy-mobile.connection', [])
 
-.provider('Mopidy', function() {
+.provider('connection', function() {
   var provider = this;
   var settings = {
     autoConnect: false,
@@ -64,16 +64,12 @@ angular.module('mopidy-mobile.connection', [])
           }
           return obj;
         }
-
-        // FIXME: see https://github.com/mopidy/mopidy.js/issues/1
-        var when = mopidy.getVersion().__proto__.constructor;
-        // convenience methods
+        // see https://github.com/mopidy/mopidy.js/issues/1
+        var when = Mopidy.when || mopidy.getVersion().__proto__.constructor;
+        // add convenience methods/decorators
+        var library = angular.copy(mopidy.library);
+        var tracklist = angular.copy(mopidy.tracklist);
         angular.extend(mopidy, {
-          all: when.all,
-          iterate: when.iterate,
-	  join: function(/* promises */) {
-	    return mopidy.all(arguments);
-	  },
           resolveURI: function(uri) {
             if (settings.webSocketUrl && isUriRefRegExp.test(uri)) {
               var match = /^ws:\/\/([^\/]+)/.exec(settings.webSocketUrl);
@@ -82,41 +78,69 @@ angular.module('mopidy-mobile.connection', [])
             return uri;
           }
         });
+        angular.extend(mopidy.library, {
+          lookup: function(params) {
+            if ('uris' in params) {
+              return when.all(params.uris.map(function(uri) {
+                return library.lookup({uri: uri});
+              })).then(function(results) {
+                return Array.prototype.concat.apply([], results);
+              });
+            } else {
+              return library.lookup(params);
+            }
+          }
+        });
         angular.extend(mopidy.tracklist, {
-          tracks: function(params) {
-            return mopidy.join(
-              mopidy.tracklist.eotTrack(params),
-              mopidy.tracklist.nextTrack(params),
-              mopidy.tracklist.previousTrack(params)
-            ).then(function(results) {
-              return makeObject(['eot', 'next', 'previous'], results);
-            });
+          add: function(params) {
+            if ('uris' in params) {
+              return mopidy.library.lookup({
+                uris: params.uris
+              }).then(function(tracks) {
+                if ('at_position' in params) {
+                  return tracklist.add({tracks: tracks, at_position: params.at_position});
+                } else {
+                  return tracklist.add({tracks: tracks});
+                }
+              });
+            } else {
+              return tracklist.add(params);
+            }
           },
           getOptions: function() {
-            return mopidy.join(
-              mopidy.tracklist.getConsume(),
-              mopidy.tracklist.getRandom(),
-              mopidy.tracklist.getRepeat(),
-              mopidy.tracklist.getSingle()
-            ).then(function(results) {
+            return when.all([
+              tracklist.getConsume(),
+              tracklist.getRandom(),
+              tracklist.getRepeat(),
+              tracklist.getSingle()
+            ]).then(function(results) {
               return makeObject(['consume', 'random', 'repeat', 'single'], results);
             });
           },
           setOptions: function(params) {
             var promises = [];
             if ('consume' in params) {
-              promises.push(mopidy.tracklist.setConsume({value: params.consume}));
+              promises.push(tracklist.setConsume({value: params.consume}));
             }
             if ('random' in params) {
-              promises.push(mopidy.tracklist.setRandom({value: params.random}));
+              promises.push(tracklist.setRandom({value: params.random}));
             }
             if ('repeat' in params) {
-              promises.push(mopidy.tracklist.setRepeat({value: params.repeat}));
+              promises.push(tracklist.setRepeat({value: params.repeat}));
             }
             if ('single' in params) {
-              promises.push(mopidy.tracklist.setSingle({value: params.single}));
+              promises.push(tracklist.setSingle({value: params.single}));
             }
-            return mopidy.all(promises);
+            return when.all(promises);
+          },
+          getPlaybackTlTracks: function(params) {
+            return when.all([
+              tracklist.eotTrack(params),
+              tracklist.nextTrack(params),
+              tracklist.previousTrack(params)
+            ]).then(function(results) {
+              return makeObject(['eot', 'next', 'previous'], results);
+            });
           }
         });
 
@@ -141,6 +165,7 @@ angular.module('mopidy-mobile.connection', [])
 
     return angular.extend(factory, {
       reconnect: function(webSocketUrl) {
+        $log.log('Reconnecting to ' + webSocketUrl);
         $window.location.reload(true); // FIXME!!!
       }
     });

@@ -11,21 +11,21 @@ angular.module('mopidy-mobile.tracklist', [
           templateUrl: 'templates/tracklist.html',
           controller: 'TracklistCtrl',
           resolve: {
-            mopidy: function(Mopidy) {
-              return Mopidy();
+            mopidy: function(connection) {
+              return connection();
             },
-            currentTlTrack: function(Mopidy) {
-              return Mopidy(function(mopidy) {
+            currentTlTrack: function(connection) {
+              return connection(function(mopidy) {
                 return mopidy.playback.getCurrentTlTrack();
               });
             },
-            options: function(Mopidy) {
-              return Mopidy(function(mopidy) {
+            options: function(connection) {
+              return connection(function(mopidy) {
                 return mopidy.tracklist.getOptions();
               });
             },
-            tlTracks: function(Mopidy) {
-              return Mopidy(function(mopidy) {
+            tlTracks: function(connection) {
+              return connection(function(mopidy) {
                 return mopidy.tracklist.getTlTracks();
               });
             },
@@ -76,13 +76,14 @@ angular.module('mopidy-mobile.tracklist', [
         });
       },
       'event:tracklistChanged': function() {
-        mopidy.join(
-          mopidy.playback.getCurrentTlTrack(),
-          mopidy.tracklist.getTlTracks()
-        ).then(function(results) {
+        mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {
           $scope.$apply(function(scope) {
-            scope.currentTlTrack = results[0];
-            scope.tlTracks = results[1];
+            scope.currentTlTrack = tlTrack;
+          });
+        });
+        mopidy.tracklist.getTlTracks().then(function(tlTracks) {
+          $scope.$apply(function(scope) {
+            scope.tlTracks = tlTracks;
           });
         });
       }
@@ -112,12 +113,7 @@ angular.module('mopidy-mobile.tracklist', [
     };
 
     $scope.getTracks = function() {
-      var tracks = [];
-      var tlTracks = $scope.tlTracks;
-      for (var i = 0, length = tlTracks.length; i !== length; ++i) {
-        tracks.push(tlTracks[i].track);
-      }
-      return tracks;
+      return $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
     };
 
     $scope.index = function(tlTrack) {
@@ -177,11 +173,11 @@ angular.module('mopidy-mobile.tracklist', [
       mopidy.tracklist.setOptions(params);
     };
 
-    $scope.getImageURI = function(track) {
+    $scope.getThumbnailURI = function(track) {
       if (track.album && track.album.images && track.album.images.length) {
         return mopidy.resolveURI(track.album.images[0]);
       } else {
-        return 'images/mopidy.png';
+        return 'images/thumbnail.png';
       }
     };
 

@@ -3,7 +3,7 @@ angular.module('mopidy-mobile.settings', [
   'mopidy-mobile.connection'
 ])
 
-.config(function($stateProvider, $logProvider, $translateProvider, settingsProvider, MopidyProvider) {
+.config(function($stateProvider, $logProvider, $translateProvider, settingsProvider, connectionProvider) {
   $stateProvider.state('tabs.settings', {
     url: '/settings',
     views: {
@@ -15,28 +15,28 @@ angular.module('mopidy-mobile.settings', [
   });
 
   // TODO: configurable/dev mode?
-  $logProvider.debugEnabled(false);
+  $logProvider.debugEnabled(true);
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
   // TODO: check behavior, config?
-  MopidyProvider.settings.backoffDelayMin(250);
-  MopidyProvider.settings.backoffDelayMax(1000);
+  connectionProvider.settings.backoffDelayMin(250);
+  connectionProvider.settings.backoffDelayMax(1000);
   // FIXME: move to settings page/config
 
   var webSocketUrl = settingsProvider.get('webSocketUrl');
   if (webSocketUrl) {
-    MopidyProvider.settings.webSocketUrl(webSocketUrl);
-  } else if (!MopidyProvider.isWebExtension()) {
+    connectionProvider.settings.webSocketUrl(webSocketUrl);
+  } else if (!connectionProvider.isWebExtension()) {
     webSocketUrl = window.prompt(
-      'Mopidy WebSocket URL',
+      'connection WebSocket URL',
       'ws://' + (location.hostname || 'localhost') + ':6680/mopidy/ws/'
     );
-    MopidyProvider.settings.webSocketUrl(webSocketUrl);
+    connectionProvider.settings.webSocketUrl(webSocketUrl);
     settingsProvider.set('webSocketUrl', webSocketUrl);
   }
 })
 
-.controller('SettingsCtrl', function($scope, $state, $translate, Mopidy, settings, locales) {
+.controller('SettingsCtrl', function($scope, $state, $translate, connection, settings, locales) {
   $scope.locales = locales;
   $scope.settings = {
     webSocketUrl: settings.get('webSocketUrl'),
@@ -49,7 +49,7 @@ angular.module('mopidy-mobile.settings', [
     var value = $scope.settings.webSocketUrl;
     // FIXME: test first
     settings.set('webSocketUrl', value);
-    Mopidy.reconnect(value);
+    connection.reconnect(value);
   };
 
   $scope.$watch('settings.locale', function(value) {

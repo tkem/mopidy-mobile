@@ -1,10 +1,10 @@
-<ion-popover-view class="mopidy-menu">
+<ion-popover-view class="mopidy-mobile-menu">
   <ion-content>
     <div class="list">
-      <button class="item mopidy-menu-button" ng-click="popover.hide() && clear()" ng-disabled="!tlTracks.length">
+      <button class="item" ng-click="popover.hide() && clear()" ng-disabled="!tlTracks.length">
         <span translate>Clear</span>&hellip;
       </button>
-      <button class="item mopidy-menu-button" ng-click="popover.hide() && save()" ng-disabled="!tlTracks.length">
+      <button class="item" ng-click="popover.hide() && save()" ng-disabled="!tlTracks.length">
         <span translate>Save as</span>&hellip;
       </button>
       <ion-checkbox ng-change="setOptions({consume: options.consume})" ng-model="options.consume">

@@ -1,30 +1,25 @@
 <ion-view view-title="{{ref.name || ref.uri || ('Library' | translate)}}">
   <ion-nav-buttons side="secondary">
-    <button class="button button-clear icon mopidy-icon-more"
+    <button class="button button-clear icon mopidy-mobile-icon-more"
             ng-click="popover.show($event)"
             ng-disabled="!popover"
             >
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <ion-refresher
-       on-refresh="refresh()"
-       pulling-text="{{'Pull to refresh' | translate}}"
-       >
+    <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
     </ion-refresher>
     <form ng-submit="search(q)">
       <label class="item item-input">
-        <i class="icon mopidy-icon-search placeholder-icon"></i>
+        <i class="icon mopidy-mobile-icon-search placeholder-icon"></i>
         <input type="search" placeholder="{{'Search here' | translate}}..." ng-model="q">
       </label>
     </form>
     <div class="list">
-      <!-- FIXME: directive? -->
-      <div class="item item-complex item-icon-left browse-item"
+      <div class="item item-complex item-icon-left item-icon-right mopidy-mobile-collection-item"
            collection-repeat="ref in refs"
            collection-item-width="'100%'"
            collection-item-height="50"
-           ng-class="{'item-icon-right': ref.type != 'track'}"
            ng-switch="ref.type"
            >
         <a class="item-content"
@@ -32,14 +27,15 @@
            ng-click="click(ref)"
            ng-switch-when="track"
            >
-          <i class="icon mopidy-icon-track"></i>
+          <i class="icon mopidy-mobile-icon-track"></i>
           {{ref.name}}
+          <i class="icon"></i>
         </a>
         <a class="item-content"
            ui-sref="tabs.library.browse({type: ref.type, name: ref.name, uri: ref.uri})"
            ng-switch-default
            >
-          <i class="icon" ng-class="'mopidy-icon-' + ref.type"></i>
+          <i class="icon" ng-class="'mopidy-mobile-icon-' + ref.type"></i>
           {{ref.name}}
           <i class="icon icon-accessory ion-chevron-right"></i>
         </a>

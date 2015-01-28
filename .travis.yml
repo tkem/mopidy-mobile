@@ -6,6 +6,10 @@ install:
 - sudo wget -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
 - sudo apt-get update || true
 - sudo apt-get install mopidy
+- npm install -g ionic gulp
+- npm install
+- gulp install
+- gulp dist
 - pip install . coverage coveralls
 script:
 - python setup.py nosetests

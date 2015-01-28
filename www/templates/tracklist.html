@@ -19,7 +19,7 @@
     </span>
   </ion-nav-title>
   <ion-nav-buttons side="secondary">
-    <button class="button button-clear icon mopidy-icon-more"
+    <button class="button button-clear icon mopidy-mobile-icon-more"
             ng-click="popover.show($event)"
             ng-disabled="!popover"
             >
@@ -31,7 +31,7 @@
                 ng-class="{'item-positive': tlTrack.tlid == currentTlTrack.tlid}"
                 ng-click="play(tlTrack)"
                 ng-repeat="tlTrack in tlTracks">
-        <img ng-src="{{getImageURI(tlTrack.track)}}">
+        <img ng-src="{{getThumbnailURI(tlTrack.track)}}">
         <h2>{{tlTrack.track.name}}</h2>
         <p>
           {{tlTrack.track.artists[0].name}}
