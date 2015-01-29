@@ -50,8 +50,13 @@ angular.module('mopidy-mobile.playlists', [
 
 .controller('PlaylistsCtrl', function($scope, $log, mopidy, playlists) {
   var handlers = {
-    'event:playlistChanged': function(playlist) {
-      $log.debug('playlistChanged: ' + playlist.name);
+    'event:playlistChanged': function(/*playlist*/) {
+      // FIXME: simply reload all playlists for now...
+      mopidy.playlists.getPlaylists().then(function(playlists) {
+        $scope.$apply(function(scope) {
+          scope.playlists = playlists;
+        });
+      });
     },
     'event:playlistsLoaded': function() {
       mopidy.playlists.getPlaylists().then(function(playlists) {
