@@ -1,3 +1,17 @@
+0.4.0 2015-01-29
+----------------
+
+- Lookup artist and album search results.
+
+- Merge and sort multiple search results.
+
+- Reload playlists on `event:playlistChanged`.
+
+- Add `debug` setting.
+
+- Add build script for Android app.
+
+
 0.3.0 2015-01-28
 ----------------
 

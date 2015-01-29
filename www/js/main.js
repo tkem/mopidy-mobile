@@ -16,7 +16,7 @@ angular.module('mopidy-mobile', [
     templateUrl: 'templates/tabs.html'
   });
 
-  $urlRouterProvider.otherwise('/tabs/playback');
+  $urlRouterProvider.otherwise('/tabs/settings');
 
   // TODO: platform defaults/configurable?
   $ionicConfigProvider.tabs.position('bottom');

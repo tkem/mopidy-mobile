@@ -33,10 +33,8 @@
                 ng-repeat="tlTrack in tlTracks">
         <img ng-src="{{getThumbnailURI(tlTrack.track)}}">
         <h2>{{tlTrack.track.name}}</h2>
-        <p>
-          {{tlTrack.track.artists[0].name}}
-          <br>
-          {{tlTrack.track.album.name}}
+        <h3>{{tlTrack.track.artists[0].name}}</h3>
+        <h4>{{tlTrack.track.album.name}}</h4>
         </p>
         <ion-option-button class="button-assertive" ng-click="remove(tlTrack)" translate>
           Remove

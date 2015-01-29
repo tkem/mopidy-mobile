@@ -1,12 +1,15 @@
 <ion-view view-title="{{'Settings' | translate}}">
   <ion-content>
 
-    <form ng-submit="updateWebSocketUrl()" ng-if="settings.webSocketUrl">
+    <form ng-submit="updateWebSocketUrl()" ng-if="!isWebExtension()">
       <label class="item item-input">
         <div class="input-label" translate>
           Connection
         </div>
-        <input ng-model="settings.webSocketUrl" style="text-align: right" type="text">
+        <input ng-model="settings.webSocketUrl"
+               placeholder="ws://localhost:6680/mopidy/ws/"
+               style="text-align: right"
+               type="text">
       </label>
     </form>
 
@@ -38,6 +41,18 @@
         <option value="add" translate>Add to Tracklist</option>
         <option value="add+play" translate>Play Track</option>
       </select>
+    </label>
+
+    <label class="item item-input item-toggle">
+      <div class="input-label" translate>
+        Enable Debugging
+      </div>
+      <label class="toggle">
+        <input ng-model="settings.debug" type="checkbox">
+        <div class="track">
+          <div class="handle"></div>
+        </div>
+      </label>
     </label>
 
   </ion-content>

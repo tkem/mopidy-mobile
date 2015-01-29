@@ -1,5 +1,6 @@
 angular.module('mopidy-mobile.settings', [
   'ionic',
+  'pascalprecht.translate',
   'mopidy-mobile.connection'
 ])
 
@@ -13,43 +14,44 @@ angular.module('mopidy-mobile.settings', [
       }
     }
   });
-
-  // TODO: configurable/dev mode?
-  $logProvider.debugEnabled(true);
+  $logProvider.debugEnabled(settingsProvider.get('debug') === 'true');
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
   // TODO: check behavior, config?
   connectionProvider.settings.backoffDelayMin(250);
   connectionProvider.settings.backoffDelayMax(1000);
-  // FIXME: move to settings page/config
-
-  var webSocketUrl = settingsProvider.get('webSocketUrl');
-  if (webSocketUrl) {
-    connectionProvider.settings.webSocketUrl(webSocketUrl);
-  } else if (!connectionProvider.isWebExtension()) {
-    webSocketUrl = window.prompt(
-      'connection WebSocket URL',
-      'ws://' + (location.hostname || 'localhost') + ':6680/mopidy/ws/'
-    );
-    connectionProvider.settings.webSocketUrl(webSocketUrl);
-    settingsProvider.set('webSocketUrl', webSocketUrl);
-  }
+  connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl'));
 })
 
-.controller('SettingsCtrl', function($scope, $state, $translate, connection, settings, locales) {
+.controller('SettingsCtrl', function($scope, $state, $log, $window, $translate, settings, locales) {
+  // FIXME: this is a hack!
+    $scope.isWebExtension = (function() {
+        var scripts = window.document.scripts;
+        for (var i = 0; i != scripts.length; ++i) {
+            if (/\/mopidy\/mopidy\.(min\.)?js$/.test(scripts[i].src || '')) {
+                return true;
+            }
+        }
+        return false;
+    })();
+
   $scope.locales = locales;
+
   $scope.settings = {
     webSocketUrl: settings.get('webSocketUrl'),
     locale: settings.get('locale', 'en'),
     stylesheet: settings.get('stylesheet', 'css/ionic.min.css'),
-    action: settings.get('action', 'add+play')
+    action: settings.get('action', 'add+play'),
+    debug: settings.get('debug') === 'true'
   };
 
   $scope.updateWebSocketUrl = function() {
     var value = $scope.settings.webSocketUrl;
     // FIXME: test first
     settings.set('webSocketUrl', value);
-    connection.reconnect(value);
+    $log.log('Reconnecting to ' + value);
+    $window.location.reload(true); // FIXME!!!
+    //connection.reconnect(value);
   };
 
   $scope.$watch('settings.locale', function(value) {
@@ -65,6 +67,10 @@ angular.module('mopidy-mobile.settings', [
 
   $scope.$watch('settings.action', function(value) {
     settings.set('action', value);
+  });
+
+  $scope.$watch('settings.debug', function(value) {
+    settings.set('debug', value);
   });
 })
 

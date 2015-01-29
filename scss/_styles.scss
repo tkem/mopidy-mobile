@@ -20,6 +20,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     font-size: $button-icon-size;
 }
 
+/* Style up your nav-bar */
+.nav-bar-title em {
+    font-style: italic;
+}
+
 /* Icons */
 .mopidy-mobile-icon-playback {
     @extend .#{$mopidy-mobile-icon-playback};

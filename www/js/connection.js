@@ -19,16 +19,6 @@ angular.module('mopidy-mobile.connection', [])
       settings.webSocketUrl = value;
     }
   };
-  provider.isWebExtension = function() {
-    var scripts = window.document.scripts;
-    for (var i = 0; i != scripts.length; ++i) {
-      // FIXME: this is a hack!
-      if (/\/mopidy\/mopidy\.(min\.)?js$/.test(scripts[i].src || '')) {
-        return true;
-      }
-    }
-    return false;
-  };
 
   provider.$get = function($q, $log, $window, $ionicLoading) {
     var mopidy = new Mopidy(settings);

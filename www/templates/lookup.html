@@ -1,0 +1,22 @@
+<ion-view view-title="{{name || uri || ('Library' | translate)}}">
+  <ion-nav-buttons side="secondary">
+    <button class="button button-clear icon mopidy-mobile-icon-more"
+            ng-click="popover.show($event)"
+            ng-disabled="!popover"
+            >
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="list">
+      <a class="item item-icon-left"
+         ng-click="click(track)"
+         ng-repeat="track in tracks"
+         >
+        <i class="icon mopidy-mobile-icon-track"></i>
+        <h2>{{track.name}}</h2>
+        <h3>{{track.artists[0].name}}</h3>
+        <h4>{{track.album.name}}</h4>
+      </a>
+    </div>
+  </ion-content>
+</ion-view>
