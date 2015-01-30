@@ -6,8 +6,8 @@
     <title>Mopidy Mobile</title>
     <script>
       ;(function(storage) {
-        var href = storage['mopidy-mobile.stylesheet'] || 'css/ionic.min.css';
-        document.write('<link id="stylesheet" rel="stylesheet" href="' + href + '">');
+        var href = storage['mopidy-mobile.stylesheet'] || '"css/ionic.min.css"';
+        document.write('<link id="stylesheet" rel="stylesheet" href=' + href + '>');
       })(window.localStorage || {});
     </script>
     <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -22,6 +22,7 @@
     <script src="js/library.js"></script>
     <script src="js/playlists.js"></script>
     <script src="js/settings.js"></script>
+    <script src="js/logging.js"></script>
   </head>
   <body ng-app="mopidy-mobile">
     <ion-nav-bar class="bar-stable">

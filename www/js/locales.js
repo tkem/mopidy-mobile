@@ -17,6 +17,7 @@ angular.module('mopidy-mobile.locales', ['pascalprecht.translate'])
         'Error saving playlist': 'Error saving playlist',
         'Language': 'Language',
         'Library': 'Library',
+        'Logging': 'Logging',
         'Nothing playing': 'Nothing playling',
         'OK': 'OK',
         'Play All Tracks': 'Play All Tracks',
@@ -63,6 +64,7 @@ angular.module('mopidy-mobile.locales', ['pascalprecht.translate'])
         'Error saving playlist': 'Fehler beim Speichern der Playlist',
         'Language': 'Sprache',
         'Library': 'Bibliothek',
+        'Logging': 'Logging',
         'Nothing playing': 'Nichts spielt',  // FIXMEQ
         'OK': 'OK',
         'Play All Tracks': 'Alle Titel abspielen',

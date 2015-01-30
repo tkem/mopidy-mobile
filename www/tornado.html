@@ -11,7 +11,7 @@
     <title>{{title}}</title>
     <script>
       ;(function(storage) {
-        var href = storage['mopidy-mobile.stylesheet'] || 'css/ionic.min.css';
+        var href = storage['mopidy-mobile.stylesheet'] || '"css/ionic.min.css"';
         document.write('<link id="stylesheet" rel="stylesheet" href="' + href + '">');
       })(window.localStorage || {});
     </script>

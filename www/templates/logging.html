@@ -1,0 +1,38 @@
+<ion-view view-title="{{'Logging' | translate}}">
+  <ion-content>
+    <ul class="list">
+      <li class="item item-input item-toggle">
+        <span class="input-label" translate>Enable Logging</span>
+        <label class="toggle">
+          <input ng-model="logging.enabled" type="checkbox">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </li>
+      <li class="item item-input item-toggle">
+        <span class="input-label" translate>Log Debug Messages</span>
+        <label class="toggle">
+          <input ng-disabled="!logging.enabled" ng-model="logging.debugEnabled" type="checkbox">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </li>
+      <li class="item item-input">
+        <span class="input-label" translate>Log Buffer Size</span>
+        <input min="1" max="1000" ng-disabled="!logging.enabled" ng-model="logging.maxBufferSize"
+               type="number">
+      </li>
+    </ul>
+
+    <div class="list">
+      <div class="item item-text-wrap" ng-repeat="message in messages">
+        {{message.id}}: [{{message.type}}]
+        <span ng-repeat="arg in message.args">
+          {{format(arg)}}
+        </span>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

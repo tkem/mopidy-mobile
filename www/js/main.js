@@ -1,12 +1,13 @@
 angular.module('mopidy-mobile', [
   'ionic',
   'mopidy-mobile.connection',
+  'mopidy-mobile.logging',
   'mopidy-mobile.locales',
   'mopidy-mobile.playback',
   'mopidy-mobile.tracklist',
   'mopidy-mobile.library',
   'mopidy-mobile.playlists',
-  'mopidy-mobile.settings'
+  'mopidy-mobile.settings',
 ])
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {

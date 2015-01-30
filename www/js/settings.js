@@ -1,39 +1,58 @@
 angular.module('mopidy-mobile.settings', [
   'ionic',
   'pascalprecht.translate',
-  'mopidy-mobile.connection'
+  'mopidy-mobile.connection',
+  'mopidy-mobile.logging'
 ])
 
-.config(function($stateProvider, $logProvider, $translateProvider, settingsProvider, connectionProvider) {
-  $stateProvider.state('tabs.settings', {
-    url: '/settings',
-    views: {
-      'settings': {
-        templateUrl: 'templates/settings.html',
-        controller: 'SettingsCtrl'
+.config(function($stateProvider, $translateProvider, connectionProvider, loggingProvider, settingsProvider) {
+  $stateProvider
+    .state('tabs.settings', {
+      url: '/settings',
+      views: {
+        'settings': {
+          templateUrl: 'templates/settings.html',
+          controller: 'SettingsCtrl'
+        }
       }
+    })
+    .state('tabs.logging', {
+      url: '/logging',
+      views: {
+        'settings': {
+          templateUrl: 'templates/logging.html',
+          controller: 'LoggingCtrl'
+        }
+      }
+    })
+  ;
+
+  connectionProvider.settings.backoffDelayMin(250);  // TODO: config?
+  connectionProvider.settings.backoffDelayMax(1000);  // TODO: check behavior...
+  connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl'));
+
+  angular.forEach(settingsProvider.get('logging'), function(value, key) {
+    if (angular.isFunction(loggingProvider[key])) {
+      loggingProvider[key](value);
     }
   });
-  $logProvider.debugEnabled(settingsProvider.get('debug') === 'true');
+  //$logProvider.debugEnabled(settingsProvider.get('logging.debug') === 'true');
+
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
-  // TODO: check behavior, config?
-  connectionProvider.settings.backoffDelayMin(250);
-  connectionProvider.settings.backoffDelayMax(1000);
-  connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl'));
 })
 
 .controller('SettingsCtrl', function($scope, $state, $log, $window, $translate, settings, locales) {
-  // FIXME: this is a hack!
-    $scope.isWebExtension = (function() {
-        var scripts = window.document.scripts;
-        for (var i = 0; i != scripts.length; ++i) {
-            if (/\/mopidy\/mopidy\.(min\.)?js$/.test(scripts[i].src || '')) {
-                return true;
-            }
-        }
-        return false;
-    })();
+  // FIXME: bettery ways?
+  $scope.isWebExtension = (function() {
+    var scripts = $window.document.scripts;
+    for (var i = 0; i != scripts.length; ++i) {
+      if (/\/mopidy\/mopidy\.(min\.)?js$/.test(scripts[i].src || '')) {
+        return true;
+      }
+    }
+    return false;
+  })();
 
   $scope.locales = locales;
 
@@ -42,7 +61,6 @@ angular.module('mopidy-mobile.settings', [
     locale: settings.get('locale', 'en'),
     stylesheet: settings.get('stylesheet', 'css/ionic.min.css'),
     action: settings.get('action', 'add+play'),
-    debug: settings.get('debug') === 'true'
   };
 
   $scope.updateWebSocketUrl = function() {
@@ -51,7 +69,6 @@ angular.module('mopidy-mobile.settings', [
     settings.set('webSocketUrl', value);
     $log.log('Reconnecting to ' + value);
     $window.location.reload(true); // FIXME!!!
-    //connection.reconnect(value);
   };
 
   $scope.$watch('settings.locale', function(value) {
@@ -68,26 +85,41 @@ angular.module('mopidy-mobile.settings', [
   $scope.$watch('settings.action', function(value) {
     settings.set('action', value);
   });
+})
 
-  $scope.$watch('settings.debug', function(value) {
-    settings.set('debug', value);
-  });
+.controller('LoggingCtrl', function($scope, logging, settings) {
+  $scope.logging = {
+    enabled: logging.enabled(),
+    debugEnabled: logging.debugEnabled(),
+    maxBufferSize: logging.maxBufferSize()
+  };
+  $scope.format = angular.toJson;
+  $scope.messages = logging.messages;
+
+  $scope.$watch('logging', function(values) {
+    logging.enabled(values.enabled);
+    logging.debugEnabled(values.debugEnabled);
+    logging.maxBufferSize(values.maxBufferSize);
+    settings.set('logging', values);
+  }, true);
 })
 
 .provider('settings', function() {
   var provider = this;
+  var prefix = 'mopidy-mobile.';
   angular.extend(provider, {
     get: function(key, defaultValue) {
-      key = 'mopidy-mobile.' + key;
+      key = prefix + key;
       if (key in window.localStorage) {
-        return window.localStorage[key];
+        try {
+          return angular.fromJson(window.localStorage[key]);
+        } catch (e) {
+          window.console.log('exception', window.localStorage[key]);
+          return defaultValue;
+        }
       } else {
         return defaultValue;
       }
-    },
-    set: function(key, value) {
-      key = 'mopidy-mobile.' + key;
-      window.localStorage[key] = value;
     }
   });
 
@@ -104,6 +136,10 @@ angular.module('mopidy-mobile.settings', [
     };
 
     return angular.extend(provider, {
+      set: function(key, value) {
+        window.localStorage[prefix + key] = angular.toJson(value);
+        return this;
+      },
       click: function(mopidy, uri) {
         return trackActions[this.get('action', 'add+play')](mopidy, uri);
       },

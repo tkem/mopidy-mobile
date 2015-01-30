@@ -1,60 +1,54 @@
 <ion-view view-title="{{'Settings' | translate}}">
   <ion-content>
+    <div class="list">
+      <form ng-submit="updateWebSocketUrl()" ng-if="!isWebExtension()">
+        <label class="item item-input">
+          <div class="input-label" translate>
+            Connection
+          </div>
+          <input ng-model="settings.webSocketUrl"
+                 placeholder="ws://localhost:6680/mopidy/ws/"
+                 style="text-align: right"
+                 type="text">
+        </label>
+      </form>
 
-    <form ng-submit="updateWebSocketUrl()" ng-if="!isWebExtension()">
-      <label class="item item-input">
+      <label class="item item-input item-select">
         <div class="input-label" translate>
-          Connection
+          Language
         </div>
-        <input ng-model="settings.webSocketUrl"
-               placeholder="ws://localhost:6680/mopidy/ws/"
-               style="text-align: right"
-               type="text">
+        <select ng-model="settings.locale"
+                ng-options="id as locale.displayName for (id, locale) in locales"
+                >
+        </select>
       </label>
-    </form>
 
-    <label class="item item-input item-select">
-      <div class="input-label" translate>
-        Language
-      </div>
-      <select ng-model="settings.locale"
-              ng-options="id as locale.displayName for (id, locale) in locales"
-              >
-      </select>
-    </label>
-
-    <label class="item item-input item-select">
-      <div class="input-label" translate>
-        Theme
-      </div>
-      <select ng-model="settings.stylesheet">
-        <option value="css/ionic.min.css">Ionic</option>
-        <option value="css/ionic-ios.min.css">Ionic iOS</option>
-      </select>
-    </label>
-
-    <label class="item item-input item-select">
-      <div class="input-label" translate>
-        Default Click Action
-      </div>
-      <select ng-model="settings.action">
-        <option value="add" translate>Add to Tracklist</option>
-        <option value="add+play" translate>Play Track</option>
-      </select>
-    </label>
-
-    <label class="item item-input item-toggle">
-      <div class="input-label" translate>
-        Enable Debugging
-      </div>
-      <label class="toggle">
-        <input ng-model="settings.debug" type="checkbox">
-        <div class="track">
-          <div class="handle"></div>
+      <label class="item item-input item-select">
+        <div class="input-label" translate>
+          Theme
         </div>
+        <select ng-model="settings.stylesheet">
+          <option value="css/ionic.min.css">Ionic</option>
+          <option value="css/ionic-ios.min.css">Ionic iOS</option>
+        </select>
       </label>
-    </label>
 
+      <label class="item item-input item-select">
+        <div class="input-label" translate>
+          Default Click Action
+        </div>
+        <select ng-model="settings.action">
+          <option value="add" translate>Add to Tracklist</option>
+          <option value="add+play" translate>Play Track</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="list">
+      <a class="item item-icon-right" ui-sref="tabs.logging">
+        <span translate>Logging</span>
+        <i class="icon icon-accessory ion-chevron-right"></i>
+      </a>
+    </div>
   </ion-content>
-
 </ion-view>
