@@ -1,3 +1,11 @@
+0.5.0 2015-01-30
+----------------
+
+- Handle multiple connections in app.
+
+- Implement application logging.
+
+
 0.4.0 2015-01-29
 ----------------
 
