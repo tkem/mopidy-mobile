@@ -56,7 +56,7 @@ angular.module('mopidy-mobile.connection', [])
           return obj;
         }
         // see https://github.com/mopidy/mopidy.js/issues/1
-        var when = Mopidy.when || mopidy.getVersion().__proto__.constructor;
+        var when = Mopidy.when || mopidy.getVersion()['__proto__'].constructor;
         // add convenience methods/decorators
         var library = angular.copy(mopidy.library);
         var tracklist = angular.copy(mopidy.tracklist);
