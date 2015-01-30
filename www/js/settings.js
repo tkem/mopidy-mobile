@@ -16,6 +16,15 @@ angular.module('mopidy-mobile.settings', [
         }
       }
     })
+    .state('tabs.connections', {
+      url: '/connections',
+      views: {
+        'settings': {
+          templateUrl: 'templates/connections.html',
+          controller: 'ConnectionsCtrl'
+        }
+      }
+    })
     .state('tabs.logging', {
       url: '/logging',
       views: {
@@ -42,9 +51,9 @@ angular.module('mopidy-mobile.settings', [
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
 })
 
-.controller('SettingsCtrl', function($scope, $state, $log, $window, $translate, settings, locales) {
+.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $translate, locales, settings) {
   // FIXME: bettery ways?
-  $scope.isWebExtension = (function() {
+  function isWebExtension() {
     var scripts = $window.document.scripts;
     for (var i = 0; i != scripts.length; ++i) {
       if (/\/mopidy\/mopidy\.(min\.)?js$/.test(scripts[i].src || '')) {
@@ -52,9 +61,7 @@ angular.module('mopidy-mobile.settings', [
       }
     }
     return false;
-  })();
-
-  $scope.locales = locales;
+  }
 
   $scope.settings = {
     webSocketUrl: settings.get('webSocketUrl'),
@@ -63,13 +70,26 @@ angular.module('mopidy-mobile.settings', [
     action: settings.get('action', 'add+play'),
   };
 
-  $scope.updateWebSocketUrl = function() {
-    var value = $scope.settings.webSocketUrl;
-    // FIXME: test first
-    settings.set('webSocketUrl', value);
-    $log.log('Reconnecting to ' + value);
-    $window.location.reload(true); // FIXME!!!
-  };
+  if (!isWebExtension()) {
+    if (!$scope.settings.webSocketUrl) {
+      $state.go('^.connections');
+    }
+    $scope.connections = settings.get('connections');
+  }
+  $scope.locales = locales;
+
+  $scope.$watch('settings.webSocketUrl', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      if (!newValue) {
+        $state.go('^.connections');
+      } else {
+        settings.set('webSocketUrl', newValue);
+        $log.log('Reconnecting to ' + newValue);
+        $window.location.hash = '';
+        $window.location.reload(true); // FIXME!!!
+      }
+    }
+  });
 
   $scope.$watch('settings.locale', function(value) {
     settings.set('locale', value);
@@ -85,6 +105,30 @@ angular.module('mopidy-mobile.settings', [
   $scope.$watch('settings.action', function(value) {
     settings.set('action', value);
   });
+
+  $rootScope.$on('connectionsChanged', function() {
+    $scope.connections = settings.get('connections');
+    $scope.settings.webSocketUrl = settings.get('webSocketUrl');
+  });
+})
+
+.controller('ConnectionsCtrl', function($scope, $state, $rootScope, settings) {
+  $scope.connection = {
+    name: '',
+    host: '',
+    port: 6680
+  };
+
+  $scope.save = function(connection) {
+    // FIXME: check, make path configurable (proxies)?
+    var webSocketUrl = 'ws://' + connection.host + ':' + connection.port + '/mopidy/ws/';
+    var connections = settings.get('connections', {});
+    connections[webSocketUrl] = connection;
+    settings.set('connections', connections);
+    settings.set('webSocketUrl', webSocketUrl);
+    $rootScope.$broadcast('connectionsChanged');
+    $state.go('^.settings');
+  };
 })
 
 .controller('LoggingCtrl', function($scope, logging, settings) {

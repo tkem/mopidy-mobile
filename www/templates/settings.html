@@ -1,17 +1,16 @@
 <ion-view view-title="{{'Settings' | translate}}">
   <ion-content>
     <div class="list">
-      <form ng-submit="updateWebSocketUrl()" ng-if="!isWebExtension()">
-        <label class="item item-input">
-          <div class="input-label" translate>
-            Connection
-          </div>
-          <input ng-model="settings.webSocketUrl"
-                 placeholder="ws://localhost:6680/mopidy/ws/"
-                 style="text-align: right"
-                 type="text">
-        </label>
-      </form>
+      <label class="item item-input item-select" ng-if="connections">
+        <div class="input-label" translate>
+          Connection
+        </div>
+        <select ng-model="settings.webSocketUrl"
+                ng-options="url as connection.name for (url, connection) in connections"
+                >
+          <option value="">{{'Add Connection' | translate}}</option>
+        </select>
+      </label>
 
       <label class="item item-input item-select">
         <div class="input-label" translate>

@@ -21,6 +21,7 @@ angular.module('mopidy-mobile.connection', [])
   };
 
   provider.$get = function($q, $log, $window, $ionicLoading) {
+    $log.info('Creating Mopidy instance', settings);
     var mopidy = new Mopidy(settings);
     var pending = {};
     var reconnects = 0;

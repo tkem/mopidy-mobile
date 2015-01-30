@@ -1,0 +1,23 @@
+<ion-view view-title="{{'Add Connection' | translate}}">
+  <io-nav-back-button>
+  </io-nav-back-button>
+  <ion-content>
+    <ul class="list">
+      <li class="item item-input">
+        <span class="input-label" translate>Connection Name</span>
+        <input ng-model="connection.name" placeholder="My Mopidy Server" type="text">
+      </li>
+      <li class="item item-input">
+        <span class="input-label" translate>Mopidy Host</span>
+        <input ng-model="connection.host" placeholder="192.168.1.1" type="text">
+      </li>
+      <li class="item item-input">
+        <span class="input-label" translate>Mopidy Port</span>
+        <input ng-model="connection.port" type="number">
+      </li>
+      <li class="item item-button">
+        <button ng-click="save(connection)" translate>Save</button>
+      </li>
+    </ul>
+  </ion-content>
+</ion-view>

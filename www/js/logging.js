@@ -26,7 +26,7 @@ angular.module('mopidy-mobile.logging', ['ionic'])
   var provider = this;
   var enabled = false;
   var debugEnabled = false;
-  var maxBufferSize = 0;
+  var maxBufferSize = 20;  // TODO: default?
 
   angular.extend(provider, {
     enabled: function(flag) {
