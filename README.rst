@@ -17,7 +17,7 @@ The Web extension can be installed using pip_ by running::
 
   pip install Mopidy-Mobile
 
-For now, the Android app is available for alpha testing for members of
+For now, the Android app is available for beta testing for members of
 the `Mopidy mailing list`_ only; if you are already a member and want
 to participate in testing, please follow `these instructions`_.
 
