@@ -6,6 +6,8 @@ angular.module('mopidy-mobile.settings', [
 ])
 
 .config(function($stateProvider, $translateProvider, connectionProvider, loggingProvider, settingsProvider) {
+  var html = angular.element(window.document).find('html');
+
   $stateProvider
     .state('tabs.settings', {
       url: '/settings',
@@ -38,7 +40,7 @@ angular.module('mopidy-mobile.settings', [
 
   connectionProvider.settings.backoffDelayMin(250);  // TODO: config?
   connectionProvider.settings.backoffDelayMax(1000);  // TODO: check behavior...
-  connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl'));
+  connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl', html.attr('data-ws-url')));
 
   angular.forEach(settingsProvider.get('logging'), function(value, key) {
     if (angular.isFunction(loggingProvider[key])) {
@@ -51,16 +53,10 @@ angular.module('mopidy-mobile.settings', [
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
 })
 
-.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $translate, locales, settings) {
-  // FIXME: bettery ways?
+.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, locales, settings) {
+  // TODO: use ws-url if present
   function isWebExtension() {
-    var scripts = $window.document.scripts;
-    for (var i = 0; i != scripts.length; ++i) {
-      if (/\/mopidy\/mopidy\.(min\.)?js$/.test(scripts[i].src || '')) {
-        return true;
-      }
-    }
-    return false;
+    return $document.find('html').attr('data-ws-url') !== undefined;
   }
 
   $scope.settings = {
@@ -116,12 +112,13 @@ angular.module('mopidy-mobile.settings', [
   $scope.connection = {
     name: '',
     host: '',
-    port: 6680
+    port: 6680,
+    path: '/mopidy/ws/'
   };
 
   $scope.save = function(connection) {
-    // FIXME: check, make path configurable (proxies)?
-    var webSocketUrl = 'ws://' + connection.host + ':' + connection.port + '/mopidy/ws/';
+    // FIXME: check/test connectivity
+    var webSocketUrl = 'ws://' + connection.host + ':' + connection.port + connection.path;
     var connections = settings.get('connections', {});
     connections[webSocketUrl] = connection;
     settings.set('connections', connections);

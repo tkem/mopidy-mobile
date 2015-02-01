@@ -34,7 +34,17 @@ installed.  Then run::
 Configuration
 ------------------------------------------------------------------------
 
-TBD.
+All of these are optional for now::
+
+  [mobile]
+  enabled = true
+
+  # application title
+  title = Mopidy Mobile Web Extension
+
+  # WebSocket URL - set this if Mopidy's WebSocket is not available at
+  # its default path /mopidy/ws/, e.g. if you're using a reverse proxy
+  ws_url =
 
 
 Project Resources

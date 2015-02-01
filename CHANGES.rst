@@ -1,3 +1,13 @@
+0.5.1 2015-02-02
+----------------
+
+- Configure WebServer URL for use with reverse proxies.
+
+- Bundle `.js` files for faster page loads.
+
+- Use versioned URLs to improve browser caching.
+
+
 0.5.0 2015-01-30
 ----------------
 

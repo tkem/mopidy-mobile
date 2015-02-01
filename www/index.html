@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Mopidy Mobile</title>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>Mopidy Mobile</title>
-    <script>
-      ;(function(storage) {
-        var href = storage['mopidy-mobile.stylesheet'] || '"css/ionic.min.css"';
-        document.write('<link id="stylesheet" rel="stylesheet" href=' + href + '>');
-      })(window.localStorage || {});
-    </script>
+    <link id="stylesheet" rel="stylesheet" href="css/ionic.min.css">
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/angular-translate/angular-translate.js"></script>
     <script src="lib/mopidy/dist/mopidy.js"></script>

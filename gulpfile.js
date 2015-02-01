@@ -48,26 +48,36 @@ gulp.task('jshint', function() {
 });
 
 gulp.task('uglify', function(done) {
-  gulp.src(['www/js/*.js', '!www/js/*.min.js'])
+    gulp.src(['www/js/*.js', '!www/js/*.min.js'])
     .pipe(uglify('mopidy-mobile.min.js', {mangle: false}))
     .pipe(gulp.dest(paths.js))
     .on('end', done);
 });
 
-gulp.task('dist', ['sass', 'uglify'], function() {
+gulp.task('bundle', ['uglify'], function(done) {
+  gulp.src([
+    'www/lib/ionic/js/ionic.bundle.min.js',
+    'www/lib/angular-translate/angular-translate.min.js',
+    'www/lib/mopidy/dist/mopidy.min.js',
+    'www/js/mopidy-mobile.min.js'
+  ])
+    .pipe(concat('mopidy-mobile.bundle.min.js'))
+    .pipe(gulp.dest(paths.js))
+    .on('end', done);
+});
+
+gulp.task('dist', ['sass', 'bundle'], function() {
   gulp.src('www/tornado.html')
     .pipe(rename('index.html'))
     .pipe(gulp.dest(paths.dist));
-  gulp.src('www/{images,templates,lib/ionic/fonts}/**', {base: 'www'})
-    .pipe(gulp.dest(paths.dist));
-  gulp.src('www/css/*.min.css', {base: 'www'})
-    .pipe(gulp.dest(paths.dist));
   gulp.src([
-    'www/js/mopidy-mobile.min.js',
-    'www/lib/angular-translate/angular-translate.min.js',
-    'www/lib/ionic/js/ionic.bundle.min.js',
-  ])
-    .pipe(gulp.dest(paths.dist + '/js/'));
+    'www/css/*.min.css',
+    'www/images/**',
+    'www/js/mopidy-mobile.bundle.min.js',
+    'www/lib/ionic/fonts/**',
+    'www/templates/**'
+  ], {base: 'www'})
+    .pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('clean', function(cb) {

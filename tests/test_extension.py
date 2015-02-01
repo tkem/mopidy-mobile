@@ -17,3 +17,4 @@ class ExtensionTest(unittest.TestCase):
         ext = Extension()
         schema = ext.get_config_schema()
         self.assertIn('title', schema)
+        self.assertIn('ws_url', schema)

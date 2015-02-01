@@ -13,7 +13,11 @@
       </li>
       <li class="item item-input">
         <span class="input-label" translate>Mopidy Port</span>
-        <input ng-model="connection.port" type="number">
+        <input ng-model="connection.port" placeholder="6680" type="number">
+      </li>
+      <li class="item item-input">
+        <span class="input-label" translate>Web Socket Path</span>
+        <input ng-model="connection.path" placeholder="/mopidy/ws/" type="text">
       </li>
       <li class="item item-button">
         <button ng-click="save(connection)" translate>Save</button>

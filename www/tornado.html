@@ -1,24 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html data-version="{{version}}" data-ws-url="{{ws_url}}">
   <head>
+    <title>{{title}}</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, user-scalable=no, width=device-width, height=device-height">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, height=device-height">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="{{title}}">
-    <link rel="apple-touch-icon" href="images/mopidy.png" />
-    <link rel="apple-touch-startup-image" href="images/mopidy.png">
-    <title>{{title}}</title>
-    <script>
-      ;(function(storage) {
-        var href = storage['mopidy-mobile.stylesheet'] || '"css/ionic.min.css"';
-        document.write('<link id="stylesheet" rel="stylesheet" href="' + href + '">');
-      })(window.localStorage || {});
-    </script>
-    <script src="/mopidy/mopidy.js"></script>
-    <script src="js/ionic.bundle.min.js"></script>
-    <script src="js/angular-translate.min.js"></script>
-    <script src="js/mopidy-mobile.min.js"></script>
+    <link rel="apple-touch-icon" href="{{static_url('images/mopidy.png')}}" />
+    <link rel="apple-touch-startup-image" href="{{static_url('images/mopidy.png')}}">
+    <link id="stylesheet" rel="stylesheet" href="{{static_url('css/ionic.min.css')}}">
+    <script src="{{static_url('js/mopidy-mobile.bundle.min.js')}}"></script>
   </head>
   <body ng-app="mopidy-mobile">
     <ion-nav-bar class="bar-stable">

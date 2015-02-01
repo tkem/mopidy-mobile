@@ -21,7 +21,7 @@ angular.module('mopidy-mobile.connection', [])
   };
 
   provider.$get = function($q, $log, $window, $ionicLoading) {
-    $log.info('Creating Mopidy instance', settings);
+    $log.info('Creating Mopidy instance for ' + settings.webSocketUrl);
     var mopidy = new Mopidy(settings);
     var pending = {};
     var reconnects = 0;
@@ -55,8 +55,6 @@ angular.module('mopidy-mobile.connection', [])
           }
           return obj;
         }
-        // see https://github.com/mopidy/mopidy.js/issues/1
-        var when = Mopidy.when || mopidy.getVersion()['__proto__'].constructor;
         // add convenience methods/decorators
         var library = angular.copy(mopidy.library);
         var tracklist = angular.copy(mopidy.tracklist);
@@ -72,7 +70,7 @@ angular.module('mopidy-mobile.connection', [])
         angular.extend(mopidy.library, {
           lookup: function(params) {
             if ('uris' in params) {
-              return when.all(params.uris.map(function(uri) {
+              return Mopidy.when.all(params.uris.map(function(uri) {
                 return library.lookup({uri: uri});
               })).then(function(results) {
                 return Array.prototype.concat.apply([], results);
@@ -99,7 +97,7 @@ angular.module('mopidy-mobile.connection', [])
             }
           },
           getOptions: function() {
-            return when.all([
+            return Mopidy.when.all([
               tracklist.getConsume(),
               tracklist.getRandom(),
               tracklist.getRepeat(),
@@ -122,10 +120,10 @@ angular.module('mopidy-mobile.connection', [])
             if ('single' in params) {
               promises.push(tracklist.setSingle({value: params.single}));
             }
-            return when.all(promises);
+            return Mopidy.when.all(promises);
           },
           getPlaybackTlTracks: function(params) {
-            return when.all([
+            return Mopidy.when.all([
               tracklist.eotTrack(params),
               tracklist.nextTrack(params),
               tracklist.previousTrack(params)
