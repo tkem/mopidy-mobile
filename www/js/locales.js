@@ -51,6 +51,8 @@ angular.module('mopidy-mobile.locales', ['pascalprecht.translate'])
         'Tracklist': 'Tracklist',
         '{count} Tracks': '{{count}} Tracks',
         '{index} of {count}': '{{index}} of {{count}}',
+        'ConnectionError': 'Connection Error',
+        'ServerError': 'Server Error',
       }
     },
 
@@ -106,6 +108,8 @@ angular.module('mopidy-mobile.locales', ['pascalprecht.translate'])
         'Tracklist': 'Titel',
         '{count} Tracks': '{{count}} Titel',
         '{index} of {count}': '{{index}} von {{count}}',
+        'ConnectionError': 'Verbindungsfehler',
+        'ServerError': 'Serverfehler'
       }
     }
   })

@@ -38,26 +38,20 @@ angular.module('mopidy-mobile.connection', [])
       }
       reconnects = 0;
     });
-    // FIXME: improve reconnect handling
-    mopidy.on('reconnectionPending', function() {
-      if (++reconnects > 3) {
-        location.hash = '';
-        location.reload(true);
-      }
-    });
 
-    var promise = $q(function(resolve/*, reject*/) {
+    var promise = $q(function(resolve, reject) {
+      $ionicLoading.show();
       mopidy.once('state:online', function() {
-        function makeObject(keys, values) {
+        var library = angular.copy(mopidy.library);
+        var tracklist = angular.copy(mopidy.tracklist);
+        var zipObject = function(keys, values) {
           var obj = {};
           for (var i = 0, length = keys.length; i !== length; ++i) {
             obj[keys[i]] = values[i];
           }
           return obj;
-        }
+        };
         // add convenience methods/decorators
-        var library = angular.copy(mopidy.library);
-        var tracklist = angular.copy(mopidy.tracklist);
         angular.extend(mopidy, {
           resolveURI: function(uri) {
             if (settings.webSocketUrl && isUriRefRegExp.test(uri)) {
@@ -103,7 +97,7 @@ angular.module('mopidy-mobile.connection', [])
               tracklist.getRepeat(),
               tracklist.getSingle()
             ]).then(function(results) {
-              return makeObject(['consume', 'random', 'repeat', 'single'], results);
+              return zipObject(['consume', 'random', 'repeat', 'single'], results);
             });
           },
           setOptions: function(params) {
@@ -128,25 +122,23 @@ angular.module('mopidy-mobile.connection', [])
               tracklist.nextTrack(params),
               tracklist.previousTrack(params)
             ]).then(function(results) {
-              return makeObject(['eot', 'next', 'previous'], results);
+              return zipObject(['eot', 'next', 'previous'], results);
             });
           }
         });
-
+        $ionicLoading.hide();
         resolve(mopidy);
+      });
+      mopidy.once('state:offline', function() {
+        $ionicLoading.hide();
+        reject({name: 'ConnectionError'});
       });
       mopidy.connect();
     });
 
     var factory = function(callback) {
       if (callback) {
-        var defer = $q.defer();
-        promise.then(function(mopidy) {
-          callback(mopidy).then(function(result) {
-            defer.resolve(result);
-          });
-        });
-        return defer.promise;
+        return $q.when(promise.then(callback));
       } else {
         return promise;
       }

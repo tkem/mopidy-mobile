@@ -1,6 +1,7 @@
 angular.module('mopidy-mobile.playlists', [
   'ionic',
   'mopidy-mobile.connection',
+  'mopidy-mobile.popup',
   'mopidy-mobile.settings'
 ])
 
@@ -48,75 +49,85 @@ angular.module('mopidy-mobile.playlists', [
   ;
 })
 
-.controller('PlaylistsCtrl', function($scope, $log, mopidy, playlists) {
+.controller('PlaylistsCtrl', function($scope, $log, mopidy, playlists, popup) {
   var handlers = {
     'event:playlistChanged': function(/*playlist*/) {
       // FIXME: simply reload all playlists for now...
-      mopidy.playlists.getPlaylists().then(function(playlists) {
-        $scope.$apply(function(scope) {
-          scope.playlists = playlists;
-        });
-      });
+      mopidy.playlists.getPlaylists().then(
+        function(playlists) {
+          $scope.$apply(function(scope) {
+            scope.playlists = playlists;
+          });
+        },
+        $log.error
+      );
     },
     'event:playlistsLoaded': function() {
-      mopidy.playlists.getPlaylists().then(function(playlists) {
-        $scope.$apply(function(scope) {
-          scope.playlists = playlists;
-        });
-      });
+      mopidy.playlists.getPlaylists().then(
+        function(playlists) {
+          $scope.$apply(function(scope) {
+            scope.playlists = playlists;
+          });
+        },
+        $log.error
+      );
     }
   };
 
-  $scope.playlists = playlists;
+  angular.extend($scope, {
+    playlists: playlists,
+    refresh: function() {
+      mopidy.playlists.refresh({
+        uri_scheme: null
+      }).then(function() {
+        $scope.$broadcast('scroll.refreshComplete');
+      }).catch(popup.error);
+    }
+  });
 
-  $scope.refresh = function() {
-    mopidy.playlists.refresh({uri_scheme: null}).then(function() {
-      $scope.$broadcast('scroll.refreshComplete');
-    });
-  };
+  angular.forEach(handlers, function(listener, event) {
+    mopidy.on(event, listener);
+  });
 
   $scope.$on('$destroy', function() {
     angular.forEach(handlers, function(listener, event) {
       mopidy.off(event, listener);
     });
   });
-
-  angular.forEach(handlers, function(listener, event) {
-    mopidy.on(event, listener);
-  });
 })
 
-.controller('PlaylistCtrl', function($scope, $ionicPopover, settings, mopidy, playlist) {
+.controller('PlaylistCtrl', function($scope, $ionicPopover, settings, popup, mopidy, playlist) {
   $ionicPopover.fromTemplateUrl('templates/popovers/playlist.html', {
     scope: $scope,
   }).then(function(popover) {
     $scope.popover = popover;
   });
 
-  $scope.playlist = playlist;
-
-  $scope.add = function() {
-    mopidy.tracklist.add({tracks: angular.copy(playlist.tracks)});
-  };
-
-  $scope.play = function() {
-    mopidy.tracklist.add({
-      tracks: angular.copy(playlist.tracks)
-    }).then(function(tlTracks) {
-      mopidy.playback.play({tl_track: tlTracks[0]});
-    });
-  };
-
-  $scope.replace = function() {
-    mopidy.tracklist.clear({
-    }).then(function() {
-      return mopidy.tracklist.add({tracks: angular.copy(playlist.tracks)});
-    }).then(function(tlTracks) {
-      mopidy.playback.play({tl_track: tlTracks[0]});
-    });
-  };
-
-  $scope.click = function(track) {
-    settings.click(mopidy, track.uri);
-  };
+  angular.extend($scope, {
+    playlist: playlist,
+    add: function() {
+      mopidy.tracklist.add({
+        tracks: angular.copy(playlist.tracks)
+      }).catch(popup.error);
+    },
+    click: function(track) {
+      settings.click(mopidy, track.uri);
+    },
+    play: function() {
+      mopidy.tracklist.add({
+        tracks: angular.copy(playlist.tracks)
+      }).then(function(tlTracks) {
+        mopidy.playback.play({tl_track: tlTracks[0]});
+      }).catch(popup.error);
+    },
+    replace: function() {
+      mopidy.tracklist.clear({
+        /* no params */
+      }).then(function() {
+        return mopidy.tracklist.add({tracks: angular.copy(playlist.tracks)});
+      }).then(function(tlTracks) {
+        mopidy.playback.play({tl_track: tlTracks[0]});
+      }).catch(popup.error);
+    }
+  });
 });
