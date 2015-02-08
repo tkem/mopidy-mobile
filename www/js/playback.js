@@ -58,9 +58,9 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
           });
         });
       }
-      if (timePosition !== undefined) {
-        scope.time.value = timePosition;
-      }
+      //if (timePosition !== undefined) {
+        //scope.time.value = timePosition;
+      //}
     });
   }
 
@@ -81,126 +81,17 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     },
     'event:playbackStateChanged': function(event) {
       $scope.$apply(function(scope) {
+        $log.log('new state: '+ event.new_state);
         scope.state = event.new_state;
       });
     },
-    'event:trackPlaybackEnded': function() {
-      mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {
-        setCurrentTlTrack(tlTrack, 0);
-      });
-    },
-    'event:trackPlaybackPaused': function(event) {
-      setCurrentTlTrack(event.tl_track, event.time_position);
-    },
-    'event:trackPlaybackResumed': function(event) {
-      setCurrentTlTrack(event.tl_track, event.time_position);
-    },
     'event:trackPlaybackStarted': function(event) {
-      setCurrentTlTrack(event.tl_track, 0);
+      setCurrentTlTrack(event.tl_track);
     },
     'event:tracklistChanged': function() {
       mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
-    },
-    // TODO: move to "slider" directive?
-    'event:volumeChanged': function(event) {
-      if (!$scope.volume.pending) {
-        $scope.$apply(function(scope) {
-          scope.volume.value = event.volume;
-        });
-      }
-    },
-    'event:seeked': function(event) {
-      if (!$scope.time.pending) {
-        $scope.$apply(function(scope) {
-          scope.time.value = event.time_position;
-        });
-      }
     }
   };
-
-  // TODO: slider directive?
-  var time = $scope.time = {
-    pending: false,
-    value: 0
-  };
-  time.change = function() {
-    if (time.pending) {
-      return;
-    }
-    var defer = $q.defer();
-    function update(value) {
-      mopidy.playback.seek({
-        time_position: value
-      }).then(function() {
-        if (value === $window.parseInt(time.value)) {
-          defer.resolve();
-        } else {
-          defer.notify();
-        }
-      });
-    }
-    time.pending = true;
-    update($window.parseInt(time.value));
-    defer.promise.then(
-      function() {
-        $log.debug('seek done');
-        time.pending = false;
-      }, function() {
-        $log.debug('seek error');
-        time.pending = false;
-      }, function() {
-        $log.debug('seek pending: ' + time.value);
-        update($window.parseInt(time.value));
-      }
-    );
-  };
-  mopidy.playback.getTimePosition().then(function(value) {
-    $scope.$apply(function(scope) {
-      scope.time.position = value;
-    });
-  });
-
-  // TODO: slider directive?
-  var volume = $scope.volume = {
-    pending: false,
-    value: 0
-  };
-  volume.change = function() {
-    if (volume.pending) {
-      return;
-    }
-    var defer = $q.defer();
-    function update(value) {
-      mopidy.playback.setVolume({
-        volume: value
-      }).then(function() {
-        if (value === $window.parseInt(volume.value)) {
-          defer.resolve();
-        } else {
-          defer.notify();
-        }
-      });
-    }
-    volume.pending = true;
-    update($window.parseInt(volume.value));
-    defer.promise.then(
-      function() {
-        $log.debug('volume done');
-        volume.pending = false;
-      }, function() {
-        $log.debug('volume error');
-        volume.pending = false;
-      }, function() {
-        $log.debug('volume pending: ' + volume.value);
-        update($window.parseInt(volume.value));
-      }
-    );
-  };
-  mopidy.playback.getVolume().then(function(value) {
-    $scope.$apply(function(scope) {
-      scope.volume.value = value;
-    });
-  });
 
   angular.extend($scope, {
     mute: mute,
@@ -208,21 +99,6 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     state: state,
     tlTracks: tlTracks,
     track: (tlTracks.current || tlTracks.eot || {track: null}).track,
-    interval: $interval(function() {
-      if ($scope.state === 'playing') {
-        var t = $window.parseInt($scope.time.value);
-        // sync every 10 seconds
-        if (Math.floor(t / 1000) % 10 === 0) {
-          mopidy.playback.getTimePosition().then(function(value) {
-            $scope.$apply(function(scope) {
-              scope.time.value = value;
-            });
-          });
-        } else {
-          $scope.time.value = t + 1000;  // FIXME: store (computed) start time?
-        }
-      }
-    }, 1000),
     play: function() {
       mopidy.playback.play().catch(popup.error);
     },
@@ -275,4 +151,166 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     });
     $interval.cancel($scope.interval);
   });
-});
+})
+
+.controller('SeekCtrl', function($scope, $interval, $log, $q, $window, connection) {
+  var scope = angular.extend(this, {
+    value: 0,
+    pending: false,
+    interval: null
+  });
+
+  function update() {
+    var t = $window.parseInt(scope.value);
+    $log.log('update: ' + t);
+    scope.value = t + 1000;  // FIXME: store (computed) start time?
+  }
+
+  scope.change = function() {
+    if (scope.pending) {
+      return;
+    }
+    var defer = $q.defer();
+    function update(value) {
+      connection(function(mopidy) {
+        return mopidy.playback.seek({time_position: value});
+      }).then(function() {
+        if (value === $window.parseInt(scope.value)) {
+          defer.resolve(value);
+        } else {
+          defer.notify(value);
+        }
+      });
+    }
+    scope.pending = true;
+    update($window.parseInt(scope.value));
+    defer.promise.then(
+      function(value) {
+        $log.debug('seek done: ' + value);
+        scope.pending = false;
+      }, function() {
+        $log.debug('seek error');
+        scope.pending = false;
+      }, function(value) {
+        $log.debug('seek pending: ' + value + ' (' + scope.value + ')');
+        update($window.parseInt(scope.value));
+      }
+    );
+  };
+
+  // TODO: connection.on
+  connection(function(mopidy) {
+    mopidy.on('event:seeked', function(event) {
+      $log.debug('seeked: ' + event.time_position + ', pending: ' + scope.pending);
+      if (!scope.pending) {
+        scope.value = event.time_position;
+      }
+    });
+    mopidy.on('event:trackPlaybackEnded', function(event) {
+      $log.debug('event:trackPlaybackEnded: ' + event.time_position);
+      $scope.$apply(function() {
+        $interval.cancel(scope.interval);
+        scope.value = 0;
+      });
+    });
+    mopidy.on('event:trackPlaybackPaused', function(event) {
+      $log.debug('event:trackPlaybackPaused: ' + event.time_position);
+      $scope.$apply(function() {
+        $interval.cancel(scope.interval);
+        scope.value = event.time_position;
+      });
+    });
+    mopidy.on('event:trackPlaybackResumed', function(event) {
+      $log.debug('event:trackPlaybackResumed: ' + event.time_position);
+      $scope.$apply(function() {
+        scope.value = event.time_position;
+        scope.interval = $interval(update, 1000);
+      });
+    });
+    mopidy.on('event:trackPlaybackStarted', function() {
+      $log.debug('event:trackPlaybackStarted');
+      scope.interval = $interval(update, 1000);
+      $scope.$apply(function() {
+        scope.value = 0;
+      });
+    });
+  });
+
+  $q.all({
+    state: connection(function(mopidy) { return mopidy.playback.getState(); }),
+    time: connection(function(mopidy) { return mopidy.playback.getTimePosition(); })
+  }).then(function(result) {
+    $log.debug('got state: ' + result.state + ', time position: ' + result.time);
+    scope.value = result.time;
+    if (result.state === 'playing') {
+      scope.interval = $interval(update, 1000);
+    }
+  });
+
+  // TODO: handle $destroy; $scope.$apply() necessary?!?
+  $scope.$on('$destroy', function() {
+    $log.debug('seek destroyed');
+  });
+})
+
+.controller('VolumeCtrl', function($scope, $log, $q, $window, connection) {
+  var scope = angular.extend(this, {
+    value: 0,
+    pending: false
+  });
+
+  scope.change = function() {
+    if (scope.pending) {
+      return;
+    }
+    var defer = $q.defer();
+    function update(value) {
+      connection(function(mopidy) {
+        return mopidy.playback.setVolume({volume: value});
+      }).then(function() {
+        if (value === $window.parseInt(scope.value)) {
+          defer.resolve(value);
+        } else {
+          defer.notify(value);
+        }
+      });
+    }
+    scope.pending = true;
+    update($window.parseInt(scope.value));
+    defer.promise.then(
+      function(value) {
+        $log.debug('volume done: ' + value);
+        scope.pending = false;
+      }, function() {
+        $log.debug('volume error');
+        scope.pending = false;
+      }, function(value) {
+        $log.debug('volume pending: ' + value + ' (' + scope.value + ')');
+        update($window.parseInt(scope.value));
+      }
+    );
+  };
+
+  connection(function(mopidy) {
+    return mopidy.playback.getVolume();
+  }).then(function(value) {
+    $log.debug('got volume: ' + value);
+    scope.value = value;
+  });
+
+  // TODO: connection.on
+  connection(function(mopidy) {
+    mopidy.on('event:volumeChanged', function(event) {
+      $log.debug('volumeChanged: ' + event.volume + ', pending: ' + scope.pending);
+      if (!scope.pending) {
+        scope.value = event.volume;
+      }
+    });
+  });
+
+  // TODO: handle $destroy; $scope.$apply() necessary?!?
+  $scope.$on('$destroy', function() {
+    $log.debug('volume destroyed');
+  });
+})
+;

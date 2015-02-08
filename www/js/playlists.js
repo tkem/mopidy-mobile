@@ -1,8 +1,8 @@
 angular.module('mopidy-mobile.playlists', [
   'ionic',
   'mopidy-mobile.connection',
-  'mopidy-mobile.popup',
-  'mopidy-mobile.settings'
+  'mopidy-mobile.settings',
+  'mopidy-mobile.ui'
 ])
 
 .config(function($stateProvider) {
@@ -96,11 +96,22 @@ angular.module('mopidy-mobile.playlists', [
   });
 })
 
-.controller('PlaylistCtrl', function($scope, $ionicPopover, settings, popup, mopidy, playlist) {
-  $ionicPopover.fromTemplateUrl('templates/popovers/playlist.html', {
-    scope: $scope,
-  }).then(function(popover) {
-    $scope.popover = popover;
+.controller('PlaylistCtrl', function($scope, settings, popup, menu, mopidy, playlist) {
+  $scope.popover = menu([
+    {
+      text: 'Play All',
+      click: 'popover.hide() && play()'
+    },
+    {
+      text: 'Add to Tracklist',
+      click: 'popover.hide() && add()'
+    },
+    {
+      text: 'Replace Current Tracklist',
+      click: 'popover.hide() && replace()'
+    }
+  ], {
+    scope: $scope
   });
 
   angular.extend($scope, {

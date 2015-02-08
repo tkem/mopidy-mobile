@@ -6,9 +6,9 @@ angular.module('mopidy-mobile', [
   'mopidy-mobile.logging',
   'mopidy-mobile.playback',
   'mopidy-mobile.playlists',
-  'mopidy-mobile.popup',
   'mopidy-mobile.settings',
   'mopidy-mobile.tracklist',
+  'mopidy-mobile.ui'
 ])
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
@@ -37,7 +37,5 @@ angular.module('mopidy-mobile', [
     //}
   });
 
-  $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-      popup.error(error);
-  });
+  $rootScope.$on('$stateChangeError', popup.stateChangeError);
 });

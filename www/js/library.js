@@ -1,8 +1,26 @@
+var LIBRARY_MENU = [
+  {
+    text: 'Play All Tracks',
+    click: 'popover.hide() && play()',
+    disabled: '!tracks.length'
+  },
+  {
+    text: 'Add Tracks to Tracklist',
+    click: 'popover.hide() && add()',
+    disabled: '!tracks.length'
+  },
+  {
+    text: 'Replace Current Tracklist',
+    click: 'popover.hide() && replace()',
+    disabled: '!tracks.length'
+  }
+];
+
 angular.module('mopidy-mobile.library', [
   'ionic',
   'mopidy-mobile.connection',
-  'mopidy-mobile.popup',
-  'mopidy-mobile.settings'
+  'mopidy-mobile.settings',
+  'mopidy-mobile.ui'
 ])
 
 .config(function($stateProvider) {
@@ -101,17 +119,12 @@ angular.module('mopidy-mobile.library', [
   ;
 })
 
-.controller('BrowseCtrl', function($scope, $state, $ionicPopover, settings, mopidy, popup, ref, refs) {
-  $ionicPopover.fromTemplateUrl('templates/popovers/library.html', {
-    scope: $scope,
-  }).then(function(popover) {
-    $scope.popover = popover;
-  });
-
+.controller('BrowseCtrl', function($scope, $state, settings, mopidy, popup, menu, ref, refs) {
   angular.extend($scope, {
     ref: ref,
     refs: refs,
     tracks: refs.filter(function(ref) { return ref.type === 'track'; }),
+    popover: menu(LIBRARY_MENU, {scope: $scope}),
     add: function() {
       mopidy.tracklist.add({
         uris: $scope.tracks.map(function(ref) { return ref.uri; })
@@ -151,7 +164,7 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('SearchCtrl', function($scope, $ionicPopover, settings, mopidy, popup, q, results) {
+.controller('SearchCtrl', function($scope, settings, mopidy, popup, menu, q, results) {
   function compare(a, b) {
     if ((a.name || '') > (b.name || '')) {
       return 1;
@@ -161,12 +174,6 @@ angular.module('mopidy-mobile.library', [
       return 0;
     }
   }
-
-  $ionicPopover.fromTemplateUrl('templates/popovers/library.html', {
-    scope: $scope,
-  }).then(function(popover) {
-    $scope.popover = popover;
-  });
 
   switch (results.length) {
   case 0:
@@ -193,6 +200,7 @@ angular.module('mopidy-mobile.library', [
 
   angular.extend($scope, {
     q: q,
+    popover: menu(LIBRARY_MENU, {scope: $scope}),
     add: function() {
       return mopidy.tracklist.add({
         tracks: angular.copy($scope.tracks)
@@ -220,17 +228,12 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('LookupCtrl', function($scope, $ionicPopover, settings, mopidy, popup, name, tracks, uri) {
-  $ionicPopover.fromTemplateUrl('templates/popovers/library.html', {
-    scope: $scope,
-  }).then(function(popover) {
-    $scope.popover = popover;
-  });
-
+.controller('LookupCtrl', function($scope, settings, mopidy, popup, menu, name, tracks, uri) {
   angular.extend($scope, {
     name: name,
     tracks: tracks,
     uri: uri,
+    popover: menu(LIBRARY_MENU, {scope: $scope}),
     add: function() {
       return mopidy.tracklist.add({
         tracks: angular.copy($scope.tracks)

@@ -1,15 +1,18 @@
 <ion-view hide-nav-bar="true" view-title="{{'Playback' | translate}}">
-  <ion-header-bar class="range">
-    {{time.value | duration}}
-    <input ng-change="time.change()"
-           ng-disabled="!track.length"
-           ng-model="time.value"
-           type="range"
-           min="0"
-           max="{{track.length || 0}}">
-    {{track.length | duration}}
+  <ion-header-bar>
+    <div class="range" ng-controller="SeekCtrl as seek" style="width: 100%">
+      {{seek.value | duration}}
+      <input ng-change="seek.change()"
+             ng-disabled="!track.length"
+             ng-model="seek.value"
+             type="range"
+             min="0"
+             max="{{track ? track.length - 1 : 0}}">
+      {{track.length | duration}}
+    </div>
   </ion-header-bar>
-  <ion-content class="has-subfooter">
+
+  <ion-content class="has-header has-subfooter">
     <div class="mopidy-mobile-trackview">
       <p>
         <strong>{{track.name || ('Nothing playing' | translate)}}</strong>
@@ -32,6 +35,7 @@
       </div>
     </div>
   </ion-content>
+
   <ion-footer-bar class="bar-subfooter">
     <div class="button-bar">
       <button class="button button-clear button-small button-icon icon mopidy-mobile-icon-random"
@@ -64,6 +68,7 @@
               ng-click="setOptions({repeat: !options.repeat})"
               >
       </button>
+      {{state}}
     </div>
   </ion-footer-bar>
   <ion-footer-bar>
@@ -74,7 +79,7 @@
               >
       </button>
     </div>
-    <div class="range" style="width: 100%">
+    <div class="range" ng-controller="VolumeCtrl as volume" style="width: 100%">
       <i class="icon mopidy-mobile-icon-volume-low"></i>
       <input ng-change="volume.change()"
              ng-model="volume.value"

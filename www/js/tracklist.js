@@ -1,7 +1,7 @@
 angular.module('mopidy-mobile.tracklist', [
   'ionic',
   'mopidy-mobile.connection',
-  'mopidy-mobile.popup'
+  'mopidy-mobile.ui'
 ])
 
 .config(function($stateProvider) {
@@ -29,17 +29,6 @@ angular.module('mopidy-mobile.tracklist', [
             return connection(function(mopidy) {
               return mopidy.tracklist.getTlTracks();
             });
-          },
-          msg: function($q, $translate) {
-            return $q.all({
-              'Cancel': $translate('Cancel'),
-              'Clear Tracklist': $translate('Clear Tracklist'),
-              'Save as Playlist': $translate('Save as Playlist'),
-              'OK': $translate('OK'),
-              'Playlist Name': $translate('Playlist Name'),
-              'Playlist saved': $translate('Playlist saved'),
-              'Error saving playlist': $translate('Error saving playlist')
-            });
           }
         }
       }
@@ -47,7 +36,7 @@ angular.module('mopidy-mobile.tracklist', [
   });
 })
 
-.controller('TracklistCtrl', function($scope, $log, $ionicPopover, $ionicPopup, mopidy, popup, msg, currentTlTrack, options, tlTracks) {
+.controller('TracklistCtrl', function($scope, $log, mopidy, popup, menu, currentTlTrack, options, tlTracks) {
   var handlers = {
     'event:optionsChanged': function() {
       mopidy.tracklist.getOptions({
@@ -96,10 +85,41 @@ angular.module('mopidy-mobile.tracklist', [
     }
   };
 
-  $ionicPopover.fromTemplateUrl('templates/popovers/tracklist.html', {
-    scope: $scope,
-  }).then(function(popover) {
-    $scope.popover = popover;
+  $scope.popover = menu([
+    {
+      text: 'Clear',
+      click: 'popover.hide() && clear()',
+      disabled: '!tlTracks.length',
+      hellip: true
+    },
+    {
+      text: 'Save as',
+      click: 'popover.hide() && save()',
+      disabled: '!tlTracks.length',
+      hellip: true
+    },
+    {
+      text: 'Consume',
+      model: 'options.consume',
+      change: 'setOptions({consume: options.consume})'
+    },
+    {
+      text: 'Random',
+      model: 'options.random',
+      change: 'setOptions({random: options.random})'
+    },
+    {
+      text: 'Repeat',
+      model: 'options.repeat',
+      change: 'setOptions({repeat: options.repeat})'
+    },
+    {
+      text: 'Single',
+      model: 'options.single',
+      change: 'setOptions({single: options.single})'
+    },
+  ], {
+    scope: $scope
   });
 
   angular.extend($scope, {
@@ -107,16 +127,14 @@ angular.module('mopidy-mobile.tracklist', [
     options: options,
     tlTracks: tlTracks,
     clear: function() {
-      // TODO: i18n
-      $ionicPopup.confirm({
-        title: msg['Clear Tracklist'],
-        okText: msg['OK'],
-        cancelText: msg['Cancel']
-      }).then(function(result) {
+      popup.confirm('Clear Tracklist').then(function(result) {
         if (result) {
           mopidy.tracklist.clear().catch(popup.error);
         }
       });
+    },
+    getTracks: function() {
+      return $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
     },
     index: function(tlTrack) {
       var tlid = tlTrack.tlid;
@@ -139,13 +157,7 @@ angular.module('mopidy-mobile.tracklist', [
       }).catch(popup.error);
     },
     save: function() {
-      // TODO: i18n
-      $ionicPopup.prompt({
-        title: msg['Save as Playlist'],
-        template: msg['Playlist Name'],
-        okText: msg['OK'],
-        cancelText: msg['Cancel']
-      }).then(function(name) {
+      popup.prompt('Playlist Name').then(function(name) {
         if (name) {
           mopidy.playlists.create({
             name: name
@@ -154,18 +166,10 @@ angular.module('mopidy-mobile.tracklist', [
             return mopidy.playlists.save({playlist: playlist});
           }).then(
             function() {
-              $ionicPopup.alert({
-                title: msg['Playlist saved'],
-                okText: msg['OK']
-              });
+              popup.alert('Playlist saved');
             },
             function(error) {
-              $ionicPopup.alert({
-                title: msg['Error saving playlist'],
-                subTitle: error.message,
-                template: '<pre>' + error.data.message + '</pre>',
-                okText: msg['OK']
-              });
+              popup.error(error);
             }
           );
         }
