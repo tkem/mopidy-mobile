@@ -8,14 +8,6 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
         templateUrl: 'templates/playback.html',
         controller: 'PlaybackCtrl',
         resolve: {
-          mopidy: function(connection) {
-            return connection();
-          },
-          mute: function(connection) {
-            return connection(function(mopidy) {
-              return mopidy.playback.getMute();
-            });
-          },
           options: function(connection) {
             return connection(function(mopidy) {
               return mopidy.tracklist.getOptions();
@@ -43,112 +35,101 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
   });
 })
 
-.controller('PlaybackCtrl', function($scope, $interval, $window, $log, $q, mopidy, popup, mute, options, state, tlTracks) {
-  function setCurrentTlTrack(tlTrack, timePosition) {
-    $scope.$apply(function(scope) {
-      if (!tlTrack || !scope.tlTracks.current || tlTrack.tlid !== scope.tlTracks.current.tlid) {
-        scope.tlTracks = {current: tlTrack};
-        scope.track = tlTrack ? tlTrack.track : null;
-        mopidy.tracklist.getPlaybackTlTracks({tl_track: tlTrack}).then(function(tlTracks) {
-          scope.$apply(function(scope) {
-            if (!scope.track && tlTracks.eot) {
-              scope.track = tlTracks.eot.track;
-            }
-            angular.extend(scope.tlTracks, tlTracks);
-          });
-        });
-      }
-      //if (timePosition !== undefined) {
-        //scope.time.value = timePosition;
-      //}
-    });
+.controller('PlaybackCtrl', function($scope, $interval, $log, connection, options, state, tlTracks) {
+  function setCurrentTlTrack(tlTrack) {
+    if (!tlTrack || !$scope.tlTracks.current || tlTrack.tlid !== $scope.tlTracks.current.tlid) {
+      connection(function(mopidy) {
+        return mopidy.tracklist.getPlaybackTlTracks({tl_track: tlTrack});
+      }).then(function(tlTracks) {
+        $scope.tlTracks = angular.extend(tlTracks, {current: tlTrack});
+        if (!tlTracks.current && tlTracks.eot) {
+          $scope.track = tlTracks.eot.track;
+        } else {
+          $scope.track = tlTracks.current.track;
+        }
+      });
+    }
   }
 
   var handlers = {
-    'event:muteChanged': function(event) {
-      $scope.$apply(function(scope) {
-        scope.mute = event.mute;
-      });
-    },
     'event:optionsChanged': function() {
-      mopidy.tracklist.getOptions({
-        /* no params */
+      connection(function(mopidy) {
+        return mopidy.tracklist.getOptions();
       }).then(function(options) {
-        $scope.$apply(function(scope) {
-          scope.options = options;
-        });
-      }).catch($log.error);
+        $scope.options = options;
+      });
     },
     'event:playbackStateChanged': function(event) {
-      $scope.$apply(function(scope) {
-        $log.log('new state: '+ event.new_state);
-        scope.state = event.new_state;
-      });
+      $scope.state = event.new_state;
     },
     'event:trackPlaybackStarted': function(event) {
       setCurrentTlTrack(event.tl_track);
     },
     'event:tracklistChanged': function() {
-      mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
+      this.playback.getCurrentTlTrack().then(setCurrentTlTrack);
     }
   };
 
   angular.extend($scope, {
-    mute: mute,
     options: options,
     state: state,
     tlTracks: tlTracks,
     track: (tlTracks.current || tlTracks.eot || {track: null}).track,
     play: function() {
-      mopidy.playback.play().catch(popup.error);
+      connection(function(mopidy) {
+        return mopidy.playback.play();
+      });
     },
     pause: function() {
-      mopidy.playback.pause().catch(popup.error);
+      connection(function(mopidy) {
+        return mopidy.playback.pause();
+      });
     },
     stop: function() {
-      mopidy.playback.stop().catch(popup.error);
+      connection(function(mopidy) {
+        return mopidy.playback.stop();
+      });
     },
     next: function() {
       // calling next() while stopped triggers no events
       var state = $scope.state;
-      mopidy.playback.next().then(function() {
-        if (state === 'stopped') {
-          mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
-        }
+      connection(function(mopidy) {
+        return mopidy.playback.next().then(function() {
+          if (state === 'stopped') {
+            mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
+          }
+        });
       });
     },
     previous: function() {
       // calling previous() while stopped triggers no events
       var state = $scope.state;
-      mopidy.playback.previous().then(function() {
-        if (state === 'stopped') {
-          mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
-        }
+      connection(function(mopidy) {
+        mopidy.playback.previous().then(function() {
+          if (state === 'stopped') {
+            mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
+          }
+        });
       });
     },
-    setMute: function(mute) {
-      mopidy.playback.setMute({value: mute}).catch(popup.error);
-    },
     setOptions: function(params) {
-      mopidy.tracklist.setOptions(params).catch(popup.error);
+      connection(function(mopidy) {
+        mopidy.tracklist.setOptions(params);
+      });
     },
     getImageURI: function(track) {
       if (track && track.album && track.album.images && track.album.images.length) {
-        return mopidy.resolveURI(track.album.images[0]);
+        return connection.resolveURI(track.album.images[0]);
       } else {
         return '';
       }
     }
   });
 
-  angular.forEach(handlers, function(listener, event) {
-    mopidy.on(event, listener);
-  });
+  connection.on(handlers);
 
   $scope.$on('$destroy', function() {
-    angular.forEach(handlers, function(listener, event) {
-      mopidy.off(event, listener);
-    });
+    connection.off(handlers);
     $interval.cancel($scope.interval);
   });
 })
@@ -159,6 +140,30 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     pending: false,
     interval: null
   });
+  var handlers = {
+    'event:seeked': function(event) {
+      if (!scope.pending) {
+        scope.value = event.time_position;
+      }
+    },
+    'event:trackPlaybackEnded':function() {
+      $interval.cancel(scope.interval);
+      scope.value = 0;
+    },
+    'event:trackPlaybackPaused': function(event) {
+      $interval.cancel(scope.interval);
+      scope.value = event.time_position;
+    },
+    'event:trackPlaybackResumed': function(event) {
+      scope.value = event.time_position;
+      scope.interval = $interval(update, 1000);
+    },
+    'event:trackPlaybackStarted': function() {
+      scope.interval = $interval(update, 1000);
+      scope.value = 0;
+    }
+  };
+  connection.on(handlers);
 
   function update() {
     var t = $window.parseInt(scope.value);
@@ -198,44 +203,6 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     );
   };
 
-  // TODO: connection.on
-  connection(function(mopidy) {
-    mopidy.on('event:seeked', function(event) {
-      $log.debug('seeked: ' + event.time_position + ', pending: ' + scope.pending);
-      if (!scope.pending) {
-        scope.value = event.time_position;
-      }
-    });
-    mopidy.on('event:trackPlaybackEnded', function(event) {
-      $log.debug('event:trackPlaybackEnded: ' + event.time_position);
-      $scope.$apply(function() {
-        $interval.cancel(scope.interval);
-        scope.value = 0;
-      });
-    });
-    mopidy.on('event:trackPlaybackPaused', function(event) {
-      $log.debug('event:trackPlaybackPaused: ' + event.time_position);
-      $scope.$apply(function() {
-        $interval.cancel(scope.interval);
-        scope.value = event.time_position;
-      });
-    });
-    mopidy.on('event:trackPlaybackResumed', function(event) {
-      $log.debug('event:trackPlaybackResumed: ' + event.time_position);
-      $scope.$apply(function() {
-        scope.value = event.time_position;
-        scope.interval = $interval(update, 1000);
-      });
-    });
-    mopidy.on('event:trackPlaybackStarted', function() {
-      $log.debug('event:trackPlaybackStarted');
-      scope.interval = $interval(update, 1000);
-      $scope.$apply(function() {
-        scope.value = 0;
-      });
-    });
-  });
-
   $q.all({
     state: connection(function(mopidy) { return mopidy.playback.getState(); }),
     time: connection(function(mopidy) { return mopidy.playback.getTimePosition(); })
@@ -247,22 +214,30 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     }
   });
 
-  // TODO: handle $destroy; $scope.$apply() necessary?!?
   $scope.$on('$destroy', function() {
-    $log.debug('seek destroyed');
+    connection.off(handlers);
   });
 })
 
 .controller('VolumeCtrl', function($scope, $log, $q, $window, connection) {
   var scope = angular.extend(this, {
     value: 0,
-    pending: false
+    pending: false,
+    mute:false
   });
-
-  scope.change = function() {
-    if (scope.pending) {
-      return;
+  var handlers = {
+    'event:muteChanged': function(event) {
+      scope.mute = event.mute;
+    },
+    'event:volumeChanged': function(event) {
+      if (!scope.pending) {
+        scope.value = event.volume;
+      }
     }
+  };
+  connection.on(handlers);
+
+  scope.setVolume = function(value) {
     var defer = $q.defer();
     function update(value) {
       connection(function(mopidy) {
@@ -276,7 +251,7 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
       });
     }
     scope.pending = true;
-    update($window.parseInt(scope.value));
+    update($window.parseInt(value));
     defer.promise.then(
       function(value) {
         $log.debug('volume done: ' + value);
@@ -291,26 +266,20 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     );
   };
 
+  scope.setMute = function(mute) {
+    connection(function(mopidy) {
+      mopidy.playback.setMute({value: mute});
+    });
+  };
+
   connection(function(mopidy) {
     return mopidy.playback.getVolume();
   }).then(function(value) {
-    $log.debug('got volume: ' + value);
     scope.value = value;
   });
 
-  // TODO: connection.on
-  connection(function(mopidy) {
-    mopidy.on('event:volumeChanged', function(event) {
-      $log.debug('volumeChanged: ' + event.volume + ', pending: ' + scope.pending);
-      if (!scope.pending) {
-        scope.value = event.volume;
-      }
-    });
-  });
-
-  // TODO: handle $destroy; $scope.$apply() necessary?!?
   $scope.$on('$destroy', function() {
-    $log.debug('volume destroyed');
+    connection.off(handlers);
   });
 })
 ;

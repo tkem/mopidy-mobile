@@ -43,7 +43,7 @@ angular.module('mopidy-mobile.ui', [
 .factory('popup', function($filter, $ionicPopup) {
   var translate = $filter('translate');  // filter is synchronous
 
-  var popup = {
+  return {
     alert: function(message) {
       return $ionicPopup.alert({
         title: translate(message),
@@ -57,39 +57,13 @@ angular.module('mopidy-mobile.ui', [
         cancelText: translate('Cancel')
       });
     },
-    prompt: function(text, value) {
+    prompt: function(text, placeholder) {
       return $ionicPopup.prompt({
         title: translate(text),
-        inputPlaceholder: value,
+        inputPlaceholder: placeholder,
         okText: translate('OK'),
         cancelText: translate('Cancel')
       });
-    },
-    error: function(error) {
-      var options = {
-        title: translate(error.name || 'Error'),
-        okText: translate('OK'),
-        cancelText: translate('Reload')
-      };
-      if (error.message) {
-        options.subTitle = error.message;
-      }
-      if (error.data && error.data.message) {
-        options.template = error.data.message;
-      }
-      return $ionicPopup.confirm(options).then(function(ok) {
-        if (!ok) {
-          // FIXME: connection.reset()
-          location.hash = '';
-          location.reload(true);
-        }
-      });
     }
   };
-
-  return angular.extend(popup, {
-    stateChangeError: function(event, toState, toParams, fromState, fromParams, error) {
-      return popup.error(error);
-    }
-  });
 });

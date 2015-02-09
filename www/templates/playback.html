@@ -1,6 +1,7 @@
 <ion-view hide-nav-bar="true" view-title="{{'Playback' | translate}}">
-  <ion-header-bar>
-    <div class="range" ng-controller="SeekCtrl as seek" style="width: 100%">
+
+  <ion-header-bar ng-controller="SeekCtrl as seek">
+    <div class="range" style="width: 100%">
       {{seek.value | duration}}
       <input ng-change="seek.change()"
              ng-disabled="!track.length"
@@ -71,17 +72,18 @@
       {{state}}
     </div>
   </ion-footer-bar>
-  <ion-footer-bar>
+
+  <ion-footer-bar ng-controller="VolumeCtrl as volume">
     <div class="buttons">
       <button class="button button-clear icon mopidy-mobile-icon-mute"
-              ng-class="{'button-assertive': mute}"
-              ng-click="setMute(!mute)"
+              ng-class="{'button-assertive': volume.mute}"
+              ng-click="volume.setMute(!volume.mute)"
               >
       </button>
     </div>
-    <div class="range" ng-controller="VolumeCtrl as volume" style="width: 100%">
+    <div class="range" style="width: 100%">
       <i class="icon mopidy-mobile-icon-volume-low"></i>
-      <input ng-change="volume.change()"
+      <input ng-change="volume.setVolume(volume.value)"
              ng-model="volume.value"
              type="range"
              min="0"
@@ -90,4 +92,5 @@
       <i class="icon mopidy-mobile-icon-volume-high"></i>
     </div>
   </ion-footer-bar>
+
 </ion-view>

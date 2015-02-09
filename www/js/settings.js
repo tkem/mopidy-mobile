@@ -164,7 +164,7 @@ angular.module('mopidy-mobile.settings', [
     }
   });
 
-  provider.$get = function() {
+  provider.$get = function(connection) {
     var trackActions = {
       'add': function(mopidy, uri) {
         return mopidy.tracklist.add({uri: uri});
@@ -181,8 +181,10 @@ angular.module('mopidy-mobile.settings', [
         window.localStorage[prefix + key] = angular.toJson(value);
         return this;
       },
-      click: function(mopidy, uri) {
-        return trackActions[this.get('action', 'add+play')](mopidy, uri);
+      click: function(uri) {
+        connection(function(mopidy) {
+          return trackActions[provider.get('action', 'add+play')](mopidy, uri);
+        });
       },
     });
   };

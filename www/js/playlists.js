@@ -21,9 +21,6 @@ angular.module('mopidy-mobile.playlists', [
       controller: 'PlaylistsCtrl',
       templateUrl: 'templates/playlists.html',
       resolve: {
-        mopidy: function(connection) {
-          return connection();
-        },
         playlists: function(connection) {
           return connection(function(mopidy) {
             return mopidy.playlists.getPlaylists();
@@ -36,9 +33,6 @@ angular.module('mopidy-mobile.playlists', [
       controller: 'PlaylistCtrl',
       templateUrl: 'templates/playlist.html',
       resolve: {
-        mopidy: function(connection) {
-          return connection();
-        },
         playlist: function($stateParams, connection) {
           return connection(function(mopidy) {
             return mopidy.playlists.lookup({uri: $stateParams.uri});
@@ -49,54 +43,43 @@ angular.module('mopidy-mobile.playlists', [
   ;
 })
 
-.controller('PlaylistsCtrl', function($scope, $log, mopidy, playlists, popup) {
+.controller('PlaylistsCtrl', function($scope, $log, connection, playlists) {
   var handlers = {
     'event:playlistChanged': function(/*playlist*/) {
-      // FIXME: simply reload all playlists for now...
-      mopidy.playlists.getPlaylists().then(
-        function(playlists) {
-          $scope.$apply(function(scope) {
-            scope.playlists = playlists;
-          });
-        },
-        $log.error
-      );
+      connection(function(mopidy) {
+        return mopidy.playlists.getPlaylists();
+      }).then(function(playlists) {
+        $scope.playlists = playlists;
+      });
     },
     'event:playlistsLoaded': function() {
-      mopidy.playlists.getPlaylists().then(
-        function(playlists) {
-          $scope.$apply(function(scope) {
-            scope.playlists = playlists;
-          });
-        },
-        $log.error
-      );
+      connection(function(mopidy) {
+        return mopidy.playlists.getPlaylists();
+      }).then(function(playlists) {
+        $scope.playlists = playlists;
+      });
     }
   };
 
   angular.extend($scope, {
     playlists: playlists,
     refresh: function() {
-      mopidy.playlists.refresh({
-        uri_scheme: null
+      connection(function(mopidy) {
+        return mopidy.playlists.refresh({uri_scheme: null});
       }).then(function() {
         $scope.$broadcast('scroll.refreshComplete');
-      }).catch(popup.error);
+      });
     }
   });
 
-  angular.forEach(handlers, function(listener, event) {
-    mopidy.on(event, listener);
-  });
+  connection.on(handlers);
 
   $scope.$on('$destroy', function() {
-    angular.forEach(handlers, function(listener, event) {
-      mopidy.off(event, listener);
-    });
+    connection.off(handlers);
   });
 })
 
-.controller('PlaylistCtrl', function($scope, settings, popup, menu, mopidy, playlist) {
+.controller('PlaylistCtrl', function($scope, connection, settings, menu, playlist) {
   $scope.popover = menu([
     {
       text: 'Play All',
@@ -117,28 +100,32 @@ angular.module('mopidy-mobile.playlists', [
   angular.extend($scope, {
     playlist: playlist,
     add: function() {
-      mopidy.tracklist.add({
-        tracks: angular.copy(playlist.tracks)
-      }).catch(popup.error);
+      connection(function(mopidy) {
+        return mopidy.tracklist.add({
+          tracks: angular.copy(playlist.tracks)
+        });
+      });
     },
     click: function(track) {
-      settings.click(mopidy, track.uri);
+      settings.click(track.uri);
     },
     play: function() {
-      mopidy.tracklist.add({
-        tracks: angular.copy(playlist.tracks)
-      }).then(function(tlTracks) {
-        mopidy.playback.play({tl_track: tlTracks[0]});
-      }).catch(popup.error);
+      connection(function(mopidy) {
+        return mopidy.tracklist.add({
+          tracks: angular.copy(playlist.tracks)
+        }).then(function(tlTracks) {
+          return mopidy.playback.play({tl_track: tlTracks[0]});
+        });
+      });
     },
     replace: function() {
-      mopidy.tracklist.clear({
-        /* no params */
-      }).then(function() {
-        return mopidy.tracklist.add({tracks: angular.copy(playlist.tracks)});
-      }).then(function(tlTracks) {
-        mopidy.playback.play({tl_track: tlTracks[0]});
-      }).catch(popup.error);
+      connection(function(mopidy) {
+        return mopidy.tracklist.clear().then(function() {
+          return mopidy.tracklist.add({tracks: angular.copy(playlist.tracks)});
+        }).then(function(tlTracks) {
+          return mopidy.playback.play({tl_track: tlTracks[0]});
+        });
+      });
     }
   });
 });

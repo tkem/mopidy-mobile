@@ -24,7 +24,52 @@ angular.module('mopidy-mobile', [
   $ionicConfigProvider.tabs.style('standard');
 })
 
-.run(function($rootScope, $window, $ionicPlatform, popup) {
+.config(function($provide) {
+  $provide.decorator('connectionErrorHandler', function($delegate, $filter, $ionicPopup) {
+    var translate = $filter('translate');
+    var reset = false;
+
+    return function(error, connection, callback) {
+      try {
+        $delegate.apply($delegate, arguments);
+      } catch (e) {
+        // default handler throws error
+      }
+
+      var options = {
+        title: error.name || translate('Error'),
+        subTitle: error.message || '',
+        buttons: [{
+          text: translate('Ignore'),
+          type: 'button-assertive',
+          onTap: function() { return false; }
+        }, {
+          text: translate('Retry'),
+          type: 'button-positive',
+          onTap: function() { return true; }
+        }]
+      };
+      if (error.data && error.data.message) {
+        options.template = '<pre>' + error.data.message + '</pre>';
+      }
+      return $ionicPopup.show(options).then(function(retry) {
+        if (!retry) {
+          throw error;
+        }
+        if (reset) {
+          connection.reset();
+        } else {
+          reset = true;
+        }
+        return connection(callback).finally(function() {
+          reset = false;
+        });
+      });
+    };
+  });
+})
+
+.run(function($rootScope, $filter, $window, $ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the
     // accessory bar above the keyboard for form inputs)
@@ -37,5 +82,6 @@ angular.module('mopidy-mobile', [
     //}
   });
 
-  $rootScope.$on('$stateChangeError', popup.stateChangeError);
+  // FIXME: how to handle $stateChangeError
+  //$rootScope.$on('$stateChangeError', popup.stateChangeError);
 });
