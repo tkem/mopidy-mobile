@@ -4,6 +4,12 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 /* Include all of Ionic */
 @import "www/lib/ionic/scss/ionic";
 
+/* The path to the icomoon font files, relative to the built CSS in www/css */
+$icomoon-font-path: "../lib/icomoon/dist/fonts" !default;
+
+/* Include custom icomoon scss */
+@import "icomoon";
+
 /* Include default variables */
 @import "variables";
 
@@ -58,11 +64,17 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     @extend .#{$mopidy-mobile-icon-previous};
 }
 
+.mopidy-mobile-icon-consume {
+    @extend .#{$mopidy-mobile-icon-consume};
+}
 .mopidy-mobile-icon-random {
     @extend .#{$mopidy-mobile-icon-random};
 }
 .mopidy-mobile-icon-repeat {
     @extend .#{$mopidy-mobile-icon-repeat};
+}
+.mopidy-mobile-icon-single {
+    @extend .#{$mopidy-mobile-icon-single};
 }
 
 .mopidy-mobile-icon-mute {
@@ -130,4 +142,9 @@ ion-popover-view.mopidy-mobile-menu ion-content {
   left: 0;
   right: 0;
   height: 50;
+}
+
+.mopidy-mobile-options .button {
+    padding: 0;
+    min-width: 36px;
 }

@@ -75,6 +75,7 @@ gulp.task('dist', ['sass', 'bundle'], function() {
     'www/images/**',
     'www/js/mopidy-mobile.bundle.min.js',
     'www/lib/ionic/fonts/**',
+    'www/lib/icomoon/dist/fonts/**', '!www/lib/icomoon/dist/fonts/icomoon.dev.svg',
     'www/templates/**'
   ], {base: 'www'})
     .pipe(gulp.dest(paths.dist));

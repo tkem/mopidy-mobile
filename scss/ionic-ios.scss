@@ -1,18 +1,8 @@
-
 $mopidy-mobile-icon-playback:           ion-ios7-musical-notes !default;
 // $mopidy-mobile-icon-tracklist:       ion-ios7-navicon !default;
 $mopidy-mobile-icon-library:            ion-ios7-home !default;
 $mopidy-mobile-icon-playlists:          ion-ios7-star !default;
 $mopidy-mobile-icon-settings:           ion-ios7-settings !default;
-
-$mopidy-mobile-icon-play:               ion-ios7-play !default;
-$mopidy-mobile-icon-pause:              ion-ios7-pause !default;
-// $mopidy-mobile-icon-stop:            ion-ios7-stop !default;
-$mopidy-mobile-icon-next:               ion-ios7-skipforward !default;
-$mopidy-mobile-icon-previous:           ion-ios7-skipbackward !default;
-
-// $mopidy-mobile-icon-random:          ion-ios7-shuffle !default;
-// $mopidy-mobile-icon-repeat:          ion-ios7-loop !default;
 
 // $mopidy-mobile-icon-mute:            ion-ios7-volume-mute !default;
 $mopidy-mobile-icon-volume-low:         ion-ios7-volume-low !default;
@@ -29,4 +19,4 @@ $mopidy-mobile-icon-more:               ion-ios7-more !default;
 $item-thumbnail-width:                  64px;
 $item-thumbnail-height:                 64px;
 
-@import "styles";
+@import "style";

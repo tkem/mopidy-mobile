@@ -42,10 +42,12 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
         return mopidy.tracklist.getPlaybackTlTracks({tl_track: tlTrack});
       }).then(function(tlTracks) {
         $scope.tlTracks = angular.extend(tlTracks, {current: tlTrack});
-        if (!tlTracks.current && tlTracks.eot) {
+        if (tlTracks.current) {
+          $scope.track = tlTracks.current.track;
+        } else if (tlTracks.eot) {
           $scope.track = tlTracks.eot.track;
         } else {
-          $scope.track = tlTracks.current.track;
+          $scope.track = null;
         }
       });
     }

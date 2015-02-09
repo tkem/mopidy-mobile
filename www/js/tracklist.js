@@ -76,27 +76,7 @@ angular.module('mopidy-mobile.tracklist', [
       click: 'popover.hide() && save()',
       disabled: '!tlTracks.length',
       hellip: true
-    },
-    {
-      text: 'Consume',
-      model: 'options.consume',
-      change: 'setOptions({consume: options.consume})'
-    },
-    {
-      text: 'Random',
-      model: 'options.random',
-      change: 'setOptions({random: options.random})'
-    },
-    {
-      text: 'Repeat',
-      model: 'options.repeat',
-      change: 'setOptions({repeat: options.repeat})'
-    },
-    {
-      text: 'Single',
-      model: 'options.single',
-      change: 'setOptions({single: options.single})'
-    },
+    }
   ], {
     scope: $scope
   });
