@@ -1,3 +1,15 @@
+0.6.0 2015-02-10
+----------------
+
+- Add `icomoon` icon font.
+
+- Sort playlists by name.
+
+- Add URL to tracklist.
+
+- Error handling.
+
+
 0.5.1 2015-02-02
 ----------------
 
