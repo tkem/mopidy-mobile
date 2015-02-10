@@ -7,7 +7,7 @@
     </ion-refresher>
     <div class="list">
       <a class="item item-icon-right"
-         ng-repeat="playlist in playlists"
+         ng-repeat="playlist in playlists | orderBy: 'name'"
          ui-sref="tabs.playlists.playlist({uri: playlist.uri})"
          >
         {{playlist.name}}
