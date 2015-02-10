@@ -72,6 +72,11 @@ angular.module('mopidy-mobile.tracklist', [
       hellip: true
     },
     {
+      text: 'Add URL',
+      click: 'popover.hide() && addURL()',
+      hellip: true
+    },
+    {
       text: 'Save as',
       click: 'popover.hide() && save()',
       disabled: '!tlTracks.length',
@@ -85,6 +90,17 @@ angular.module('mopidy-mobile.tracklist', [
     currentTlTrack: currentTlTrack,
     options: options,
     tlTracks: tlTracks,
+    addURL: function() {
+      popup.prompt('Stream URL').then(function(url) {
+        if (url) {
+          connection(function(mopidy) {
+            return mopidy.tracklist.add({uri: url}).then(function(tlTracks) {
+              return mopidy.playback.play({tl_track: tlTracks[0]});
+            });
+          });
+        }
+      });
+    },
     clear: function() {
       popup.confirm('Clear Tracklist').then(function(result) {
         if (result) {
