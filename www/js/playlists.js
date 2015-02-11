@@ -79,53 +79,68 @@ angular.module('mopidy-mobile.playlists', [
   });
 })
 
-.controller('PlaylistCtrl', function($scope, connection, settings, menu, playlist) {
-  $scope.popover = menu([
-    {
-      text: 'Play All',
-      click: 'popover.hide() && play()'
-    },
-    {
-      text: 'Add to Tracklist',
-      click: 'popover.hide() && add()'
-    },
-    {
-      text: 'Replace Current Tracklist',
-      click: 'popover.hide() && replace()'
-    }
-  ], {
-    scope: $scope
-  });
-
+.controller('PlaylistCtrl', function($scope, settings, playlist) {
   angular.extend($scope, {
     playlist: playlist,
-    add: function() {
+    click: function(track) {
+      settings.click(track.uri);
+    }
+  });
+})
+
+.controller('PlaylistMenuCtrl', function($scope, $rootScope, popoverMenu, connection) {
+  function createPopoverMenu() {
+    return popoverMenu([{
+      text: 'Play All',
+      click: 'popover.hide() && play(playlist.tracks)'
+    }, {
+      text: 'Add to Tracklist',
+      click: 'popover.hide() && add(playlist.tracks)'
+    }, {
+      text: 'Replace Current Tracklist',
+      click: 'popover.hide() && replace(playlist.tracks)'
+    }], {
+      scope: $scope
+    });
+  }
+
+  angular.extend($scope, {
+    popover: createPopoverMenu(),
+    add: function(tracks) {
       connection(function(mopidy) {
         return mopidy.tracklist.add({
-          tracks: angular.copy(playlist.tracks)
+          tracks: angular.copy(tracks)
         });
       });
     },
-    click: function(track) {
-      settings.click(track.uri);
-    },
-    play: function() {
+    play: function(tracks) {
       connection(function(mopidy) {
         return mopidy.tracklist.add({
-          tracks: angular.copy(playlist.tracks)
+          tracks: angular.copy(tracks)
         }).then(function(tlTracks) {
           return mopidy.playback.play({tl_track: tlTracks[0]});
         });
       });
     },
-    replace: function() {
+    replace: function(tracks) {
       connection(function(mopidy) {
         return mopidy.tracklist.clear().then(function() {
-          return mopidy.tracklist.add({tracks: angular.copy(playlist.tracks)});
+          return mopidy.tracklist.add({
+            tracks: angular.copy(tracks)
+          });
         }).then(function(tlTracks) {
           return mopidy.playback.play({tl_track: tlTracks[0]});
         });
       });
     }
+  });
+
+  $scope.$on('$destroy', function() {
+    $scope.popover.remove();
+  });
+
+  $rootScope.$on('$translateChangeSuccess', function() {
+    $scope.popover.remove();
+    $scope.popover = createPopoverMenu();
   });
 });

@@ -3,7 +3,7 @@ angular.module('mopidy-mobile.ui', [
   'pascalprecht.translate'
 ])
 
-.factory('menu', function($filter, $ionicPopover) {
+.factory('popoverMenu', function($filter, $ionicPopover) {
   var translate = $filter('translate');  // filter is synchronous
 
   return function(items, options) {

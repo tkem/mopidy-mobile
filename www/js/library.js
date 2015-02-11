@@ -1,20 +1,3 @@
-var LIBRARY_MENU = [
-  {
-    text: 'Play All Tracks',
-    click: 'popover.hide() && play()',
-    disabled: '!tracks.length'
-  },
-  {
-    text: 'Add Tracks to Tracklist',
-    click: 'popover.hide() && add()',
-    disabled: '!tracks.length'
-  },
-  {
-    text: 'Replace Current Tracklist',
-    click: 'popover.hide() && replace()',
-    disabled: '!tracks.length'
-  }
-];
 
 angular.module('mopidy-mobile.library', [
   'ionic',
@@ -107,30 +90,13 @@ angular.module('mopidy-mobile.library', [
   ;
 })
 
-.controller('BrowseCtrl', function($scope, $state, connection, settings, menu, ref, refs) {
+.controller('BrowseCtrl', function($scope, $state, connection, settings, ref, refs) {
   angular.extend($scope, {
     ref: ref,
     refs: refs,
     tracks: refs.filter(function(ref) { return ref.type === 'track'; }),
-    popover: menu(LIBRARY_MENU, {scope: $scope}),
-    add: function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add({
-          uris: $scope.tracks.map(function(ref) { return ref.uri; })
-        });
-      });
-    },
     click: function(ref) {
       settings.click(ref.uri);
-    },
-    play: function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add({
-          uris: $scope.tracks.map(function(ref) { return ref.uri; })
-        }).then(function(tlTracks) {
-          mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      });
     },
     refresh: function() {
       connection(function(mopidy) {
@@ -139,26 +105,13 @@ angular.module('mopidy-mobile.library', [
         $scope.$broadcast('scroll.refreshComplete');
       });
     },
-    replace: function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.clear({
-          /* no params */
-        }).then(function() {
-          return mopidy.tracklist.add({
-            uris: $scope.tracks.map(function(ref) { return ref.uri; })
-          });
-        }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      });
-    },
     search: function(q) {
       $state.go('^.search', {q: q, uri: $scope.ref ? $scope.ref.uri : null});
     }
   });
 })
 
-.controller('SearchCtrl', function($scope, connection, settings, menu, q, results) {
+.controller('SearchCtrl', function($scope, connection, settings, q, results) {
   function compare(a, b) {
     if ((a.name || '') > (b.name || '')) {
       return 1;
@@ -194,75 +147,81 @@ angular.module('mopidy-mobile.library', [
 
   angular.extend($scope, {
     q: q,
-    popover: menu(LIBRARY_MENU, {scope: $scope}),
-    add: function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add({
-          tracks: angular.copy($scope.tracks)
-        });
-      });
-    },
     click: function(track) {
       return settings.click(track.uri);
-    },
-    play: function() {
+    }
+  });
+})
+
+.controller('LookupCtrl', function($scope, settings, connection, name, tracks, uri) {
+  angular.extend($scope, {
+    name: name,
+    tracks: tracks,
+    uri: uri,
+    click: function(track) {
+      return settings.click(track.uri);
+    }
+  });
+})
+
+.controller('LibraryMenuCtrl', function($scope, $rootScope, popoverMenu, connection) {
+  function createPopoverMenu() {
+    return popoverMenu([{
+      text: 'Play All Tracks',
+      click: 'popover.hide() && play(tracks)',
+      disabled: '!tracks.length'
+    }, {
+      text: 'Add Tracks to Tracklist',
+      click: 'popover.hide() && add(tracks)',
+      disabled: '!tracks.length'
+    }, {
+      text: 'Replace Current Tracklist',
+      click: 'popover.hide() && replace(tracks)',
+      disabled: '!tracks.length'
+    }], {
+      scope: $scope
+    });
+  }
+
+  function trackParams(tracks) {
+    if (tracks[0].__type__ == 'Track') {
+      return {tracks: tracks};
+    } else {
+      return {uris: $scope.tracks.map(function(ref) { return ref.uri; })};
+    }
+  }
+
+  angular.extend($scope, {
+    popover: createPopoverMenu(),
+    add: function(tracks) {
       connection(function(mopidy) {
-        return mopidy.tracklist.add({
-          tracks: angular.copy($scope.tracks)
-        }).then(function(tlTracks) {
+        return mopidy.tracklist.add(trackParams(tracks));
+      });
+    },
+    play: function(tracks) {
+      connection(function(mopidy) {
+        return mopidy.tracklist.add(trackParams(tracks)).then(function(tlTracks) {
           return mopidy.playback.play({tl_track: tlTracks[0]});
         });
       });
     },
-    replace: function() {
+    replace: function(tracks) {
       connection(function(mopidy) {
-        return mopidy.tracklist.clear({
-          /* no params */
-        }).then(function() {
-          return mopidy.tracklist.add({tracks: angular.copy($scope.tracks)});
+        return mopidy.tracklist.clear().then(function() {
+          return mopidy.tracklist.add(trackParams(tracks));
         }).then(function(tlTracks) {
           return mopidy.playback.play({tl_track: tlTracks[0]});
         });
       });
     }
   });
-})
 
-.controller('LookupCtrl', function($scope, settings, connection, menu, name, tracks, uri) {
-  angular.extend($scope, {
-    name: name,
-    tracks: tracks,
-    uri: uri,
-    popover: menu(LIBRARY_MENU, {scope: $scope}),
-    add: function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add({
-          tracks: angular.copy($scope.tracks)
-        });
-      });
-    },
-    click: function(track) {
-      return settings.click(track.uri);
-    },
-    play: function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add({
-          tracks: angular.copy($scope.tracks)
-        }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      });
-    },
-    replace: function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.clear({
-          /* no params */
-        }).then(function() {
-          return mopidy.tracklist.add({tracks: angular.copy($scope.tracks)});
-        }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      });
-    }
+  $scope.$on('$destroy', function() {
+    $scope.popover.remove();
+  });
+
+  $rootScope.$on('$translateChangeSuccess', function() {
+    $scope.popover.remove();
+    $scope.popover = createPopoverMenu();
   });
 });
