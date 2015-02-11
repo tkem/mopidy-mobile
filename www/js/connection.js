@@ -18,14 +18,6 @@ angular.module('mopidy-mobile.connection', [])
     return obj;
   }
 
-  function isEmptyObject(obj) {
-    var name;
-    for (name in obj) {
-      return false;
-    }
-    return name || true;  // silence jshint
-  }
-
   var provider = this;
   var settings = {
     autoConnect: false,
@@ -51,7 +43,6 @@ angular.module('mopidy-mobile.connection', [])
     var connect = function(mopidy) {
       var slice = Array.prototype.slice;
       var concat = Array.prototype.concat;
-      var pending = {};
       var promise = $q(function(resolve, reject) {
         $ionicLoading.show();
         mopidy.once('state:online', function() {
@@ -112,15 +103,6 @@ angular.module('mopidy-mobile.connection', [])
                 promises.push(tracklist.setSingle({value: params.single}));
               }
               return Mopidy.when.all(promises);
-            },
-            getPlaybackTlTracks: function(params) {
-              return Mopidy.when.all([
-                tracklist.eotTrack(params),
-                tracklist.nextTrack(params),
-                tracklist.previousTrack(params)
-              ]).then(function(results) {
-                return zipObject(['eot', 'next', 'previous'], results);
-              });
             }
           });
           $log.info('Connected');
@@ -146,22 +128,6 @@ angular.module('mopidy-mobile.connection', [])
           });
         }
       });
-      mopidy.on('websocket:outgoingMessage', function(event) {
-        if (isEmptyObject(pending)) {
-          $ionicLoading.show();  // FIXME: template, delay?
-        }
-        pending[event.id] = event;
-      });
-      mopidy.on('websocket:incomingMessage', function(event) {
-        var data = angular.fromJson(event.data);
-        if (data.id in pending) {
-          delete pending[data.id];
-          if (isEmptyObject(pending)) {
-            $ionicLoading.hide();
-          }
-        }
-      });
-
       mopidy.on($log.debug.bind($log));
       mopidy.connect();
       return promise;
@@ -172,9 +138,17 @@ angular.module('mopidy-mobile.connection', [])
     var mopidy = new Mopidy(settings);
     var promise = connect(mopidy);
     var connection;
+    var pending = 0;
     connection = function(callback) {
       if (callback) {
-        return $q.when(promise.then(callback)).catch(function(error) {
+        if (pending++ === 0) {
+          $ionicLoading.show();
+        }
+        return $q.when(promise.then(callback).finally(function() {
+          if (--pending === 0) {
+            $ionicLoading.hide();
+          }
+        })).catch(function(error) {
           return connectionErrorHandler(error, connection, callback);
         });
       } else {
@@ -186,11 +160,13 @@ angular.module('mopidy-mobile.connection', [])
       on: function on(obj, listener) {
         //$log.info('on', obj, listener);
         if (listener === undefined) {
-          angular.forEach(obj, function(value, key) { on(key, value); });
+          return angular.forEach(obj, function(value, key) { on(key, value); });
         } else if (obj in listeners) {
           listeners[obj].push(listener);
+          return listener;
         } else {
           listeners[obj] = [listener];
+          return listener;
         }
       },
       off: function off(obj, listener) {

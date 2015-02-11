@@ -2,11 +2,11 @@
 
   <ion-header-bar>
     <div class="range" style="width: 100%">
-      {{time.value | duration}}
-      <input min="0" max="{{track.length || 100}}"
+      {{time.position | duration}}
+      <input min="0" max="{{track.length || 0}}"
              ng-change="seek()"
              ng-disabled="!track.length"
-             ng-model="time.value"
+             ng-model="time.position"
              type="range">
       {{track.length | duration}}
     </div>

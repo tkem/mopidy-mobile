@@ -10,36 +10,32 @@ angular.module('mopidy-mobile.tracklist', [
     views: {
       'tracklist': {
         templateUrl: 'templates/tracklist.html',
-        controller: 'TracklistCtrl',
-        resolve: {
-          currentTlTrack: function(connection) {
-            return connection(function(mopidy) {
-              return mopidy.playback.getCurrentTlTrack();
-            });
-          },
-          options: function(connection) {
-            return connection(function(mopidy) {
-              return mopidy.tracklist.getOptions();
-            });
-          },
-          tlTracks: function(connection) {
-            return connection(function(mopidy) {
-              return mopidy.tracklist.getTlTracks();
-            });
-          }
-        }
+        controller: 'TracklistCtrl'
       }
     }
   });
 })
 
-.controller('TracklistCtrl', function($scope, $log, connection, currentTlTrack, options, tlTracks) {
-  var handlers = {
+.controller('TracklistCtrl', function($scope, $log, connection) {
+  $log.debug('creating tracklist view');
+
+  var listeners = connection.on({
     'event:optionsChanged': function() {
       connection(function(mopidy) {
         return mopidy.tracklist.getOptions();
       }).then(function(options) {
         $scope.options = options;
+      });
+    },
+    'event:tracklistChanged': function() {
+      connection(function(mopidy) {
+        return mopidy.constructor.when.join(
+          mopidy.tracklist.getTlTracks(),
+          mopidy.playback.getCurrentTlTrack()
+        );
+      }).then(function(results) {
+        $scope.tlTracks = results[0];
+        $scope.currentTlTrack = results[1];
       });
     },
     'event:trackPlaybackEnded': function() {
@@ -48,26 +44,15 @@ angular.module('mopidy-mobile.tracklist', [
     'event:trackPlaybackStarted': function(event) {
       $scope.currentTlTrack = event.tl_track;
     },
-    'event:tracklistChanged': function() {
-      // TODO: all...
-      connection(function(mopidy) {
-        return mopidy.playback.getCurrentTlTrack();
-      }).then(function(tlTrack) {
-        $scope.currentTlTrack = tlTrack;
-      });
-      connection(function(mopidy) {
-        return mopidy.tracklist.getTlTracks();
-      }).then(function(tlTracks) {
-        $scope.tlTracks = tlTracks;
-      });
+    'state:online': function() {
+      $log.info('(re)connect: refreshing tracklist view');
+      $scope.refresh();
     }
-  };
-  connection.on(handlers);
+  });
 
   angular.extend($scope, {
-    currentTlTrack: currentTlTrack,
-    options: options,
-    tlTracks: tlTracks,
+    options: {},
+    tlTracks: [],
     getTracks: function() {
       return $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
     },
@@ -83,9 +68,7 @@ angular.module('mopidy-mobile.tracklist', [
     },
     play: function(tlTrack) {
       connection(function(mopidy) {
-        return mopidy.playback.play({
-          tl_track: angular.copy(tlTrack)
-        });
+        return mopidy.playback.play({tl_track: angular.copy(tlTrack)});
       });
     },
     remove: function(tlTrack) {
@@ -104,11 +87,31 @@ angular.module('mopidy-mobile.tracklist', [
       } else {
         return 'images/thumbnail.png';
       }
+    },
+    refresh: function() {
+      connection(function(mopidy) {
+        return mopidy.constructor.when.join(
+          mopidy.tracklist.getTlTracks(),
+          mopidy.tracklist.getOptions(),
+          mopidy.playback.getCurrentTlTrack()
+        );
+      }).then(function(results) {
+        $scope.tlTracks = results[0];
+        $scope.options = results[1];
+        $scope.currentTlTrack = results[2];
+      });
     }
   });
 
+  $scope.$on('$ionicView.enter', function() {
+    $log.debug('entering tracklist view');
+    // defensive action...
+    $scope.refresh();
+  });
+
   $scope.$on('$destroy', function() {
-    connection.off(handlers);
+    $log.debug('destroying tracklist view');
+    connection.off(listeners);
   });
 })
 
@@ -176,7 +179,8 @@ angular.module('mopidy-mobile.tracklist', [
   });
 
   $rootScope.$on('$translateChangeSuccess', function() {
-    $scope.popover.remove();
+    var tmp = $scope.popover;
     $scope.popover = createPopoverMenu();
+    tmp.remove();
   });
 });
