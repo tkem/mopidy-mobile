@@ -1,0 +1,94 @@
+<ion-view view-title="{{'About' | translate}}">
+  <ion-content>
+    <div class="padding">
+      <img src="images/mopidy-mobile-icon-96.png" style="float: left; margin-right:10px">
+      <h3>Mopidy Mobile</h3>
+      Version {{version}}
+    </div>
+
+    <div class="padding" style="clear: both;">
+      Copyright &copy; 2015 Thomas Kemmer.
+      <br>
+      Licensed under the
+      <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_system">
+        Apache License, Version 2.0
+      </a>.
+    </div>
+
+    <div class="padding">
+      Mopidy Mobile uses the following libraries, fonts and frameworks:
+    </div>
+
+    <ion-list class="item-text-wrap">
+      <ion-item href="https://docs.mopidy.com/en/latest/api/js/" target="_system">
+        <h2>Mopidy.js</h2>
+        <p>
+          Copyright &copy; 2015 Stein Magnus Jodal and contributors.
+          <br>
+          <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_system">
+            Apache License, Version 2.0
+          </a>
+        </p>
+      </ion-item>
+      <ion-item href="http://ionicframework.com/" target="_system">
+        <h2>Ionic</h2>
+        <p>
+          Copyright &copy; 2014 Drifty Co.
+          <br>
+          <a href="http://opensource.org/licenses/MIT" target="_system">
+            MIT License
+          </a>
+        </p>
+      </ion-item>
+      <ion-item ng-if="cordova" href="https://docs.mopidy.com/en/latest/api/js/" target="_system">
+        <h2>Apache Cordova</h2>
+        <p>
+          Copyright &copy; 2012, 2013 The Apache Software Foundation.
+          <br>
+          <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_system">
+            Apache License, Version 2.0
+          </a>
+        </p>
+      </ion-item>
+      <ion-item href="https://angularjs.org/" target="_system">
+        <h2>AngularJS</h2>
+        <p>
+          Copyright &copy; 2010-2015 Google, Inc.
+          <br>
+          <a href="http://opensource.org/licenses/MIT" target="_system">
+            MIT License
+          </a>
+        </p>
+      </ion-item>
+      <ion-item href="http://angular-ui.github.io/ui-router/" target="_system">
+        <h2>AngularUI Router</h2>
+        <p>
+          Copyright &copy; 2013-2015 The AngularUI Team, Karsten Sperling.
+          <br>
+          <a href="http://opensource.org/licenses/MIT" target="_system">
+            MIT License
+          </a>
+        </p>
+      </ion-item>
+      <ion-item href="http://angular-translate.github.io/" target="_system">
+        <h2>angular-translate</h2>
+        <p>
+          Copyright &copy; 2014 <code>pascal.precht@gmail.com</code>.
+          <br>
+          <a href="http://opensource.org/licenses/MIT" target="_system">
+            MIT License
+          </a>
+        </p>
+      </ion-item>
+      <ion-item href="https://icomoon.io/#icons-icomoon" target="_system">
+        <h2>IcoMoon-Free</h2>
+        <p>
+          Copyright &copy; 2014 Keyamoon.
+          <br>
+          <a href="http://creativecommons.org/licenses/by/4.0/" target="_system">CC BY 4.0</a>
+        </p>
+      </ion-item>
+    </ion-list>
+
+  </ion-content>
+</ion-view>

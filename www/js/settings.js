@@ -36,6 +36,15 @@ angular.module('mopidy-mobile.settings', [
         }
       }
     })
+    .state('tabs.about', {
+      url: '/about',
+      views: {
+        'settings': {
+          templateUrl: 'templates/about.html',
+          controller: 'AboutCtrl'
+        }
+      }
+    })
   ;
 
   connectionProvider.settings.backoffDelayMin(250);  // TODO: config?
@@ -143,6 +152,18 @@ angular.module('mopidy-mobile.settings', [
     logging.maxBufferSize(values.maxBufferSize);
     settings.set('logging', values);
   }, true);
+})
+
+.controller('AboutCtrl', function($scope, $document) {
+  var version = $document.find('html').attr('data-version');
+  // TODO: app version
+  $scope.version = version;
+  $scope.platform = {
+    name: ionic.Platform.platform(),
+    device: ionic.Platform.device(),
+    version: ionic.Platform.version(),
+    isWebView: ionic.Platform.isWebView()
+  };
 })
 
 .provider('settings', function() {

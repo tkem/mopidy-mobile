@@ -17,6 +17,7 @@
   "browser": true,
   "globals": {
     "angular": false,
+    "ionic": false,
     "Mopidy": false
   }
 }
