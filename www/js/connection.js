@@ -184,7 +184,7 @@ angular.module('mopidy-mobile.connection', [])
 
     return angular.extend(connection, {
       on: function on(obj, listener) {
-        $log.info('on', obj, listener);
+        //$log.info('on', obj, listener);
         if (listener === undefined) {
           angular.forEach(obj, function(value, key) { on(key, value); });
         } else if (obj in listeners) {

@@ -1,14 +1,13 @@
 <ion-view hide-nav-bar="true" view-title="{{'Playback' | translate}}">
 
-  <ion-header-bar ng-controller="SeekCtrl as seek">
+  <ion-header-bar>
     <div class="range" style="width: 100%">
-      {{seek.value | duration}}
-      <input ng-change="seek.change()"
+      {{time.value | duration}}
+      <input min="0" max="{{track.length || 100}}"
+             ng-change="seek()"
              ng-disabled="!track.length"
-             ng-model="seek.value"
-             type="range"
-             min="0"
-             max="{{track ? track.length - 1 : 0}}">
+             ng-model="time.value"
+             type="range">
       {{track.length | duration}}
     </div>
   </ion-header-bar>
