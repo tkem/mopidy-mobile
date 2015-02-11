@@ -1,3 +1,11 @@
+0.6.1 2015-02-11
+----------------
+
+- Refactor popover menus and handle language change.
+
+- Add `actions` service.
+
+
 0.6.0 2015-02-10
 ----------------
 
