@@ -79,26 +79,24 @@ angular.module('mopidy-mobile.playlists', [
   });
 })
 
-.controller('PlaylistCtrl', function($scope, settings, playlist) {
+  .controller('PlaylistCtrl', function($scope, playlist, actions) {
   angular.extend($scope, {
     playlist: playlist,
-    click: function(track) {
-      settings.click(track.uri);
-    }
+    click: actions.default
   });
 })
 
-.controller('PlaylistMenuCtrl', function($scope, $rootScope, popoverMenu, connection) {
+.controller('PlaylistMenuCtrl', function($scope, $rootScope, popoverMenu, actions) {
   function createPopoverMenu() {
     return popoverMenu([{
       text: 'Play All',
-      click: 'popover.hide() && play(playlist.tracks)'
+      click: 'popover.hide() && actions.play(playlist.tracks)'
     }, {
       text: 'Add to Tracklist',
-      click: 'popover.hide() && add(playlist.tracks)'
+      click: 'popover.hide() && actions.add(playlist.tracks)'
     }, {
       text: 'Replace Current Tracklist',
-      click: 'popover.hide() && replace(playlist.tracks)'
+      click: 'popover.hide() && actions.replace(playlist.tracks)'
     }], {
       scope: $scope
     });
@@ -106,33 +104,7 @@ angular.module('mopidy-mobile.playlists', [
 
   angular.extend($scope, {
     popover: createPopoverMenu(),
-    add: function(tracks) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add({
-          tracks: angular.copy(tracks)
-        });
-      });
-    },
-    play: function(tracks) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add({
-          tracks: angular.copy(tracks)
-        }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      });
-    },
-    replace: function(tracks) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.clear().then(function() {
-          return mopidy.tracklist.add({
-            tracks: angular.copy(tracks)
-          });
-        }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      });
-    }
+    actions: actions
   });
 
   $scope.$on('$destroy', function() {

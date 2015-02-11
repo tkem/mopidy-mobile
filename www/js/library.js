@@ -90,14 +90,12 @@ angular.module('mopidy-mobile.library', [
   ;
 })
 
-.controller('BrowseCtrl', function($scope, $state, connection, settings, ref, refs) {
+.controller('BrowseCtrl', function($scope, $state, connection, actions, ref, refs) {
   angular.extend($scope, {
     ref: ref,
     refs: refs,
     tracks: refs.filter(function(ref) { return ref.type === 'track'; }),
-    click: function(ref) {
-      settings.click(ref.uri);
-    },
+    click: actions.default,
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.library.refresh({uri: $scope.ref ? $scope.ref.uri : null});
@@ -111,7 +109,7 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('SearchCtrl', function($scope, connection, settings, q, results) {
+.controller('SearchCtrl', function($scope, connection, actions, q, results) {
   function compare(a, b) {
     if ((a.name || '') > (b.name || '')) {
       return 1;
@@ -147,73 +145,41 @@ angular.module('mopidy-mobile.library', [
 
   angular.extend($scope, {
     q: q,
-    click: function(track) {
-      return settings.click(track.uri);
-    }
+    click: actions.default
   });
 })
 
-.controller('LookupCtrl', function($scope, settings, connection, name, tracks, uri) {
+.controller('LookupCtrl', function($scope, connection, actions, name, tracks, uri) {
   angular.extend($scope, {
     name: name,
     tracks: tracks,
     uri: uri,
-    click: function(track) {
-      return settings.click(track.uri);
-    }
+    click: actions.default
   });
 })
 
-.controller('LibraryMenuCtrl', function($scope, $rootScope, popoverMenu, connection) {
+.controller('LibraryMenuCtrl', function($scope, $rootScope, popoverMenu, actions) {
   function createPopoverMenu() {
     return popoverMenu([{
       text: 'Play All Tracks',
-      click: 'popover.hide() && play(tracks)',
+      click: 'popover.hide() && actions.play(tracks)',
       disabled: '!tracks.length'
     }, {
       text: 'Add Tracks to Tracklist',
-      click: 'popover.hide() && add(tracks)',
+      click: 'popover.hide() && actions.add(tracks)',
       disabled: '!tracks.length'
     }, {
       text: 'Replace Current Tracklist',
-      click: 'popover.hide() && replace(tracks)',
+      click: 'popover.hide() && actions.replace(tracks)',
       disabled: '!tracks.length'
     }], {
       scope: $scope
     });
   }
 
-  function trackParams(tracks) {
-    if (tracks[0].__type__ == 'Track') {
-      return {tracks: tracks};
-    } else {
-      return {uris: $scope.tracks.map(function(ref) { return ref.uri; })};
-    }
-  }
-
   angular.extend($scope, {
     popover: createPopoverMenu(),
-    add: function(tracks) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add(trackParams(tracks));
-      });
-    },
-    play: function(tracks) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add(trackParams(tracks)).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      });
-    },
-    replace: function(tracks) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.clear().then(function() {
-          return mopidy.tracklist.add(trackParams(tracks));
-        }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      });
-    }
+    actions: actions
   });
 
   $scope.$on('$destroy', function() {

@@ -164,28 +164,58 @@ angular.module('mopidy-mobile.settings', [
     }
   });
 
-  provider.$get = function(connection) {
-    var trackActions = {
-      'add': function(mopidy, uri) {
-        return mopidy.tracklist.add({uri: uri});
-      },
-      'add+play': function(mopidy, uri) {
-        return mopidy.tracklist.add({uri: uri}).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      }
-    };
-
+  provider.$get = function() {
     return angular.extend(provider, {
       set: function(key, value) {
         window.localStorage[prefix + key] = angular.toJson(value);
         return this;
-      },
-      click: function(uri) {
-        connection(function(mopidy) {
-          return trackActions[provider.get('action', 'add+play')](mopidy, uri);
-        });
-      },
+      }
     });
   };
+})
+
+.factory('actions', function(connection, settings) {
+  function params(obj) {
+    if (angular.isArray(obj)) {
+      if (obj.length && obj[0].__type__ === 'Track') {
+        return {tracks: obj};
+      } else {
+        return {uris: obj.map(function(model) { return model.uri; })};
+      }
+    } else {
+      if (obj.__type__ === 'Track') {
+        return {tracks: [obj]};
+      } else {
+        return {uri: obj.uri};
+      }
+    }
+  }
+
+  var actions = {
+    add: function(obj) {
+      connection(function(mopidy) {
+        return mopidy.tracklist.add(params(obj));
+      });
+    },
+    play: function(obj) {
+      connection(function(mopidy) {
+        return mopidy.tracklist.add(params(obj)).then(function(tlTracks) {
+          return mopidy.playback.play({tl_track: tlTracks[0]});
+        });
+      });
+    },
+    replace: function(obj) {
+      connection(function(mopidy) {
+        return mopidy.tracklist.clear().then(function() {
+          return mopidy.tracklist.add(params(obj));
+        }).then(function(tlTracks) {
+          return mopidy.playback.play({tl_track: tlTracks[0]});
+        });
+      });
+    },
+  };
+  actions['default'] = function(obj) {
+    return (actions[settings.get('action', 'play')] || actions.play)(obj);
+  };
+  return actions;
 });
