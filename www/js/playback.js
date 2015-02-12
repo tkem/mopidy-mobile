@@ -264,67 +264,82 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
   });
 })
 
-.controller('VolumeCtrl', function($scope, $log, $q, $window, connection) {
+.controller('MixerCtrl', function($scope, $log, $q, $window, connection) {
   var scope = angular.extend(this, {
-    value: 0,
+    volume: 0,
     pending: false,
     mute:false
   });
-  var handlers = {
+
+  var listeners = connection.on({
     'event:muteChanged': function(event) {
       scope.mute = event.mute;
     },
     'event:volumeChanged': function(event) {
       if (!scope.pending) {
-        scope.value = event.volume;
+        scope.volume = event.volume;
       }
+    },
+    'state:online': function() {
+      $log.info('(re)connect: refreshing mixer controller');
+      scope.refresh();
     }
-  };
-  connection.on(handlers);
+  });
 
-  scope.setVolume = function(value) {
-    var defer = $q.defer();
-    function update(value) {
-      connection(function(mopidy) {
-        return mopidy.playback.setVolume({volume: value});
-      }).then(function() {
-        if (value === $window.parseInt(scope.value)) {
-          defer.resolve(value);
-        } else {
-          defer.notify(value);
+  angular.extend(scope, {
+    changeVolume: function() {
+      if (scope.pending) {
+        return;
+      }
+      var defer = $q.defer();
+      function update(value) {
+        connection(function(mopidy) {
+          return mopidy.playback.setVolume({volume: value});
+        }).then(function() {
+          if (value === $window.parseInt(scope.volume)) {
+            defer.resolve(value);
+          } else {
+            defer.notify(value);
+          }
+        });
+      }
+      scope.pending = true;
+      update($window.parseInt(scope.volume));
+      defer.promise.then(
+        function(value) {
+          $log.debug('volume done: ' + value);
+          scope.pending = false;
+        }, function() {
+          $log.debug('volume error');
+          scope.pending = false;
+        }, function(value) {
+          $log.debug('volume pending: ' + value + ' (' + scope.volume + ')');
+          update($window.parseInt(scope.volume));
         }
+      );
+    },
+    setMute: function(mute) {
+      connection(function(mopidy) {
+        mopidy.playback.setMute({value: mute});
+      });
+    },
+    refresh: function() {
+      return connection(function(mopidy) {
+        return mopidy.constructor.when.join(
+          mopidy.mixer.getMute(),
+          mopidy.mixer.getVolume()
+        );
+      }).then(function(results) {
+        $log.log('got mixer');
+        scope.mute = results[0];
+        scope.volume = results[1];
       });
     }
-    scope.pending = true;
-    update($window.parseInt(value));
-    defer.promise.then(
-      function(value) {
-        $log.debug('volume done: ' + value);
-        scope.pending = false;
-      }, function() {
-        $log.debug('volume error');
-        scope.pending = false;
-      }, function(value) {
-        $log.debug('volume pending: ' + value + ' (' + scope.value + ')');
-        update($window.parseInt(scope.value));
-      }
-    );
-  };
-
-  scope.setMute = function(mute) {
-    connection(function(mopidy) {
-      mopidy.playback.setMute({value: mute});
-    });
-  };
-
-  connection(function(mopidy) {
-    return mopidy.playback.getVolume();
-  }).then(function(value) {
-    scope.value = value;
   });
 
   $scope.$on('$destroy', function() {
-    connection.off(handlers);
+    connection.off(listeners);
   });
-})
-;
+
+  scope.refresh();
+});

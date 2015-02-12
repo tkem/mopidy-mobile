@@ -71,18 +71,18 @@
     </div>
   </ion-footer-bar>
 
-  <ion-footer-bar ng-controller="VolumeCtrl as volume">
+  <ion-footer-bar ng-controller="MixerCtrl as mixer">
     <div class="buttons">
       <button class="button button-clear icon mopidy-mobile-icon-mute"
-              ng-class="{'button-assertive': volume.mute}"
-              ng-click="volume.setMute(!volume.mute)"
+              ng-class="{'button-assertive': mixer.mute}"
+              ng-click="mixer.setMute(!mixer.mute)"
               >
       </button>
     </div>
     <div class="range" style="width: 100%">
       <i class="icon mopidy-mobile-icon-volume-low"></i>
-      <input ng-change="volume.setVolume(volume.value)"
-             ng-model="volume.value"
+      <input ng-change="mixer.changeVolume()"
+             ng-model="mixer.volume"
              type="range"
              min="0"
              max="100"

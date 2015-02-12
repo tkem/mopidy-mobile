@@ -49,19 +49,6 @@ angular.module('mopidy-mobile.connection', [])
           // add convenience methods/decorators
           var library = angular.copy(mopidy.library);
           var tracklist = angular.copy(mopidy.tracklist);
-          angular.extend(mopidy.library, {
-            lookup: function(params) {
-              if ('uris' in params) {
-                return Mopidy.when.all(params.uris.map(function(uri) {
-                  return library.lookup({uri: uri});
-                })).then(function(results) {
-                  return concat.apply([], results);
-                });
-              } else {
-                return library.lookup(params);
-              }
-            }
-          });
           angular.extend(mopidy.tracklist, {
             add: function(params) {
               if ('uris' in params) {
@@ -105,6 +92,28 @@ angular.module('mopidy-mobile.connection', [])
               return Mopidy.when.all(promises);
             }
           });
+          angular.extend(mopidy.library, {
+            lookup: function(params) {
+              if ('uris' in params) {
+                return Mopidy.when.all(params.uris.map(function(uri) {
+                  return library.lookup({uri: uri});
+                })).then(function(results) {
+                  return concat.apply([], results);
+                });
+              } else {
+                return library.lookup(params);
+              }
+            }
+          });
+          // new Mixer API
+          if (!mopidy.mixer) {
+            mopidy.mixer = {
+              getMute: mopidy.playback.getMute,
+              setMute: mopidy.playback.setMute,
+              getVolume: mopidy.playback.getVolume,
+              setVolume: mopidy.playback.setVolume
+            };
+          }
           $log.info('Connected');
           $ionicLoading.hide();
           resolve(mopidy);
