@@ -69,17 +69,17 @@ angular.module('mopidy-mobile.tracklist', [
     play: function(tlTrack) {
       connection(function(mopidy) {
         return mopidy.playback.play({tl_track: angular.copy(tlTrack)});
-      });
+      }, true);
     },
     remove: function(tlTrack) {
       connection(function(mopidy) {
         return mopidy.tracklist.remove({criteria: {tlid: [tlTrack.tlid]}});
-      });
+      }, true);
     },
     setOptions: function(params) {
       connection(function(mopidy) {
         return mopidy.tracklist.setOptions(params);
-      });
+      }, true);
     },
     getThumbnailURI: function(track) {
       if (track.album && track.album.images && track.album.images.length) {
@@ -145,7 +145,7 @@ angular.module('mopidy-mobile.tracklist', [
             return mopidy.tracklist.add({uri: url}).then(function(tlTracks) {
               return mopidy.playback.play({tl_track: tlTracks[0]});
             });
-          });
+          }, true);
         }
       });
     },
@@ -154,7 +154,7 @@ angular.module('mopidy-mobile.tracklist', [
         if (result) {
           connection(function(mopidy) {
             return mopidy.tracklist.clear();
-          });
+          }, true);
         }
       });
     },
@@ -166,7 +166,7 @@ angular.module('mopidy-mobile.tracklist', [
               playlist.tracks = $scope.getTracks();
               return mopidy.playlists.save({playlist: playlist});
             });
-          }).then(function() {
+          }, true).then(function() {
             popup.alert('Playlist saved');
           });
         }

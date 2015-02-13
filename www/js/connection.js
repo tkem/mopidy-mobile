@@ -23,6 +23,9 @@ angular.module('mopidy-mobile.connection', [])
     autoConnect: false,
     callingConvention: 'by-position-or-by-name'
   };
+  var loadingOptions = {
+    delay: 100  // TODO: configurable?
+  };
   var isUriRefRegExp = /^\//; // FIXME!!!
 
   provider.settings = {
@@ -146,18 +149,16 @@ angular.module('mopidy-mobile.connection', [])
 
     var mopidy = new Mopidy(settings);
     var promise = connect(mopidy);
-    var connection;
-    var pending = 0;
-    connection = function(callback) {
+    var connection = function connection(callback, showLoading) {
       if (callback) {
-        if (pending++ === 0) {
-          $ionicLoading.show();
+        if (showLoading) {
+          $ionicLoading.show(loadingOptions);
         }
-        return $q.when(promise.then(callback).finally(function() {
-          if (--pending === 0) {
+        return $q.when(promise.then(callback)).finally(function() {
+          if (showLoading) {
             $ionicLoading.hide();
           }
-        })).catch(function(error) {
+        }).catch(function(error) {
           return connectionErrorHandler(error, connection, callback);
         });
       } else {

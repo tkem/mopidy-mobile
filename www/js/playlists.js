@@ -24,7 +24,7 @@ angular.module('mopidy-mobile.playlists', [
         playlists: function(connection) {
           return connection(function(mopidy) {
             return mopidy.playlists.getPlaylists();
-          });
+          }, true);
         }
       }
     })
@@ -36,7 +36,7 @@ angular.module('mopidy-mobile.playlists', [
         playlist: function($stateParams, connection) {
           return connection(function(mopidy) {
             return mopidy.playlists.lookup({uri: $stateParams.uri});
-          });
+          }, true);
         }
       }
     })
@@ -66,7 +66,7 @@ angular.module('mopidy-mobile.playlists', [
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.playlists.refresh({uri_scheme: null});
-      }).then(function() {
+      }, true).then(function() {
         $scope.$broadcast('scroll.refreshComplete');
       });
     }

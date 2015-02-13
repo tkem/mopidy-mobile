@@ -28,7 +28,7 @@ angular.module('mopidy-mobile.library', [
         refs: function(connection) {
           return connection(function(mopidy) {
             return mopidy.library.browse({uri: null});
-          });
+          }, true);
         }
       }
     })
@@ -47,7 +47,7 @@ angular.module('mopidy-mobile.library', [
         refs: function($stateParams, connection) {
           return connection(function(mopidy) {
             return mopidy.library.browse({uri: $stateParams.uri});
-          });
+          }, true);
         }
       }
     })
@@ -65,7 +65,7 @@ angular.module('mopidy-mobile.library', [
               query: {any: $stateParams.q},
               uris: $stateParams.uri ? [$stateParams.uri] : null
             });
-          });
+          }, true);
         }
       }
     })
@@ -83,7 +83,7 @@ angular.module('mopidy-mobile.library', [
         tracks: function($stateParams, connection) {
           return connection(function(mopidy) {
             return mopidy.library.lookup({uri: $stateParams.uri});
-          });
+          }, true);
         }
       }
     })
@@ -99,7 +99,7 @@ angular.module('mopidy-mobile.library', [
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.library.refresh({uri: $scope.ref ? $scope.ref.uri : null});
-      }).then(function() {
+      }, true).then(function() {
         $scope.$broadcast('scroll.refreshComplete');
       });
     },

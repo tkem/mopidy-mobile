@@ -149,17 +149,17 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     play: function() {
       connection(function(mopidy) {
         return mopidy.playback.play();
-      });
+      }, true);
     },
     pause: function() {
       connection(function(mopidy) {
         return mopidy.playback.pause();
-      });
+      }, true);
     },
     stop: function() {
       connection(function(mopidy) {
         return mopidy.playback.stop();
-      });
+      }, true);
     },
     next: function() {
       // FIXME: calling next() while stopped triggers no events
@@ -170,7 +170,7 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
             mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
           }
         });
-      });
+      }, true);
     },
     previous: function() {
       // FIXME: calling previous() while stopped triggers no events
@@ -181,12 +181,12 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
             mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
           }
         });
-      });
+      }, true);
     },
     setOptions: function(params) {
       connection(function(mopidy) {
         mopidy.tracklist.setOptions(params);
-      });
+      }, true);
     },
     getImageURI: function(track) {
       if (track && track.album && track.album.images && track.album.images.length) {
@@ -321,7 +321,7 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     setMute: function(mute) {
       connection(function(mopidy) {
         mopidy.playback.setMute({value: mute});
-      });
+      }, true);
     },
     refresh: function() {
       return connection(function(mopidy) {

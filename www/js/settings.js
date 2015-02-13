@@ -183,14 +183,14 @@ angular.module('mopidy-mobile.settings', [
     add: function(obj) {
       connection(function(mopidy) {
         return mopidy.tracklist.add(params(obj));
-      });
+      }, true);
     },
     play: function(obj) {
       connection(function(mopidy) {
         return mopidy.tracklist.add(params(obj)).then(function(tlTracks) {
           return mopidy.playback.play({tl_track: tlTracks[0]});
         });
-      });
+      }, true);
     },
     replace: function(obj) {
       connection(function(mopidy) {
@@ -199,7 +199,7 @@ angular.module('mopidy-mobile.settings', [
         }).then(function(tlTracks) {
           return mopidy.playback.play({tl_track: tlTracks[0]});
         });
-      });
+      }, true);
     },
   };
   actions['default'] = function(obj) {

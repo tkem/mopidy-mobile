@@ -61,7 +61,7 @@ angular.module('mopidy-mobile', [
         } else {
           reset = true;
         }
-        return connection(callback).finally(function() {
+        return connection(callback, true).finally(function() {
           reset = false;
         });
       });
