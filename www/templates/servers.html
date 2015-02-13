@@ -1,0 +1,21 @@
+<ion-view view-title="{{'Servers' | translate}}">
+  <ion-content>
+    <ion-list>
+      <ion-item ui-sref="tabs.settings.server()">
+        <span translate>Add New Server</span>
+      </ion-item>
+      <ion-item ng-repeat="(name, webSocketUrl) in settings.servers"
+                ui-sref="tabs.settings.server({name: name})"
+                >
+        {{name}}
+        <ion-option-button class="button-assertive"
+                           ng-disabled="count(settings.servers) <= 1"
+                           ng-click="remove(name)"
+                           translate
+                           >
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

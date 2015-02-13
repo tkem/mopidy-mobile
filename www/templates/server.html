@@ -1,0 +1,37 @@
+<ion-view view-title="{{server.name || ('Add New Server' | translate)}}">
+  <ion-content>
+    <form name="form">
+      <ul class="list">
+        <li class="item item-input">
+          <span class="input-label" translate>Server Name</span>
+          <input name="name" ng-model="server.name" placeholder="My Mopidy Server" type="text">
+        </li>
+        <li class="item item-input">
+          <span class="input-label" translate>Server Host</span>
+          <input name="host" ng-model="server.host" placeholder="192.168.1.1" type="text">
+        </li>
+        <li class="item item-input">
+          <span class="input-label" translate>Server Port</span>
+          <input ng-model="server.port" placeholder="6680" type="number">
+        </li>
+        <li class="item item-input">
+          <span class="input-label" translate>Web Socket Path</span>
+          <input ng-model="server.path" placeholder="/mopidy/ws/" type="text">
+        </li>
+        <li class="item item-checkbox">
+          <span translate>Secure Connection</span>
+          <label class="checkbox">
+            <input ng-model="server.secure" type="checkbox">
+          </label>
+        </li>
+      </ul>
+    </form>
+    <div class="button-bar padding">
+      <button class="button" ng-click="test(getWebServiceURL())" translate>
+        Test Connection
+      </button>
+    </div>
+  </ion-content>
+  <ion-footer>
+  </ion-footer>
+</ion-view>

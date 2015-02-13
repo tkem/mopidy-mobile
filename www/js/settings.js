@@ -2,7 +2,8 @@ angular.module('mopidy-mobile.settings', [
   'ionic',
   'pascalprecht.translate',
   'mopidy-mobile.connection',
-  'mopidy-mobile.logging'
+  'mopidy-mobile.logging',
+  'mopidy-mobile.ui'
 ])
 
 .config(function($stateProvider, $translateProvider, connectionProvider, settingsProvider) {
@@ -10,127 +11,177 @@ angular.module('mopidy-mobile.settings', [
 
   $stateProvider
     .state('tabs.settings', {
+      abstract: true,
       url: '/settings',
       views: {
         'settings': {
-          templateUrl: 'templates/settings.html',
+          template: '<ion-nav-view></ion-nav-view>',
           controller: 'SettingsCtrl'
         }
       }
     })
-    .state('tabs.connections', {
-      url: '/connections',
-      views: {
-        'settings': {
-          templateUrl: 'templates/connections.html',
-          controller: 'ConnectionsCtrl'
+    .state('tabs.settings.root', {
+      url: '',
+      templateUrl: 'templates/settings.html',
+    })
+    .state('tabs.settings.servers', {
+      url: '/servers',
+      templateUrl: 'templates/servers.html'
+    })
+    .state('tabs.settings.server', {
+      url: '/servers/{name}',
+      templateUrl: 'templates/server.html',
+      controller: 'ServerCtrl',
+      resolve: {
+        name: function($stateParams) {
+          return $stateParams.name;
         }
       }
     })
-    .state('tabs.about', {
+    .state('tabs.settings.about', {
       url: '/about',
-      views: {
-        'settings': {
-          templateUrl: 'templates/about.html',
-          controller: 'AboutCtrl'
-        }
-      }
+      templateUrl: 'templates/about.html'
     })
   ;
 
-  connectionProvider.settings.backoffDelayMin(250);  // TODO: config?
-  connectionProvider.settings.backoffDelayMax(1000);  // TODO: check behavior...
+  connectionProvider.settings.backoffDelayMin(500);  // TODO: config?
+  connectionProvider.settings.backoffDelayMax(2000);  // TODO: check behavior...
   connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl', html.attr('data-ws-url')));
 
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
+
+  var stylesheet = settingsProvider.get('stylesheet');
+  if (stylesheet) {
+    angular.element(document.getElementById('stylesheet')).attr('href', stylesheet);
+  }
 })
 
 .controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, locales, settings) {
-  // TODO: use ws-url if present
-  function isWebExtension() {
-    return $document.find('html').attr('data-ws-url') !== undefined;
+  $log.info('Create SettingsCtrl');
+
+  function contains(obj, value) {
+    for (var name in obj) {
+      if (value === obj[name]) {
+        return true;
+      }
+    }
+    return false;
   }
+
+  $scope.locales = locales;
+  $scope.version = $document.find('html').attr('data-ws-url');  // TODO: app version
 
   $scope.settings = {
-    webSocketUrl: settings.get('webSocketUrl'),
+    action: settings.get('action', 'play'),
     locale: settings.get('locale', 'en'),
+    servers: settings.get('servers', {}),  // TODO: array?
     stylesheet: settings.get('stylesheet', 'css/ionic.min.css'),
-    action: settings.get('action', 'add+play'),
+    webSocketUrl: settings.get('webSocketUrl', $document.find('html').attr('data-ws-url'))
   };
 
-  if (!isWebExtension()) {
-    if (!$scope.settings.webSocketUrl) {
-      $state.go('^.connections');
-    }
-    $scope.connections = settings.get('connections');
+  // FIXME: better servers as Array?
+  $scope.count = function(obj) {
+    return Object.keys(obj).length;
   }
-  $scope.locales = locales;
 
-  $scope.$watch('settings.webSocketUrl', function(newValue, oldValue) {
+  $scope.remove = function(name) {
+    delete $scope.settings.servers[name];
+  }
+
+  $scope.$watch('settings.action', function(newValue, oldValue) {
     if (newValue !== oldValue) {
-      if (!newValue) {
-        $state.go('^.connections');
-      } else {
-        settings.set('webSocketUrl', newValue);
-        $log.log('Reconnecting to ' + newValue);
-        $window.location.hash = '';
-        $window.location.reload(true); // FIXME!!!
+      $log.info('New default action: "' + newValue + '"');
+      settings.set('action', newValue);
+      //TODO: actions.defaultAction(value);
+    }
+  });
+
+  $scope.$watch('settings.locale', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      $log.info('New locale: "' + newValue + '"');
+      settings.set('locale', newValue);
+      $translate.use(newValue);
+    }
+  });
+
+  $scope.$watchCollection('settings.servers', function(newValue, oldValue) {
+    if (newValue != oldValue) {
+      $log.log('servers changed', newValue, oldValue);
+      settings.set('servers', newValue);
+      if (!(contains(newValue, $scope.settings.webSocketUrl || ''))) {
+        $scope.settings.webSocketUrl = newValue[Object.keys(newValue)[0]];
       }
     }
   });
 
-  $scope.$watch('settings.locale', function(value) {
-    settings.set('locale', value);
-    $translate.use(value);
+  $scope.$watch('settings.stylesheet', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      $log.info('New stylesheet: "' + newValue + '"');
+      settings.set('stylesheet', newValue);
+      $document[0].getElementById('stylesheet').href = newValue;  // TODO: ?v=version
+    }
   });
 
-  $scope.$watch('settings.stylesheet', function(value) {
-    var link = angular.element(document.getElementById('stylesheet'));
-    settings.set('stylesheet', value);
-    link.attr('href', value);
+  $scope.$watch('settings.webSocketUrl', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      $log.log('webSocketUrl changed', newValue, oldValue);
+      settings.set('webSocketUrl', newValue);
+      $log.log('Reconnecting to ' + newValue);
+      // FIXME...
+      $window.location.hash = '';
+      $window.location.reload(true);
+    }
   });
 
-  $scope.$watch('settings.action', function(value) {
-    settings.set('action', value);
-  });
-
-  $rootScope.$on('connectionsChanged', function() {
-    $scope.connections = settings.get('connections');
-    $scope.settings.webSocketUrl = settings.get('webSocketUrl');
-  });
+  if ($scope.settings.webSocketUrl === undefined) {
+    $state.go('^.server');
+  }
 })
 
-.controller('ConnectionsCtrl', function($scope, $state, $rootScope, settings) {
-  $scope.connection = {
-    name: '',
-    host: '',
-    port: 6680,
-    path: '/mopidy/ws/'
-  };
+.controller('ServerCtrl', function($scope, $rootScope, $log, $state, $window, $ionicNavBarDelegate, popup, name) {
+  // TODO: global parseURL function
+  function parseWebSocketURL(url) {
+    var match = /^ws(s?):\/\/([^:\/]+):(\d*)(\/.*)/.exec(url);
+    return match && match.length ? {
+      secure: match[1] === 's',
+      host: match[2],
+      port: $window.parseInt(match[3]),
+      path: match[4]
+    } : {
+      secure: false,
+      host: '',
+      port: 6680,
+      path: '/mopidy/ws'
+    };
+  }
 
-  $scope.save = function(connection) {
-    // FIXME: check/test connectivity
-    var webSocketUrl = 'ws://' + connection.host + ':' + connection.port + connection.path;
-    var connections = settings.get('connections', {});
-    connections[webSocketUrl] = connection;
-    settings.set('connections', connections);
-    settings.set('webSocketUrl', webSocketUrl);
-    $rootScope.$broadcast('connectionsChanged');
-    $state.go('^.settings');
-  };
-})
+  var url = name ? $scope.settings.servers[name] : '';
 
-.controller('AboutCtrl', function($scope, $document) {
-  var version = $document.find('html').attr('data-version');
-  // TODO: app version
-  $scope.version = version;
-  $scope.platform = {
-    name: ionic.Platform.platform(),
-    device: ionic.Platform.device(),
-    version: ionic.Platform.version(),
-    isWebView: ionic.Platform.isWebView()
-  };
+  angular.extend($scope, {
+    server: angular.extend(parseWebSocketURL(url), {name: name}),
+    getWebSocketURL: function() {
+      return [
+        $scope.server.secure ? 'wss' : 'ws',
+        '://',
+        $scope.server.host,
+        ':',
+        $scope.server.port,
+        $scope.server.path
+      ].join('');
+    },
+    test: function() {
+      popup.alert('Not implemented yet');
+    }
+  });
+
+  $scope.$on('$ionicView.beforeLeave', function() {
+    $log.log('beforeLeave:', $scope.server);
+    if ($scope.server.name !== name) {
+      delete $scope.settings.servers[name];
+    }
+    $scope.settings.servers[$scope.server.name] = $scope.getWebSocketURL();
+  });
 })
 
 .provider('settings', function() {
