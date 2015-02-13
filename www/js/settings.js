@@ -5,7 +5,7 @@ angular.module('mopidy-mobile.settings', [
   'mopidy-mobile.logging'
 ])
 
-.config(function($stateProvider, $translateProvider, connectionProvider, loggingProvider, settingsProvider) {
+.config(function($stateProvider, $translateProvider, connectionProvider, settingsProvider) {
   var html = angular.element(window.document).find('html');
 
   $stateProvider
@@ -27,15 +27,6 @@ angular.module('mopidy-mobile.settings', [
         }
       }
     })
-    .state('tabs.logging', {
-      url: '/logging',
-      views: {
-        'settings': {
-          templateUrl: 'templates/logging.html',
-          controller: 'LoggingCtrl'
-        }
-      }
-    })
     .state('tabs.about', {
       url: '/about',
       views: {
@@ -50,13 +41,6 @@ angular.module('mopidy-mobile.settings', [
   connectionProvider.settings.backoffDelayMin(250);  // TODO: config?
   connectionProvider.settings.backoffDelayMax(1000);  // TODO: check behavior...
   connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl', html.attr('data-ws-url')));
-
-  angular.forEach(settingsProvider.get('logging'), function(value, key) {
-    if (angular.isFunction(loggingProvider[key])) {
-      loggingProvider[key](value);
-    }
-  });
-  //$logProvider.debugEnabled(settingsProvider.get('logging.debug') === 'true');
 
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
@@ -135,23 +119,6 @@ angular.module('mopidy-mobile.settings', [
     $rootScope.$broadcast('connectionsChanged');
     $state.go('^.settings');
   };
-})
-
-.controller('LoggingCtrl', function($scope, logging, settings) {
-  $scope.logging = {
-    enabled: logging.enabled(),
-    debugEnabled: logging.debugEnabled(),
-    maxBufferSize: logging.maxBufferSize()
-  };
-  $scope.format = angular.toJson;
-  $scope.messages = logging.messages;
-
-  $scope.$watch('logging', function(values) {
-    logging.enabled(values.enabled);
-    logging.debugEnabled(values.debugEnabled);
-    logging.maxBufferSize(values.maxBufferSize);
-    settings.set('logging', values);
-  }, true);
 })
 
 .controller('AboutCtrl', function($scope, $document) {

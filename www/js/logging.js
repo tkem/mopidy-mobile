@@ -1,6 +1,9 @@
-angular.module('mopidy-mobile.logging', ['ionic'])
+angular.module('mopidy-mobile.logging', [
+  'ionic',
+  'mopidy-mobile.ui'
+])
 
-.config(function($provide) {
+.config(function($provide, $stateProvider) {
   $provide.decorator('$log', function($delegate, logging) {
     var log = angular.copy($delegate);
 
@@ -19,6 +22,16 @@ angular.module('mopidy-mobile.logging', ['ionic'])
       error: wrap('error', log.error),
       debug: wrap('debug', log.debug)
     });
+  });
+
+  $stateProvider.state('tabs.logging', {
+    url: '/logging',
+    views: {
+      'settings': {
+        templateUrl: 'templates/logging.html',
+        controller: 'LoggingCtrl'
+      }
+    }
   });
 })
 
@@ -56,27 +69,83 @@ angular.module('mopidy-mobile.logging', ['ionic'])
   });
 
   provider.$get = function() {
-    var id = 0;
-    var messages = [];
+    var records = [];
     return angular.extend(angular.copy(provider), {
-      log: function(type, args) {
-        if (enabled) {
-          if (type !== 'debug' || debugEnabled) {
-            messages.push({id: id++, type: type, args: args});
-            if (messages.length > maxBufferSize) {
-              messages.splice(0, messages.length - maxBufferSize);
-            }
+      records: records,
+      clear: function() {
+        records.splice(0, records.length);
+      },
+      log: function(level, args) {
+        if (enabled && (level !== 'debug' || debugEnabled)) {
+          var record = {
+            time: Date.now(),
+            level: level,
+            args: args
+          };
+          if (records.push(record) > maxBufferSize) {
+            records.splice(0, records.length - maxBufferSize);
           }
         }
       },
       maxBufferSize: function(value) {
         var ret = provider.maxBufferSize(value);
-        if (messages.length > maxBufferSize) {
-          messages.splice(0, messages.length - maxBufferSize);
+        if (records.length > maxBufferSize) {
+          records.splice(0, records.length - maxBufferSize);
         }
         return ret;
-      },
-      messages: messages
+      }
     });
   };
+})
+
+.controller('LoggingCtrl', function($scope, logging) {
+  $scope.records = logging.records;
+  $scope.toJson = angular.toJson;
+})
+
+.controller('LoggingMenuCtrl', function($scope, $rootScope, popoverMenu, logging) {
+  function createPopoverMenu() {
+    return popoverMenu([{
+      text: 'Enable Logging',
+      model: 'logging.enabled'
+    }, {
+      text: 'Log Debug Messages',
+      model: 'logging.debugEnabled',
+      disabled: '!logging.enabled'
+    }, {
+      text: 'Clear',
+      click: 'popover.hide() && clear()',
+      disabled: '!logging.enabled'
+    }], {
+      scope: $scope
+    });
+  }
+
+  angular.extend($scope, {
+    popover: createPopoverMenu(),
+    logging: {
+      enabled: logging.enabled(),
+      debugEnabled: logging.debugEnabled()
+    },
+    clear: function() {
+      logging.clear();
+    }
+  });
+
+  $scope.$watch('logging.enabled', function(value) {
+    logging.enabled(value);
+  });
+  $scope.$watch('logging.debugEnabled', function(value) {
+    logging.debugEnabled(value);
+  });
+
+  $scope.$on('$destroy', function() {
+    $scope.popover.remove();
+  });
+
+  $rootScope.$on('$translateChangeSuccess', function() {
+    var tmp = $scope.popover;
+    $scope.popover = createPopoverMenu();
+    tmp.remove();
+  });
 });

@@ -1,38 +1,25 @@
 <ion-view view-title="{{'Logging' | translate}}">
+  <ion-nav-buttons side="secondary">
+    <button class="button button-clear icon mopidy-mobile-icon-more"
+            ng-click="popover.show($event)"
+            ng-controller="LoggingMenuCtrl"
+            >
+    </button>
+  </ion-nav-buttons>
   <ion-content>
-    <ul class="list">
-      <li class="item item-input item-toggle">
-        <span class="input-label" translate>Enable Logging</span>
-        <label class="toggle">
-          <input ng-model="logging.enabled" type="checkbox">
-          <div class="track">
-            <div class="handle"></div>
-          </div>
-        </label>
-      </li>
-      <li class="item item-input item-toggle">
-        <span class="input-label" translate>Log Debug Messages</span>
-        <label class="toggle">
-          <input ng-disabled="!logging.enabled" ng-model="logging.debugEnabled" type="checkbox">
-          <div class="track">
-            <div class="handle"></div>
-          </div>
-        </label>
-      </li>
-      <li class="item item-input">
-        <span class="input-label" translate>Log Buffer Size</span>
-        <input min="1" max="1000" ng-disabled="!logging.enabled" ng-model="logging.maxBufferSize"
-               type="number">
-      </li>
-    </ul>
-
     <div class="list">
-      <div class="item item-text-wrap" ng-repeat="message in messages">
-        {{message.id}}: [{{message.type}}]
-        <span ng-repeat="arg in message.args">
-          {{format(arg)}}
+      <ion-item
+         class = "item-icon-left"
+         ng-class="{'item-text-wrap' : record.json}"
+         ng-click="record.json = !record.json"
+         ng-repeat="record in records"
+         >
+        <i class="icon" ng-class="'mopidy-mobile-icon-' + record.level"></i>
+        {{record.time | date:'HH:mm:ss.sss'}}:
+        <span ng-repeat="arg in record.args">
+          {{record.json ? toJson(arg) : arg.toString()}}
         </span>
-      </div>
+      </ion-item>
     </div>
   </ion-content>
 </ion-view>

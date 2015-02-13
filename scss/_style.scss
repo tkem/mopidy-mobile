@@ -107,6 +107,16 @@ $icomoon-font-path: "../lib/icomoon/dist/fonts" !default;
     @extend .#{$mopidy-mobile-icon-more};
 }
 
+.mopidy-mobile-icon-info {
+    @extend .#{$mopidy-mobile-icon-info};
+}
+.mopidy-mobile-icon-warn {
+    @extend .#{$mopidy-mobile-icon-warn};
+}
+.mopidy-mobile-icon-error {
+    @extend .#{$mopidy-mobile-icon-error};
+}
+
 /* Popover menus; see http://forum.ionicframework.com/t/popover-sizing/8251/8 */
 ion-popover-view.mopidy-mobile-menu {
     height: auto !important;
