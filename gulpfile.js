@@ -57,6 +57,7 @@ gulp.task('uglify', function(done) {
 gulp.task('bundle', ['uglify'], function(done) {
   gulp.src([
     'www/lib/ionic/js/ionic.bundle.min.js',
+    'www/lib/ngCordova/dist/ng-cordova.min.js',
     'www/lib/angular-translate/angular-translate.min.js',
     'www/lib/mopidy/dist/mopidy.min.js',
     'www/js/mopidy-mobile.min.js'

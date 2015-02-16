@@ -18,5 +18,8 @@
     "gulp-util": "^2.2.14",
     "jshint-summary": "^0.3.0",
     "shelljs": "^0.3.0"
-  }
+  },
+  "cordovaPlugins": [
+    "https://github.com/whiteoctober/cordova-plugin-app-version.git"
+  ]
 }

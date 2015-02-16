@@ -83,11 +83,11 @@ angular.module('mopidy-mobile.settings', [
   // FIXME: better servers as Array?
   $scope.count = function(obj) {
     return Object.keys(obj).length;
-  }
+  };
 
   $scope.remove = function(name) {
     delete $scope.settings.servers[name];
-  }
+  };
 
   $scope.$watch('settings.action', function(newValue, oldValue) {
     if (newValue !== oldValue) {

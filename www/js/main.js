@@ -1,5 +1,6 @@
 angular.module('mopidy-mobile', [
   'ionic',
+  'ngCordova',
   'mopidy-mobile.connection',
   'mopidy-mobile.library',
   'mopidy-mobile.locales',
@@ -69,7 +70,7 @@ angular.module('mopidy-mobile', [
   });
 })
 
-.run(function($rootScope, $filter, $window, $ionicPlatform) {
+.run(function($rootScope, $filter, $window, $log, $ionicPlatform, $cordovaAppVersion) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the
     // accessory bar above the keyboard for form inputs)
@@ -80,6 +81,12 @@ angular.module('mopidy-mobile', [
     //  // org.apache.cordova.statusbar required
     //  StatusBar.styleDefault();
     //}
+    document.addEventListener('deviceready', function() {
+      $log.log('deviceready');
+      $cordovaAppVersion.getAppVersion().then(function(version) {
+        $log.log('appVersion: ' + version);
+      });
+    }, false);
   });
 
   // FIXME: how to handle $stateChangeError

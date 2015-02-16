@@ -15,7 +15,7 @@
           <input ng-model="server.port" placeholder="6680" type="number">
         </li>
         <li class="item item-input">
-          <span class="input-label" translate>Web Socket Path</span>
+          <span class="input-label" translate>WebSocket Path</span>
           <input ng-model="server.path" placeholder="/mopidy/ws/" type="text">
         </li>
         <li class="item item-checkbox">
@@ -27,8 +27,8 @@
       </ul>
     </form>
     <div class="button-bar padding">
-      <button class="button" ng-click="test(getWebServiceURL())" translate>
-        Test Connection
+      <button class="button button-assertive" ng-click="test(getWebServiceURL())" translate>
+        Test
       </button>
     </div>
   </ion-content>
