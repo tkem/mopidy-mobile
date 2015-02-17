@@ -4,18 +4,7 @@ import os
 
 from mopidy import config, ext
 
-__version__ = '0.7.0a2'
-
-
-def factory(config, core):
-    from tornado.web import RedirectHandler
-    from .web import IndexHandler, StaticHandler
-    path = os.path.join(os.path.dirname(__file__), 'www')
-    return [
-        (r'/', RedirectHandler, {'url': 'index.html'}),
-        (r'/(index.html)', IndexHandler, {'config': config, 'path': path}),
-        (r'/(.*)', StaticHandler, {'path': path})
-    ]
+__version__ = '0.7.0a3'
 
 
 class Extension(ext.Extension):
@@ -34,4 +23,14 @@ class Extension(ext.Extension):
         return config.read(os.path.join(os.path.dirname(__file__), 'ext.conf'))
 
     def setup(self, registry):
-        registry.add('http:app', {'name': 'mobile', 'factory': factory})
+        registry.add('http:app', {'name': 'mobile', 'factory': self.factory})
+
+    def factory(self, config, core):
+        from tornado.web import RedirectHandler
+        from .web import IndexHandler, StaticHandler
+        path = os.path.join(os.path.dirname(__file__), 'www')
+        return [
+            (r'/', RedirectHandler, {'url': 'index.html'}),
+            (r'/(index.html)', IndexHandler, {'config': config, 'path': path}),
+            (r'/(.*)', StaticHandler, {'path': path})
+        ]

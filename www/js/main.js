@@ -1,5 +1,6 @@
 angular.module('mopidy-mobile', [
   'ionic',
+  'mopidy-mobile.actions',
   'mopidy-mobile.connection',
   'mopidy-mobile.library',
   'mopidy-mobile.locales',

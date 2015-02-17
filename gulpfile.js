@@ -70,6 +70,8 @@ gulp.task('dist', ['sass', 'bundle'], function() {
   gulp.src('www/tornado.html')
     .pipe(rename('index.html'))
     .pipe(gulp.dest(paths.dist));
+  gulp.src('resources/web/*.png')
+    .pipe(gulp.dest(paths.dist + 'images/'));
   gulp.src([
     'www/css/*.min.css',
     'www/images/**',

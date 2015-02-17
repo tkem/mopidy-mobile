@@ -34,16 +34,16 @@ installed.  Then run::
 Configuration
 ------------------------------------------------------------------------
 
-All of these are optional for now::
+All of these are optional and subject to change for now::
 
   [mobile]
   enabled = true
 
-  # application title
-  title = Mopidy Mobile Web Extension
+  # application title - $hostname and $port can be used in the title
+  title = Mopidy Mobile on $hostname
 
   # WebSocket URL - set this if Mopidy's WebSocket is not available at
-  # its default path /mopidy/ws/, e.g. if you're using a reverse proxy
+  # its default path /mopidy/ws/, e.g. when using a reverse proxy
   ws_url =
 
 

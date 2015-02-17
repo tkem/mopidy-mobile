@@ -1,4 +1,4 @@
-<ion-view view-title="{{'Logging' | translate}}">
+<ion-view view-title="{{'Logging &amp; Debugging' | translate}}">
   <ion-nav-buttons side="secondary">
     <button class="button button-clear icon mopidy-mobile-icon-more"
             ng-click="popover.show($event)"
@@ -7,6 +7,9 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
+    <p class="padding" ng-if="records.length == 0" translate>
+      No log records available.
+    </p>
     <div class="list">
       <ion-item
          class = "item-icon-left"

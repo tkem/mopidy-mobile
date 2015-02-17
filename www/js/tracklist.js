@@ -123,8 +123,8 @@ angular.module('mopidy-mobile.tracklist', [
       disabled: '!tlTracks.length',
       hellip: true
     }, {
-      text: 'Add URL',
-      click: 'popover.hide() && addURL()',
+      text: 'Stream URL',
+      click: 'popover.hide() && playURL()',
       hellip: true
     }, {
       text: 'Save as',
@@ -138,8 +138,8 @@ angular.module('mopidy-mobile.tracklist', [
 
   angular.extend($scope, {
     popover: createPopoverMenu(),
-    addURL: function() {
-      popup.prompt('Stream URL').then(function(url) {
+    playURL: function() {
+      popup.prompt('Stream URL', 'http://example.com/stream.mp3').then(function(url) {
         if (url) {
           connection(function(mopidy) {
             return mopidy.tracklist.add({uri: url}).then(function(tlTracks) {
@@ -159,7 +159,7 @@ angular.module('mopidy-mobile.tracklist', [
       });
     },
     save: function() {
-      popup.prompt('Playlist Name').then(function(name) {
+      popup.prompt('Playlist Name', 'My Playlist').then(function(name) {
         if (name) {
           connection(function(mopidy) {
             return mopidy.playlists.create({name: name}).then(function(playlist) {

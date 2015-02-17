@@ -200,19 +200,6 @@ angular.module('mopidy-mobile.connection', [])
         } else {
           return uri;
         }
-      },
-      test: function(webSocketUrl) {
-        return $q(function(resolve, reject) {
-          // FIXME: report as true/false, close mopidy object?
-          var mopidy = new Mopidy(angular.extend({}, settings, {webSocketUrl: webSocketUrl}));
-          mopidy.once('state:online', function() {
-            resolve(mopidy);
-          });
-          mopidy.once('state:offline', function() {
-            reject({name: 'ConnectionError'});
-          });
-          mopidy.connect();
-        });
       }
     });
   };

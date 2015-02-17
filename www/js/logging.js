@@ -113,7 +113,7 @@ angular.module('mopidy-mobile.logging', [
       model: 'logging.debugEnabled',
       disabled: '!logging.enabled'
     }, {
-      text: 'Clear',
+      text: 'Clear Log',
       click: 'popover.hide() && clear()',
       disabled: '!logging.enabled'
     }], {

@@ -6,75 +6,89 @@ angular.module('mopidy-mobile.settings', [
   'mopidy-mobile.ui'
 ])
 
-.config(function($stateProvider, $translateProvider, connectionProvider, settingsProvider) {
-  var html = angular.element(window.document).find('html');
-
-  $stateProvider
-    .state('tabs.settings', {
-      abstract: true,
-      url: '/settings',
-      views: {
-        'settings': {
-          template: '<ion-nav-view></ion-nav-view>',
-          controller: 'SettingsCtrl',
-          resolve: {
-            version: function($q, $document, $window, $log, $ionicPlatform) {
-              return $ionicPlatform.ready().then(function() {
-                return $q(function(resolve) {
-                  if ($window.cordova && $window.cordova.getAppVersion) {
-                    $window.cordova.getAppVersion(function(version) {
-                      resolve(version);
-                    });
-                  } else {
-                    resolve($document.find('html').attr('data-version') || 'dev');
-                  }
-                });
+.config(function($stateProvider) {
+  $stateProvider.state('tabs.settings', {
+    abstract: true,
+    url: '/settings',
+    views: {
+      'settings': {
+        template: '<ion-nav-view></ion-nav-view>',
+        controller: 'SettingsCtrl',
+        resolve: {
+          version: function($q, $document, $window, $log, $ionicPlatform) {
+            return $ionicPlatform.ready().then(function() {
+              return $q(function(resolve) {
+                if ($window.cordova && $window.cordova.getAppVersion) {
+                  $window.cordova.getAppVersion(function(version) {
+                    resolve(version);
+                  });
+                } else {
+                  resolve($document.find('html').attr('data-version') || 'dev');
+                }
               });
-            }
+            });
           }
         }
       }
-    })
-    .state('tabs.settings.root', {
-      url: '',
-      templateUrl: 'templates/settings.html',
-    })
-    .state('tabs.settings.servers', {
-      url: '/servers',
-      templateUrl: 'templates/servers.html'
-    })
-    .state('tabs.settings.server', {
-      url: '/servers/{name}',
-      templateUrl: 'templates/server.html',
-      controller: 'ServerCtrl',
-      resolve: {
-        name: function($stateParams) {
-          return $stateParams.name;
-        }
+    }
+  }).state('tabs.settings.root', {
+    url: '',
+    templateUrl: 'templates/settings.html',
+  }).state('tabs.settings.servers', {
+    url: '/servers',
+    templateUrl: 'templates/servers.html'
+  }).state('tabs.settings.server', {
+    url: '/servers/{name}',
+    templateUrl: 'templates/server.html',
+    controller: 'ServerCtrl',
+    resolve: {
+      name: function($stateParams) {
+        return $stateParams.name;
       }
-    })
-    .state('tabs.settings.about', {
-      url: '/about',
-      templateUrl: 'templates/about.html'
-    })
-  ;
+    }
+  }).state('tabs.settings.about', {
+    url: '/about',
+    templateUrl: 'templates/about.html'
+  });
+})
 
+.config(function($translateProvider, connectionProvider, settingsProvider, stylesheet, themes) {
+  var theme = settingsProvider.get('theme');
+  if (theme && theme in themes) {
+    stylesheet.setTheme(theme);
+  }
+  if (settingsProvider.has('webSocketUrl')) {
+    connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl'));
+  } else {
+    connectionProvider.settings.webSocketUrl(angular.element(document).find('html').attr('data-ws-url'));
+  }
   connectionProvider.settings.backoffDelayMin(500);  // TODO: config?
   connectionProvider.settings.backoffDelayMax(2000);  // TODO: check behavior...
-  connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl', html.attr('data-ws-url')));
 
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
+})
 
-  var stylesheet = settingsProvider.get('stylesheet');
-  if (stylesheet) {
-    angular.element(document.getElementById('stylesheet')).attr('href', stylesheet);
+.constant('stylesheet', {
+  getTheme: function() {
+    var element = window.document.getElementById('stylesheet');
+    var match = /([^.\/]+).min.css(?:\?.*)?$/.exec(element.href);
+    //console.log(element.href, match);
+    return match ? match[1] : null;
+  },
+  setTheme: function(name) {
+    var element = window.document.getElementById('stylesheet');
+    var version = angular.element(document).find('html').attr('data-version');
+    element.href = 'css/' + name + '.min.css' + (version ? '?v=' + version : '');
   }
 })
 
-.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, locales, settings, version) {
-  $log.info('Create SettingsCtrl');
+.constant('themes', {
+  'ionic-light': 'Ionic Light',
+  'ionic-dark': 'Ionic Dark'
+})
 
+.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, locales, settings, stylesheet, themes, version) {
   function contains(obj, value) {
     for (var name in obj) {
       if (value === obj[name]) {
@@ -85,15 +99,21 @@ angular.module('mopidy-mobile.settings', [
   }
 
   $scope.locales = locales;
+  $scope.themes = themes;
   $scope.version = version;
 
   $scope.settings = {
     action: settings.get('action', 'play'),
     locale: settings.get('locale', 'en'),
     servers: settings.get('servers', {}),  // TODO: array?
-    stylesheet: settings.get('stylesheet', 'css/ionic.min.css'),
+    theme: stylesheet.getTheme(),
     webSocketUrl: settings.get('webSocketUrl', $document.find('html').attr('data-ws-url'))
   };
+
+  $log.debug('Default action', $scope.settings.action);
+  $log.debug('Locale', $scope.settings.locale);
+  $log.debug('Theme', $scope.settings.theme);
+  $log.debug('WebSocket URL', $scope.settings.webSocketUrl);
 
   // FIXME: better servers as Array?
   $scope.count = function(obj) {
@@ -102,6 +122,10 @@ angular.module('mopidy-mobile.settings', [
 
   $scope.remove = function(name) {
     delete $scope.settings.servers[name];
+  };
+
+  $scope.open = function(href) {
+    $window.open(href, '_system');
   };
 
   $scope.$watch('settings.action', function(newValue, oldValue) {
@@ -130,11 +154,11 @@ angular.module('mopidy-mobile.settings', [
     }
   });
 
-  $scope.$watch('settings.stylesheet', function(newValue, oldValue) {
+  $scope.$watch('settings.theme', function(newValue, oldValue) {
     if (newValue !== oldValue) {
-      $log.info('New stylesheet: "' + newValue + '"');
-      settings.set('stylesheet', newValue);
-      $document[0].getElementById('stylesheet').href = newValue;  // TODO: ?v=version
+      $log.info('New theme: "' + newValue + '"');
+      stylesheet.setTheme(newValue);
+      settings.set('theme', newValue);
     }
   });
 
@@ -154,7 +178,7 @@ angular.module('mopidy-mobile.settings', [
   }
 })
 
-.controller('ServerCtrl', function($scope, $rootScope, $log, $state, $window, $ionicNavBarDelegate, popup, name) {
+.controller('ServerCtrl', function($scope, $log, $window, $ionicLoading, popup, name) {
   // TODO: global parseURL function
   function parseWebSocketURL(url) {
     var match = /^ws(s?):\/\/([^:\/]+):(\d*)(\/.*)/.exec(url);
@@ -185,8 +209,27 @@ angular.module('mopidy-mobile.settings', [
         $scope.server.path
       ].join('');
     },
-    test: function() {
-      popup.alert('Not implemented yet');
+    test: function(webSocketUrl) {
+      var mopidy = new Mopidy({
+        autoConnect: false,
+        callingConvention: 'by-position-or-by-name',
+        webSocketUrl: webSocketUrl
+      });
+      mopidy.once('state:online', function() {
+        $ionicLoading.hide();
+        popup.alert('Connection OK');
+        mopidy.close();
+        mopidy.off();
+      });
+      mopidy.once('state:offline', function() {
+        $ionicLoading.hide();
+        popup.alert('Connection Error');
+        mopidy.close();
+        mopidy.off();
+      });
+      $ionicLoading.show();
+      mopidy.on($log.debug.bind($log));
+      mopidy.connect();
     }
   });
 
@@ -215,6 +258,9 @@ angular.module('mopidy-mobile.settings', [
       } else {
         return defaultValue;
       }
+    },
+    has: function(key) {
+      return prefix + key in window.localStorage;
     }
   });
 
@@ -226,50 +272,4 @@ angular.module('mopidy-mobile.settings', [
       }
     });
   };
-})
-
-.factory('actions', function(connection, settings) {
-  function params(obj) {
-    if (angular.isArray(obj)) {
-      if (obj.length && obj[0].__type__ === 'Track') {
-        return {tracks: obj};
-      } else {
-        return {uris: obj.map(function(model) { return model.uri; })};
-      }
-    } else {
-      if (obj.__type__ === 'Track') {
-        return {tracks: [obj]};
-      } else {
-        return {uri: obj.uri};
-      }
-    }
-  }
-
-  var actions = {
-    add: function(obj) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add(params(obj));
-      }, true);
-    },
-    play: function(obj) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.add(params(obj)).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      }, true);
-    },
-    replace: function(obj) {
-      connection(function(mopidy) {
-        return mopidy.tracklist.clear().then(function() {
-          return mopidy.tracklist.add(params(obj));
-        }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
-        });
-      }, true);
-    },
-  };
-  actions['default'] = function(obj) {
-    return (actions[settings.get('action', 'play')] || actions.play)(obj);
-  };
-  return actions;
 });

@@ -1,3 +1,7 @@
+/* Mopidy-Mobile uses 64x64 px thumbnails */
+$item-thumbnail-width:            64px;
+$item-thumbnail-height:           64px;
+
 /* The path to the ionicons font files, relative to the built CSS in www/css */
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
@@ -29,6 +33,11 @@ $icomoon-font-path: "../lib/icomoon/dist/fonts" !default;
 /* Style up your nav-bar */
 .nav-bar-title em {
     font-style: italic;
+}
+
+/* TODO: $link-color? */
+a {
+  color: $base-color;
 }
 
 /* Icons */

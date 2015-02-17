@@ -25,9 +25,9 @@
         <div class="input-label" translate>
           Theme
         </div>
-        <select ng-model="settings.stylesheet">
-          <option value="css/ionic.min.css">Ionic</option>
-          <option value="css/ionic-ios.min.css">Ionic iOS</option>
+        <select ng-model="settings.theme"
+                ng-options="theme as name for (theme, name) in themes"
+                >
         </select>
       </label>
 
@@ -36,8 +36,10 @@
           Default Click Action
         </div>
         <select ng-model="settings.action">
+          <option value="play" translate>Play Now</option>
+          <option value="next" translate>Play Next</option>
           <option value="add" translate>Add to Tracklist</option>
-          <option value="play" translate>Play Track</option>
+          <option value="replace" translate>Replace Tracklist</option>
         </select>
       </label>
     </div>
@@ -48,7 +50,7 @@
         <i class="icon icon-accessory ion-chevron-right"></i>
       </a>
       <a class="item item-icon-right" ui-sref="tabs.logging">
-        <span translate>Logging</span>
+        <span translate>Logging &amp; Debugging</span>
         <i class="icon icon-accessory ion-chevron-right"></i>
       </a>
       <a class="item item-icon-right" ui-sref="tabs.settings.about">

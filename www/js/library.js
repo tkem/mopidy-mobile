@@ -1,8 +1,8 @@
 
 angular.module('mopidy-mobile.library', [
   'ionic',
+  'mopidy-mobile.actions',
   'mopidy-mobile.connection',
-  'mopidy-mobile.settings',
   'mopidy-mobile.ui'
 ])
 
@@ -161,15 +161,19 @@ angular.module('mopidy-mobile.library', [
 .controller('LibraryMenuCtrl', function($scope, $rootScope, popoverMenu, actions) {
   function createPopoverMenu() {
     return popoverMenu([{
-      text: 'Play All Tracks',
+      text: 'Play Now',
       click: 'popover.hide() && actions.play(tracks)',
       disabled: '!tracks.length'
     }, {
-      text: 'Add Tracks to Tracklist',
+      text: 'Play Next',
+      click: 'popover.hide() && actions.next(tracks)',
+      disabled: '!tracks.length'
+    }, {
+      text: 'Add to Tracklist',
       click: 'popover.hide() && actions.add(tracks)',
       disabled: '!tracks.length'
     }, {
-      text: 'Replace Current Tracklist',
+      text: 'Replace Tracklist',
       click: 'popover.hide() && actions.replace(tracks)',
       disabled: '!tracks.length'
     }], {

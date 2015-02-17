@@ -1,0 +1,71 @@
+/*
+
+To customize the look and feel of Mopidy-Mobile, you can override
+the variables in _variables.scss and ionic's
+../www/lib/ionic/scss/_variables.scss file.
+
+*/
+
+/* unchanged, but need to put these into scope... */
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #387ef5 !default;
+$dark:                            #444 !default;
+
+$base-background-color:           $dark;
+$base-color:                      $light;
+
+$button-default-bg:               $dark;
+$button-default-text:             $light;
+$button-default-border:           #111 !default;
+$button-default-active-bg:        #262626 !default;
+$button-default-active-border:    #000 !default;
+
+$item-default-bg:                 $button-default-bg;
+$item-default-border:             $button-default-border;
+$item-default-text:               $button-default-text;
+$item-default-active-bg:          $button-default-active-bg;
+$item-default-active-border:      $button-default-active-border;
+
+$bar-transparency:                1 !default;
+
+$bar-default-bg:                  rgba($button-default-bg, $bar-transparency) !default;
+$bar-default-text:                $button-default-text !default;
+$bar-default-border:              $button-default-border !default;
+$bar-default-active-bg:           $button-default-active-bg !default;
+$bar-default-active-border:       $button-default-active-border !default;
+
+$popup-background-color:          rgba(64,64,64,0.9) !default;
+
+$input-color:                     darken($base-color, 15%) !default;
+$input-label-color:               $base-color;
+
+$range-default-track-bg:          lighten($button-default-bg, 20%) !default;
+$checkbox-off-bg-color:           $dark !default;
+
+@import "style";
+
+/* Override some hardcoded/missing colors */
+.item {
+  p {
+    color: #aaa;
+  }
+}
+.item-complex .item-content, .item-radio .item-content {
+  background-color: $dark;
+}
+.item-select {
+  select {
+    color: $input-label-color !important;
+  }
+}
+.popup-body {
+  input {
+    background-color: transparent;
+  }
+}
+input[type="range"] {
+  &::-webkit-slider-thumb:before {
+    background: $light !important;
+  }
+}

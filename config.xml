@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.mopidymobile190318" android-versionCode="6" version="0.6.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ionicframework.mopidymobile190318" version="0.7.0">
   <name>Mopidy Mobile</name>
   <description>
     Mopidy Mobile App.
   </description>
-  <author email="apps.tkem@gmail.com">
+  <author email="tkemmer@computer.org">
     Thomas Kemmer
   </author>
   <content src="index.html"/>
