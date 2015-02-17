@@ -1,6 +1,5 @@
 angular.module('mopidy-mobile', [
   'ionic',
-  'ngCordova',
   'mopidy-mobile.connection',
   'mopidy-mobile.library',
   'mopidy-mobile.locales',
@@ -70,23 +69,27 @@ angular.module('mopidy-mobile', [
   });
 })
 
-.run(function($rootScope, $filter, $window, $log, $ionicPlatform, $cordovaAppVersion) {
+.run(function($rootScope, $filter, $window, $ionicPlatform) {
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the
-    // accessory bar above the keyboard for form inputs)
-    if ($window.cordova && $window.cordova.plugins.Keyboard) {
-      $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    if ($window.cordova) {
+      //$window.alert('cordova ready');
+      //$window.alert('cordova getAppVersion ' + $window.cordova.getAppVersion);
+      //if ($window.cordova.getAppVersion) {
+      //  $window.cordova.getAppVersion(function(version) {
+      //    $window.alert('appVersion: ' + version);
+      //  });
+      //}
+
+      // Hide the accessory bar by default (remove this to show the
+      // accessory bar above the keyboard for form inputs)
+      //if ($window.cordova.plugins.Keyboard) {
+      //  $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      //}
+      //if (window.StatusBar) {
+      //  // org.apache.cordova.statusbar required
+      //  StatusBar.styleDefault();
+      //}
     }
-    //if (window.StatusBar) {
-    //  // org.apache.cordova.statusbar required
-    //  StatusBar.styleDefault();
-    //}
-    document.addEventListener('deviceready', function() {
-      $log.log('deviceready');
-      $cordovaAppVersion.getAppVersion().then(function(version) {
-        $log.log('appVersion: ' + version);
-      });
-    }, false);
   });
 
   // FIXME: how to handle $stateChangeError

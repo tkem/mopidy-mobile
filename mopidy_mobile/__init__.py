@@ -4,7 +4,7 @@ import os
 
 from mopidy import config, ext
 
-__version__ = '0.6.3'
+__version__ = '0.7.0a2'
 
 
 def factory(config, core):

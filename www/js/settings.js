@@ -16,7 +16,22 @@ angular.module('mopidy-mobile.settings', [
       views: {
         'settings': {
           template: '<ion-nav-view></ion-nav-view>',
-          controller: 'SettingsCtrl'
+          controller: 'SettingsCtrl',
+          resolve: {
+            version: function($q, $document, $window, $log, $ionicPlatform) {
+              return $ionicPlatform.ready().then(function() {
+                return $q(function(resolve) {
+                  if ($window.cordova && $window.cordova.getAppVersion) {
+                    $window.cordova.getAppVersion(function(version) {
+                      resolve(version);
+                    });
+                  } else {
+                    resolve($document.find('html').attr('data-version') || 'dev');
+                  }
+                });
+              });
+            }
+          }
         }
       }
     })
@@ -57,7 +72,7 @@ angular.module('mopidy-mobile.settings', [
   }
 })
 
-.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, locales, settings) {
+.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, locales, settings, version) {
   $log.info('Create SettingsCtrl');
 
   function contains(obj, value) {
@@ -70,7 +85,7 @@ angular.module('mopidy-mobile.settings', [
   }
 
   $scope.locales = locales;
-  $scope.version = $document.find('html').attr('data-ws-url');  // TODO: app version
+  $scope.version = version;
 
   $scope.settings = {
     action: settings.get('action', 'play'),
