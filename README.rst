@@ -1,40 +1,28 @@
-Mopidy-Mobile
+Mopidy Mobile
 ========================================================================
 
-Mopidy-Mobile is a Mopidy_ Web extension and hybrid mobile app,
-currently supporting iOS 7+ and Android 4.4.
-
-This project is in early development.  At this time, it's still missing
-some essential functionality, and it will not always work as expected.
-
-Initial working releases will be announced on the `Mopidy mailing list`_
-and/or `discussion forum`_.
+Mopidy Mobile is a Mopidy_ Web extension and hybrid mobile app,
+currently supporting iOS 7+ and Android 4.4.  Users of older Android
+versions may still access the Web extension using Google's `Chrome
+browser`_.
 
 
 Installation
 ------------------------------------------------------------------------
 
-The Web extension can be installed using pip_ by running::
+The Mopidy Web extension can be installed using pip_ by running::
 
   pip install Mopidy-Mobile
 
-For now, the Android app is available for beta testing for members of
-the `Mopidy mailing list`_ only; if you are already a member and want
-to participate in testing, please follow `these instructions`_.
-
-To build Mopidy-Mobile from source, you need to have at least npm_
-installed.  Then run::
-
-  npm install -g ionic gulp
-  npm install
-  gulp install
-  gulp dist
+An Android app is available for beta testing for members of the Mopidy
+`announcement mailing list`_.  If you are already a member and want to
+participate in testing, please follow these instructions_.
 
 
 Configuration
 ------------------------------------------------------------------------
 
-All of these are optional and subject to change for now::
+Please note that these are subject to change for now::
 
   [mobile]
   enabled = true
@@ -45,6 +33,30 @@ All of these are optional and subject to change for now::
   # WebSocket URL - set this if Mopidy's WebSocket is not available at
   # its default path /mopidy/ws/, e.g. when using a reverse proxy
   ws_url =
+
+
+Building from Source
+------------------------------------------------------------------------
+
+Mopidy Mobile is built using Ionic_, AngularJS_ and `Apache Cordova`_,
+and uses npm_ and gulp_ for its build system, so it is recommended to
+familiarize yourself with these tools before you start.
+
+To build the Mopidy Web extension, you need to have npm_ and gulp_
+installed.  Then run::
+
+  npm install
+  gulp install
+  gulp dist
+  python setup.py develop
+
+To build the hybrid app for Android, follow Ionic's `installation
+guide`_ to to make sure you have everything needed for Android
+development.  Then run::
+
+  ionic platform add android
+  ionic resources
+  ionic build android
 
 
 Project Resources
@@ -80,13 +92,18 @@ Licensed under the `Apache License, Version 2.0`_.
 
 
 .. _Mopidy: http://www.mopidy.com/
+.. _Chrome browser: https://play.google.com/store/apps/details?id=com.android.chrome
 
 .. _pip: https://pip.pypa.io/en/latest/
-.. _npm: http://www.npmjs.org/
-.. _these instructions: https://play.google.com/apps/testing/com.ionicframework.mopidymobile190318
+.. _announcement mailing list: https://groups.google.com/d/forum/mopidy
+.. _instructions: https://play.google.com/apps/testing/com.ionicframework.mopidymobile190318
 
-.. _Mopidy mailing list: https://groups.google.com/d/forum/mopidy
-.. _discussion forum: https://discuss.mopidy.com/
+.. _Ionic: http://ionicframework.com/
+.. _AngularJS: https://angularjs.org/
+.. _Apache Cordova: http://cordova.apache.org/
+.. _npm: http://www.npmjs.org/
+.. _gulp: http://gulpjs.com/
+.. _installation guide: http://ionicframework.com/docs/guide/installation.html
 
 .. _Issue Tracker: https://github.com/tkem/mopidy-mobile/issues/
 .. _Source Code: https://github.com/tkem/mopidy-mobile/

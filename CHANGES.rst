@@ -1,3 +1,13 @@
+0.7.0 2015-02-20
+----------------
+
+- Manage multiple server connections in app.
+
+- Prepare for new Mopidy `mixer` API.
+
+- Various UI improvements.
+
+
 0.6.3 2015-02-12
 ----------------
 
