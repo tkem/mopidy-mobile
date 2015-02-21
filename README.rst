@@ -1,28 +1,29 @@
 Mopidy Mobile
 ========================================================================
 
-Mopidy Mobile is a Mopidy_ Web extension and hybrid mobile app,
-currently supporting iOS 7+ and Android 4.4.  Users of older Android
-versions may still access the Web extension using Google's `Chrome
-browser`_.
+Mopidy Mobile is a Mopidy_ Web client extension and hybrid mobile app,
+currently supporting iOS 7+ and Android 4.4 and higher.  Users of
+older Android versions may still access the Web extension using
+Google's `Chrome browser`_.
 
 
 Installation
 ------------------------------------------------------------------------
 
-The Mopidy Web extension can be installed using pip_ by running::
+The Web extension can be installed using pip_ by running::
 
   pip install Mopidy-Mobile
 
-An Android app is available for beta testing for members of the Mopidy
-`announcement mailing list`_.  If you are already a member and want to
+The Android app is available for beta testing for members of the
+Mopidy `announcement mailing list`_.  If you are a member and want to
 participate in testing, please follow these instructions_.
 
 
 Configuration
 ------------------------------------------------------------------------
 
-Please note that these are subject to change for now::
+Note that configuration settings for the Web extension are still
+subject to change::
 
   [mobile]
   enabled = true
@@ -40,7 +41,7 @@ Building from Source
 
 Mopidy Mobile is built using Ionic_, AngularJS_ and `Apache Cordova`_,
 and uses npm_ and gulp_ for its build system, so it is recommended to
-familiarize yourself with these tools before you start.
+familiarize yourself with these before you start.
 
 To build the Mopidy Web extension, you need to have npm_ and gulp_
 installed.  Then run::
@@ -50,9 +51,9 @@ installed.  Then run::
   gulp dist
   python setup.py develop
 
-To build the hybrid app for Android, follow Ionic's `installation
-guide`_ to to make sure you have everything needed for Android
-development.  Then run::
+To build the hybrid app for Android, please follow Ionic's
+`installation guide`_ to make sure you have everything needed for
+Android development.  Then run::
 
   ionic platform add android
   ionic resources

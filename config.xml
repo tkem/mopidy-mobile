@@ -2,10 +2,10 @@
 <widget id="com.ionicframework.mopidymobile190318" version="0.7.0">
   <name>Mopidy Mobile</name>
   <description>
-    Mopidy Mobile is a Mopidy Web extension and hybrid mobile app,
-    currently supporting iOS 7+ and Android 4.4. Users of older
-    Android versions may still access the Web extension using Google's
-    Chrome browser.
+    Mopidy Mobile is a Mopidy_ Web client extension and hybrid mobile
+    app, currently supporting iOS 7+ and Android 4.4 and higher.
+    Users of older Android versions may still access the Web extension
+    using Google's Chrome browser.
   </description>
   <author email="tkemmer@computer.org">
     Thomas Kemmer
