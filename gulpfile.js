@@ -67,9 +67,6 @@ gulp.task('bundle', ['uglify'], function(done) {
 });
 
 gulp.task('dist', ['sass', 'bundle'], function() {
-  gulp.src('www/tornado.html')
-    .pipe(rename('index.html'))
-    .pipe(gulp.dest(paths.dist));
   gulp.src('resources/web/*.png')
     .pipe(gulp.dest(paths.dist + 'images/'));
   gulp.src([
@@ -84,7 +81,11 @@ gulp.task('dist', ['sass', 'bundle'], function() {
 });
 
 gulp.task('clean', function(cb) {
-  del([paths.dist, paths.css, paths.js + '/*.min.js'], cb);
+  del([
+    paths.css,
+    paths.dist + '{css,images,js,lib,templates}',
+    paths.js + '/*.min.js'
+  ], cb);
 });
 
 gulp.task('watch', function() {

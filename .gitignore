@@ -4,7 +4,11 @@
 build/
 dist/
 hooks/
-mopidy_mobile/www/
+mopidy_mobile/www/css/
+mopidy_mobile/www/images/
+mopidy_mobile/www/js/
+mopidy_mobile/www/lib/
+mopidy_mobile/www/templates/
 node_modules/
 platforms/
 plugins/
