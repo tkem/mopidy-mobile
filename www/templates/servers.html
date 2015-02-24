@@ -1,11 +1,11 @@
 <ion-view view-title="{{'Manage Servers' | translate}}">
   <ion-content>
     <ion-list>
-      <ion-item ui-sref="tabs.settings.server()">
+      <ion-item ui-sref="main.settings.server()">
         <span translate>Add New Server</span>
       </ion-item>
       <ion-item ng-repeat="(name, webSocketUrl) in settings.servers"
-                ui-sref="tabs.settings.server({name: name})"
+                ui-sref="main.settings.server({name: name})"
                 >
         {{name}}
         <ion-option-button class="button-assertive"

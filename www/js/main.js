@@ -13,13 +13,20 @@ angular.module('mopidy-mobile', [
 ])
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
-  $stateProvider.state('tabs', {
+  $stateProvider.state('main', {
     abstract: true,
-    url: '/tabs',
-    templateUrl: 'templates/tabs.html'
+    url: '',
+    templateUrl: 'templates/main.html'
   });
 
-  $urlRouterProvider.otherwise('/tabs/settings');
+  // TODO: use redirect, otherwise for error page?
+  // https://github.com/angular-ui/ui-router/wiki/Frequently-Asked-Questions#how-to-set-up-a-defaultindex-child-state
+  if (angular.element(document).find('html').attr('data-ws-url') !== undefined) {
+    $urlRouterProvider.otherwise('/playback');
+  } else {
+    $urlRouterProvider.otherwise('/settings');
+  }
+
   // TODO: platform defaults/configurable?
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');

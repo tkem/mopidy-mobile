@@ -8,7 +8,7 @@ angular.module('mopidy-mobile.library', [
 
 .config(function($stateProvider) {
   $stateProvider
-    .state('tabs.library', {
+    .state('main.library', {
       abstract: true,
       url: '/library',
       views: {
@@ -17,7 +17,7 @@ angular.module('mopidy-mobile.library', [
         }
       }
     })
-    .state('tabs.library.root', {
+    .state('main.library.root', {
       url: '',
       templateUrl: 'templates/browse.html',
       controller: 'BrowseCtrl',
@@ -32,7 +32,7 @@ angular.module('mopidy-mobile.library', [
         }
       }
     })
-    .state('tabs.library.browse', {
+    .state('main.library.browse', {
       url: '/browse?type&name&uri',
       controller: 'BrowseCtrl',
       templateUrl: 'templates/browse.html',
@@ -51,7 +51,7 @@ angular.module('mopidy-mobile.library', [
         }
       }
     })
-    .state('tabs.library.search', {
+    .state('main.library.search', {
       url: '/search?q&uri',
       controller: 'SearchCtrl',
       templateUrl: 'templates/search.html',
@@ -69,7 +69,7 @@ angular.module('mopidy-mobile.library', [
         }
       }
     })
-    .state('tabs.library.lookup', {
+    .state('main.library.lookup', {
       url: '/lookup?name&uri',
       controller: 'LookupCtrl',
       templateUrl: 'templates/lookup.html',

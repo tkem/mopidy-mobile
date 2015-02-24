@@ -11,7 +11,7 @@
     <div class="list">
       <a class="item item-icon-left item-icon-right"
          ng-repeat="artist in artists"
-         ui-sref="tabs.library.lookup({name: artist.name, uri: artist.uri})"
+         ui-sref="main.library.lookup({name: artist.name, uri: artist.uri})"
          >
         <i class="icon mopidy-mobile-icon-artist"></i>
         <h2>{{artist.name}}</h2>
@@ -19,7 +19,7 @@
       </a>
       <a class="item item-icon-left item-icon-right"
          ng-repeat="album in albums"
-         ui-sref="tabs.library.lookup({name: album.name, uri: album.uri})"
+         ui-sref="main.library.lookup({name: album.name, uri: album.uri})"
          >
         <i class="icon mopidy-mobile-icon-album"></i>
         <h2>{{album.name}}</h2>

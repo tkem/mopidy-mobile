@@ -1,7 +1,7 @@
 angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
 
 .config(function($stateProvider) {
-  $stateProvider.state('tabs.playback', {
+  $stateProvider.state('main.playback', {
     url: '/playback',
     views: {
       'playback': {

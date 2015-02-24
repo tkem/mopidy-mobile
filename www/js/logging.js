@@ -24,7 +24,7 @@ angular.module('mopidy-mobile.logging', [
     });
   });
 
-  $stateProvider.state('tabs.logging', {
+  $stateProvider.state('main.logging', {
     url: '/logging',
     views: {
       'settings': {

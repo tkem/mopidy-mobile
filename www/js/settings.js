@@ -7,7 +7,7 @@ angular.module('mopidy-mobile.settings', [
 ])
 
 .config(function($stateProvider) {
-  $stateProvider.state('tabs.settings', {
+  $stateProvider.state('main.settings', {
     abstract: true,
     url: '/settings',
     views: {
@@ -31,13 +31,13 @@ angular.module('mopidy-mobile.settings', [
         }
       }
     }
-  }).state('tabs.settings.root', {
+  }).state('main.settings.root', {
     url: '',
     templateUrl: 'templates/settings.html',
-  }).state('tabs.settings.servers', {
+  }).state('main.settings.servers', {
     url: '/servers',
     templateUrl: 'templates/servers.html'
-  }).state('tabs.settings.server', {
+  }).state('main.settings.server', {
     url: '/servers/{name}',
     templateUrl: 'templates/server.html',
     controller: 'ServerCtrl',
@@ -46,7 +46,7 @@ angular.module('mopidy-mobile.settings', [
         return $stateParams.name;
       }
     }
-  }).state('tabs.settings.about', {
+  }).state('main.settings.about', {
     url: '/about',
     templateUrl: 'templates/about.html'
   });
@@ -98,6 +98,7 @@ angular.module('mopidy-mobile.settings', [
     return false;
   }
 
+  $scope.cordova = $window.cordova;
   $scope.locales = locales;
   $scope.themes = themes;
   $scope.version = version;

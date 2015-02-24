@@ -7,7 +7,7 @@ angular.module('mopidy-mobile.playlists', [
 
 .config(function($stateProvider) {
   $stateProvider
-    .state('tabs.playlists', {
+    .state('main.playlists', {
       abstract: true,
       url: '/playlists',
       views: {
@@ -16,7 +16,7 @@ angular.module('mopidy-mobile.playlists', [
         }
       }
     })
-    .state('tabs.playlists.root', {
+    .state('main.playlists.root', {
       url: '',
       controller: 'PlaylistsCtrl',
       templateUrl: 'templates/playlists.html',
@@ -28,7 +28,7 @@ angular.module('mopidy-mobile.playlists', [
         }
       }
     })
-    .state('tabs.playlists.playlist', {
+    .state('main.playlists.playlist', {
       url: '/{uri}',
       controller: 'PlaylistCtrl',
       templateUrl: 'templates/playlist.html',

@@ -5,7 +5,7 @@ angular.module('mopidy-mobile.tracklist', [
 ])
 
 .config(function($stateProvider) {
-  $stateProvider.state('tabs.tracklist', {
+  $stateProvider.state('main.tracklist', {
     url: '/tracklist',
     views: {
       'tracklist': {

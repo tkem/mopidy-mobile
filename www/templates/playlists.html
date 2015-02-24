@@ -8,7 +8,7 @@
     <div class="list">
       <a class="item item-icon-right"
          ng-repeat="playlist in playlists | orderBy: 'name'"
-         ui-sref="tabs.playlists.playlist({uri: playlist.uri})"
+         ui-sref="main.playlists.playlist({uri: playlist.uri})"
          >
         {{playlist.name}}
         <i class="icon icon-accessory ion-chevron-right"></i>
