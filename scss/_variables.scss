@@ -10,14 +10,14 @@ $mopidy-mobile-icon-stop:               ion-stop !default;
 $mopidy-mobile-icon-next:               ion-skip-forward !default;
 $mopidy-mobile-icon-previous:           ion-skip-backward !default;
 
+$mopidy-mobile-icon-mute:               ion-volume-mute !default;
+$mopidy-mobile-icon-volume-low:         ion-volume-low !default;
+$mopidy-mobile-icon-volume-high:        ion-volume-high !default;
+
 $mopidy-mobile-icon-consume:            icomoon-pacman !default;
 $mopidy-mobile-icon-random:             ion-shuffle !default;
 $mopidy-mobile-icon-repeat:             ion-loop !default;
 $mopidy-mobile-icon-single:             ion-pin !default;
-
-$mopidy-mobile-icon-mute:               ion-volume-mute !default;
-$mopidy-mobile-icon-volume-low:         ion-volume-low !default;
-$mopidy-mobile-icon-volume-high:        ion-volume-high !default;
 
 $mopidy-mobile-icon-album:              ion-disc !default;
 $mopidy-mobile-icon-artist:             ion-person !default;
@@ -27,6 +27,11 @@ $mopidy-mobile-icon-track:              ion-music-note !default;
 $mopidy-mobile-icon-search:             ion-search !default;
 $mopidy-mobile-icon-more:               ion-more !default;
 
-$mopidy-mobile-icon-info:               ion-information-circled;
-$mopidy-mobile-icon-warn:               ion-alert-circled;
-$mopidy-mobile-icon-error:              ion-bug;
+$mopidy-mobile-icon-info:               ion-information-circled !default;
+$mopidy-mobile-icon-warn:               ion-alert-circled !default;
+$mopidy-mobile-icon-error:              ion-bug !default;
+
+$mopidy-mobile-thumbnail-album-bg:      none !default;
+$mopidy-mobile-thumbnail-artist-bg:     none !default;
+$mopidy-mobile-thumbnail-directory-bg:  none !default;
+$mopidy-mobile-thumbnail-track-bg:      none !default;

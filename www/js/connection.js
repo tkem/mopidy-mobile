@@ -1,4 +1,6 @@
-angular.module('mopidy-mobile.connection', [])
+angular.module('mopidy-mobile.connection', [
+  'mopidy-mobile.coverart',
+])
 
 .provider('connection', function() {
   function remove(array, obj) {
@@ -16,6 +18,58 @@ angular.module('mopidy-mobile.connection', [])
       obj[keys[i]] = values[i];
     }
     return obj;
+  }
+
+  function upgrade(mopidy) {
+    // Mopidy v0.20 mixer API
+    mopidy.mixer = mopidy.mixer || {
+      getMute: mopidy.playback.getMute,
+      setMute: mopidy.playback.setMute,
+      getVolume: mopidy.playback.getVolume,
+      setVolume: mopidy.playback.setVolume
+    };
+    // Mopidy v1.0 getOptions API
+    mopidy.tracklist.getOptions = mopidy.tracklist.getOptions || function() {
+      return Mopidy.when.all([
+        mopidy.tracklist.getConsume(),
+        mopidy.tracklist.getRandom(),
+        mopidy.tracklist.getRepeat(),
+        mopidy.tracklist.getSingle()
+      ]).then(function(results) {
+        return zipObject(['consume', 'random', 'repeat', 'single'], results);
+      });
+    };
+    // Mopidy v1.0 library.lookup(uris) wrapper
+    var lookup = mopidy.library.lookup;
+    mopidy.library.lookup = function(params) {
+      if ('uris' in params) {
+        return Mopidy.when.all(params.uris.map(function(uri) {
+          return lookup({uri: uri});
+        })).then(function(results) {
+          return Array.prototype.concat.apply([], results);
+        });
+      } else {
+        return lookup(params);
+      }
+    };
+    // Mopidy v1.0 tracklist.add(uris) wrapper
+    var add = mopidy.tracklist.add;
+    mopidy.tracklist.add = function(params) {
+      if ('uris' in params) {
+        return mopidy.library.lookup({
+          uris: params.uris
+        }).then(function(tracks) {
+          if ('at_position' in params) {
+            return add({tracks: tracks, at_position: params.at_position});
+          } else {
+            return add({tracks: tracks});
+          }
+        });
+      } else {
+        return add(params);
+      }
+    };
+    return mopidy;
   }
 
   var provider = this;
@@ -40,83 +94,45 @@ angular.module('mopidy-mobile.connection', [])
     }
   };
 
-  provider.$get = function($q, $log, $rootScope, $window, $ionicLoading, connectionErrorHandler) {
+  provider.$get = function($q, $log, $rootScope, $window, $ionicLoading, connectionErrorHandler, coverart) {
+    function resolveURI(uri) {
+      if (settings.webSocketUrl && isUriRefRegExp.test(uri)) {
+        var match = /^ws:\/\/([^\/]+)/.exec(settings.webSocketUrl);
+        return 'http://' + match[1] + uri;
+      } else {
+        return uri;
+      }
+    }
+
+    function resolveImage(image) {
+      image.uri = resolveURI(image.uri);
+      if (!image.width || !image.height) {
+        return coverart.resolveImage(image.uri);
+      } else {
+        return image;
+      }
+    }
+
+    function getModelImages(models) {
+      var result = {};
+      angular.forEach(models, function(model) {
+        var images = (model.album ? model.album.images : model.images) || [];
+        result[model.uri] = images.map(function(uri) {
+          return {__model__: 'Image,', uri: uri};
+        });
+      });
+      return result;
+    }
+
     var listeners = {};
 
     var connect = function(mopidy) {
       var slice = Array.prototype.slice;
-      var concat = Array.prototype.concat;
       var promise = $q(function(resolve, reject) {
         $ionicLoading.show();
+
         mopidy.once('state:online', function() {
-          // add convenience methods/decorators
-          var library = angular.copy(mopidy.library);
-          var tracklist = angular.copy(mopidy.tracklist);
-          angular.extend(mopidy.tracklist, {
-            add: function(params) {
-              if ('uris' in params) {
-                return mopidy.library.lookup({
-                  uris: params.uris
-                }).then(function(tracks) {
-                  if ('at_position' in params) {
-                    return tracklist.add({tracks: tracks, at_position: params.at_position});
-                  } else {
-                    return tracklist.add({tracks: tracks});
-                  }
-                });
-              } else {
-                return tracklist.add(params);
-              }
-            },
-            getOptions: function() {
-              return Mopidy.when.all([
-                tracklist.getConsume(),
-                tracklist.getRandom(),
-                tracklist.getRepeat(),
-                tracklist.getSingle()
-              ]).then(function(results) {
-                return zipObject(['consume', 'random', 'repeat', 'single'], results);
-              });
-            },
-            setOptions: function(params) {
-              var promises = [];
-              if ('consume' in params) {
-                promises.push(tracklist.setConsume({value: params.consume}));
-              }
-              if ('random' in params) {
-                promises.push(tracklist.setRandom({value: params.random}));
-              }
-              if ('repeat' in params) {
-                promises.push(tracklist.setRepeat({value: params.repeat}));
-              }
-              if ('single' in params) {
-                promises.push(tracklist.setSingle({value: params.single}));
-              }
-              return Mopidy.when.all(promises);
-            }
-          });
-          angular.extend(mopidy.library, {
-            lookup: function(params) {
-              if ('uris' in params) {
-                return Mopidy.when.all(params.uris.map(function(uri) {
-                  return library.lookup({uri: uri});
-                })).then(function(results) {
-                  return concat.apply([], results);
-                });
-              } else {
-                return library.lookup(params);
-              }
-            }
-          });
-          // new Mixer API
-          if (!mopidy.mixer) {
-            mopidy.mixer = {
-              getMute: mopidy.playback.getMute,
-              setMute: mopidy.playback.setMute,
-              getVolume: mopidy.playback.getVolume,
-              setVolume: mopidy.playback.setVolume
-            };
-          }
+          mopidy = upgrade(mopidy);
           $log.info('Connected');
           $ionicLoading.hide();
           resolve(mopidy);
@@ -193,13 +209,32 @@ angular.module('mopidy-mobile.connection', [])
         mopidy = new Mopidy(settings);
         promise = connect(mopidy);
       },
-      resolveURI: function(uri) {
-        if (settings.webSocketUrl && isUriRefRegExp.test(uri)) {
-          var match = /^ws:\/\/([^\/]+)/.exec(settings.webSocketUrl);
-          return 'http://' + match[1] + uri;
-        } else {
-          return uri;
-        }
+      getImages: function(models) {
+        return connection(function(mopidy) {
+          // use Mopidy v0.20 getImages API if available
+          if (mopidy.library.getImages) {
+            return mopidy.library.getImages({
+              uris: models.map(function(model) { return model.uri; })
+            });
+          } else {
+            return getModelImages(models);
+          }
+        }).then(function(result) {
+          var promises = {};
+          angular.forEach(result, function(images, uri) {
+            if (!images || !images.length) {
+              //$log.debug('No images found for ' + uri);
+            } else if (images.length === 1) {
+              promises[uri] = [angular.extend(images[0], {
+                uri: resolveURI(images[0].uri)
+              })];
+            } else {
+              // most backends won't provide image dimensions anytime soon...
+              promises[uri] = $q.all(images.map(resolveImage));
+            }
+          });
+          return $q.all(promises);
+        });
       }
     });
   };

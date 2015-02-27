@@ -2,6 +2,7 @@ angular.module('mopidy-mobile', [
   'ionic',
   'mopidy-mobile.actions',
   'mopidy-mobile.connection',
+  'mopidy-mobile.coverart',
   'mopidy-mobile.library',
   'mopidy-mobile.locales',
   'mopidy-mobile.logging',

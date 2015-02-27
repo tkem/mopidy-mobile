@@ -30,8 +30,8 @@
         <p>Previous: {{tlTracks.previous.tlid}}</p>
       </div>
 
-      <div ng-if="track.album.images.length">
-        <img ng-src="{{getImageURI(track)}}">
+      <div ng-if="image">
+        <img ng-src="{{image.uri}}">
       </div>
     </div>
   </ion-content>
@@ -40,7 +40,7 @@
     <div class="button-bar">
       <button class="button button-clear button-icon button-small icon  mopidy-mobile-icon-random"
               ng-class="{'button-positive': options.random}"
-              ng-click="setOptions({random: !options.random})"
+              ng-click="setRandom(!options.random)"
               >
       </button>
       <button class="button button-icon icon mopidy-mobile-icon-previous"
@@ -65,7 +65,7 @@
       </button>
       <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-repeat"
               ng-class="{'button-positive': options.repeat}"
-              ng-click="setOptions({repeat: !options.repeat})"
+              ng-click="setRepeat(!options.repeat)"
               >
       </button>
     </div>

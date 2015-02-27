@@ -1,4 +1,9 @@
-angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
+angular.module('mopidy-mobile.playback',
+[
+  'ionic',
+  'mopidy-mobile.connection',
+  'mopidy-mobile.coverart'
+])
 
 .config(function($stateProvider) {
   $stateProvider.state('main.playback', {
@@ -62,7 +67,7 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
   };
 })
 
-.controller('PlaybackCtrl', function($scope, $q, $window, $log, connection, timer) {
+.controller('PlaybackCtrl', function($scope, $q, $window, $log, connection, coverart, timer) {
   $log.debug('creating tracklist view');
 
   function setCurrentTlTrack(currentTlTrack) {
@@ -86,6 +91,12 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
         $scope.track = tlTracks.eot.track;
       } else {
         $scope.track = null;
+      }
+      $scope.image = null;
+      if ($scope.track) {
+        coverart.getImage($scope.track).then(function(image) {
+          $scope.image = image;
+        });
       }
       return $scope.track;
     });
@@ -183,17 +194,15 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
         });
       }, true);
     },
-    setOptions: function(params) {
+    setRandom: function(value) {
       connection(function(mopidy) {
-        mopidy.tracklist.setOptions(params);
+        mopidy.tracklist.setRandom({value: value});
       }, true);
     },
-    getImageURI: function(track) {
-      if (track && track.album && track.album.images && track.album.images.length) {
-        return connection.resolveURI(track.album.images[0]);
-      } else {
-        return '';
-      }
+    setRepeat: function(value) {
+      connection(function(mopidy) {
+        mopidy.tracklist.setRepeat({value: value});
+      }, true);
     },
     seek: function() {
       if (time.pending) {
@@ -294,7 +303,7 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
       var defer = $q.defer();
       function update(value) {
         connection(function(mopidy) {
-          return mopidy.playback.setVolume({volume: value});
+          return mopidy.mixer.setVolume({volume: value});
         }).then(function() {
           if (value === $window.parseInt(scope.volume)) {
             defer.resolve(value);
@@ -320,7 +329,7 @@ angular.module('mopidy-mobile.playback', ['ionic', 'mopidy-mobile.settings'])
     },
     setMute: function(mute) {
       connection(function(mopidy) {
-        mopidy.playback.setMute({value: mute});
+        mopidy.mixer.setMute({value: mute});
       }, true);
     },
     refresh: function() {

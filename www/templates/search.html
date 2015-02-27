@@ -9,28 +9,28 @@
   </ion-nav-buttons>
   <ion-content>
     <div class="list">
-      <a class="item item-icon-left item-icon-right"
+      <a class="item item-thumbnail-left item-icon-right"
          ng-repeat="artist in artists"
          ui-sref="main.library.lookup({name: artist.name, uri: artist.uri})"
          >
-        <i class="icon mopidy-mobile-icon-artist"></i>
+        <img class="mopidy-mobile-thumbnail-artist" ng-src="{{images[artist.uri].uri}}">
         <h2>{{artist.name}}</h2>
         <i class="icon icon-accessory ion-chevron-right"></i>
       </a>
-      <a class="item item-icon-left item-icon-right"
+      <a class="item item-thumbnail-left item-icon-right"
          ng-repeat="album in albums"
          ui-sref="main.library.lookup({name: album.name, uri: album.uri})"
          >
-        <i class="icon mopidy-mobile-icon-album"></i>
+        <img class="mopidy-mobile-thumbnail-album" ng-src="{{images[album.uri].uri}}">
         <h2>{{album.name}}</h2>
         <h3>{{album.artist[0].name}}</h3>
         <i class="icon icon-accessory ion-chevron-right"></i>
       </a>
-      <a class="item item-icon-left"
+      <a class="item item-thumbnail-left"
          ng-click="click(track)"
          ng-repeat="track in tracks"
          >
-        <i class="icon mopidy-mobile-icon-track"></i>
+        <img class="mopidy-mobile-thumbnail-track" ng-src="{{images[track.uri].uri}}">
         <h2>{{track.name}}</h2>
         <h3>{{track.artists[0].name}}</h3>
         <h4>{{track.album.name}}</h4>

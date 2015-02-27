@@ -76,6 +76,16 @@ a {
     @extend .#{$mopidy-mobile-icon-previous};
 }
 
+.mopidy-mobile-icon-mute {
+    @extend .#{$mopidy-mobile-icon-mute};
+}
+.mopidy-mobile-icon-volume-low {
+    @extend .#{$mopidy-mobile-icon-volume-low};
+}
+.mopidy-mobile-icon-volume-high {
+    @extend .#{$mopidy-mobile-icon-volume-high};
+}
+
 .mopidy-mobile-icon-consume {
     @extend .#{$mopidy-mobile-icon-consume};
 }
@@ -87,16 +97,6 @@ a {
 }
 .mopidy-mobile-icon-single {
     @extend .#{$mopidy-mobile-icon-single};
-}
-
-.mopidy-mobile-icon-mute {
-    @extend .#{$mopidy-mobile-icon-mute};
-}
-.mopidy-mobile-icon-volume-low {
-    @extend .#{$mopidy-mobile-icon-volume-low};
-}
-.mopidy-mobile-icon-volume-high {
-    @extend .#{$mopidy-mobile-icon-volume-high};
 }
 
 .mopidy-mobile-icon-album {
@@ -127,6 +127,30 @@ a {
 }
 .mopidy-mobile-icon-error {
     @extend .#{$mopidy-mobile-icon-error};
+}
+
+.mopidy-mobile-thumbnail-artist {
+    &:not([src]) {
+        width: $item-thumbnail-width;
+        height: $item-thumbnail-height;
+        background: $mopidy-mobile-thumbnail-artist-bg;
+    }
+}
+
+.mopidy-mobile-thumbnail-album {
+    &:not([src]) {
+        width: $item-thumbnail-width;
+        height: $item-thumbnail-height;
+        background: $mopidy-mobile-thumbnail-album-bg;
+    }
+}
+
+.mopidy-mobile-thumbnail-track {
+    &:not([src]) {
+        width: $item-thumbnail-width;
+        height: $item-thumbnail-height;
+        background: $mopidy-mobile-thumbnail-track-bg;
+    }
 }
 
 /* Popover menus; see http://forum.ionicframework.com/t/popover-sizing/8251/8 */

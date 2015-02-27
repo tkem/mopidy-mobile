@@ -3,6 +3,7 @@ angular.module('mopidy-mobile.library', [
   'ionic',
   'mopidy-mobile.actions',
   'mopidy-mobile.connection',
+  'mopidy-mobile.coverart',
   'mopidy-mobile.ui'
 ])
 
@@ -109,7 +110,7 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('SearchCtrl', function($scope, connection, actions, q, results) {
+.controller('SearchCtrl', function($scope, connection, actions, coverart, q, results) {
   function compare(a, b) {
     if ((a.name || '') > (b.name || '')) {
       return 1;
@@ -126,9 +127,9 @@ angular.module('mopidy-mobile.library', [
     break;
   case 1:
     // single result - keep order
-    $scope.artists = results[0].artists;
-    $scope.albums = results[0].albums;
-    $scope.tracks = results[0].tracks;
+    $scope.artists = results[0].artists || [];
+    $scope.albums = results[0].albums || [];
+    $scope.tracks = results[0].tracks || [];
     break;
   default:
     // multiple results - merge and sort by name
@@ -145,16 +146,31 @@ angular.module('mopidy-mobile.library', [
 
   angular.extend($scope, {
     q: q,
-    click: actions.default
+    click: actions.default,
+    images: {}
+  });
+
+  coverart.getImages($scope.artists, 64, 64).then(function(result) {
+    angular.extend($scope.images, result);
+    return coverart.getImages($scope.albums, 64, 64);
+  }).then(function(result) {
+    angular.extend($scope.images, result);
+    return coverart.getImages($scope.tracks, 64, 64);
+  }).then(function(result) {
+    angular.extend($scope.images, result);
   });
 })
 
-.controller('LookupCtrl', function($scope, connection, actions, name, tracks, uri) {
+.controller('LookupCtrl', function($scope, connection, actions, coverart, name, tracks, uri) {
   angular.extend($scope, {
     name: name,
     tracks: tracks,
     uri: uri,
     click: actions.default
+  });
+
+  coverart.getImages(tracks, 64, 64).then(function(images) {
+    $scope.images = images;
   });
 })
 

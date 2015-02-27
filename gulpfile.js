@@ -8,13 +8,12 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sh = require('shelljs');
-var uglify = require('gulp-uglifyjs');
+var uglifyjs = require('gulp-uglifyjs');
 
 var paths = {
-  sass: ['scss/**/*.scss'],
   css: 'www/css/',
   js: 'www/js/',
-  images: 'www/images',
+  images: 'www/images/',
   dist: 'mopidy_mobile/www/'
 };
 
@@ -25,14 +24,18 @@ gulp.task('install', function() {
     });
 });
 
-gulp.task('sass', function(done) {
-  gulp.src('scss/[^_]*.scss')
+gulp.task('sass:images', function() {
+  return gulp.src('scss/images/**/*.png', {base: 'scss'})
+    .pipe(gulp.dest(paths.css));
+});
+
+gulp.task('sass', ['sass:images'], function() {
+  return gulp.src('scss/[^_]*.scss')
     .pipe(sass())
-    .pipe(gulp.dest('www/css/'))
-    .pipe(minifyCss({keepSpecialComments: 0}))
-    .pipe(rename({ extname: '.min.css' }))
     .pipe(gulp.dest(paths.css))
-    .on('end', done);
+    .pipe(minifyCss({keepSpecialComments: 0}))
+    .pipe(rename({extname: '.min.css'}))
+    .pipe(gulp.dest(paths.css));
 });
 
 gulp.task('jshint', function() {
@@ -47,29 +50,29 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('uglify', function(done) {
-    gulp.src(['www/js/*.js', '!www/js/*.min.js'])
-    .pipe(uglify('mopidy-mobile.min.js', {mangle: false}))
-    .pipe(gulp.dest(paths.js))
-    .on('end', done);
+gulp.task('uglifyjs', function() {
+  return gulp.src(['www/js/*.js', '!www/js/*.min.js'])
+    .pipe(uglifyjs('mopidy-mobile.min.js', {mangle: false}))
+    .pipe(gulp.dest(paths.js));
 });
 
-gulp.task('bundle', ['uglify'], function(done) {
-  gulp.src([
+gulp.task('bundlejs', ['uglifyjs'], function() {
+  return gulp.src([
     'www/lib/ionic/js/ionic.bundle.min.js',
     'www/lib/angular-translate/angular-translate.min.js',
     'www/lib/mopidy/dist/mopidy.min.js',
     'www/js/mopidy-mobile.min.js'
-  ])
-    .pipe(concat('mopidy-mobile.bundle.min.js'))
-    .pipe(gulp.dest(paths.js))
-    .on('end', done);
+  ]).pipe(concat('mopidy-mobile.bundle.min.js'))
+    .pipe(gulp.dest(paths.js));
 });
 
-gulp.task('dist', ['sass', 'bundle'], function() {
-  gulp.src('resources/web/*.png')
-    .pipe(gulp.dest(paths.dist + 'images/'));
-  gulp.src([
+gulp.task('dist:resources', function() {
+  return gulp.src('resources/www/*.png')
+    .pipe(gulp.dest(paths.dist + '/images'));
+});
+
+gulp.task('dist', ['sass', 'bundlejs', 'dist:resources'], function() {
+  return gulp.src([
     'www/css/*.min.css',
     'www/images/**',
     'www/js/mopidy-mobile.bundle.min.js',
@@ -84,7 +87,7 @@ gulp.task('clean', function(cb) {
   del([
     paths.css,
     paths.dist + '{css,images,js,lib,templates}',
-    paths.js + '/*.min.js'
+    paths.js + '*.min.js'
   ], cb);
 });
 

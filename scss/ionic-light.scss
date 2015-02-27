@@ -1,9 +1,17 @@
 /*
 
-To customize the look and feel of Mopidy-Mobile, you can override
-the variables in _variables.scss and ionic's
-../www/lib/ionic/scss/_variables.scss file.
+To create a Mopidy Mobile theme, override the variables in
+_variables.scss and ../www/lib/ionic/scss/_variables.scss before
+importing the local _style.scss.
 
 */
+
+$sprites-path:                          "images/ionic-light.png";
+$sprites-version:                       "0.0.1";
+
+$mopidy-mobile-thumbnail-album-bg:      url("#{$sprites-path}?v=#{$sprites-version}") 0 0;
+$mopidy-mobile-thumbnail-artist-bg:     url("#{$sprites-path}?v=#{$sprites-version}") -64px 0;
+$mopidy-mobile-thumbnail-directory-bg:  url("#{$sprites-path}?v=#{$sprites-version}") -128px 0;
+$mopidy-mobile-thumbnail-track-bg:      url("#{$sprites-path}?v=#{$sprites-version}") -192px 0;
 
 @import "style";

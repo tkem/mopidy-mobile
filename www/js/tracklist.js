@@ -1,6 +1,7 @@
 angular.module('mopidy-mobile.tracklist', [
   'ionic',
   'mopidy-mobile.connection',
+  'mopidy-mobile.coverart',
   'mopidy-mobile.ui'
 ])
 
@@ -16,7 +17,7 @@ angular.module('mopidy-mobile.tracklist', [
   });
 })
 
-.controller('TracklistCtrl', function($scope, $log, connection) {
+.controller('TracklistCtrl', function($scope, $log, connection, coverart) {
   $log.debug('creating tracklist view');
 
   var listeners = connection.on({
@@ -30,12 +31,16 @@ angular.module('mopidy-mobile.tracklist', [
     'event:tracklistChanged': function() {
       connection(function(mopidy) {
         return mopidy.constructor.when.join(
-          mopidy.tracklist.getTlTracks(),
-          mopidy.playback.getCurrentTlTrack()
+          mopidy.playback.getCurrentTlTrack(),
+          mopidy.tracklist.getTlTracks()
         );
       }).then(function(results) {
-        $scope.tlTracks = results[0];
-        $scope.currentTlTrack = results[1];
+        $scope.currentTlTrack = results[0];
+        $scope.tlTracks = results[1];
+        coverart.getImages($scope.getTracks(), 64, 64).then(function(images) {
+          // TODO: cleanup
+          $scope.images = images;
+        });
       });
     },
     'event:trackPlaybackEnded': function() {
@@ -53,6 +58,7 @@ angular.module('mopidy-mobile.tracklist', [
   angular.extend($scope, {
     options: {},
     tlTracks: [],
+    images: {},
     getTracks: function() {
       return $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
     },
@@ -78,27 +84,37 @@ angular.module('mopidy-mobile.tracklist', [
     },
     setOptions: function(params) {
       connection(function(mopidy) {
-        return mopidy.tracklist.setOptions(params);
+        var promises = [];
+        if ('consume' in params) {
+          promises.push(mopidy.tracklist.setConsume({value: params.consume}));
+        }
+        if ('random' in params) {
+          promises.push(mopidy.tracklist.setRandom({value: params.random}));
+        }
+        if ('repeat' in params) {
+          promises.push(mopidy.tracklist.setRepeat({value: params.repeat}));
+        }
+        if ('single' in params) {
+          promises.push(mopidy.tracklist.setSingle({value: params.single}));
+        }
+        return Mopidy.when.all(promises);
       }, true);
-    },
-    getThumbnailURI: function(track) {
-      if (track.album && track.album.images && track.album.images.length) {
-        return connection.resolveURI(track.album.images[0]);
-      } else {
-        return 'images/thumbnail.png';
-      }
     },
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.constructor.when.join(
-          mopidy.tracklist.getTlTracks(),
+          mopidy.playback.getCurrentTlTrack(),
           mopidy.tracklist.getOptions(),
-          mopidy.playback.getCurrentTlTrack()
+          mopidy.tracklist.getTlTracks()
         );
       }).then(function(results) {
-        $scope.tlTracks = results[0];
+        $scope.currentTlTrack = results[0];
         $scope.options = results[1];
-        $scope.currentTlTrack = results[2];
+        $scope.tlTracks = results[2];
+        coverart.getImages($scope.getTracks(), 64, 64).then(function(images) {
+          // TODO: cleanup
+          $scope.images = images;
+        });
       });
     }
   });

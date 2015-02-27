@@ -13,6 +13,7 @@ angular.module('mopidy-mobile.locales', ['pascalprecht.translate'])
         'Connection Error': 'Connection Error',
         'Connection OK': 'Connection OK',
         'Consume': 'Consume',
+        'Cover Art': 'Cover Art',
         'Default Click Action': 'Default Click Action',
         'Delete': 'Delete',
         'Empty': 'Empty',
@@ -76,6 +77,7 @@ angular.module('mopidy-mobile.locales', ['pascalprecht.translate'])
         'Connection Error': 'Verbindungsfehler',
         'Connection OK': 'Verbindung OK',
         'Consume': 'Verbrauchsmodus',
+        'Cover Art': 'Artwork',  // according to Wikipedia...
         'Default Click Action': 'Beim Klicken',
         'Delete': 'Löschen',
         'Empty': 'Leer',

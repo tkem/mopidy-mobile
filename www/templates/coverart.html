@@ -1,0 +1,48 @@
+<ion-view view-title="{{'Cover Art' | translate}}">
+  <style>
+    .item-toggle {
+      pointer-events:initial !important;
+    }
+    .item-toggle .logo {
+      height: 20px;
+    }
+
+  </style>
+  <ion-content>
+    <ul class="list">
+      <li class="item item-toggle">
+        <a href="#" ng-click="open('http://mopidy.com')">
+          <img class="logo" src="images/mopidy.png">
+        </a>
+        <label class="toggle">
+          <input type="checkbox" ng-model="settings.coverart.connection">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </li>
+      <li class="item item-toggle">
+        <a href="#" ng-click="open('http://coverartarchive.org')">
+          <img class="logo" src="images/coverartarchive.png">
+        </a>
+        <label class="toggle">
+          <input type="checkbox" ng-model="settings.coverart.coverartarchive">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </li>
+      <li class="item item-toggle">
+        <a href="#" ng-click="open('http://last.fm')">
+          <img class="logo" src="images/lastfm.gif" height="20">
+        </a>
+        <label class="toggle">
+          <input type="checkbox" ng-model="settings.coverart.lastfm">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </li>
+    </ul>
+  </ion-content>
+</ion-view>

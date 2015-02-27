@@ -2,6 +2,9 @@ angular.module('mopidy-mobile.settings', [
   'ionic',
   'pascalprecht.translate',
   'mopidy-mobile.connection',
+  'mopidy-mobile.coverart',
+  'mopidy-mobile.coverartarchive',
+  'mopidy-mobile.lastfm',
   'mopidy-mobile.logging',
   'mopidy-mobile.ui'
 ])
@@ -46,13 +49,16 @@ angular.module('mopidy-mobile.settings', [
         return $stateParams.name;
       }
     }
+  }).state('main.settings.coverart', {
+    url: '/coverart',
+    templateUrl: 'templates/coverart.html'
   }).state('main.settings.about', {
     url: '/about',
     templateUrl: 'templates/about.html'
   });
 })
 
-.config(function($translateProvider, connectionProvider, settingsProvider, stylesheet, themes) {
+.config(function($translateProvider, connectionProvider, coverartProvider, settingsProvider, stylesheet, themes) {
   var theme = settingsProvider.get('theme');
   if (theme && theme in themes) {
     stylesheet.setTheme(theme);
@@ -67,6 +73,14 @@ angular.module('mopidy-mobile.settings', [
 
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
+
+  angular.forEach(settingsProvider.get('coverart', {}), function(value, service) {
+    if (value) {
+      coverartProvider.enable(service);
+    }
+  });
+  // TODO: configurable?
+  coverartProvider.maxCache(100);
 })
 
 .constant('stylesheet', {
@@ -88,7 +102,7 @@ angular.module('mopidy-mobile.settings', [
   'ionic-dark': 'Ionic Dark'
 })
 
-.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, locales, settings, stylesheet, themes, version) {
+.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, coverart, locales, settings, stylesheet, themes, version) {
   function contains(obj, value) {
     for (var name in obj) {
       if (value === obj[name]) {
@@ -105,6 +119,11 @@ angular.module('mopidy-mobile.settings', [
 
   $scope.settings = {
     action: settings.get('action', 'play'),
+    coverart: settings.get('coverart', {
+      connection: true,
+      coverartarchive: false,
+      lastfm: false
+    }),
     locale: settings.get('locale', 'en'),
     servers: settings.get('servers', {}),  // TODO: array?
     theme: stylesheet.getTheme(),
@@ -145,8 +164,22 @@ angular.module('mopidy-mobile.settings', [
     }
   });
 
+  $scope.$watchCollection('settings.coverart', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      $log.log('coverart changed', newValue, oldValue);
+      angular.forEach(newValue, function(enabled, service) {
+        if (enabled) {
+          coverart.enable(service);
+        } else {
+          coverart.disable(service);
+        }
+      });
+      settings.set('coverart', newValue);
+    }
+  });
+
   $scope.$watchCollection('settings.servers', function(newValue, oldValue) {
-    if (newValue != oldValue) {
+    if (newValue !== oldValue) {
       $log.log('servers changed', newValue, oldValue);
       settings.set('servers', newValue);
       if (!(contains(newValue, $scope.settings.webSocketUrl || ''))) {
