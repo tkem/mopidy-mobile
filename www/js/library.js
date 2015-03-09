@@ -150,12 +150,9 @@ angular.module('mopidy-mobile.library', [
     images: {}
   });
 
-  coverart.getImages($scope.artists, 64, 64).then(function(result) {
-    angular.extend($scope.images, result);
-    return coverart.getImages($scope.albums, 64, 64);
-  }).then(function(result) {
-    angular.extend($scope.images, result);
-    return coverart.getImages($scope.tracks, 64, 64);
+  coverart.getImages([].concat($scope.artists, $scope.albums, $scope.tracks), {
+    width: $scope.thumbnailWidth,
+    height: $scope.thumbnailHeight
   }).then(function(result) {
     angular.extend($scope.images, result);
   });
@@ -169,7 +166,10 @@ angular.module('mopidy-mobile.library', [
     click: actions.default
   });
 
-  coverart.getImages(tracks, 64, 64).then(function(images) {
+  coverart.getImages(tracks, {
+    width: $scope.thumbnailWidth,
+    height: $scope.thumbnailHeight
+  }).then(function(images) {
     $scope.images = images;
   });
 })

@@ -37,7 +37,10 @@ angular.module('mopidy-mobile.tracklist', [
       }).then(function(results) {
         $scope.currentTlTrack = results[0];
         $scope.tlTracks = results[1];
-        coverart.getImages($scope.getTracks(), 64, 64).then(function(images) {
+        coverart.getImages($scope.getTracks(), {
+          width: $scope.thumbnailWidth,
+          height: $scope.thumbnailHeight
+        }).then(function(images) {
           // TODO: cleanup
           $scope.images = images;
         });
@@ -111,7 +114,10 @@ angular.module('mopidy-mobile.tracklist', [
         $scope.currentTlTrack = results[0];
         $scope.options = results[1];
         $scope.tlTracks = results[2];
-        coverart.getImages($scope.getTracks(), 64, 64).then(function(images) {
+        coverart.getImages($scope.getTracks(), {
+          width: $scope.thumbnailWidth,
+          height: $scope.thumbnailHeight
+        }).then(function(images) {
           // TODO: cleanup
           $scope.images = images;
         });

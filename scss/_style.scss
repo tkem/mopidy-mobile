@@ -40,7 +40,12 @@ $icomoon-font-path: "../lib/icomoon/dist/fonts" !default;
 
 /* TODO: $link-color? */
 a {
-  color: $base-color;
+    color: $base-color;
+}
+
+/* clickable anchors in toggle labels */
+.item-toggle a {
+    pointer-events: initial !important;
 }
 
 /* Icons */
@@ -181,6 +186,10 @@ ion-popover-view.mopidy-mobile-menu ion-content {
 .mopidy-mobile-trackview img {
     width: 75%;
     height: 75%;
+}
+img.mopidy-mobile-logo {
+    height: 32px;
+    vertical-align: text-bottom;
 }
 
 /* TODO: collection-repeat items -- configurable? */

@@ -197,6 +197,7 @@ angular.module('mopidy-mobile.connection', [
         return connection(function(mopidy) {
           // use Mopidy v0.20 getImages API if available
           if (mopidy.library.getImages) {
+            // TODO: limit number of URIs per request?
             return mopidy.library.getImages({
               uris: models.map(function(model) { return model.uri; })
             });

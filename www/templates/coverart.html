@@ -1,48 +1,36 @@
 <ion-view view-title="{{'Cover Art' | translate}}">
-  <style>
-    .item-toggle {
-      pointer-events:initial !important;
-    }
-    .item-toggle .logo {
-      height: 20px;
-    }
-
-  </style>
   <ion-content>
-    <ul class="list">
-      <li class="item item-toggle">
-        <a href="#" ng-click="open('http://mopidy.com')">
-          <img class="logo" src="images/mopidy.png">
-        </a>
-        <label class="toggle">
-          <input type="checkbox" ng-model="settings.coverart.connection">
-          <div class="track">
-            <div class="handle"></div>
-          </div>
-        </label>
-      </li>
-      <li class="item item-toggle">
+    <div class="list">
+      <div class="item item-divider">
+        Cover Art Sources
+      </div>
+      <ion-toggle class="item-input" ng-model="coverart.services.connection">
         <a href="#" ng-click="open('http://coverartarchive.org')">
-          <img class="logo" src="images/coverartarchive.png">
+          <img class="mopidy-mobile-logo" src="images/mopidy.png">
         </a>
-        <label class="toggle">
-          <input type="checkbox" ng-model="settings.coverart.coverartarchive">
-          <div class="track">
-            <div class="handle"></div>
-          </div>
-        </label>
-      </li>
-      <li class="item item-toggle">
+      </ion-toggle>
+      <ion-toggle class="item-input" ng-model="coverart.services.lastfm">
         <a href="#" ng-click="open('http://last.fm')">
-          <img class="logo" src="images/lastfm.gif" height="20">
+          <img class="mopidy-mobile-logo" src="images/lastfm.gif" height="20">
         </a>
-        <label class="toggle">
-          <input type="checkbox" ng-model="settings.coverart.lastfm">
-          <div class="track">
-            <div class="handle"></div>
-          </div>
-        </label>
-      </li>
-    </ul>
+      </ion-toggle>
+      <ion-toggle class="item-input" ng-model="coverart.services.coverartarchive">
+        <a href="#" ng-click="open('http://coverartarchive.org')">
+          <img class="mopidy-mobile-logo" src="images/coverartarchive-small.png">
+        </a>
+      </ion-toggle>
+      <div class="item item-divider">
+        Cache Settings
+      </div>
+      <label class="item item-input">
+        <span class="input-label" translate>Cache Size</span>
+        <input ng-model="coverart.cache.size" type="number">
+      </label>
+      <label class="item item-input">
+        <button class="button" ng-click="coverart.cache.clear()" translate>
+          Clear Cache
+        </button>
+      </label>
+    </div>
   </ion-content>
 </ion-view>

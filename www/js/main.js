@@ -12,6 +12,7 @@ angular.module('mopidy-mobile', [
   $stateProvider.state('main', {
     abstract: true,
     url: '',
+    controller: 'MainCtrl',
     templateUrl: 'templates/main.html'
   });
 
@@ -98,4 +99,12 @@ angular.module('mopidy-mobile', [
 
   // FIXME: how to handle $stateChangeError
   //$rootScope.$on('$stateChangeError', popup.stateChangeError);
+})
+
+.controller('MainCtrl', function($scope) {
+  // TODO: get from CSS, image size = devide size?
+  angular.extend($scope, {
+    thumbnailWidth: 64,
+    thumbnailHeight: 64
+  });
 });

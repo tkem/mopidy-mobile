@@ -2,8 +2,8 @@ angular.module('mopidy-mobile.coverart', [])
 
 .provider('coverart', function() {
   var provider = this;
-  var cacheOptions = {};
   var services = [];
+  var cacheOptions = {};
 
   angular.extend(provider, {
     enable: function(service) {
@@ -13,13 +13,17 @@ angular.module('mopidy-mobile.coverart', [])
       }
     },
     maxCache: function(value) {
-      cacheOptions.capacity = value;
+      if (arguments.length) {
+        cacheOptions.capacity = value;
+        return provider;
+      } else {
+        return cacheOptions.capacity;
+      }
     }
   });
 
   provider.$get = function($cacheFactory, $injector, $q, $log) {
     function merge(dst, results) {
-      //$log.debug('merge results', dst, objs);
       for (var i = 0, reslen = results.length; i !== reslen; ++i) {
         var result = results[i];
         var keys = Object.keys(result);
@@ -37,7 +41,6 @@ angular.module('mopidy-mobile.coverart', [])
           });
         }
       }
-      //$log.debug('merged result', dst);
       return dst;
     }
 
@@ -58,20 +61,36 @@ angular.module('mopidy-mobile.coverart', [])
 
     var cache = $cacheFactory('images', cacheOptions);
 
-    return {
-      enable: provider.enable,
+    return angular.extend(provider, {
       disable: function(service) {
         var index = services.indexOf(service);
         if (index >= 0) {
           services.splice(index, 1);
         }
       },
-      getImage: function(model, width, height) {
+      maxCache: function(value) {
+        if (arguments.length) {
+          if (value !== cache.info().capacity) {
+            cache.destroy();
+            cache = $cacheFactory('images', {capacity: value});
+          }
+          return provider;
+        } else {
+          return cache.info().capacity;
+        }
+      },
+      clearCache: function() {
+        cache.removeAll();
+      },
+      getImage: function(model, options) {
+        var width = options ? options.width : undefined;
+        var height = options ? options.height : undefined;
         var images = cache.get(model.uri);
         if (images) {
-          $log.debug('cache hit for ' + model.uri, images);
+          $log.debug('cache(' + cache.info().size + ') hit for ' + model.uri, images);
           return $q.when(select(images, width, height));
         } else {
+          $log.debug('cache(' + cache.info().size + ') miss for ' + model.uri);
           return $q.all(services.map($injector.get).map(function(service) {
             return service.getImages([model]);
           })).then(function(results) {
@@ -86,7 +105,9 @@ angular.module('mopidy-mobile.coverart', [])
           });
         }
       },
-      getImages: function(models, width, height) {
+      getImages: function(models, options) {
+        var width = options ? options.width : undefined;
+        var height = options ? options.height : undefined;
         var cached = {};
         models = models.filter(function(model) {
           var images = cache.get(model.uri);
@@ -128,6 +149,6 @@ angular.module('mopidy-mobile.coverart', [])
           img.src = uri;
         });
       }
-    };
+    });
   };
 });

@@ -76,13 +76,10 @@ angular.module('mopidy-mobile.settings', [
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
 
-  angular.forEach(settingsProvider.get('coverart', {}), function(value, service) {
-    if (value) {
-      coverartProvider.enable(service);
-    }
+  angular.forEach(settingsProvider.get('coverart.services', ['connection']), function(service) {
+    coverartProvider.enable(service);
   });
-  // TODO: configurable?
-  coverartProvider.maxCache(100);
+  coverartProvider.maxCache(settingsProvider.get('coverart.maxcache', 100));
 })
 
 .constant('stylesheet', {
@@ -110,13 +107,19 @@ angular.module('mopidy-mobile.settings', [
   $scope.themes = themes;
   $scope.version = version;
 
+  $scope.coverart = {
+    services: angular.extend(
+      util.fromKeys(['connection', 'coverartarchive', 'lastfm'], false),
+      util.fromKeys(settings.get('coverart.services', ['connection']), true)
+    ),
+    cache: {
+      size: coverart.maxCache(),
+      clear: coverart.clearCache
+    }
+  };
+
   $scope.settings = {
     action: settings.get('action', 'play'),
-    coverart: settings.get('coverart', {
-      connection: true,
-      coverartarchive: false,
-      lastfm: false
-    }),
     locale: settings.get('locale', 'en'),
     servers: settings.get('servers', {}),  // TODO: array?
     theme: stylesheet.getTheme(),
@@ -149,17 +152,8 @@ angular.module('mopidy-mobile.settings', [
     }
   });
 
-  $scope.$watch('settings.locale', function(newValue, oldValue) {
+  $scope.$watchCollection('coverart.services', function(newValue, oldValue) {
     if (newValue !== oldValue) {
-      $log.info('New locale: "' + newValue + '"');
-      settings.set('locale', newValue);
-      $translate.use(newValue);
-    }
-  });
-
-  $scope.$watchCollection('settings.coverart', function(newValue, oldValue) {
-    if (newValue !== oldValue) {
-      $log.log('coverart changed', newValue, oldValue);
       angular.forEach(newValue, function(enabled, service) {
         if (enabled) {
           coverart.enable(service);
@@ -167,7 +161,24 @@ angular.module('mopidy-mobile.settings', [
           coverart.disable(service);
         }
       });
-      settings.set('coverart', newValue);
+      settings.set('coverart.services', Object.keys(newValue).filter(function(key) {
+        return newValue[key];
+      }));
+    }
+  });
+
+  $scope.$watch('coverart.cache.size', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      coverart.maxCache(newValue);
+      settings.set('coverart.maxcache', newValue);
+    }
+  });
+
+  $scope.$watch('settings.locale', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      $log.info('New locale: "' + newValue + '"');
+      settings.set('locale', newValue);
+      $translate.use(newValue);
     }
   });
 

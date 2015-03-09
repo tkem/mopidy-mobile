@@ -37,6 +37,14 @@ angular.module('mopidy-mobile.util', [])
     return obj;
   },
 
+  fromKeys: function(keys, value) {
+    var obj = {};
+    for (var i = keys.length - 1; i >= 0; --i) {
+      obj[keys[i]] = value;
+    }
+    return obj;
+  },
+
   parseURI: function(uri) {
     var m = /^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:\#(.*))?/.exec(uri);
     if (m[2]) {
