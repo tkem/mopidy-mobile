@@ -1,77 +1,9 @@
 angular.module('mopidy-mobile.connection', [
   'mopidy-mobile.coverart',
+  'mopidy-mobile.util'
 ])
 
 .provider('connection', function() {
-  function remove(array, obj) {
-    for (var i = array.length - 1; i >= 0; --i) {
-      if (array[i] === obj) {
-        array.splice(i, 1);
-      }
-    }
-    return array;
-  }
-
-  function zipObject(keys, values) {
-    var obj = {};
-    for (var i = 0, length = keys.length; i !== length; ++i) {
-      obj[keys[i]] = values[i];
-    }
-    return obj;
-  }
-
-  function upgrade(mopidy) {
-    // Mopidy v0.20 mixer API
-    mopidy.mixer = mopidy.mixer || {
-      getMute: mopidy.playback.getMute,
-      setMute: mopidy.playback.setMute,
-      getVolume: mopidy.playback.getVolume,
-      setVolume: mopidy.playback.setVolume
-    };
-    // Mopidy v1.0 getOptions API
-    mopidy.tracklist.getOptions = mopidy.tracklist.getOptions || function() {
-      return Mopidy.when.all([
-        mopidy.tracklist.getConsume(),
-        mopidy.tracklist.getRandom(),
-        mopidy.tracklist.getRepeat(),
-        mopidy.tracklist.getSingle()
-      ]).then(function(results) {
-        return zipObject(['consume', 'random', 'repeat', 'single'], results);
-      });
-    };
-    // Mopidy v1.0 library.lookup(uris) wrapper
-    var lookup = mopidy.library.lookup;
-    mopidy.library.lookup = function(params) {
-      if ('uris' in params) {
-        return Mopidy.when.all(params.uris.map(function(uri) {
-          return lookup({uri: uri});
-        })).then(function(results) {
-          return Array.prototype.concat.apply([], results);
-        });
-      } else {
-        return lookup(params);
-      }
-    };
-    // Mopidy v1.0 tracklist.add(uris) wrapper
-    var add = mopidy.tracklist.add;
-    mopidy.tracklist.add = function(params) {
-      if ('uris' in params) {
-        return mopidy.library.lookup({
-          uris: params.uris
-        }).then(function(tracks) {
-          if ('at_position' in params) {
-            return add({tracks: tracks, at_position: params.at_position});
-          } else {
-            return add({tracks: tracks});
-          }
-        });
-      } else {
-        return add(params);
-      }
-    };
-    return mopidy;
-  }
-
   var provider = this;
   var settings = {
     autoConnect: false,
@@ -94,7 +26,59 @@ angular.module('mopidy-mobile.connection', [
     }
   };
 
-  provider.$get = function($q, $log, $rootScope, $window, $ionicLoading, connectionErrorHandler, coverart) {
+  provider.$get = function($q, $log, $rootScope, $window, $ionicLoading, connectionErrorHandler, coverart, util) {
+    function upgrade(mopidy) {
+      // Mopidy v0.20 mixer API
+      mopidy.mixer = mopidy.mixer || {
+        getMute: mopidy.playback.getMute,
+        setMute: mopidy.playback.setMute,
+        getVolume: mopidy.playback.getVolume,
+        setVolume: mopidy.playback.setVolume
+      };
+      // Mopidy v1.0 getOptions API
+      mopidy.tracklist.getOptions = mopidy.tracklist.getOptions || function() {
+        return Mopidy.when.all([
+          mopidy.tracklist.getConsume(),
+          mopidy.tracklist.getRandom(),
+          mopidy.tracklist.getRepeat(),
+          mopidy.tracklist.getSingle()
+        ]).then(function(results) {
+          return util.zipObject(['consume', 'random', 'repeat', 'single'], results);
+        });
+      };
+      // Mopidy v1.0 library.lookup(uris) wrapper
+      var lookup = mopidy.library.lookup;
+      mopidy.library.lookup = function(params) {
+        if ('uris' in params) {
+        return Mopidy.when.all(params.uris.map(function(uri) {
+          return lookup({uri: uri});
+        })).then(function(results) {
+          return Array.prototype.concat.apply([], results);
+        });
+        } else {
+          return lookup(params);
+        }
+      };
+      // Mopidy v1.0 tracklist.add(uris) wrapper
+      var add = mopidy.tracklist.add;
+      mopidy.tracklist.add = function(params) {
+        if ('uris' in params) {
+          return mopidy.library.lookup({
+            uris: params.uris
+          }).then(function(tracks) {
+            if ('at_position' in params) {
+              return add({tracks: tracks, at_position: params.at_position});
+            } else {
+              return add({tracks: tracks});
+            }
+          });
+        } else {
+          return add(params);
+        }
+      };
+      return mopidy;
+    }
+
     function resolveURI(uri) {
       if (settings.webSocketUrl && isUriRefRegExp.test(uri)) {
         var match = /^ws:\/\/([^\/]+)/.exec(settings.webSocketUrl);
@@ -199,7 +183,7 @@ angular.module('mopidy-mobile.connection', [
         if (listener === undefined) {
           angular.forEach(obj, function(value, key) { off(key, value); });
         } else if (obj in listeners) {
-          remove(listeners[obj], listener);
+          util.remove(listeners[obj], listener);
         }
       },
       reset: function() {

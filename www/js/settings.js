@@ -5,8 +5,10 @@ angular.module('mopidy-mobile.settings', [
   'mopidy-mobile.coverart',
   'mopidy-mobile.coverartarchive',
   'mopidy-mobile.lastfm',
+  'mopidy-mobile.locales',
   'mopidy-mobile.logging',
-  'mopidy-mobile.ui'
+  'mopidy-mobile.ui',
+  'mopidy-mobile.util'
 ])
 
 .config(function($stateProvider) {
@@ -102,16 +104,7 @@ angular.module('mopidy-mobile.settings', [
   'ionic-dark': 'Ionic Dark'
 })
 
-.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, coverart, locales, settings, stylesheet, themes, version) {
-  function contains(obj, value) {
-    for (var name in obj) {
-      if (value === obj[name]) {
-        return true;
-      }
-    }
-    return false;
-  }
-
+.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, coverart, locales, settings, stylesheet, themes, util, version) {
   $scope.cordova = $window.cordova;
   $scope.locales = locales;
   $scope.themes = themes;
@@ -182,7 +175,7 @@ angular.module('mopidy-mobile.settings', [
     if (newValue !== oldValue) {
       $log.log('servers changed', newValue, oldValue);
       settings.set('servers', newValue);
-      if (!(contains(newValue, $scope.settings.webSocketUrl || ''))) {
+      if (!(util.contains(newValue, $scope.settings.webSocketUrl || ''))) {
         $scope.settings.webSocketUrl = newValue[Object.keys(newValue)[0]];
       }
     }
