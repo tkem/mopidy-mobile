@@ -1,30 +1,33 @@
 <ion-view view-title="{{server.name || ('Add New Server' | translate)}}">
   <ion-content>
     <form name="form">
-      <ul class="list">
-        <li class="item item-input">
+      <div class="list">
+        <label class="item item-input">
           <span class="input-label" translate>Server Name</span>
           <input name="name" ng-model="server.name" placeholder="My Mopidy Server" type="text">
-        </li>
-        <li class="item item-input">
+        </label>
+        <label class="item item-input">
           <span class="input-label" translate>Server Host</span>
           <input name="host" ng-model="server.host" placeholder="192.168.1.1" type="text">
-        </li>
-        <li class="item item-input">
+        </label>
+        <label class="item item-input">
           <span class="input-label" translate>Server Port</span>
           <input ng-model="server.port" placeholder="6680" type="number">
-        </li>
-        <li class="item item-input">
+        </label>
+        <label class="item item-input">
           <span class="input-label" translate>WebSocket Path</span>
           <input ng-model="server.path" placeholder="/mopidy/ws/" type="text">
-        </li>
-        <li class="item item-checkbox">
+        </label>
+        <label class="item item-toggle">
           <span translate>Secure Connection</span>
-          <label class="checkbox">
+          <label class="toggle">
             <input ng-model="server.secure" type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
           </label>
-        </li>
-      </ul>
+        </label>
+      </div>
     </form>
     <div class="button-bar padding">
       <button class="button button-positive" ng-click="test(getWebSocketURL())" translate>
