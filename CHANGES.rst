@@ -1,3 +1,13 @@
+0.8.1 2015-03-11
+----------------
+
+- Scroll to current track when tracklist tab becomes active.
+
+- Configure cover art cache settings.
+
+- Minor UI improvements.
+
+
 0.8.0 2015-03-06
 ----------------
 
