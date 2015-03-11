@@ -49,9 +49,10 @@
     </button>
   </ion-header-bar>
 
-  <ion-content class="has-header">
+  <ion-content class="has-header" delegate-handle="tracklistScroll">
     <ion-list>
       <ion-item class="item-thumbnail-left"
+                id="{{'tlid-' + tlTrack.tlid}}"
                 ng-class="{'item-positive': tlTrack.tlid == currentTlTrack.tlid}"
                 ng-click="play(tlTrack)"
                 ng-repeat="tlTrack in tlTracks">

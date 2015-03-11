@@ -17,8 +17,27 @@ angular.module('mopidy-mobile.tracklist', [
   });
 })
 
-.controller('TracklistCtrl', function($scope, $log, connection, coverart) {
+.controller('TracklistCtrl', function($scope, $document, $log, $timeout, $ionicScrollDelegate, connection, coverart) {
   $log.debug('creating tracklist view');
+
+  function anchorScroll(handle, id, shouldAnimate) {
+    var delegate = $ionicScrollDelegate.$getByHandle(handle);
+    var elem = $document[0].getElementById(id);
+    var left = 0, top = 0;
+    do {
+      if (elem !== null) {
+        left += elem.offsetLeft;
+      }
+      if (elem !== null) {
+        top += elem.offsetTop;
+      }
+      elem = elem.offsetParent;
+    } while (elem.offsetParent);
+    $timeout(function() {
+      $log.log('scroll to ', left, top);
+      delegate.scrollTo(left, top - 100, shouldAnimate);
+    });
+  }
 
   var listeners = connection.on({
     'event:optionsChanged': function() {
@@ -121,6 +140,11 @@ angular.module('mopidy-mobile.tracklist', [
           // TODO: cleanup
           $scope.images = images;
         });
+        if ($scope.currentTlTrack) {
+          $timeout(function() {
+            anchorScroll('tracklistScroll', 'tlid-' + $scope.currentTlTrack.tlid, true);
+          });
+        }
       });
     }
   });
