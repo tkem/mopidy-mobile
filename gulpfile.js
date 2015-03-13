@@ -74,6 +74,7 @@ gulp.task('dist:resources', function() {
 gulp.task('dist', ['sass', 'bundlejs', 'dist:resources'], function() {
   return gulp.src([
     'www/css/*.min.css',
+    'www/css/images/**',
     'www/images/**',
     'www/js/mopidy-mobile.bundle.min.js',
     'www/lib/ionic/fonts/**',
