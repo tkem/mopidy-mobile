@@ -5,7 +5,7 @@ import re
 
 from setuptools import setup, find_packages
 
-assert os.path.exists('mopidy_mobile/www/index.html'), 'Please run "gulp dist" first.'
+assert os.path.exists('mopidy_mobile/www/js/mopidy-mobile.bundle.min.js')
 
 def get_version(filename):
     content = open(filename).read()
