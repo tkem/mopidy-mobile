@@ -27,16 +27,62 @@ angular.module('mopidy-mobile.connection', [
   };
 
   provider.$get = function($q, $log, $rootScope, $window, $ionicLoading, connectionErrorHandler, coverart, util) {
-    function upgrade(mopidy) {
-      // Mopidy v0.20 mixer API
+    function shim(mopidy) {
+      function hasParam(method, name) {
+        for (var params = method.params, i = params.length - 1; i >= 0; --i) {
+          if (params[i].name === name) {
+            return true;
+          }
+        }
+        return false;
+      }
+      // Mopidy v1.0 mixer API
       mopidy.mixer = mopidy.mixer || {
         getMute: mopidy.playback.getMute,
         setMute: mopidy.playback.setMute,
         getVolume: mopidy.playback.getVolume,
         setVolume: mopidy.playback.setVolume
       };
-      // Mopidy v1.0 getOptions API
-      mopidy.tracklist.getOptions = mopidy.tracklist.getOptions || function() {
+      // Mopidy v1.0 library.lookup(uris)
+      if (!hasParam(mopidy.library.lookup, 'uris')) {
+        var lookup = mopidy.library.lookup;
+        mopidy.library.lookup = function(params) {
+          if ('uris' in params) {
+            return Mopidy.when.all(params.uris.map(function(uri) {
+              return lookup({uri: uri});
+            })).then(function(results) {
+              return util.zipObject(params.uris, results);
+            });
+          } else {
+            return lookup(params);
+          }
+        };
+      }
+      // Mopidy v1.0 tracklist.add(uris)
+      if (!hasParam(mopidy.tracklist.add, 'uris')) {
+        var add = mopidy.tracklist.add;
+        mopidy.tracklist.add = function(params) {
+          if ('uris' in params) {
+            return mopidy.library.lookup({
+              uris: params.uris
+            }).then(function(result) {
+              return Array.prototype.concat.apply([], params.uris.map(function(uri) {
+                return result[uri] || [];
+              }));
+            }).then(function(tracks) {
+              if ('at_position' in params) {
+                return add({tracks: tracks, at_position: params.at_position});
+              } else {
+                return add({tracks: tracks});
+              }
+            });
+          } else {
+            return add(params);
+          }
+        };
+      }
+      // Mopidy getOptions API (TBD)
+      mopidy.tracklist.getOptions = function() {
         return Mopidy.when.all([
           mopidy.tracklist.getConsume(),
           mopidy.tracklist.getRandom(),
@@ -45,40 +91,6 @@ angular.module('mopidy-mobile.connection', [
         ]).then(function(results) {
           return util.zipObject(['consume', 'random', 'repeat', 'single'], results);
         });
-      };
-      // Mopidy v1.0 library.lookup(uris) wrapper
-      var lookup = mopidy.library.lookup;
-      mopidy.library.lookup = function(params) {
-        if ('uris' in params) {
-          return Mopidy.when.all(params.uris.map(function(uri) {
-            return lookup({uri: uri});
-          })).then(function(results) {
-            return util.zipObject(params.uris, results);
-          });
-        } else {
-          return lookup(params);
-        }
-      };
-      // Mopidy v1.0 tracklist.add(uris) wrapper
-      var add = mopidy.tracklist.add;
-      mopidy.tracklist.add = function(params) {
-        if ('uris' in params) {
-          return mopidy.library.lookup({
-            uris: params.uris
-          }).then(function(result) {
-            return Array.prototype.concat.apply([], params.uris.map(function(uri) {
-              return result[uri] || [];
-            }));
-          }).then(function(tracks) {
-            if ('at_position' in params) {
-              return add({tracks: tracks, at_position: params.at_position});
-            } else {
-              return add({tracks: tracks});
-            }
-          });
-        } else {
-          return add(params);
-        }
       };
       return mopidy;
     }
@@ -120,7 +132,7 @@ angular.module('mopidy-mobile.connection', [
         $ionicLoading.show();
 
         mopidy.once('state:online', function() {
-          mopidy = upgrade(mopidy);
+          mopidy = shim(mopidy);
           $log.info('Connected');
           $ionicLoading.hide();
           resolve(mopidy);
