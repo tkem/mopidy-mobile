@@ -50,11 +50,11 @@ angular.module('mopidy-mobile.connection', [
       var lookup = mopidy.library.lookup;
       mopidy.library.lookup = function(params) {
         if ('uris' in params) {
-        return Mopidy.when.all(params.uris.map(function(uri) {
-          return lookup({uri: uri});
-        })).then(function(results) {
-          return Array.prototype.concat.apply([], results);
-        });
+          return Mopidy.when.all(params.uris.map(function(uri) {
+            return lookup({uri: uri});
+          })).then(function(results) {
+            return util.zipObject(params.uris, results);
+          });
         } else {
           return lookup(params);
         }
@@ -65,6 +65,10 @@ angular.module('mopidy-mobile.connection', [
         if ('uris' in params) {
           return mopidy.library.lookup({
             uris: params.uris
+          }).then(function(result) {
+            return Array.prototype.concat.apply([], params.uris.map(function(uri) {
+              return result[uri] || [];
+            }));
           }).then(function(tracks) {
             if ('at_position' in params) {
               return add({tracks: tracks, at_position: params.at_position});
