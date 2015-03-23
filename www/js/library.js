@@ -63,7 +63,7 @@ angular.module('mopidy-mobile.library', [
         results: function($stateParams, connection) {
           return connection(function(mopidy) {
             return mopidy.library.search({
-              query: {any: $stateParams.q},
+              query: {any: [$stateParams.q]},
               uris: $stateParams.uri ? [$stateParams.uri] : null
             });
           }, true);
