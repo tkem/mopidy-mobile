@@ -1,3 +1,11 @@
+0.8.4 2015-03-23
+----------------
+
+- Fix search query.
+
+- Adapt `Mopidy.js` shims to Mopidy v1.0 interface.
+
+
 0.8.3 2015-03-13
 ----------------
 
