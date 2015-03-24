@@ -66,12 +66,7 @@ gulp.task('bundlejs', ['uglifyjs'], function() {
     .pipe(gulp.dest(paths.js));
 });
 
-gulp.task('dist:resources', function() {
-  return gulp.src('resources/www/*.png')
-    .pipe(gulp.dest(paths.dist + '/images'));
-});
-
-gulp.task('dist', ['sass', 'bundlejs', 'dist:resources'], function() {
+gulp.task('dist', ['sass', 'bundlejs'], function() {
   return gulp.src([
     'www/css/*.min.css',
     'www/css/images/**',
