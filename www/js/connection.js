@@ -28,6 +28,7 @@ angular.module('mopidy-mobile.connection', [
 
   provider.$get = function($q, $log, $rootScope, $window, $ionicLoading, connectionErrorHandler, coverart, util) {
     function shim(mopidy) {
+      // check if Mopidy method has given named parameter
       function hasParam(method, name) {
         for (var params = method.params, i = params.length - 1; i >= 0; --i) {
           if (params[i].name === name) {
@@ -36,6 +37,15 @@ angular.module('mopidy-mobile.connection', [
         }
         return false;
       }
+      // convert Mopidy model instance to corresponding Ref
+      function toRef(model) {
+        return {
+          __model__: 'Ref',
+          type: model.__model__.toLowerCase(),
+          name: model.name,
+          uri: model.uri
+        };
+      }
       // Mopidy v1.0 mixer API
       mopidy.mixer = mopidy.mixer || {
         getMute: mopidy.playback.getMute,
@@ -43,7 +53,20 @@ angular.module('mopidy-mobile.connection', [
         getVolume: mopidy.playback.getVolume,
         setVolume: mopidy.playback.setVolume
       };
-      // Mopidy v1.0 library.lookup(uris)
+      // Mopidy v1.0 playlists API
+      mopidy.playlists = angular.extend({
+        asList: function() {
+          return mopidy.playlists.getPlaylists().then(function(playlists) {
+            return playlists.map(toRef);
+          });
+        },
+        getItems: function(uri) {
+          return mopidy.playlists.lookup(uri).then(function(playlist) {
+            return playlist ? playlist.tracks.map(toRef) : playlist;
+          });
+        }
+      }, mopidy.playlists);
+      // Mopidy v1.0 library.lookup({uris: [...]})
       if (!hasParam(mopidy.library.lookup, 'uris')) {
         var lookup = mopidy.library.lookup;
         mopidy.library.lookup = function(params) {
@@ -58,7 +81,7 @@ angular.module('mopidy-mobile.connection', [
           }
         };
       }
-      // Mopidy v1.0 tracklist.add(uris)
+      // Mopidy v1.0 tracklist.add({uris: [...]})
       if (!hasParam(mopidy.tracklist.add, 'uris')) {
         var add = mopidy.tracklist.add;
         mopidy.tracklist.add = function(params) {

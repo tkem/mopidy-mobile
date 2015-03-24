@@ -23,13 +23,13 @@ angular.module('mopidy-mobile.playlists', [
       resolve: {
         playlists: function(connection) {
           return connection(function(mopidy) {
-            return mopidy.playlists.getPlaylists();
+            return mopidy.playlists.asList();
           }, true);
         }
       }
     })
     .state('main.playlists.playlist', {
-      url: '/{uri}',
+      url: '?uri',
       controller: 'PlaylistCtrl',
       templateUrl: 'templates/playlist.html',
       resolve: {
@@ -47,14 +47,15 @@ angular.module('mopidy-mobile.playlists', [
   var handlers = {
     'event:playlistChanged': function(/*playlist*/) {
       connection(function(mopidy) {
-        return mopidy.playlists.getPlaylists();
+        // FIXME: only single playlist affected
+        return mopidy.playlists.asList();
       }).then(function(playlists) {
         $scope.playlists = playlists;
       });
     },
     'event:playlistsLoaded': function() {
       connection(function(mopidy) {
-        return mopidy.playlists.getPlaylists();
+        return mopidy.playlists.asList();
       }).then(function(playlists) {
         $scope.playlists = playlists;
       });
