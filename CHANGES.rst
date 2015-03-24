@@ -1,3 +1,12 @@
+0.8.5 2015-03-24
+----------------
+
+- Switch to Mopidy v1.0 ``playlists`` API.
+
+- Use Mopidy.v1.0 `uris` parameter with ``library.lookup()`` and
+  ``tracklist.add()``.
+
+
 0.8.4 2015-03-23
 ----------------
 
