@@ -1,3 +1,11 @@
+0.8.6 2015-03-25
+----------------
+
+- Handle `streamTitleChanged` events.
+
+- Fix exception for missing cover art.
+
+
 0.8.5 2015-03-24
 ----------------
 
