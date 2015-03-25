@@ -53,6 +53,12 @@ angular.module('mopidy-mobile.connection', [
         getVolume: mopidy.playback.getVolume,
         setVolume: mopidy.playback.setVolume
       };
+      // Mopidy v1.0 playback API
+      mopidy.playback = angular.extend({
+        getStreamTitle: function() {
+            return null;
+        }
+      }, mopidy.playback);
       // Mopidy v1.0 playlists API
       mopidy.playlists = angular.extend({
         asList: function() {

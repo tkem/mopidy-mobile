@@ -76,7 +76,8 @@ angular.module('mopidy-mobile.playback',
       return mopidy.constructor.when.join(
         mopidy.tracklist.eotTrack(params),
         mopidy.tracklist.nextTrack(params),
-        mopidy.tracklist.previousTrack(params)
+        mopidy.tracklist.previousTrack(params),
+        mopidy.playback.getStreamTitle()
       );
     }).then(function(results) {
       var tlTracks = $scope.tlTracks = {
@@ -98,6 +99,7 @@ angular.module('mopidy-mobile.playback',
           $scope.image = image;
         });
       }
+      $scope.stream = {title: results[3]};
       return $scope.track;
     });
   }
@@ -131,6 +133,9 @@ angular.module('mopidy-mobile.playback',
     },
     'event:seeked': function(event) {
       positionTimer.set(event.time_position);
+    },
+    'event:streamTitleChanged': function(event) {
+      $scope.stream.title = event.title;
     },
     'event:tracklistChanged': function() {
       this.playback.getCurrentTlTrack().then(setCurrentTlTrack);

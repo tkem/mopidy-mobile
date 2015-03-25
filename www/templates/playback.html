@@ -14,13 +14,22 @@
 
   <ion-content class="has-header has-subfooter">
     <div class="mopidy-mobile-trackview">
-      <p>
-        <strong>{{track.name || ('Nothing playing' | translate)}}</strong>
-        <br>
-        {{track.artists[0].name}}
-        <br>
-        {{track.album.name}}
-      </p>
+      <div class="padding">
+        <div ng-if="track.artists[0].name">
+          {{track.artists[0].name}}
+        </div>
+        <div>
+          <strong>
+            {{track.name || ('Nothing playing' | translate)}}
+          </strong>
+        </div>
+        <div ng-if="track.album.name">
+          {{track.album.name}}
+        </div>
+        <div ng-if="stream.title">
+          {{stream.title}}
+        </div>
+      </div>
 
       <div ng-if="debug">
         <p>State: {{state}}</p>
