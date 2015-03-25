@@ -100,7 +100,7 @@ angular.module('mopidy-mobile.coverart', [])
             if (images) {
               return select(cache.put(model.uri, images), width, height);
             } else {
-              $q.fail(model.uri);
+              return null;
             }
           });
         }
