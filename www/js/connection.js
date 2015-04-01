@@ -49,7 +49,9 @@ angular.module('mopidy-mobile.connection', [
       // Mopidy v1.0 mixer API
       mopidy.mixer = mopidy.mixer || {
         getMute: mopidy.playback.getMute,
-        setMute: mopidy.playback.setMute,
+        setMute: function(params) {
+          return mopidy.playback.setMute({value: params.mute});
+        },
         getVolume: mopidy.playback.getVolume,
         setVolume: mopidy.playback.setVolume
       };
@@ -66,8 +68,8 @@ angular.module('mopidy-mobile.connection', [
             return playlists.map(toRef);
           });
         },
-        getItems: function(uri) {
-          return mopidy.playlists.lookup(uri).then(function(playlist) {
+        getItems: function(params) {
+          return mopidy.playlists.lookup({uri: params.uri}).then(function(playlist) {
             return playlist ? playlist.tracks.map(toRef) : playlist;
           });
         }

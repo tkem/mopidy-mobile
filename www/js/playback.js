@@ -334,7 +334,7 @@ angular.module('mopidy-mobile.playback',
     },
     setMute: function(mute) {
       connection(function(mopidy) {
-        mopidy.mixer.setMute({value: mute});
+        mopidy.mixer.setMute({mute: mute});
       }, true);
     },
     refresh: function() {
