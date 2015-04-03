@@ -11,12 +11,6 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 /* Include all of Ionic */
 @import "www/lib/ionic/scss/ionic";
 
-/* The path to the icomoon font files, relative to the built CSS in www/css */
-$icomoon-font-path: "../lib/icomoon/dist/fonts" !default;
-
-/* Include custom icomoon scss */
-@import "icomoon";
-
 /* Include default variables */
 @import "variables";
 
@@ -33,9 +27,19 @@ $icomoon-font-path: "../lib/icomoon/dist/fonts" !default;
     font-size: $button-icon-size;
 }
 
+/* FIXME: buttons and checkboxes are mis-aligned in android popovers */
+.platform-android .popover .item {
+    margin: 0 !important;
+}
+
 /* Style up your nav-bar */
 .nav-bar-title em {
     font-style: italic;
+}
+
+/* this is for ion-android-more-vertical */
+.bar-stable .button {
+    min-width: 32px;
 }
 
 /* TODO: $link-color? */
@@ -91,18 +95,6 @@ a {
     @extend .#{$mopidy-mobile-icon-volume-high};
 }
 
-.mopidy-mobile-icon-consume {
-    @extend .#{$mopidy-mobile-icon-consume};
-}
-.mopidy-mobile-icon-random {
-    @extend .#{$mopidy-mobile-icon-random};
-}
-.mopidy-mobile-icon-repeat {
-    @extend .#{$mopidy-mobile-icon-repeat};
-}
-.mopidy-mobile-icon-single {
-    @extend .#{$mopidy-mobile-icon-single};
-}
 
 .mopidy-mobile-icon-album {
     @extend .#{$mopidy-mobile-icon-album};
@@ -117,11 +109,20 @@ a {
     @extend .#{$mopidy-mobile-icon-track};
 }
 
+.mopidy-mobile-icon-cancel {
+    @extend .#{$mopidy-mobile-icon-cancel};
+}
+.mopidy-mobile-icon-done {
+    @extend .#{$mopidy-mobile-icon-done};
+}
+.mopidy-mobile-icon-edit {
+    @extend .#{$mopidy-mobile-icon-edit};
+}
+.mopidy-mobile-icon-menu {
+    @extend .#{$mopidy-mobile-icon-menu};
+}
 .mopidy-mobile-icon-search {
     @extend .#{$mopidy-mobile-icon-search};
-}
-.mopidy-mobile-icon-more {
-    @extend .#{$mopidy-mobile-icon-more};
 }
 
 .mopidy-mobile-icon-info {
@@ -176,7 +177,7 @@ ion-popover-view.mopidy-mobile-menu ion-content {
     text-align: left !important;
 }
 .mopidy-mobile-menu button[disabled] {
-    color: #ccc;  /* FIXME: configurable, transform? */
+    color: #ccc !important;  /* FIXME: configurable, transform? */
 }
 
 /* TODO: configurable? */
@@ -190,16 +191,4 @@ ion-popover-view.mopidy-mobile-menu ion-content {
 img.mopidy-mobile-logo {
     height: 32px;
     vertical-align: text-bottom;
-}
-
-/* TODO: collection-repeat items -- configurable? */
-.mopidy-mobile-collection-item {
-  left: 0;
-  right: 0;
-  height: 50;
-}
-
-.mopidy-mobile-options .button {
-    padding: 0;
-    min-width: 36px;
 }

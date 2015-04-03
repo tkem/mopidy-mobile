@@ -10,7 +10,7 @@ angular.module('mopidy-mobile.ui', [
     var template = [];
     template.push('<ion-popover-view class="mopidy-mobile-menu">');
     template.push('<ion-content scroll="false">');  // TODO: options
-    template.push('<div class="list">');
+    template.push('<ion-list>');
     angular.forEach(items, function(item) {
       if (item.model) {
         template.push('<ion-checkbox ng-model="' + item.model + '"');
@@ -33,14 +33,14 @@ angular.module('mopidy-mobile.ui', [
       }
       template.push(item.model ? '</ion-checkbox>' : '</button>');
     });
-    template.push('</div>');
+    template.push('</ion-list>');
     template.push('</ion-content>');
     template.push('</ion-popover-view>');
     return $ionicPopover.fromTemplate(template.join(''), options);
   };
 })
 
-.factory('popup', function($filter, $ionicPopup) {
+.factory('popup', function($filter, $rootScope, $ionicPopup) {
   var translate = $filter('translate');  // filter is synchronous
 
   return {
@@ -63,6 +63,44 @@ angular.module('mopidy-mobile.ui', [
         inputPlaceholder: placeholder,
         okText: translate('OK'),
         cancelText: translate('Cancel')
+      });
+    },
+    fromTemplateUrl: function(title, templateUrl) {
+      var scope = $rootScope.$new(true);
+      scope.data = {};
+      return $ionicPopup.show({
+        templateUrl: templateUrl,
+        title: translate(title),
+        scope: scope,
+        buttons: [
+          { text: translate('Cancel') },
+          {
+            text: translate('OK'),
+            type: 'button-positive',
+            onTap: function() {
+              return scope.data;
+            }
+          }
+        ]
+      });
+    }
+  };
+})
+
+.factory('scroll', function($document, $log, $timeout, $ionicScrollDelegate) {
+  return {
+    anchorScroll: function(handle, id, shouldAnimate) {
+      var left = 0, top = 0;
+      for (var e = $document[0].getElementById(id); e; e = e.offsetParent) {
+        left += e.offsetLeft;
+        top += e.offsetTop;
+      }
+      $timeout(function() {
+        $log.debug('anchorScroll', left, top);
+        var delegate = $ionicScrollDelegate.$getByHandle(handle);
+        if (delegate) {
+          delegate.scrollTo(left, top - 100, shouldAnimate);
+        }
       });
     }
   };

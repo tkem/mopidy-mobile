@@ -118,7 +118,7 @@ angular.module('mopidy-mobile.coverart', [])
             return true;
           }
         });
-        $log.debug('Retrieving coverart from ' + services);
+        $log.debug('Loading cover art from ' + services);
         return $q.all(services.map($injector.get).map(function(service) {
           return service.getImages(models);
         })).then(function(results) {
@@ -132,6 +132,7 @@ angular.module('mopidy-mobile.coverart', [])
           angular.forEach(cached, function(images, uri) {
             cached[uri] = select(images, width, height);
           });
+          $log.debug('Loading cover art done');
           return cached;
         });
       },

@@ -6,63 +6,38 @@ angular.module('mopidy-mobile.tracklist', [
 ])
 
 .config(function($stateProvider) {
-  $stateProvider.state('main.tracklist', {
-    url: '/tracklist',
-    views: {
-      'tracklist': {
-        templateUrl: 'templates/tracklist.html',
-        controller: 'TracklistCtrl'
+  $stateProvider
+    .state('main.tracklist', {
+      abstract: true,
+      url: '/tracklist',
+      views: {
+        'tracklist': {
+          template: '<ion-nav-view></ion-nav-view>',
+          controller: 'TracklistCtrl'
+        }
       }
-    }
-  });
+    })
+    .state('main.tracklist.view', {
+      url: '',
+      templateUrl: 'templates/tracklist.view.html',
+    })
+    .state('main.tracklist.edit', {
+      url: '/edit',
+      templateUrl: 'templates/tracklist.edit.html',
+    })
+  ;
 })
 
-.controller('TracklistCtrl', function($scope, $document, $log, $timeout, $ionicScrollDelegate, connection, coverart) {
-  $log.debug('creating tracklist view');
-
-  function anchorScroll(handle, id, shouldAnimate) {
-    var delegate = $ionicScrollDelegate.$getByHandle(handle);
-    var elem = $document[0].getElementById(id);
-    var left = 0, top = 0;
-    do {
-      if (elem !== null) {
-        left += elem.offsetLeft;
-      }
-      if (elem !== null) {
-        top += elem.offsetTop;
-      }
-      elem = elem.offsetParent;
-    } while (elem.offsetParent);
-    $timeout(function() {
-      $log.log('scroll to ', left, top);
-      delegate.scrollTo(left, top - 100, shouldAnimate);
-    });
-  }
-
-  var listeners = connection.on({
+.controller('TracklistCtrl', function($scope, $q, $log, connection, coverart) {
+  var listeners = {
     'event:optionsChanged': function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.getOptions();
-      }).then(function(options) {
+      $q.when(this.tracklist.getOptions()).then(function(options) {
         $scope.options = options;
       });
     },
     'event:tracklistChanged': function() {
-      connection(function(mopidy) {
-        return mopidy.constructor.when.join(
-          mopidy.playback.getCurrentTlTrack(),
-          mopidy.tracklist.getTlTracks()
-        );
-      }).then(function(results) {
-        $scope.currentTlTrack = results[0];
-        $scope.tlTracks = results[1];
-        coverart.getImages($scope.getTracks(), {
-          width: $scope.thumbnailWidth,
-          height: $scope.thumbnailHeight
-        }).then(function(images) {
-          // TODO: cleanup
-          $scope.images = images;
-        });
+      $q.when(this.tracklist.getTlTracks()).then(function(tlTracks) {
+        $scope.tlTracks = tlTracks;
       });
     },
     'event:trackPlaybackEnded': function() {
@@ -72,15 +47,24 @@ angular.module('mopidy-mobile.tracklist', [
       $scope.currentTlTrack = event.tl_track;
     },
     'state:online': function() {
-      $log.info('(re)connect: refreshing tracklist view');
-      $scope.refresh();
+      $scope.load();
     }
-  });
+  };
 
   angular.extend($scope, {
+    images: {},
     options: {},
     tlTracks: [],
-    images: {},
+    add: function(uris) {
+      return connection(function(mopidy) {
+        return mopidy.tracklist.add({uris: uris});
+      }, true);
+    },
+    clear: function() {
+      return connection(function(mopidy) {
+        return mopidy.tracklist.clear();
+      }, true);
+    },
     getTracks: function() {
       return $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
     },
@@ -94,89 +78,105 @@ angular.module('mopidy-mobile.tracklist', [
       }
       return -1;
     },
+    load: function() {
+      return connection(function(mopidy) {
+        return $q.all({
+          currentTlTrack: mopidy.playback.getCurrentTlTrack(),
+          options: mopidy.tracklist.getOptions(),
+          tlTracks: mopidy.tracklist.getTlTracks()
+        });
+      }).then(function(results) {
+        angular.extend($scope, results);
+      });
+    },
+    move: function(fromIndex, toIndex) {
+      return connection(function(mopidy) {
+        return mopidy.tracklist.move({
+          start: fromIndex,
+          end: fromIndex + 1,
+          to_position: toIndex
+        });
+      }, true);
+    },
     play: function(tlTrack) {
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         return mopidy.playback.play({tl_track: angular.copy(tlTrack)});
       }, true);
     },
+    refresh: function() {
+      return $scope.load().finally(function() {
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    },
     remove: function(tlTrack) {
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         return mopidy.tracklist.remove({criteria: {tlid: [tlTrack.tlid]}});
       }, true);
     },
-    setOptions: function(params) {
-      connection(function(mopidy) {
-        var promises = [];
-        if ('consume' in params) {
-          promises.push(mopidy.tracklist.setConsume({value: params.consume}));
-        }
-        if ('random' in params) {
-          promises.push(mopidy.tracklist.setRandom({value: params.random}));
-        }
-        if ('repeat' in params) {
-          promises.push(mopidy.tracklist.setRepeat({value: params.repeat}));
-        }
-        if ('single' in params) {
-          promises.push(mopidy.tracklist.setSingle({value: params.single}));
-        }
-        return Mopidy.when.all(promises);
+    setConsume: function(value) {
+      return connection(function(mopidy) {
+        mopidy.tracklist.setConsume({value: value});
       }, true);
     },
-    refresh: function() {
-      connection(function(mopidy) {
-        return mopidy.constructor.when.join(
-          mopidy.playback.getCurrentTlTrack(),
-          mopidy.tracklist.getOptions(),
-          mopidy.tracklist.getTlTracks()
-        );
-      }).then(function(results) {
-        $scope.currentTlTrack = results[0];
-        $scope.options = results[1];
-        $scope.tlTracks = results[2];
-        coverart.getImages($scope.getTracks(), {
-          width: $scope.thumbnailWidth,
-          height: $scope.thumbnailHeight
-        }).then(function(images) {
-          // TODO: cleanup
-          $scope.images = images;
-        });
-        if ($scope.currentTlTrack) {
-          $timeout(function() {
-            anchorScroll('tracklistScroll', 'tlid-' + $scope.currentTlTrack.tlid, true);
-          });
-        }
+    setRandom: function(value) {
+      return connection(function(mopidy) {
+        mopidy.tracklist.setRandom({value: value});
+      }, true);
+    },
+    setRepeat: function(value) {
+      return connection(function(mopidy) {
+        mopidy.tracklist.setRepeat({value: value});
+      }, true);
+    },
+    setSingle: function(value) {
+      return connection(function(mopidy) {
+        mopidy.tracklist.setSingle({value: value});
+      }, true);
+    }
+  });
+
+  $scope.$watchCollection('tlTracks', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      coverart.getImages($scope.getTracks(), {
+        width: $scope.thumbnailWidth,
+        height: $scope.thumbnailHeight
+      }).then(function(images) {
+        $scope.images = images;
       });
     }
   });
 
-  $scope.$on('$ionicView.enter', function() {
-    $log.debug('entering tracklist view');
-    // defensive action...
-    $scope.refresh();
+  $scope.$on('$destroy', function() {
+    connection.off(listeners);
   });
 
-  $scope.$on('$destroy', function() {
-    $log.debug('destroying tracklist view');
-    connection.off(listeners);
+  $scope.load().finally(function() {
+    connection.on(listeners);
   });
 })
 
-.controller('TracklistMenuCtrl', function($scope, $rootScope, connection, popoverMenu, popup) {
+.controller('TracklistViewMenuCtrl', function($scope, $rootScope, popoverMenu, popup) {
   function createPopoverMenu() {
     return popoverMenu([{
-      text: 'Clear',
-      click: 'popover.hide() && clear()',
-      disabled: '!tlTracks.length',
-      hellip: true
-    }, {
-      text: 'Stream URL',
+      text: 'Play Stream',
       click: 'popover.hide() && playURL()',
-      hellip: true
+      hellip: true,
     }, {
-      text: 'Save as',
-      click: 'popover.hide() && save()',
-      disabled: '!tlTracks.length',
-      hellip: true
+      text: 'Repeat',
+      model: 'options.repeat',
+      change: 'setRepeat(options.repeat)',
+    }, {
+      text: 'Random',
+      model: 'options.random',
+      change: 'setRandom(options.random)',
+    }, {
+      text: 'Single',
+      model: 'options.single',
+      change: 'setSingle(options.single)',
+    }, {
+      text: 'Consume',
+      model: 'options.consume',
+      change: 'setConsume(options.consume)',
     }], {
       scope: $scope
     });
@@ -187,23 +187,43 @@ angular.module('mopidy-mobile.tracklist', [
     playURL: function() {
       popup.prompt('Stream URL', 'http://example.com/stream.mp3').then(function(url) {
         if (url) {
-          connection(function(mopidy) {
-            return mopidy.tracklist.add({uri: url}).then(function(tlTracks) {
-              return mopidy.playback.play({tl_track: tlTracks[0]});
-            });
-          }, true);
+          $scope.add([url]).then(function(tlTracks) {
+            $scope.play(tlTracks[0]);
+          });
         }
       });
-    },
-    clear: function() {
-      popup.confirm('Clear Tracklist').then(function(result) {
-        if (result) {
-          connection(function(mopidy) {
-            return mopidy.tracklist.clear();
-          }, true);
-        }
-      });
-    },
+    }
+  });
+
+  $scope.$on('$destroy', function() {
+    $scope.popover.remove();
+  });
+
+  $rootScope.$on('$translateChangeSuccess', function() {
+    var tmp = $scope.popover;
+    $scope.popover = createPopoverMenu();
+    tmp.remove();
+  });
+})
+
+.controller('TracklistEditMenuCtrl', function($scope, $rootScope, connection, popoverMenu, popup) {
+  function createPopoverMenu() {
+    return popoverMenu([{
+      text: 'Save as',
+      click: 'popover.hide() && save()',
+      disabled: '!tlTracks.length',
+      hellip: true
+    }, {
+      text: 'Clear',
+      click: 'popover.hide() && clear()',
+      disabled: '!tlTracks.length',
+    }], {
+      scope: $scope
+    });
+  }
+
+  angular.extend($scope, {
+    popover: createPopoverMenu(),
     save: function() {
       popup.prompt('Playlist Name', 'My Playlist').then(function(name) {
         if (name) {

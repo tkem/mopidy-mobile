@@ -1,6 +1,6 @@
 <ion-view view-title="{{ref.name || ref.uri || ('Library' | translate)}}">
   <ion-nav-buttons side="secondary">
-    <button class="button button-clear icon mopidy-mobile-icon-more"
+    <button class="button button-clear icon mopidy-mobile-icon-menu"
             ng-click="popover.show($event)"
             ng-controller="LibraryMenuCtrl"
             >
@@ -18,8 +18,6 @@
     <div class="list">
       <div class="item item-complex item-icon-left item-icon-right mopidy-mobile-collection-item"
            collection-repeat="ref in refs"
-           collection-item-width="'100%'"
-           collection-item-height="50"
            ng-switch="ref.type"
            >
         <a class="item-content"

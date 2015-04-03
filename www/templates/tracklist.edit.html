@@ -1,0 +1,30 @@
+<ion-view cache-view="false" view-title="{{'Edit Tracklist' | translate}}">
+  <ion-nav-bar class="bar-stable">
+    <ion-nav-back-button class="button-clear">
+      <i class="icon mopidy-mobile-icon-done"></i> {{'Done' | translate}}
+    </ion-nav-back-button>
+  </ion-nav-bar>
+  <ion-nav-buttons side="secondary">
+    <button class="button button-clear icon mopidy-mobile-icon-menu"
+            ng-click="popover.show($event)"
+            ng-controller="TracklistEditMenuCtrl"
+            >
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list show-delete="true" show-reorder="true">
+      <ion-item class="item-thumbnail-left"
+                ng-repeat="tlTrack in tlTracks"
+                >
+        <img class="mopidy-mobile-thumbnail-track" ng-src="{{images[tlTrack.track.uri].uri}}">
+        <h2>{{tlTrack.track.name}}</h2>
+        <h3>{{tlTrack.track.artists[0].name}}</h3>
+        <h4>{{tlTrack.track.album.name}}</h4>
+        <ion-delete-button class="ion-minus-circled" ng-click="remove(tlTrack)">
+        </ion-delete-button>
+        <ion-reorder-button class="ion-navicon" on-reorder="move($fromIndex, $toIndex)">
+        </ion-reorder-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

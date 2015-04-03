@@ -7,8 +7,8 @@
     </ion-refresher>
     <div class="list">
       <a class="item item-icon-right"
-         ng-repeat="playlist in playlists | orderBy: 'name'"
-         ui-sref="main.playlists.playlist({uri: playlist.uri})"
+         collection-repeat="playlist in playlists | orderBy: 'name'"
+         ui-sref="main.playlist.view({uri: playlist.uri})"
          >
         {{playlist.name}}
         <i class="icon icon-accessory ion-chevron-right"></i>

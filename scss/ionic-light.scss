@@ -6,8 +6,8 @@ importing the local _style.scss.
 
 */
 
-$sprites-path:                          "images/ionic-light.png";
-$sprites-version:                       "0.0.2";
+$sprites-path:                          "ionic-sprites.png";
+$sprites-version:                       "0.0.1";
 
 $mopidy-mobile-thumbnail-album-bg:      url("#{$sprites-path}?v=#{$sprites-version}") 0 0;
 $mopidy-mobile-thumbnail-artist-bg:     url("#{$sprites-path}?v=#{$sprites-version}") -64px 0;

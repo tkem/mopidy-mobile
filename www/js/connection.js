@@ -72,7 +72,8 @@ angular.module('mopidy-mobile.connection', [
           return mopidy.playlists.lookup({uri: params.uri}).then(function(playlist) {
             return playlist ? playlist.tracks.map(toRef) : playlist;
           });
-        }
+        },
+        editable: !!mopidy.playlists.asList  // Mopidy >= 1.0
       }, mopidy.playlists);
       // Mopidy v1.0 library.lookup({uris: [...]})
       if (!hasParam(mopidy.library.lookup, 'uris')) {

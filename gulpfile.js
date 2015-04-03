@@ -25,7 +25,7 @@ gulp.task('install', function() {
 });
 
 gulp.task('sass:images', function() {
-  return gulp.src('scss/images/**/*.png', {base: 'scss'})
+  return gulp.src('scss/**/*.png', {base: 'scss'})
     .pipe(gulp.dest(paths.css));
 });
 
@@ -69,11 +69,10 @@ gulp.task('bundlejs', ['uglifyjs'], function() {
 gulp.task('dist', ['sass', 'bundlejs'], function() {
   return gulp.src([
     'www/css/*.min.css',
-    'www/css/images/**',
+    'www/css/**/*.png',
     'www/images/**',
     'www/js/mopidy-mobile.bundle.min.js',
     'www/lib/ionic/fonts/**',
-    'www/lib/icomoon/dist/fonts/**', '!www/lib/icomoon/dist/fonts/icomoon.dev.svg',
     'www/templates/**'
   ], {base: 'www'})
     .pipe(gulp.dest(paths.dist));

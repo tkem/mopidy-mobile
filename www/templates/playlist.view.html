@@ -1,0 +1,31 @@
+<ion-view view-title="{{playlist.name || playlist.uri}}">
+<!--
+  <ion-nav-title>
+    <h1 class="title">{{playlist.name || playlist.uri}}</h1>
+  </ion-nav-title>
+-->
+  <ion-nav-buttons side="secondary">
+    <a class="button button-clear button-icon icon mopidy-mobile-icon-edit"
+       ng-if="editable"
+       ui-sref="^.edit"
+       >
+    </a>
+    <button class="button button-clear icon mopidy-mobile-icon-menu"
+            ng-click="popover.show($event)"
+            ng-controller="PlaylistViewMenuCtrl"
+            >
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-refresher
+       on-refresh="refresh()"
+       pulling-text="{{'Pull to refresh' | translate}}"
+       >
+    </ion-refresher>
+    <ion-list>
+      <ion-item collection-repeat="track in playlist.tracks" ng-click="click(track)">
+        {{track.name}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

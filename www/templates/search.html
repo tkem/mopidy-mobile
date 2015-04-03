@@ -1,7 +1,7 @@
 <ion-view view-title="{{'Search Results' | translate}}">
   <ion-nav-title><span translate>Search Results for</span> <em>{{q}}</em></ion-nav-title>
   <ion-nav-buttons side="secondary">
-    <button class="button button-clear icon mopidy-mobile-icon-more"
+    <button class="button button-clear icon mopidy-mobile-icon-menu"
             ng-click="popover.show($event)"
             ng-controller="LibraryMenuCtrl"
             >
@@ -27,8 +27,8 @@
         <i class="icon icon-accessory ion-chevron-right"></i>
       </a>
       <a class="item item-thumbnail-left"
-         ng-click="click(track)"
          ng-repeat="track in tracks"
+         ng-click="click(track)"
          >
         <img class="mopidy-mobile-thumbnail-track" ng-src="{{images[track.uri].uri}}">
         <h2>{{track.name}}</h2>
