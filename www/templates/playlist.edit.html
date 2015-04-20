@@ -1,6 +1,6 @@
-<ion-view view-title="{{playlist.name || playlist.uri}}">
+<ion-view view-title="{{'Edit Playlist' | translate}}">
   <ion-nav-bar class="bar-stable">
-    <ion-nav-back-button class="button-clear" ng-click="save()">
+    <ion-nav-back-button class="button-clear" ng-click="save().then(back)">
       <i class="icon mopidy-mobile-icon-check"></i> {{'Save' | translate}}
     </ion-nav-back-button>
   </ion-nav-bar>
@@ -12,11 +12,9 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <form>
+    <form ng-submit="save().then(back)">
       <label class="item item-input">
-        <div class="input-label" translate>
-          Name
-        </div>
+        <div class="input-label" translate>Name</div>
         <input type="text" placeholder="{{'My Playlist' | translate}}..." ng-model="playlist.name">
       </label>
     </form>
