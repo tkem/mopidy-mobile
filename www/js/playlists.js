@@ -25,16 +25,20 @@ angular.module('mopidy-mobile.playlists', [
     })
     .state('main.playlist', {
       abstract: true,
-      url: '/playlist/{uri}',
+      url: '/playlists/{uri}',
       views: {
         'playlists': {
           controller: 'PlaylistCtrl',
           template: '<ion-nav-view></ion-nav-view>',
           resolve: {
             playlist: function($stateParams, connection) {
-              return connection(function(mopidy) {
-                return mopidy.playlists.lookup({uri: $stateParams.uri});
-              }, true);
+              if ($stateParams.uri) {
+                return connection(function(mopidy) {
+                  return mopidy.playlists.lookup({uri: $stateParams.uri});
+                }, true);
+              } else {
+                return {name: null, tracks: []};
+              }
             },
             editable: function(connection) {
               return connection(function(mopidy) {
@@ -72,6 +76,7 @@ angular.module('mopidy-mobile.playlists', [
   };
 
   angular.extend($scope, {
+    options: {},
     playlists: playlists,
     refresh: function() {
       connection(function(mopidy) {
@@ -96,6 +101,7 @@ angular.module('mopidy-mobile.playlists', [
 })
 
 .controller('PlaylistCtrl', function($scope, $log, $ionicHistory, connection, popup, playlist, editable, actions) {
+  $log.log('Playlistctrl', playlist);
   var listeners = {
     'event:playlistChanged': function(changedPlaylist) {
       if (playlist.uri == changedPlaylist.uri) {
@@ -195,6 +201,31 @@ angular.module('mopidy-mobile.playlists', [
   connection.on(listeners);
 })
 
+.controller('PlaylistsMenuCtrl', function($scope, $rootScope, popoverMenu) {
+  function createPopoverMenu() {
+    return popoverMenu([{
+      text: 'Sort',
+      model: 'options.sorted',
+    }], {
+      scope: $scope
+    });
+  }
+
+  angular.extend($scope, {
+    popover: createPopoverMenu()
+  });
+
+  $scope.$on('$destroy', function() {
+    $scope.popover.remove();
+  });
+
+  $rootScope.$on('$translateChangeSuccess', function() {
+    var popover = $scope.popover;
+    $scope.popover = createPopoverMenu();
+    popover.remove();
+  });
+})
+
 .controller('PlaylistViewMenuCtrl', function($scope, $rootScope, popoverMenu, actions) {
   function createPopoverMenu() {
     return popoverMenu([{
@@ -235,6 +266,10 @@ angular.module('mopidy-mobile.playlists', [
     return popoverMenu([{
       text: 'Add Stream URL',
       click: 'popover.hide() && addURL()',
+      hellip: true
+    }, {
+      text: 'Cancel',
+      click: 'popover.hide() && cancel()',
       hellip: true
     }, {
       text: 'Rename',

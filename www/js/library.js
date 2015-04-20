@@ -34,7 +34,7 @@ angular.module('mopidy-mobile.library', [
       }
     })
     .state('main.library.browse', {
-      url: '/browse?type&name&uri',
+      url: '/browse?name&type&uri',
       controller: 'BrowseCtrl',
       templateUrl: 'templates/browse.html',
       resolve: {

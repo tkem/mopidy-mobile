@@ -1,18 +1,9 @@
-<ion-view hide-back-button="true" view-title="{{playlist.name || playlist.uri}}">
-  <ion-nav-buttons side="primary">
-    <button class="button back-button button-clear icon mopidy-mobile-icon-done"
-            ng-click="save()"
-            translate
-            >
-      Save
-    </button>
-    <button class="button back-button button-clear icon mopidy-mobile-icon-cancel"
-            ng-click="cancel()"
-            translate
-            >
-      Cancel
-    </button>
-  </ion-nav-buttons>
+<ion-view view-title="{{playlist.name || playlist.uri}}">
+  <ion-nav-bar class="bar-stable">
+    <ion-nav-back-button class="button-clear" ng-click="save()">
+      <i class="icon mopidy-mobile-icon-check"></i> {{'Save' | translate}}
+    </ion-nav-back-button>
+  </ion-nav-bar>
   <ion-nav-buttons side="secondary">
     <button class="button button-clear icon mopidy-mobile-icon-menu"
             ng-click="popover.show($event)"
@@ -21,6 +12,14 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
+    <form>
+      <label class="item item-input">
+        <div class="input-label" translate>
+          Name
+        </div>
+        <input type="text" placeholder="{{'My Playlist' | translate}}..." ng-model="playlist.name">
+      </label>
+    </form>
     <ion-list show-delete="true" show-reorder="true">
       <ion-item ng-repeat="track in playlist.tracks">
         {{track.name}}
