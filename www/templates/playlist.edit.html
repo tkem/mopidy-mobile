@@ -1,4 +1,4 @@
-<ion-view view-title="{{'Edit Playlist' | translate}}">
+<ion-view view-title="{{playlist.uri ? 'Edit Playlist' : 'Create Playlist' | translate}}">
   <ion-nav-bar class="bar-stable">
     <ion-nav-back-button class="button-clear" ng-click="save().then(back)">
       <i class="icon mopidy-mobile-icon-check"></i> {{'Save' | translate}}

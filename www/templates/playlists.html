@@ -18,10 +18,11 @@
     </ion-refresher>
     <div class="list">
       <a class="item item-icon-right"
-         collection-repeat="playlist in playlists | orderBy: 'name'"
+         collection-repeat="playlist in playlists | playlistOrder : order"
          ui-sref="main.playlist.view({uri: playlist.uri})"
          >
-        {{playlist.name}}
+        <h2>{{playlist.name}}</h2>
+        <h3>{{getScheme(playlist)}}</h3>
         <i class="icon icon-accessory ion-chevron-right"></i>
       </a>
     </div>

@@ -60,6 +60,21 @@ angular.module('mopidy-mobile.playlists', [
   ;
 })
 
+.filter('playlistOrder', function($filter) {
+  var orderBy = $filter('orderBy');
+  return function(playlists, options) {
+    if (options.name) {
+      playlists = orderBy(playlists, 'name');
+    }
+    if (options.scheme) {
+      playlists = orderBy(playlists, function(playlist) {
+        return playlist.uri.substr(0, playlist.uri.indexOf(':'));
+      });
+    }
+    return playlists;
+  };
+})
+
 .controller('PlaylistsCtrl', function(connection, playlists, $scope, $q) {
   var listeners = {
     'event:playlistChanged': function(/*playlist*/) {
@@ -75,8 +90,12 @@ angular.module('mopidy-mobile.playlists', [
   };
 
   angular.extend($scope, {
-    options: {},
+    order: {},
     playlists: playlists,
+    getScheme: function(playlist) {
+      var uri = playlist.uri;
+      return uri ? uri.substr(0, uri.indexOf(':')) : null;
+    },
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.playlists.refresh({
@@ -100,10 +119,6 @@ angular.module('mopidy-mobile.playlists', [
 })
 
 .controller('PlaylistCtrl', function(actions, connection, editable, playlist, $ionicHistory, $scope) {
-  function getScheme(uri) {
-    return uri ? uri.substr(0, uri.indexOf(':')) : null;
-  }
-
   var listeners = {
     // TODO: how to handle this, e.g. with editing
     // 'event:playlistChanged': function(playlist) {
@@ -126,7 +141,7 @@ angular.module('mopidy-mobile.playlists', [
           uri: $scope.playlist.uri
         }).then(function() {
           // workaround for https://github.com/mopidy/mopidy/issues/996
-          return mopidy.playlists.refresh({uri_scheme: getScheme($scope.playlist.uri)});
+          return mopidy.playlists.refresh({uri_scheme: $scope.getScheme($scope.playlist.uri)});
         });
       }, true).then(function() {
         $scope.playlist = {uri: null, name: null, tracks: []};
@@ -139,7 +154,7 @@ angular.module('mopidy-mobile.playlists', [
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.playlists.refresh({
-          uri_scheme: getScheme($scope.playlist.uri)
+          uri_scheme: $scope.getScheme($scope.playlist.uri)
         }).then(function() {
           if ($scope.playlist.uri) {
             return mopidy.playlists.lookup({uri: $scope.playlist.uri});
@@ -195,8 +210,11 @@ angular.module('mopidy-mobile.playlists', [
 .controller('PlaylistsMenuCtrl', function(popoverMenu, $rootScope, $scope) {
   function createPopoverMenu() {
     return popoverMenu([{
-      text: 'Sort',
-      model: 'options.sorted',
+      text: 'Sort by name',
+      model: 'order.name',
+    }, {
+      text: 'Sort by scheme',
+      model: 'order.scheme',
     }], {
       scope: $scope
     });
