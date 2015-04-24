@@ -261,7 +261,7 @@ angular.module('mopidy-mobile.settings', [
       });
       mopidy.once('state:offline', function() {
         $ionicLoading.hide();
-        popup.alert('Connection Error');
+        popup.alert('Connection error');
         mopidy.close();
         mopidy.off();
       });

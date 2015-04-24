@@ -1,5 +1,4 @@
 <ion-view cache-view="false" hide-nav-bar="true" view-title="{{'Playback' | translate}}">
-
   <ion-header-bar>
     <div class="range" style="width: 100%">
       {{time.position | duration}}
@@ -47,27 +46,27 @@
 
   <ion-footer-bar class="bar-subfooter">
     <div class="button-bar">
-      <button class="button button-clear button-icon button-small icon  mopidy-mobile-icon-random"
+      <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-random"
               ng-class="{'button-positive': options.random}"
               ng-click="setRandom(!options.random)"
               >
       </button>
-      <button class="button button-icon icon mopidy-mobile-icon-previous"
+      <button class="mopidy-mobile-button-control mopidy-mobile-icon-previous"
               ng-click="previous()"
               ng-disabled="!tlTracks.previous"
               >
       </button>
-      <button class="button button-icon icon"
+      <button class="mopidy-mobile-button-control"
               ng-class="state != 'playing' ? 'mopidy-mobile-icon-play' : 'mopidy-mobile-icon-pause'"
               ng-click="state != 'playing' ? play() : pause()"
               >
       </button>
-      <button class="button button-icon icon mopidy-mobile-icon-stop"
+      <button class="mopidy-mobile-button-control mopidy-mobile-icon-stop"
               ng-click="stop()"
               ng-disabled="state == 'stopped'"
               >
       </button>
-      <button class="button button-icon icon mopidy-mobile-icon-next"
+      <button class="mopidy-mobile-button-control mopidy-mobile-icon-next"
               ng-click="next()"
               ng-disabled="!tlTracks.next"
               >
@@ -79,7 +78,6 @@
       </button>
     </div>
   </ion-footer-bar>
-
   <ion-footer-bar ng-controller="MixerCtrl as mixer">
     <div class="buttons">
       <button class="button button-clear icon mopidy-mobile-icon-mute"
@@ -89,15 +87,14 @@
       </button>
     </div>
     <div class="range" style="width: 100%">
-      <i class="icon mopidy-mobile-icon-volume-low"></i>
+      <i class="mopidy-mobile-icon-volume-low"></i>
       <input ng-change="mixer.changeVolume()"
              ng-model="mixer.volume"
              type="range"
              min="0"
              max="100"
              >
-      <i class="icon mopidy-mobile-icon-volume-high"></i>
+      <i class="mopidy-mobile-icon-volume-high"></i>
     </div>
   </ion-footer-bar>
-
 </ion-view>

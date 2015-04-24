@@ -1,10 +1,9 @@
-<ion-view cache-view="false" view-title="{{'Tracklist' | translate}}">
+<ion-view cache-view="false" hide-back-button="true" view-title="{{'Tracklist' | translate}}">
   <ion-nav-buttons side="secondary">
-    <a class="button button-clear button-icon icon mopidy-mobile-icon-edit"
-       ui-sref="^.edit"
-       >
-    </a>
-    <button class="button button-clear button-icon icon mopidy-mobile-icon-menu"
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-edit"
+            ui-sref="^.edit">
+    </button>
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
             ng-click="popover.show($event)"
             ng-controller="TracklistViewMenuCtrl"
             >
@@ -25,7 +24,7 @@
             translate
             translate-values="{count: tlTracks.length}"
             >
-        {count} Tracks
+        {count} tracks
       </span>
     </span>
   </ion-nav-title>

@@ -158,7 +158,7 @@ angular.module('mopidy-mobile.tracklist', [
 .controller('TracklistViewMenuCtrl', function($scope, $rootScope, popoverMenu, popup) {
   function createPopoverMenu() {
     return popoverMenu([{
-      text: 'Play Stream',
+      text: 'Play stream',
       click: 'popover.hide() && playURL()',
       hellip: true,
     }, {

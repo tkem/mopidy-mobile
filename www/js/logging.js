@@ -106,14 +106,14 @@ angular.module('mopidy-mobile.logging', [
 .controller('LoggingMenuCtrl', function($scope, $rootScope, popoverMenu, logging) {
   function createPopoverMenu() {
     return popoverMenu([{
-      text: 'Enable Logging',
+      text: 'Enable',
       model: 'logging.enabled'
     }, {
-      text: 'Log Debug Messages',
+      text: 'Log debug messages',
       model: 'logging.debugEnabled',
       disabled: '!logging.enabled'
     }, {
-      text: 'Clear Log',
+      text: 'Clear',
       click: 'popover.hide() && clear()',
       disabled: '!logging.enabled'
     }], {

@@ -92,10 +92,6 @@ angular.module('mopidy-mobile.playlists', [
   angular.extend($scope, {
     order: {},
     playlists: playlists,
-    getScheme: function(playlist) {
-      var uri = playlist.uri;
-      return uri ? uri.substr(0, uri.indexOf(':')) : null;
-    },
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.playlists.refresh({
@@ -119,6 +115,10 @@ angular.module('mopidy-mobile.playlists', [
 })
 
 .controller('PlaylistCtrl', function(actions, connection, editable, playlist, $ionicHistory, $scope) {
+  function getScheme(uri) {
+    return uri ? uri.substr(0, uri.indexOf(':')) : null;
+  }
+
   var listeners = {
     // TODO: how to handle this, e.g. with editing
     // 'event:playlistChanged': function(playlist) {
@@ -141,7 +141,7 @@ angular.module('mopidy-mobile.playlists', [
           uri: $scope.playlist.uri
         }).then(function() {
           // workaround for https://github.com/mopidy/mopidy/issues/996
-          return mopidy.playlists.refresh({uri_scheme: $scope.getScheme($scope.playlist.uri)});
+          return mopidy.playlists.refresh({uri_scheme: getScheme($scope.playlist.uri)});
         });
       }, true).then(function() {
         $scope.playlist = {uri: null, name: null, tracks: []};
@@ -154,7 +154,7 @@ angular.module('mopidy-mobile.playlists', [
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.playlists.refresh({
-          uri_scheme: $scope.getScheme($scope.playlist.uri)
+          uri_scheme: getScheme($scope.playlist.uri)
         }).then(function() {
           if ($scope.playlist.uri) {
             return mopidy.playlists.lookup({uri: $scope.playlist.uri});
@@ -238,16 +238,16 @@ angular.module('mopidy-mobile.playlists', [
 .controller('PlaylistViewMenuCtrl', function(actions, popoverMenu, $rootScope, $scope) {
   function createPopoverMenu() {
     return popoverMenu([{
-      text: 'Play Now',
+      text: 'Play now',
       click: 'popover.hide() && actions.play(playlist.tracks)'
     }, {
-      text: 'Play Next',
+      text: 'Play next',
       click: 'popover.hide() && actions.next(playlist.tracks)'
     }, {
-      text: 'Add to Tracklist',
+      text: 'Add to tracklist',
       click: 'popover.hide() && actions.add(playlist.tracks)'
     }, {
-      text: 'Replace Tracklist',
+      text: 'Replace tracklist',
       click: 'popover.hide() && actions.replace(playlist.tracks)'
     }], {
       scope: $scope
@@ -273,17 +273,16 @@ angular.module('mopidy-mobile.playlists', [
   .controller('PlaylistEditMenuCtrl', function(popoverMenu, popup, $ionicHistory, $rootScope, $scope, $state) {
   function createPopoverMenu() {
     return popoverMenu([{
-      text: 'Add Stream URL',
+      text: 'Add stream',
       click: 'popover.hide() && addURL()',
-      hellip: true
-    }, {
-      text: 'Cancel',
-      click: 'popover.hide() && reset().then(back)',
       hellip: true
     }, {
       text: 'Delete',
       click: 'popover.hide() && confirmDelete()',
       hellip: true
+    }, {
+      text: 'Cancel',
+      click: 'popover.hide() && reset().then(back)'
     }], {
       scope: $scope
     });
@@ -292,7 +291,7 @@ angular.module('mopidy-mobile.playlists', [
   angular.extend($scope, {
     popover: createPopoverMenu(),
     addURL: function() {
-      popup.fromTemplateUrl('Add Stream URL', 'templates/stream.html').then(function(result) {
+      popup.fromTemplateUrl('Add stream', 'templates/stream.html').then(function(result) {
         if (result.name && result.url) {
           var track = {
             __model__: 'Track',
@@ -313,6 +312,7 @@ angular.module('mopidy-mobile.playlists', [
           $scope.delete().then(function() {
             return $state.go('main.playlists');
           }).then(function() {
+            // FIXME: first playlist view after this does not render?
             $ionicHistory.clearHistory();
           });
         }

@@ -1,6 +1,6 @@
 <ion-view view-title="{{'Logging &amp; Debugging' | translate}}">
   <ion-nav-buttons side="secondary">
-    <button class="button button-clear icon mopidy-mobile-icon-menu"
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
             ng-click="popover.show($event)"
             ng-controller="LoggingMenuCtrl"
             >
@@ -17,7 +17,7 @@
          ng-click="record.json = !record.json"
          ng-repeat="record in records"
          >
-        <i class="icon" ng-class="'mopidy-mobile-icon-' + record.level"></i>
+        <i ng-class="'mopidy-mobile-icon-' + record.level"></i>
         {{record.time | date:'HH:mm:ss.sss'}}:
         <span ng-repeat="arg in record.args">
           {{record.json ? toJson(arg) : arg.toString()}}

@@ -52,7 +52,11 @@ a {
     pointer-events: initial !important;
 }
 
-/* Icons */
+/* "i" is for icons */
+i {
+    @extend .icon
+}
+
 .mopidy-mobile-icon-playback {
     @extend .#{$mopidy-mobile-icon-playback};
 }
@@ -67,6 +71,44 @@ a {
 }
 .mopidy-mobile-icon-settings {
     @extend .#{$mopidy-mobile-icon-settings};
+}
+
+.mopidy-mobile-icon-create {
+    @extend .#{$mopidy-mobile-icon-create};
+}
+.mopidy-mobile-icon-check {
+    @extend .#{$mopidy-mobile-icon-check};
+}
+.mopidy-mobile-icon-edit {
+    @extend .#{$mopidy-mobile-icon-edit};
+}
+.mopidy-mobile-icon-link {
+    @extend .#{$mopidy-mobile-icon-link};
+}
+.mopidy-mobile-icon-menu {
+    @extend .#{$mopidy-mobile-icon-menu};
+}
+.mopidy-mobile-icon-random {
+    @extend .#{$mopidy-mobile-icon-random};
+}
+.mopidy-mobile-icon-repeat {
+    @extend .#{$mopidy-mobile-icon-repeat};
+}
+.mopidy-mobile-icon-search {
+    @extend .#{$mopidy-mobile-icon-search};
+}
+
+.mopidy-mobile-icon-album {
+    @extend .#{$mopidy-mobile-icon-album};
+}
+.mopidy-mobile-icon-artist {
+    @extend .#{$mopidy-mobile-icon-artist};
+}
+.mopidy-mobile-icon-directory {
+    @extend .#{$mopidy-mobile-icon-directory};
+}
+.mopidy-mobile-icon-track {
+    @extend .#{$mopidy-mobile-icon-track};
 }
 
 .mopidy-mobile-icon-play {
@@ -85,47 +127,14 @@ a {
     @extend .#{$mopidy-mobile-icon-previous};
 }
 
-.mopidy-mobile-icon-mute {
-    @extend .#{$mopidy-mobile-icon-mute};
-}
 .mopidy-mobile-icon-volume-low {
     @extend .#{$mopidy-mobile-icon-volume-low};
 }
 .mopidy-mobile-icon-volume-high {
     @extend .#{$mopidy-mobile-icon-volume-high};
 }
-
-
-.mopidy-mobile-icon-album {
-    @extend .#{$mopidy-mobile-icon-album};
-}
-.mopidy-mobile-icon-artist {
-    @extend .#{$mopidy-mobile-icon-artist};
-}
-.mopidy-mobile-icon-directory {
-    @extend .#{$mopidy-mobile-icon-directory};
-}
-.mopidy-mobile-icon-track {
-    @extend .#{$mopidy-mobile-icon-track};
-}
-
-.mopidy-mobile-icon-cancel {
-    @extend .#{$mopidy-mobile-icon-cancel};
-}
-.mopidy-mobile-icon-check {
-    @extend .#{$mopidy-mobile-icon-check};
-}
-.mopidy-mobile-icon-create {
-    @extend .#{$mopidy-mobile-icon-create};
-}
-.mopidy-mobile-icon-edit {
-    @extend .#{$mopidy-mobile-icon-edit};
-}
-.mopidy-mobile-icon-menu {
-    @extend .#{$mopidy-mobile-icon-menu};
-}
-.mopidy-mobile-icon-search {
-    @extend .#{$mopidy-mobile-icon-search};
+.mopidy-mobile-icon-mute {
+    @extend .#{$mopidy-mobile-icon-mute};
 }
 
 .mopidy-mobile-icon-info {
@@ -138,6 +147,21 @@ a {
     @extend .#{$mopidy-mobile-icon-error};
 }
 
+/* button styles */
+.mopidy-mobile-button-icon {
+    @extend .button;
+    @extend .button-clear;
+    @extend .button-icon;
+    @extend .icon;
+}
+
+.mopidy-mobile-button-control {
+    @extend .button;
+    @extend .button-icon;
+    @extend .icon;
+}
+
+/* thumbnail default backgrounds */
 .mopidy-mobile-thumbnail-artist {
     &:not([src]) {
         width: $item-thumbnail-width;
@@ -145,7 +169,6 @@ a {
         background: $mopidy-mobile-thumbnail-artist-bg;
     }
 }
-
 .mopidy-mobile-thumbnail-album {
     &:not([src]) {
         width: $item-thumbnail-width;
@@ -153,7 +176,6 @@ a {
         background: $mopidy-mobile-thumbnail-album-bg;
     }
 }
-
 .mopidy-mobile-thumbnail-track {
     &:not([src]) {
         width: $item-thumbnail-width;

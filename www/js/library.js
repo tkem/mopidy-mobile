@@ -185,7 +185,7 @@ angular.module('mopidy-mobile.library', [
       click: 'popover.hide() && actions.next(tracks)',
       disabled: '!tracks.length'
     }, {
-      text: 'Add to Tracklist',
+      text: 'Add to tracklist',
       click: 'popover.hide() && actions.add(tracks)',
       disabled: '!tracks.length'
     }, {
