@@ -31,21 +31,17 @@
   <ion-content delegate-handle="tracklistScroll">
     <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
     </ion-refresher>
-    <ion-list>
-      <ion-item class="item-thumbnail-left"
-                collection-repeat="tlTrack in tlTracks"
-                id="{{'tlid-' + tlTrack.tlid}}"
-                ng-class="{'item-positive': tlTrack.tlid == currentTlTrack.tlid}"
-                ng-click="play(tlTrack)"
-                >
+    <div class="list">
+      <div class="item item-thumbnail-left"
+           collection-repeat="tlTrack in tlTracks"
+           ng-class="{'item-positive': tlTrack.tlid == currentTlTrack.tlid}"
+           ng-click="play(tlTrack)"
+           >
         <img class="mopidy-mobile-thumbnail-track" ng-src="{{images[tlTrack.track.uri].uri}}">
         <h2>{{tlTrack.track.name}}</h2>
         <h3>{{tlTrack.track.artists[0].name}}</h3>
         <h4>{{tlTrack.track.album.name}}</h4>
-        <ion-option-button class="button-assertive" ng-click="remove(tlTrack)" translate>
-          Remove
-        </ion-option-button>
-      </ion-item>
-    </ion-list>
+      </div>
+    </div>
   </ion-content>
 </ion-view>
