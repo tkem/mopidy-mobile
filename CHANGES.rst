@@ -1,3 +1,21 @@
+0.9.0 2015-04-24
+----------------
+
+- Add edit mode for playlists.
+
+- Create new (empty) playlists.
+
+- Sort playlists by name and/or URI scheme.
+
+- Add edit mode for tracklist.
+
+- Replace tracklist option buttons with popover menu (bye-bye pacman).
+
+- Remove `icomoon` icon font.
+
+- Upgrade `ionic` to v1.0.0-rc2.
+
+
 0.8.7 2015-04-01
 ----------------
 
