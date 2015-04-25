@@ -37,7 +37,7 @@ class IndexHandler(tornado.web.RequestHandler):
         self.__title = string.Template(ext_config['title'])
 
     def get(self, path):
-        return self.render('index.html', title=self.get_title(), **self.__dict)
+        return self.render(path, title=self.get_title(), **self.__dict)
 
     def get_title(self):
         hostname, sep, port = self.request.host.rpartition(':')
