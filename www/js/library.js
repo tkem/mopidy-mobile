@@ -177,11 +177,11 @@ angular.module('mopidy-mobile.library', [
 .controller('LibraryMenuCtrl', function($scope, $rootScope, popoverMenu, actions) {
   function createPopoverMenu() {
     return popoverMenu([{
-      text: 'Play Now',
+      text: 'Play now',
       click: 'popover.hide() && actions.play(tracks)',
       disabled: '!tracks.length'
     }, {
-      text: 'Play Next',
+      text: 'Play next',
       click: 'popover.hide() && actions.next(tracks)',
       disabled: '!tracks.length'
     }, {
@@ -189,7 +189,7 @@ angular.module('mopidy-mobile.library', [
       click: 'popover.hide() && actions.add(tracks)',
       disabled: '!tracks.length'
     }, {
-      text: 'Replace Tracklist',
+      text: 'Replace tracklist',
       click: 'popover.hide() && actions.replace(tracks)',
       disabled: '!tracks.length'
     }], {

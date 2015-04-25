@@ -1,7 +1,7 @@
-<ion-view view-title="{{'Cover Art' | translate}}">
+<ion-view view-title="{{'Cover art' | translate}}">
   <ion-content>
     <div class="list">
-      <div class="item item-divider">
+      <div class="item item-divider" translate>
         Cover art sources
       </div>
       <ion-toggle class="item-input" ng-model="coverart.services.connection">
@@ -19,16 +19,16 @@
           <img class="mopidy-mobile-logo" src="images/coverartarchive-small.png">
         </a>
       </ion-toggle>
-      <div class="item item-divider">
-        Cache Settings
+      <div class="item item-divider" translate>
+        Cache settings
       </div>
       <label class="item item-input">
-        <span class="input-label" translate>Cache Size</span>
+        <span class="input-label" translate>Cache size</span>
         <input ng-model="coverart.cache.size" type="number">
       </label>
       <label class="item item-input">
         <button class="button" ng-click="coverart.cache.clear()" translate>
-          Clear Cache
+          Clear cache
         </button>
       </label>
     </div>
