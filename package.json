@@ -1,6 +1,6 @@
 {
   "name": "mopidy-mobile",
-  "version": "0.1.0",
+  "version": "0.9.1",
   "description": "mopidy-mobile: An Ionic project",
   "repository": {
     "url": "https://github.com/tkem/mopidy-mobile/"
@@ -21,6 +21,9 @@
   },
   "cordovaPlugins": [
     "https://github.com/whiteoctober/cordova-plugin-app-version.git",
-    "org.apache.cordova.inappbrowser"
+    "cordova-plugin-inappbrowser"
+  ],
+  "cordovaPlatforms": [
+    "android"
   ]
 }
