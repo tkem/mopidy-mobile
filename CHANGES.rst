@@ -1,3 +1,15 @@
+0.9.2 2015-04-25
+----------------
+
+- Fix broken cover art images in Android app.
+
+- Fix default title when adding to homescreen.
+
+- Add missing translations.
+
+- Upgrade `ionic` framework to 1.0.0-rc.4.
+
+
 0.9.1 2015-04-25
 ----------------
 
