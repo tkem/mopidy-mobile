@@ -20,8 +20,9 @@
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
-    "https://github.com/whiteoctober/cordova-plugin-app-version.git",
-    "cordova-plugin-inappbrowser"
+    "cordova-plugin-whitelist",
+    "cordova-plugin-inappbrowser",
+    "uk.co.whiteoctober.cordova.appversion"
   ],
   "cordovaPlatforms": [
     "android"

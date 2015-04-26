@@ -55,8 +55,11 @@ To build the hybrid app for Android, please follow Ionic's
 `installation guide`_ to make sure you have everything needed for
 Android development.  Then run::
 
+  ionic resources android
   ionic platform add android
-  ionic resources
+  ionic plugin add cordova-plugin-whitelist
+  ionic plugin add cordova-plugin-inappbrowser
+  ionic plugin add uk.co.whiteoctober.cordova.appversion
   ionic build android
 
 
