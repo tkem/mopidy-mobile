@@ -57,9 +57,7 @@ Android development.  Then run::
 
   ionic resources android
   ionic platform add android
-  ionic plugin add cordova-plugin-whitelist
-  ionic plugin add cordova-plugin-inappbrowser
-  ionic plugin add uk.co.whiteoctober.cordova.appversion
+  cordova prepare
   ionic build android
 
 
