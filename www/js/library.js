@@ -174,9 +174,10 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('LibraryMenuCtrl', function($scope, $rootScope, popoverMenu, actions) {
-  function createPopoverMenu() {
-    return popoverMenu([{
+.controller('LibraryMenuCtrl', function(actions, popoverMenu, $scope) {
+  angular.extend($scope, {
+    actions: actions,
+    popover: popoverMenu([{
       text: 'Play now',
       click: 'popover.hide() && actions.play(tracks)',
       disabled: '!tracks.length'
@@ -194,20 +195,6 @@ angular.module('mopidy-mobile.library', [
       disabled: '!tracks.length'
     }], {
       scope: $scope
-    });
-  }
-
-  angular.extend($scope, {
-    popover: createPopoverMenu(),
-    actions: actions
-  });
-
-  $scope.$on('$destroy', function() {
-    $scope.popover.remove();
-  });
-
-  $rootScope.$on('$translateChangeSuccess', function() {
-    $scope.popover.remove();
-    $scope.popover = createPopoverMenu();
+    })
   });
 });

@@ -155,9 +155,18 @@ angular.module('mopidy-mobile.tracklist', [
   });
 })
 
-.controller('TracklistViewMenuCtrl', function($scope, $rootScope, popoverMenu, popup) {
-  function createPopoverMenu() {
-    return popoverMenu([{
+.controller('TracklistViewMenuCtrl', function(popoverMenu, popup, $scope) {
+  angular.extend($scope, {
+    playURL: function() {
+      popup.prompt('Stream URL', 'http://example.com/stream.mp3').then(function(url) {
+        if (url) {
+          $scope.add([url]).then(function(tlTracks) {
+            $scope.play(tlTracks[0]);
+          });
+        }
+      });
+    },
+    popover: popoverMenu([{
       text: 'Play stream',
       click: 'popover.hide() && playURL()',
       hellip: true,
@@ -179,51 +188,12 @@ angular.module('mopidy-mobile.tracklist', [
       change: 'setConsume(options.consume)',
     }], {
       scope: $scope
-    });
-  }
-
-  angular.extend($scope, {
-    popover: createPopoverMenu(),
-    playURL: function() {
-      popup.prompt('Stream URL', 'http://example.com/stream.mp3').then(function(url) {
-        if (url) {
-          $scope.add([url]).then(function(tlTracks) {
-            $scope.play(tlTracks[0]);
-          });
-        }
-      });
-    }
-  });
-
-  $scope.$on('$destroy', function() {
-    $scope.popover.remove();
-  });
-
-  $rootScope.$on('$translateChangeSuccess', function() {
-    var tmp = $scope.popover;
-    $scope.popover = createPopoverMenu();
-    tmp.remove();
+    })
   });
 })
 
-.controller('TracklistEditMenuCtrl', function($scope, $rootScope, connection, popoverMenu, popup) {
-  function createPopoverMenu() {
-    return popoverMenu([{
-      text: 'Save as',
-      click: 'popover.hide() && save()',
-      disabled: '!tlTracks.length',
-      hellip: true
-    }, {
-      text: 'Clear',
-      click: 'popover.hide() && clear()',
-      disabled: '!tlTracks.length',
-    }], {
-      scope: $scope
-    });
-  }
-
+.controller('TracklistEditMenuCtrl', function(connection, popoverMenu, popup, $scope) {
   angular.extend($scope, {
-    popover: createPopoverMenu(),
     save: function() {
       popup.prompt('Playlist Name', 'My Playlist').then(function(name) {
         if (name) {
@@ -237,16 +207,18 @@ angular.module('mopidy-mobile.tracklist', [
           });
         }
       });
-    }
-  });
-
-  $scope.$on('$destroy', function() {
-    $scope.popover.remove();
-  });
-
-  $rootScope.$on('$translateChangeSuccess', function() {
-    var tmp = $scope.popover;
-    $scope.popover = createPopoverMenu();
-    tmp.remove();
+    },
+    popover: popoverMenu([{
+      text: 'Save as',
+      click: 'popover.hide() && save()',
+      disabled: '!tlTracks.length',
+      hellip: true
+    }, {
+      text: 'Clear',
+      click: 'popover.hide() && clear()',
+      disabled: '!tlTracks.length',
+    }], {
+      scope: $scope
+    })
   });
 });

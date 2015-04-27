@@ -207,9 +207,9 @@ angular.module('mopidy-mobile.playlists', [
   connection.on(listeners);
 })
 
-.controller('PlaylistsMenuCtrl', function(popoverMenu, $rootScope, $scope) {
-  function createPopoverMenu() {
-    return popoverMenu([{
+.controller('PlaylistsMenuCtrl', function(popoverMenu, $scope) {
+  angular.extend($scope, {
+    popover: popoverMenu([{
       text: 'Sort by name',
       model: 'order.name',
     }, {
@@ -217,27 +217,14 @@ angular.module('mopidy-mobile.playlists', [
       model: 'order.scheme',
     }], {
       scope: $scope
-    });
-  }
-
-  angular.extend($scope, {
-    popover: createPopoverMenu()
-  });
-
-  $scope.$on('$destroy', function() {
-    $scope.popover.remove();
-  });
-
-  $rootScope.$on('$translateChangeSuccess', function() {
-    var popover = $scope.popover;
-    $scope.popover = createPopoverMenu();
-    popover.remove();
+    })
   });
 })
 
-.controller('PlaylistViewMenuCtrl', function(actions, popoverMenu, $rootScope, $scope) {
-  function createPopoverMenu() {
-    return popoverMenu([{
+.controller('PlaylistViewMenuCtrl', function(actions, popoverMenu, $scope) {
+  angular.extend($scope, {
+    actions: actions,
+    popover: popoverMenu([{
       text: 'Play now',
       click: 'popover.hide() && actions.play(playlist.tracks)'
     }, {
@@ -251,45 +238,12 @@ angular.module('mopidy-mobile.playlists', [
       click: 'popover.hide() && actions.replace(playlist.tracks)'
     }], {
       scope: $scope
-    });
-  }
-
-  angular.extend($scope, {
-    popover: createPopoverMenu(),
-    actions: actions
-  });
-
-  $scope.$on('$destroy', function() {
-    $scope.popover.remove();
-  });
-
-  $rootScope.$on('$translateChangeSuccess', function() {
-    var popover = $scope.popover;
-    $scope.popover = createPopoverMenu();
-    popover.remove();
+    })
   });
 })
 
-  .controller('PlaylistEditMenuCtrl', function(popoverMenu, popup, $ionicHistory, $rootScope, $scope, $state) {
-  function createPopoverMenu() {
-    return popoverMenu([{
-      text: 'Add stream',
-      click: 'popover.hide() && addURL()',
-      hellip: true
-    }, {
-      text: 'Delete',
-      click: 'popover.hide() && confirmDelete()',
-      hellip: true
-    }, {
-      text: 'Cancel',
-      click: 'popover.hide() && reset().then(back)'
-    }], {
-      scope: $scope
-    });
-  }
-
+.controller('PlaylistEditMenuCtrl', function(popoverMenu, popup, $ionicHistory, $scope, $state) {
   angular.extend($scope, {
-    popover: createPopoverMenu(),
     addURL: function() {
       popup.fromTemplateUrl('Add stream', 'templates/stream.html').then(function(result) {
         if (result.name && result.url) {
@@ -317,16 +271,20 @@ angular.module('mopidy-mobile.playlists', [
           });
         }
       });
-    }
-  });
-
-  $scope.$on('$destroy', function() {
-    $scope.popover.remove();
-  });
-
-  $rootScope.$on('$translateChangeSuccess', function() {
-    var popover = $scope.popover;
-    $scope.popover = createPopoverMenu();
-    popover.remove();
+    },
+    popover: popoverMenu([{
+      text: 'Add stream',
+      click: 'popover.hide() && addURL()',
+      hellip: true
+    }, {
+      text: 'Delete',
+      click: 'popover.hide() && confirmDelete()',
+      hellip: true
+    }, {
+      text: 'Cancel',
+      click: 'popover.hide() && reset().then(back)'
+    }], {
+      scope: $scope
+    })
   });
 });

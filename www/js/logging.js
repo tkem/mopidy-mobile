@@ -103,9 +103,16 @@ angular.module('mopidy-mobile.logging', [
   $scope.toJson = angular.toJson;
 })
 
-.controller('LoggingMenuCtrl', function($scope, $rootScope, popoverMenu, logging) {
-  function createPopoverMenu() {
-    return popoverMenu([{
+.controller('LoggingMenuCtrl', function(logging, popoverMenu, $scope) {
+  angular.extend($scope, {
+    logging: {
+      enabled: logging.enabled(),
+      debugEnabled: logging.debugEnabled()
+    },
+    clear: function() {
+      logging.clear();
+    },
+    popover: popoverMenu([{
       text: 'Enable',
       model: 'logging.enabled'
     }, {
@@ -118,18 +125,7 @@ angular.module('mopidy-mobile.logging', [
       disabled: '!logging.enabled'
     }], {
       scope: $scope
-    });
-  }
-
-  angular.extend($scope, {
-    popover: createPopoverMenu(),
-    logging: {
-      enabled: logging.enabled(),
-      debugEnabled: logging.debugEnabled()
-    },
-    clear: function() {
-      logging.clear();
-    }
+    })
   });
 
   $scope.$watch('logging.enabled', function(value) {
@@ -137,15 +133,5 @@ angular.module('mopidy-mobile.logging', [
   });
   $scope.$watch('logging.debugEnabled', function(value) {
     logging.debugEnabled(value);
-  });
-
-  $scope.$on('$destroy', function() {
-    $scope.popover.remove();
-  });
-
-  $rootScope.$on('$translateChangeSuccess', function() {
-    var tmp = $scope.popover;
-    $scope.popover = createPopoverMenu();
-    tmp.remove();
   });
 });
