@@ -13,13 +13,6 @@ angular.module('mopidy-mobile.playlists', [
         'playlists': {
           controller: 'PlaylistsCtrl',
           templateUrl: 'templates/playlists.html',
-          resolve: {
-            playlists: function(connection) {
-              return connection(function(mopidy) {
-                return mopidy.playlists.asList();
-              }, true);
-            }
-          }
         }
       }
     })
@@ -35,7 +28,7 @@ angular.module('mopidy-mobile.playlists', [
               if ($stateParams.uri) {
                 return connection(function(mopidy) {
                   return mopidy.playlists.lookup({uri: $stateParams.uri});
-                }, true);
+                });
               } else {
                 return {uri: null, name: null, tracks: []};
               }
@@ -75,8 +68,16 @@ angular.module('mopidy-mobile.playlists', [
   };
 })
 
-.controller('PlaylistsCtrl', function(connection, playlists, $scope, $q) {
+.controller('PlaylistsCtrl', function(connection, $scope, $q, $log) {
   var listeners = {
+    'connection:online': function() {
+      $log.debug('playlists online', this);
+      connection(function(mopidy) {
+        return mopidy.playlists.asList();
+      }).then(function(playlists) {
+        $scope.playlists = playlists;
+      });
+    },
     'event:playlistChanged': function(/*playlist*/) {
       $q.when(this.playlists.asList()).then(function(playlists) {
         $scope.playlists = playlists;
@@ -91,7 +92,7 @@ angular.module('mopidy-mobile.playlists', [
 
   angular.extend($scope, {
     order: {},
-    playlists: playlists,
+    playlists: [],
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.playlists.refresh({
@@ -99,7 +100,7 @@ angular.module('mopidy-mobile.playlists', [
         }).then(function() {
           return mopidy.playlists.asList();
         });
-      }, true).then(function(playlists) {
+      }).then(function(playlists) {
         $scope.playlists = playlists;
       }).finally(function() {
         $scope.$broadcast('scroll.refreshComplete');
@@ -143,7 +144,7 @@ angular.module('mopidy-mobile.playlists', [
           // workaround for https://github.com/mopidy/mopidy/issues/996
           return mopidy.playlists.refresh({uri_scheme: getScheme($scope.playlist.uri)});
         });
-      }, true).then(function() {
+      }).then(function() {
         $scope.playlist = {uri: null, name: null, tracks: []};
       });
     },
@@ -162,7 +163,7 @@ angular.module('mopidy-mobile.playlists', [
             return {uri: null, name: null, tracks: []};
           }
         });
-      }, true).then(function(playlist) {
+      }).then(function(playlist) {
         $scope.playlist = playlist;
       }).finally(function() {
         $scope.$broadcast('scroll.refreshComplete');
@@ -178,7 +179,7 @@ angular.module('mopidy-mobile.playlists', [
         } else {
           return {uri: null, name: null, tracks: []};
         }
-      }, true).then(function(playlist) {
+      }).then(function(playlist) {
         $scope.playlist = playlist;
       });
     },
@@ -194,7 +195,7 @@ angular.module('mopidy-mobile.playlists', [
             return mopidy.playlists.save({playlist: playlist});
           });
         }
-      }, true).then(function(playlist) {
+      }).then(function(playlist) {
         $scope.playlist = playlist;
       });
     }

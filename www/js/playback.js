@@ -118,9 +118,7 @@ angular.module('mopidy-mobile.playback',
 
   var listeners = connection.on({
     'event:optionsChanged': function() {
-      connection(function(mopidy) {
-        return mopidy.tracklist.getOptions();
-      }).then(function(options) {
+      $q.when(this.tracklist.getOptions()).then(function(options) {
         $scope.options = options;
       });
     },
@@ -165,17 +163,17 @@ angular.module('mopidy-mobile.playback',
     play: function() {
       connection(function(mopidy) {
         return mopidy.playback.play();
-      }, true);
+      });
     },
     pause: function() {
       connection(function(mopidy) {
         return mopidy.playback.pause();
-      }, true);
+      });
     },
     stop: function() {
       connection(function(mopidy) {
         return mopidy.playback.stop();
-      }, true);
+      });
     },
     next: function() {
       // FIXME: calling next() while stopped triggers no events
@@ -186,7 +184,7 @@ angular.module('mopidy-mobile.playback',
             mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
           }
         });
-      }, true);
+      });
     },
     previous: function() {
       // FIXME: calling previous() while stopped triggers no events
@@ -197,17 +195,17 @@ angular.module('mopidy-mobile.playback',
             mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
           }
         });
-      }, true);
+      });
     },
     setRandom: function(value) {
       connection(function(mopidy) {
         mopidy.tracklist.setRandom({value: value});
-      }, true);
+      });
     },
     setRepeat: function(value) {
       connection(function(mopidy) {
         mopidy.tracklist.setRepeat({value: value});
-      }, true);
+      });
     },
     seek: function() {
       if (time.pending) {
@@ -335,7 +333,7 @@ angular.module('mopidy-mobile.playback',
     setMute: function(mute) {
       connection(function(mopidy) {
         mopidy.mixer.setMute({mute: mute});
-      }, true);
+      });
     },
     refresh: function() {
       return connection(function(mopidy) {

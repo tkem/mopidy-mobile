@@ -30,12 +30,24 @@ angular.module('mopidy-mobile.tracklist', [
 
 .controller('TracklistCtrl', function($scope, $q, $log, connection, coverart) {
   var listeners = {
+    'connection:online': function() {
+      connection(function(mopidy) {
+        return $q.all({
+          currentTlTrack: mopidy.playback.getCurrentTlTrack(),
+          options: mopidy.tracklist.getOptions(),
+          tlTracks: mopidy.tracklist.getTlTracks()
+        });
+      }).then(function(results) {
+        angular.extend($scope, results);
+      });
+    },
     'event:optionsChanged': function() {
       $q.when(this.tracklist.getOptions()).then(function(options) {
         $scope.options = options;
       });
     },
     'event:tracklistChanged': function() {
+      $log.debug('got tracklist changed', this);
       $q.when(this.tracklist.getTlTracks()).then(function(tlTracks) {
         $scope.tlTracks = tlTracks;
       });
@@ -45,9 +57,6 @@ angular.module('mopidy-mobile.tracklist', [
     },
     'event:trackPlaybackStarted': function(event) {
       $scope.currentTlTrack = event.tl_track;
-    },
-    'state:online': function() {
-      $scope.load();
     }
   };
 
@@ -58,12 +67,12 @@ angular.module('mopidy-mobile.tracklist', [
     add: function(uris) {
       return connection(function(mopidy) {
         return mopidy.tracklist.add({uris: uris});
-      }, true);
+      });
     },
     clear: function() {
       return connection(function(mopidy) {
         return mopidy.tracklist.clear();
-      }, true);
+      });
     },
     getTracks: function() {
       return $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
@@ -78,7 +87,21 @@ angular.module('mopidy-mobile.tracklist', [
       }
       return -1;
     },
-    load: function() {
+    move: function(fromIndex, toIndex) {
+      return connection(function(mopidy) {
+        return mopidy.tracklist.move({
+          start: fromIndex,
+          end: fromIndex + 1,
+          to_position: toIndex
+        });
+      });
+    },
+    play: function(tlTrack) {
+      return connection(function(mopidy) {
+        return mopidy.playback.play({tl_track: angular.copy(tlTrack)});
+      });
+    },
+    refresh: function() {
       return connection(function(mopidy) {
         return $q.all({
           currentTlTrack: mopidy.playback.getCurrentTlTrack(),
@@ -87,51 +110,34 @@ angular.module('mopidy-mobile.tracklist', [
         });
       }).then(function(results) {
         angular.extend($scope, results);
-      });
-    },
-    move: function(fromIndex, toIndex) {
-      return connection(function(mopidy) {
-        return mopidy.tracklist.move({
-          start: fromIndex,
-          end: fromIndex + 1,
-          to_position: toIndex
-        });
-      }, true);
-    },
-    play: function(tlTrack) {
-      return connection(function(mopidy) {
-        return mopidy.playback.play({tl_track: angular.copy(tlTrack)});
-      }, true);
-    },
-    refresh: function() {
-      return $scope.load().finally(function() {
+      }).finally(function() {
         $scope.$broadcast('scroll.refreshComplete');
       });
     },
     remove: function(tlTrack) {
       return connection(function(mopidy) {
         return mopidy.tracklist.remove({criteria: {tlid: [tlTrack.tlid]}});
-      }, true);
+      });
     },
     setConsume: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setConsume({value: value});
-      }, true);
+      });
     },
     setRandom: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setRandom({value: value});
-      }, true);
+      });
     },
     setRepeat: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setRepeat({value: value});
-      }, true);
+      });
     },
     setSingle: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setSingle({value: value});
-      }, true);
+      });
     }
   });
 
@@ -150,12 +156,11 @@ angular.module('mopidy-mobile.tracklist', [
     connection.off(listeners);
   });
 
-  $scope.load().finally(function() {
-    connection.on(listeners);
-  });
+  connection.on(listeners);
 })
 
 .controller('TracklistViewMenuCtrl', function(popoverMenu, popup, $scope) {
+  // ??? move options here ???
   angular.extend($scope, {
     playURL: function() {
       popup.prompt('Stream URL', 'http://example.com/stream.mp3').then(function(url) {
@@ -202,7 +207,7 @@ angular.module('mopidy-mobile.tracklist', [
               playlist.tracks = $scope.getTracks();
               return mopidy.playlists.save({playlist: playlist});
             });
-          }, true).then(function() {
+          }).then(function() {
             popup.alert('Playlist saved');
           });
         }

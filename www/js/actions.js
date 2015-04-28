@@ -29,7 +29,7 @@ angular.module('mopidy-mobile.actions', [
     add: function(obj) {
       return connection(function(mopidy) {
         return mopidy.tracklist.add(addParams(obj));
-      }, true);
+      });
     },
     play: function(obj) {
       return connection(function(mopidy) {
@@ -41,7 +41,7 @@ angular.module('mopidy-mobile.actions', [
         }).then(function(tlTracks) {
           return mopidy.playback.play({tl_track: tlTracks[0]});
         });
-      }, true);
+      });
     },
     next: function(obj) {
       return connection(function(mopidy) {
@@ -51,7 +51,7 @@ angular.module('mopidy-mobile.actions', [
           var pos = angular.isNumber(index) ? index + 1 : null;
           return mopidy.tracklist.add(addParams(obj, pos));
         });
-      }, true);
+      });
     },
     replace: function(obj) {
       return connection(function(mopidy) {
@@ -61,7 +61,7 @@ angular.module('mopidy-mobile.actions', [
         }).then(function(tlTracks) {
           return mopidy.playback.play({tl_track: tlTracks[0]});
         });
-      }, true);
+      });
     },
   };
 

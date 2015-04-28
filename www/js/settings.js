@@ -7,6 +7,7 @@ angular.module('mopidy-mobile.settings', [
   'mopidy-mobile.lastfm',
   'mopidy-mobile.locales',
   'mopidy-mobile.logging',
+  'mopidy-mobile.mopidy',
   'mopidy-mobile.ui',
   'mopidy-mobile.util'
 ])
@@ -60,18 +61,23 @@ angular.module('mopidy-mobile.settings', [
   });
 })
 
-.config(function($translateProvider, connectionProvider, coverartProvider, settingsProvider, stylesheet, themes) {
+.config(function($translateProvider, connectionProvider, coverartProvider, mopidyProvider, settingsProvider, stylesheet, themes) {
   var theme = settingsProvider.get('theme');
   if (theme && theme in themes) {
     stylesheet.setTheme(theme);
   }
+
+  // TODO: configurable?
+  connectionProvider.loadingDelay(100);
+  connectionProvider.loadingDuration(10000);
+
   if (settingsProvider.has('webSocketUrl')) {
-    connectionProvider.settings.webSocketUrl(settingsProvider.get('webSocketUrl'));
+    mopidyProvider.webSocketUrl(settingsProvider.get('webSocketUrl'));
   } else {
-    connectionProvider.settings.webSocketUrl(angular.element(document).find('html').attr('data-ws-url'));
+    mopidyProvider.webSocketUrl(angular.element(document).find('html').attr('data-ws-url'));
   }
-  connectionProvider.settings.backoffDelayMin(500);  // TODO: config?
-  connectionProvider.settings.backoffDelayMax(2000);  // TODO: check behavior...
+  mopidyProvider.backoffDelayMin(500);  // TODO: config?
+  mopidyProvider.backoffDelayMax(2000);  // TODO: check behavior...
 
   // TODO: determine browser language
   $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
