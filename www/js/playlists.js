@@ -133,9 +133,6 @@ angular.module('mopidy-mobile.playlists', [
     editable: editable,
     playlist: playlist,
     click: actions.default,
-    back: function() {
-      return $ionicHistory.goBack();
-    },
     delete: function() {
       return connection(function(mopidy) {
         return mopidy.playlists.delete({
@@ -147,6 +144,13 @@ angular.module('mopidy-mobile.playlists', [
       }).then(function() {
         $scope.playlist = {uri: null, name: null, tracks: []};
       });
+    },
+    goBack: function(backCount) {
+      if (arguments.length) {
+        return $ionicHistory.goBack();
+      } else {
+        return $ionicHistory.goBack(backCount);
+      }
     },
     move: function(fromIndex, toIndex) {
       var tracks = $scope.playlist.tracks.splice(fromIndex, 1);
@@ -265,10 +269,7 @@ angular.module('mopidy-mobile.playlists', [
       popup.confirm('Delete this playlist?').then(function(result) {
         if (result) {
           $scope.delete().then(function() {
-            return $state.go('main.playlists');
-          }).then(function() {
-            // FIXME: first playlist view after this does not render?
-            $ionicHistory.clearHistory();
+            $ionicHistory.goBack(-2);
           });
         }
       });
@@ -283,7 +284,7 @@ angular.module('mopidy-mobile.playlists', [
       hellip: true
     }, {
       text: 'Cancel',
-      click: 'popover.hide() && reset().then(back)'
+      click: 'popover.hide() && reset().then(goBack)'
     }], {
       scope: $scope
     })

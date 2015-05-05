@@ -2,7 +2,7 @@
   "name": "mopidy-mobile",
   "private": "true",
   "devDependencies": {
-    "ionic": "driftyco/ionic-bower#1.0.0-rc.4",
+    "ionic": "driftyco/ionic-bower#1.0.0-rc.5",
     "mopidy": "mopidy/mopidy.js#0.5.0",
     "angular-translate": "~2.5.2"
   }
