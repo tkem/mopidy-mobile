@@ -91,8 +91,11 @@ angular.module('mopidy-mobile.coverart', [])
           return $q.when(select(images, width, height));
         } else {
           $log.debug('cache(' + cache.info().size + ') miss for ' + model.uri);
-          return $q.all(services.map($injector.get).map(function(service) {
-            return service.getImages([model]);
+          return $q.all(services.map(function(service) {
+            return $injector.get(service).getImages([model]).catch(function(error) {
+              $log.error('Error loading cover art from ' + service, error);
+              return {};
+            });
           })).then(function(results) {
             return merge({}, results);
           }).then(function(result) {
@@ -119,8 +122,11 @@ angular.module('mopidy-mobile.coverart', [])
           }
         });
         $log.debug('Loading cover art from ' + services);
-        return $q.all(services.map($injector.get).map(function(service) {
-          return service.getImages(models);
+        return $q.all(services.map(function(service) {
+          return $injector.get(service).getImages(models).catch(function(error) {
+            $log.error('Error loading cover art from ' + service, error);
+            return {};
+          });
         })).then(function(results) {
           return merge({}, results);
         }).then(function(result) {
