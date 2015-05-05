@@ -56,7 +56,7 @@ angular.module('mopidy-mobile.connection', [
 
       function connect(settings) {
         // TODO: connectionSettings as private property?
-        connectionSettings = angular.copy(settings);
+        connectionSettings = angular.copy(settings || {});
         $ionicLoading.show();
         return mopidy(settings).then(
           function(mopidy) {
