@@ -93,6 +93,9 @@ angular.module('mopidy-mobile.playlists', [
   angular.extend($scope, {
     order: {},
     playlists: [],
+    getScheme: function(uri) {
+      return uri ? uri.substr(0, uri.indexOf(':')) : null;
+    },
     refresh: function() {
       connection(function(mopidy) {
         return mopidy.playlists.refresh({
@@ -247,7 +250,7 @@ angular.module('mopidy-mobile.playlists', [
   });
 })
 
-.controller('PlaylistEditMenuCtrl', function(popoverMenu, popup, $ionicHistory, $scope, $state) {
+.controller('PlaylistEditMenuCtrl', function(popoverMenu, popup, $ionicHistory, $scope) {
   angular.extend($scope, {
     addURL: function() {
       popup.fromTemplateUrl('Add stream', 'templates/stream.html').then(function(result) {
