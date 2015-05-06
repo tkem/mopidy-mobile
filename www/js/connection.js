@@ -1,19 +1,33 @@
 angular.module('mopidy-mobile.connection', [
   'ionic',
   'mopidy-mobile.coverart',
+  'mopidy-mobile.mopidy',
   'mopidy-mobile.util'
 ])
 
 .provider('connection', function(util) {
-  var provider = this;
   var loadingOptions = {
     delay: undefined,
     duration: undefined
   };
+  var mopidySettings = {
+  };
 
-  var isUriRefRegExp = /^\//; // FIXME!!!
-
-  angular.extend(provider, {
+  angular.extend(this, {
+    backoffDelayMin: function(value) {
+      if (arguments.length) {
+        mopidySettings.backoffDelayMin = value;
+      } else {
+        return mopidySettings.backoffDelayMin;
+      }
+    },
+    backoffDelayMax: function(value) {
+      if (arguments.length) {
+        mopidySettings.backoffDelayMax = value;
+      } else {
+        return mopidySettings.backoffDelayMax;
+      }
+    },
     loadingDelay: function(value) {
       if (arguments.length) {
         loadingOptions.delay = value;
@@ -28,8 +42,14 @@ angular.module('mopidy-mobile.connection', [
         return loadingOptions.duration;
       }
     },
-    $get: function(connectionErrorHandler, coverart, mopidy, $ionicLoading, $q, $rootScope) {
-      var connectionSettings = {};
+    webSocketUrl: function(value) {
+      if (arguments.length) {
+        mopidySettings.webSocketUrl = value;
+      } else {
+        return mopidySettings.webSocketUrl;
+      }
+    },
+    $get: function(connectionErrorHandler, coverart, mopidy, $ionicLoading, $log, $q, $rootScope) {
       var connected = false;
       var listeners = {};
 
@@ -54,11 +74,9 @@ angular.module('mopidy-mobile.connection', [
         });
       }
 
-      function connect(settings) {
-        // TODO: connectionSettings as private property?
-        connectionSettings = angular.copy(settings || {});
+      function connect() {
         $ionicLoading.show();
-        return mopidy(settings).then(
+        return mopidy(mopidySettings).then(
           function(mopidy) {
             connected = true;
             $ionicLoading.hide();
@@ -76,8 +94,8 @@ angular.module('mopidy-mobile.connection', [
       }
 
       function resolveURI(uri) {
-        if (connectionSettings.webSocketUrl && isUriRefRegExp.test(uri)) {
-          var match = /^ws:\/\/([^\/]+)/.exec(connectionSettings.webSocketUrl);
+        if (mopidySettings.webSocketUrl && uri.charAt(0) == '/') {
+          var match = /^wss?:\/\/([^\/]+)/.exec(mopidySettings.webSocketUrl);
           return 'http://' + match[1] + uri;
         } else {
           return uri;
@@ -130,37 +148,24 @@ angular.module('mopidy-mobile.connection', [
             mopidy.close();
             mopidy.off();
           });
-          promise = connect(connectionSettings);
+          promise = connect(mopidySettings);
         },
         getImages: function(models) {
-          return connection(function(mopidy) {
-            // use Mopidy v1.0 getImages API if available
-            if (mopidy.library.getImages) {
-              // TODO: limit number of URIs per request?
-              return mopidy.library.getImages({
-                uris: models.map(function(model) { return model.uri; })
-              });
-            } else {
-              var result = {};
-              angular.forEach(models, function(model) {
-                var images = (model.album ? model.album.images : model.images) || [];
-                result[model.uri] = images.map(function(uri) {
-                  return {__model__: 'Image,', uri: uri};
-                });
-              });
-              return result;
-            }
+          return promise.then(function(mopidy) {
+            return mopidy.library.getImages({
+              uris: models.map(function(model) { return model.uri; })
+            });
           }).then(function(result) {
             var promises = {};
             angular.forEach(result, function(images, uri) {
               if (!images || !images.length) {
-                //$log.debug('No images found for ' + uri);
+                $log.debug('Mopidy found no images for ' + uri);
               } else if (images.length === 1) {
                 promises[uri] = [angular.extend(images[0], {
                   uri: resolveURI(images[0].uri)
                 })];
               } else {
-                // most backends won't provide image dimensions
+                // most backends won't provide image dimensions anytime soon
                 promises[uri] = $q.all(images.map(function(image) {
                   image.uri = resolveURI(image.uri);
                   if (!image.width || !image.height) {

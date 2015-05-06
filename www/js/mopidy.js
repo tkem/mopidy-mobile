@@ -4,10 +4,6 @@ angular.module('mopidy-mobile.mopidy', [
 
 .provider('mopidy', function(util) {
   var provider = this;
-  var defaultSettings = {
-    autoConnect: false,
-    callingConvention: 'by-position-or-by-name'
-  };
 
   function shim(mopidy) {
     // check if Mopidy method has given named parameter
@@ -28,7 +24,7 @@ angular.module('mopidy-mobile.mopidy', [
         uri: model.uri
       };
     }
-    // Mopidy v1.0 mixer API
+
     mopidy.mixer = mopidy.mixer || {
       getMute: mopidy.playback.getMute,
       setMute: function(params) {
@@ -37,13 +33,30 @@ angular.module('mopidy-mobile.mopidy', [
       getVolume: mopidy.playback.getVolume,
       setVolume: mopidy.playback.setVolume
     };
-    // Mopidy v1.0 playback API
+    mopidy.library = angular.extend({
+      getImages: function(params) {
+        return mopidy.library.lookup(params).then(function(result) {
+          var images = {};
+          angular.forEach(result, function(tracks, uri) {
+            var uris = {};
+            tracks.forEach(function(track) {
+              if (track.album && track.album.images) {
+                angular.extend(uris, util.fromKeys(track.album.images));
+              }
+            });
+            images[uri] = Object.keys(uris).map(function(uri) {
+              return {__model__: 'Image', uri: uri};
+            });
+          });
+          return images;
+        });
+      }
+    }, mopidy.library);
     mopidy.playback = angular.extend({
       getStreamTitle: function() {
         return null;
       }
     }, mopidy.playback);
-    // Mopidy v1.0 playlists API
     mopidy.playlists = angular.extend({
       asList: function() {
         return mopidy.playlists.getPlaylists().then(function(playlists) {
@@ -57,6 +70,8 @@ angular.module('mopidy-mobile.mopidy', [
       },
       editable: !!mopidy.playlists.asList  // Mopidy >= 1.0
     }, mopidy.playlists);
+
+
     // Mopidy v1.0 library.lookup({uris: [...]})
     if (!hasParam(mopidy.library.lookup, 'uris')) {
       var lookup = mopidy.library.lookup;
@@ -110,20 +125,13 @@ angular.module('mopidy-mobile.mopidy', [
   }
 
   angular.extend(provider, {
-    backoffDelayMin: function(value) {
-      defaultSettings.backoffDelayMin = value;
-    },
-    backoffDelayMax: function(value) {
-      defaultSettings.backoffDelayMax = value;
-    },
-    webSocketUrl: function(value) {
-      defaultSettings.webSocketUrl = value;
-    },
     $get: function($q, $log) {
-      return function(params) {
+      return function(settings) {
         return $q(function(resolve, reject) {
-          var settings = angular.extend({}, defaultSettings, params || {});
-          var mopidy = new Mopidy(settings);
+          var mopidy = new Mopidy(angular.extend({}, settings || {}, {
+            autoConnect: false,
+            callingConvention: 'by-position-or-by-name'
+          }));
           // .once() listeners are wrapped, so .off() doesn't work
           mopidy.once('state:online', function() {
             if (resolve) {
@@ -140,7 +148,7 @@ angular.module('mopidy-mobile.mopidy', [
               reject(mopidy);
             }
           });
-          if (settings.webSocketUrl) {
+          if (settings && settings.webSocketUrl) {
             $log.info('Connecting to ' + settings.webSocketUrl);
           } else {
             $log.info('Connecting to default WebSocket');
