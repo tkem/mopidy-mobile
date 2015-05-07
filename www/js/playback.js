@@ -1,5 +1,4 @@
-angular.module('mopidy-mobile.playback',
-[
+angular.module('mopidy-mobile.playback', [
   'ionic',
   'mopidy-mobile.connection',
   'mopidy-mobile.coverart'
@@ -17,6 +16,7 @@ angular.module('mopidy-mobile.playback',
   });
 })
 
+// TODO: move to util, check out adamcik's media-progress-timer
 .factory('timer', function($interval) {
   return function(callback, delay) {
     var timer = {
@@ -67,9 +67,8 @@ angular.module('mopidy-mobile.playback',
   };
 })
 
-.controller('PlaybackCtrl', function($scope, $q, $window, $log, connection, coverart, timer) {
-  $log.debug('creating tracklist view');
-
+.controller('PlaybackCtrl', function(connection, coverart, timer, $log, $q, $scope, $window) {
+  // TODO: update to Mopidy v1.1 "tlid" APIs
   function setCurrentTlTrack(currentTlTrack) {
     return connection(function(mopidy) {
       var params = {tl_track: currentTlTrack};
@@ -104,19 +103,39 @@ angular.module('mopidy-mobile.playback',
     });
   }
 
+  // TODO: use "normal" scope variables?
   var time = $scope.time = {
     position: 0,
     pending: false
   };
 
   var positionTimer = timer(function(value) {
-    //$log.log('timer: ' + value, $scope.time.position, $scope.time.pending);
     if (!$scope.time.pending) {
       $scope.time.position = value;
     }
   }, 1000);
 
-  var listeners = connection.on({
+  var listeners = {
+    'connection:online': function() {
+      connection(function(mopidy) {
+        return $q.all({
+          // TODO: use getCurrentTlid()
+          currentTlTrack: mopidy.playback.getCurrentTlTrack(),
+          state: mopidy.playback.getState(),
+          timePosition: mopidy.playback.getTimePosition(),
+          options: mopidy.tracklist.getOptions()
+        });
+      }).then(function(results) {
+        angular.extend($scope, results);
+      }).then(function() {
+        if ($scope.state === 'playing') {
+          positionTimer.start($scope.timePosition, $scope.currentTlTrack.track.length || null);
+        } else {
+          positionTimer.stop($scope.timePosition);
+        }
+        setCurrentTlTrack($scope.currentTlTrack);
+      });
+    },
     'event:optionsChanged': function() {
       $q.when(this.tracklist.getOptions()).then(function(options) {
         $scope.options = options;
@@ -150,35 +169,31 @@ angular.module('mopidy-mobile.playback',
     'event:trackPlaybackStarted': function(event) {
       setCurrentTlTrack(event.tl_track);
       positionTimer.start(0, event.tl_track.track.length || null);
-    },
-    'state:online': function() {
-      $log.info('(re)connect: refreshing playback view');
-      $scope.refresh();
     }
-  });
+  };
 
   angular.extend($scope, {
     options: {},
     tlTracks: {},
     play: function() {
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         return mopidy.playback.play();
       });
     },
     pause: function() {
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         return mopidy.playback.pause();
       });
     },
     stop: function() {
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         return mopidy.playback.stop();
       });
     },
     next: function() {
       // FIXME: calling next() while stopped triggers no events
       var state = $scope.state;
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         return mopidy.playback.next().then(function() {
           if (state === 'stopped') {
             mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
@@ -189,7 +204,7 @@ angular.module('mopidy-mobile.playback',
     previous: function() {
       // FIXME: calling previous() while stopped triggers no events
       var state = $scope.state;
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         mopidy.playback.previous().then(function() {
           if (state === 'stopped') {
             mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
@@ -198,14 +213,16 @@ angular.module('mopidy-mobile.playback',
       });
     },
     setRandom: function(value) {
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         mopidy.tracklist.setRandom({value: value});
       });
-    },
+      // TODO: then(update options)
+     },
     setRepeat: function(value) {
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         mopidy.tracklist.setRepeat({value: value});
       });
+       // TODO: then(update options)
     },
     seek: function() {
       if (time.pending) {
@@ -237,46 +254,19 @@ angular.module('mopidy-mobile.playback',
           update($window.parseInt(time.position));
         }
       );
-    },
-    refresh: function() {
-      connection(function(mopidy) {
-        return mopidy.constructor.when.join(
-          mopidy.playback.getCurrentTlTrack(),
-          mopidy.playback.getTimePosition(),
-          mopidy.playback.getState()
-        );
-      }).then(function(results) {
-        if (($scope.state = results[2]) === 'playing') {
-          positionTimer.start(results[1], results[0].track.length || null);
-        } else {
-          positionTimer.stop(results[1]);
-        }
-        return setCurrentTlTrack(results[0]);
-      }).then(function() {
-        // don't flood Mopidy with requests, so delay getOptions()
-        return connection(function(mopidy) {
-          return mopidy.tracklist.getOptions();
-        });
-      }).then(function(options) {
-        $scope.options = options;
-      });
     }
   });
 
-  $scope.$on('$ionicView.enter', function() {
-    $log.debug('entering playback view');
-    // defensive action...
-    $scope.refresh();
-  });
-
   $scope.$on('$destroy', function() {
-    $log.debug('destroying playback view');
     connection.off(listeners);
     positionTimer.stop();
   });
+
+  connection.on(listeners);
 })
 
-.controller('MixerCtrl', function($scope, $log, $q, $window, connection) {
+.controller('MixerCtrl', function(connection, $scope, $log, $q, $window) {
+  // FIXME: re-think "as" scopes...
   var scope = angular.extend(this, {
     volume: 0,
     pending: false,
@@ -284,6 +274,16 @@ angular.module('mopidy-mobile.playback',
   });
 
   var listeners = connection.on({
+    'connection:online': function() {
+      connection(function(mopidy) {
+        return $q.all({
+          mute: mopidy.mixer.getMute(),
+          volume: mopidy.mixer.getVolume()
+        });
+      }).then(function(results) {
+        angular.extend(scope, results);
+      });
+    },
     'event:muteChanged': function(event) {
       scope.mute = event.mute;
     },
@@ -291,10 +291,6 @@ angular.module('mopidy-mobile.playback',
       if (!scope.pending) {
         scope.volume = event.volume;
       }
-    },
-    'state:online': function() {
-      $log.info('(re)connect: refreshing mixer controller');
-      scope.refresh();
     }
   });
 
@@ -331,21 +327,10 @@ angular.module('mopidy-mobile.playback',
       );
     },
     setMute: function(mute) {
-      connection(function(mopidy) {
+      return connection(function(mopidy) {
         mopidy.mixer.setMute({mute: mute});
       });
-    },
-    refresh: function() {
-      return connection(function(mopidy) {
-        return mopidy.constructor.when.join(
-          mopidy.mixer.getMute(),
-          mopidy.mixer.getVolume()
-        );
-      }).then(function(results) {
-        $log.log('got mixer');
-        scope.mute = results[0];
-        scope.volume = results[1];
-      });
+      // TODO: then(update mute) -- race condition with event?
     }
   });
 
@@ -353,5 +338,5 @@ angular.module('mopidy-mobile.playback',
     connection.off(listeners);
   });
 
-  scope.refresh();
+  connection.on(listeners);
 });
