@@ -20,8 +20,9 @@
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
-    "cordova-plugin-whitelist",
     "cordova-plugin-inappbrowser",
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-whitelist",
     "uk.co.whiteoctober.cordova.appversion"
   ],
   "cordovaPlatforms": [
