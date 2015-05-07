@@ -28,11 +28,12 @@ angular.module('mopidy-mobile.tracklist', [
   ;
 })
 
-.controller('TracklistCtrl', function($scope, $q, $log, connection, coverart) {
+.controller('TracklistCtrl', function(connection, coverart, $q, $scope) {
   var listeners = {
     'connection:online': function() {
       connection(function(mopidy) {
         return $q.all({
+          // TODO: use getCurrentTlid()
           currentTlTrack: mopidy.playback.getCurrentTlTrack(),
           options: mopidy.tracklist.getOptions(),
           tlTracks: mopidy.tracklist.getTlTracks()
@@ -47,7 +48,6 @@ angular.module('mopidy-mobile.tracklist', [
       });
     },
     'event:tracklistChanged': function() {
-      $log.debug('got tracklist changed', this);
       $q.when(this.tracklist.getTlTracks()).then(function(tlTracks) {
         $scope.tlTracks = tlTracks;
       });
@@ -78,6 +78,7 @@ angular.module('mopidy-mobile.tracklist', [
       return $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
     },
     index: function(tlTrack) {
+      // TODO: index() returns index of current track in Mopidy v1.1
       var tlid = tlTrack.tlid;
       var tlTracks = $scope.tlTracks;
       for (var i = 0, length = tlTracks.length; i !== length; ++i) {
@@ -95,6 +96,7 @@ angular.module('mopidy-mobile.tracklist', [
           to_position: toIndex
         });
       });
+      // TODO: then(update $scope.tlTracks) -- race condition with event?
     },
     play: function(tlTrack) {
       return connection(function(mopidy) {
@@ -102,6 +104,7 @@ angular.module('mopidy-mobile.tracklist', [
       });
     },
     refresh: function() {
+      // FIXME: loading vs. refresh
       return connection(function(mopidy) {
         return $q.all({
           currentTlTrack: mopidy.playback.getCurrentTlTrack(),
@@ -118,26 +121,31 @@ angular.module('mopidy-mobile.tracklist', [
       return connection(function(mopidy) {
         return mopidy.tracklist.remove({criteria: {tlid: [tlTrack.tlid]}});
       });
+      // TODO: then(update $scope.tlTracks) -- race condition with event?
     },
     setConsume: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setConsume({value: value});
       });
+      // TODO: then(update options)
     },
     setRandom: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setRandom({value: value});
       });
+      // TODO: then(update options)
     },
     setRepeat: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setRepeat({value: value});
       });
+      // TODO: then(update options)
     },
     setSingle: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setSingle({value: value});
       });
+      // TODO: then(update options)
     }
   });
 
@@ -160,7 +168,7 @@ angular.module('mopidy-mobile.tracklist', [
 })
 
 .controller('TracklistViewMenuCtrl', function(popoverMenu, popup, $scope) {
-  // ??? move options here ???
+  // TODO: move options here?
   angular.extend($scope, {
     playURL: function() {
       popup.prompt('Stream URL', 'http://example.com/stream.mp3').then(function(url) {
@@ -203,6 +211,7 @@ angular.module('mopidy-mobile.tracklist', [
       popup.prompt('Playlist Name', 'My Playlist').then(function(name) {
         if (name) {
           connection(function(mopidy) {
+            // TODO: error handling
             return mopidy.playlists.create({name: name}).then(function(playlist) {
               playlist.tracks = $scope.getTracks();
               return mopidy.playlists.save({playlist: playlist});

@@ -8,7 +8,7 @@ angular.module('mopidy-mobile', [
   'mopidy-mobile.tracklist'
 ])
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+.config(function($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
   $stateProvider.state('main', {
     abstract: true,
     url: '',
@@ -76,6 +76,7 @@ angular.module('mopidy-mobile', [
 
 .run(function($rootScope, $filter, $window, $ionicPlatform) {
   $ionicPlatform.ready(function() {
+    // FIXME: cordova initialization, etc.
     if ($window.cordova) {
       //$window.alert('cordova ready');
       //$window.alert('cordova getAppVersion ' + $window.cordova.getAppVersion);
@@ -102,7 +103,8 @@ angular.module('mopidy-mobile', [
 })
 
 .controller('MainCtrl', function($scope) {
-  // TODO: get from CSS, image size = devide size?
+  // TODO: get from CSS, image size = device size?
+  // TODO: other globals?
   angular.extend($scope, {
     thumbnailWidth: 64,
     thumbnailHeight: 64

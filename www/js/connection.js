@@ -10,22 +10,23 @@ angular.module('mopidy-mobile.connection', [
     delay: undefined,
     duration: undefined
   };
-  var mopidySettings = {
+  var settings = {
+    // TBD
   };
 
   angular.extend(this, {
     backoffDelayMin: function(value) {
       if (arguments.length) {
-        mopidySettings.backoffDelayMin = value;
+        settings.backoffDelayMin = value;
       } else {
-        return mopidySettings.backoffDelayMin;
+        return settings.backoffDelayMin;
       }
     },
     backoffDelayMax: function(value) {
       if (arguments.length) {
-        mopidySettings.backoffDelayMax = value;
+        settings.backoffDelayMax = value;
       } else {
-        return mopidySettings.backoffDelayMax;
+        return settings.backoffDelayMax;
       }
     },
     loadingDelay: function(value) {
@@ -42,11 +43,12 @@ angular.module('mopidy-mobile.connection', [
         return loadingOptions.duration;
       }
     },
+    // TODO: pass as param to connect()?
     webSocketUrl: function(value) {
       if (arguments.length) {
-        mopidySettings.webSocketUrl = value;
+        settings.webSocketUrl = value;
       } else {
-        return mopidySettings.webSocketUrl;
+        return settings.webSocketUrl;
       }
     },
     $get: function(connectionErrorHandler, coverart, mopidy, $ionicLoading, $log, $q, $rootScope) {
@@ -76,7 +78,7 @@ angular.module('mopidy-mobile.connection', [
 
       function connect() {
         $ionicLoading.show();
-        return mopidy(mopidySettings).then(
+        return mopidy(settings).then(
           function(mopidy) {
             connected = true;
             $ionicLoading.hide();
@@ -94,8 +96,8 @@ angular.module('mopidy-mobile.connection', [
       }
 
       function resolveURI(uri) {
-        if (mopidySettings.webSocketUrl && uri.charAt(0) == '/') {
-          var match = /^wss?:\/\/([^\/]+)/.exec(mopidySettings.webSocketUrl);
+        if (settings.webSocketUrl && uri.charAt(0) == '/') {
+          var match = /^wss?:\/\/([^\/]+)/.exec(settings.webSocketUrl);
           return 'http://' + match[1] + uri;
         } else {
           return uri;
@@ -105,6 +107,7 @@ angular.module('mopidy-mobile.connection', [
       var promise = connect();  // TODO: use settings for webSocketUrl, etc.
 
       var connection = function connection(callback) {
+        // FIXME: handle pending count?
         $ionicLoading.show(loadingOptions);
         return promise.then(callback).finally(function() {
           $ionicLoading.hide();
@@ -125,11 +128,13 @@ angular.module('mopidy-mobile.connection', [
           switch (obj) {
           case 'connection:online':
             if (connected) {
+              // FIXME: check this, e.g. event params
               promise.then(listener.apply.bind(listener));
             }
             break;
           case 'connection:offline':
             if (!connected) {
+              // FIXME: promise.catch for symmetry?
               listener();
             }
             break;
@@ -144,13 +149,15 @@ angular.module('mopidy-mobile.connection', [
           }
         },
         reset: function() {
+          // FIXME: check mopidy.close() behavior when not connected
           promise.finally(function(mopidy) {
             mopidy.close();
             mopidy.off();
           });
-          promise = connect(mopidySettings);
+          promise = connect(settings);
         },
         getImages: function(models) {
+          // works "in background", so no loading shown
           return promise.then(function(mopidy) {
             return mopidy.library.getImages({
               uris: models.map(function(model) { return model.uri; })
@@ -161,10 +168,13 @@ angular.module('mopidy-mobile.connection', [
               if (!images || !images.length) {
                 $log.debug('Mopidy found no images for ' + uri);
               } else if (images.length === 1) {
+                $log.debug('Mopidy found one image for ' + uri);
+                // common case: single image, no need for width/height
                 promises[uri] = [angular.extend(images[0], {
                   uri: resolveURI(images[0].uri)
                 })];
               } else {
+                $log.debug('Mopidy found ' + images.length + ' images for ' + uri);
                 // most backends won't provide image dimensions anytime soon
                 promises[uri] = $q.all(images.map(function(image) {
                   image.uri = resolveURI(image.uri);

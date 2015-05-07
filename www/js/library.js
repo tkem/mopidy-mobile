@@ -1,4 +1,3 @@
-
 angular.module('mopidy-mobile.library', [
   'ionic',
   'mopidy-mobile.actions',
@@ -26,6 +25,7 @@ angular.module('mopidy-mobile.library', [
         ref: function() {
           return null;
         },
+        // TODO: rename to "items"?
         refs: function(connection) {
           return connection(function(mopidy) {
             return mopidy.library.browse({uri: null});
@@ -45,6 +45,7 @@ angular.module('mopidy-mobile.library', [
             uri: $stateParams.uri,
           };
         },
+        // TODO: rename to "items"?
         refs: function($stateParams, connection) {
           return connection(function(mopidy) {
             return mopidy.library.browse({uri: $stateParams.uri});
@@ -91,13 +92,14 @@ angular.module('mopidy-mobile.library', [
   ;
 })
 
-.controller('BrowseCtrl', function($scope, $state, connection, actions, ref, refs) {
+.controller('BrowseCtrl', function(actions, connection, ref, refs, $scope, $state) {
   angular.extend($scope, {
     ref: ref,
     refs: refs,
     tracks: refs.filter(function(ref) { return ref.type === 'track'; }),
     click: actions.default,
     refresh: function() {
+      // FIXME: actually reload refs via browse(ref.uri) after library refresh!!!
       connection(function(mopidy) {
         return mopidy.library.refresh({uri: $scope.ref ? $scope.ref.uri : null});
       }).finally(function() {
@@ -110,7 +112,7 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('SearchCtrl', function($scope, connection, actions, coverart, q, results) {
+.controller('SearchCtrl', function(actions, connection, coverart, q, results, $scope) {
   function compare(a, b) {
     if ((a.name || '') > (b.name || '')) {
       return 1;
@@ -158,7 +160,7 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('LookupCtrl', function($scope, connection, actions, coverart, name, tracks, uri) {
+.controller('LookupCtrl', function(actions, connection, coverart, name, tracks, uri, $scope) {
   angular.extend($scope, {
     name: name,
     tracks: tracks,

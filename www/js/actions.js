@@ -65,6 +65,7 @@ angular.module('mopidy-mobile.actions', [
     },
   };
 
+  // FIXME: remove settings dependency - check where default is used
   actions['default'] = function(obj) {
     return (actions[settings.get('action', 'play')] || actions.play)(obj);
   };

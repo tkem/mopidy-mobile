@@ -1,4 +1,6 @@
-angular.module('mopidy-mobile.coverart', [])
+angular.module('mopidy-mobile.coverart', [
+  'mopidy-mobile.util'
+])
 
 .provider('coverart', function() {
   var provider = this;
@@ -6,6 +8,7 @@ angular.module('mopidy-mobile.coverart', [])
   var cacheOptions = {};
 
   angular.extend(provider, {
+    // TODO: register service vs. enable/disable service
     enable: function(service) {
       var index = services.indexOf(service);
       if (index < 0) {
@@ -15,7 +18,6 @@ angular.module('mopidy-mobile.coverart', [])
     maxCache: function(value) {
       if (arguments.length) {
         cacheOptions.capacity = value;
-        return provider;
       } else {
         return cacheOptions.capacity;
       }
@@ -29,6 +31,7 @@ angular.module('mopidy-mobile.coverart', [])
         var keys = Object.keys(result);
         for (var j = 0, keylen = keys.length; j !== keylen; ++j) {
           var key = keys[j];
+          // FIXME: stable sort really needed here?
           // stable sort by size, images w/o size come last
           dst[key] = (dst[key] || []).concat(result[key]).map(function(image, index) {
             return {image: image, index: index};
@@ -61,6 +64,7 @@ angular.module('mopidy-mobile.coverart', [])
 
     var cache = $cacheFactory('images', cacheOptions);
 
+    // FIXME: keep all provider methods here?
     return angular.extend(provider, {
       disable: function(service) {
         var index = services.indexOf(service);
@@ -68,13 +72,13 @@ angular.module('mopidy-mobile.coverart', [])
           services.splice(index, 1);
         }
       },
+      // TODO: remove from service, make provider-only
       maxCache: function(value) {
         if (arguments.length) {
           if (value !== cache.info().capacity) {
             cache.destroy();
             cache = $cacheFactory('images', {capacity: value});
           }
-          return provider;
         } else {
           return cache.info().capacity;
         }
@@ -82,6 +86,7 @@ angular.module('mopidy-mobile.coverart', [])
       clearCache: function() {
         cache.removeAll();
       },
+      // TODO: merge geImage(s) methods
       getImage: function(model, options) {
         var width = options ? options.width : undefined;
         var height = options ? options.height : undefined;

@@ -1,9 +1,9 @@
 angular.module('mopidy-mobile.mopidy', [
+  'ionic',
   'mopidy-mobile.util'
 ])
 
-.provider('mopidy', function(util) {
-  var provider = this;
+.factory('mopidy', function(util, $log, $q) {
 
   function shim(mopidy) {
     // check if Mopidy method has given named parameter
@@ -124,39 +124,35 @@ angular.module('mopidy-mobile.mopidy', [
     return mopidy;
   }
 
-  angular.extend(provider, {
-    $get: function($q, $log) {
-      return function(settings) {
-        return $q(function(resolve, reject) {
-          var mopidy = new Mopidy(angular.extend({}, settings || {}, {
-            autoConnect: false,
-            callingConvention: 'by-position-or-by-name'
-          }));
-          // .once() listeners are wrapped, so .off() doesn't work
-          mopidy.once('state:online', function() {
-            if (resolve) {
-              reject = null;
-              $log.info('Connected');
-              resolve(shim(mopidy));
-            }
-          });
-          mopidy.once('state:offline', function() {
-            if (reject) {
-              resolve = null;
-              $log.error('Connection error');
-              mopidy.close();
-              reject(mopidy);
-            }
-          });
-          if (settings && settings.webSocketUrl) {
-            $log.info('Connecting to ' + settings.webSocketUrl);
-          } else {
-            $log.info('Connecting to default WebSocket');
-          }
-          mopidy.on($log.debug.bind($log));
-          mopidy.connect();
-        });
-      };
-    }
-  });
+  return function(settings) {
+    return $q(function(resolve, reject) {
+      var mopidy = new Mopidy(angular.extend({}, settings || {}, {
+        autoConnect: false,
+        callingConvention: 'by-position-or-by-name'
+      }));
+      // .once() listeners are wrapped, so .off() doesn't work
+      mopidy.once('state:online', function() {
+        if (resolve) {
+          reject = null;
+          $log.info('Connected');
+          resolve(shim(mopidy));
+        }
+      });
+      mopidy.once('state:offline', function() {
+        if (reject) {
+          resolve = null;
+          $log.error('Connection error');
+          mopidy.close();
+          reject(mopidy);
+        }
+      });
+      if (settings && settings.webSocketUrl) {
+        $log.info('Connecting to ' + settings.webSocketUrl);
+      } else {
+        $log.info('Connecting to default WebSocket');
+      }
+      mopidy.on($log.debug.bind($log));
+      mopidy.connect();
+    });
+  };
 });

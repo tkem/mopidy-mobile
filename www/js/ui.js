@@ -133,6 +133,7 @@ angular.module('mopidy-mobile.ui', [
   };
 })
 
+// TODO: remove or fix for collection-repeat?
 .factory('scroll', function($document, $log, $timeout, $ionicScrollDelegate) {
   return {
     anchorScroll: function(handle, id, shouldAnimate) {
