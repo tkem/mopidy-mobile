@@ -1,3 +1,21 @@
+0.9.3 2015-05-07
+----------------
+
+- Add `cordova-plugin-splashscreen` to Android app.
+
+- Enable caching for playback view.
+
+- Remove support for album images.
+
+- Catch errors from cover art services.
+
+- Display playlist schemes/backends.
+
+- Upgrade `ionic` to `1.0.0-rc.5`.
+
+- Upgrade `cordova` to version `5.0.0`.
+
+
 0.9.2 2015-04-25
 ----------------
 
