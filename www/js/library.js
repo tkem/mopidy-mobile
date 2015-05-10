@@ -19,19 +19,8 @@ angular.module('mopidy-mobile.library', [
     })
     .state('main.library.root', {
       url: '',
-      templateUrl: 'templates/browse.html',
-      controller: 'BrowseCtrl',
-      resolve: {
-        ref: function() {
-          return null;
-        },
-        // TODO: rename to "items"?
-        refs: function(connection) {
-          return connection(function(mopidy) {
-            return mopidy.library.browse({uri: null});
-          });
-        }
-      }
+      templateUrl: 'templates/library.html',
+      controller: 'LibraryCtrl'
     })
     .state('main.library.browse', {
       url: '/browse?name&type&uri',
@@ -45,8 +34,7 @@ angular.module('mopidy-mobile.library', [
             uri: $stateParams.uri,
           };
         },
-        // TODO: rename to "items"?
-        refs: function($stateParams, connection) {
+        items: function($stateParams, connection) {
           return connection(function(mopidy) {
             return mopidy.library.browse({uri: $stateParams.uri});
           });
@@ -92,22 +80,64 @@ angular.module('mopidy-mobile.library', [
   ;
 })
 
-.controller('BrowseCtrl', function(actions, connection, ref, refs, $scope, $state) {
-  angular.extend($scope, {
-    ref: ref,
-    refs: refs,
-    tracks: refs.filter(function(ref) { return ref.type === 'track'; }),
-    click: actions.default,
-    refresh: function() {
-      // FIXME: actually reload refs via browse(ref.uri) after library refresh!!!
+.controller('LibraryCtrl', function(connection, $scope, $state) {
+  var listeners = {
+    'connection:online': function() {
       connection(function(mopidy) {
-        return mopidy.library.refresh({uri: $scope.ref ? $scope.ref.uri : null});
+        return mopidy.library.browse({uri: null});
+      }).then(function(items) {
+        $scope.items = items;
+      });
+    }
+  };
+
+  angular.extend($scope, {
+    refresh: function() {
+      connection(function(mopidy) {
+        return mopidy.library.refresh({
+          uri: null
+        }).then(function() {
+          return mopidy.library.browse({uri: null});
+        });
+      }).then(function(items) {
+        $scope.items = items;
       }).finally(function() {
         $scope.$broadcast('scroll.refreshComplete');
       });
     },
     search: function(q) {
-      $state.go('^.search', {q: q, uri: $scope.ref ? $scope.ref.uri : null});
+      $state.go('^.search', {q: q});
+    }
+  });
+
+  $scope.$on('$destroy', function() {
+    connection.off(listeners);
+  });
+
+  connection.on(listeners);
+})
+
+.controller('BrowseCtrl', function(actions, connection, ref, items, $scope, $state) {
+  angular.extend($scope, {
+    ref: ref,
+    items: items,
+    tracks: items.filter(function(ref) { return ref.type === 'track'; }),
+    click: actions.default,
+    refresh: function() {
+      connection(function(mopidy) {
+        return mopidy.library.refresh({
+          uri: null
+        }).then(function() {
+          return mopidy.library.browse({uri: ref.uri});
+        });
+      }).then(function(items) {
+        $scope.items = items;
+      }).finally(function() {
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    },
+    search: function(q) {
+      $state.go('^.search', {q: q, uri: ref.uri});
     }
   });
 })
