@@ -69,7 +69,7 @@ angular.module('mopidy-mobile.playlists', [
   };
 })
 
-.controller('PlaylistsCtrl', function(connection, $q, $scope) {
+.controller('PlaylistsCtrl', function(connection, $ionicHistory, $q, $scope) {
   var listeners = {
     'connection:online': function() {
       connection(function(mopidy) {
@@ -120,7 +120,7 @@ angular.module('mopidy-mobile.playlists', [
   connection.on(listeners);
 })
 
-.controller('PlaylistCtrl', function(actions, connection, editable, playlist, $ionicHistory, $scope) {
+.controller('PlaylistCtrl', function(actions, connection, editable, playlist, $ionicHistory, $log, $scope, $state) {
   var listeners = {
     // TODO: how to handle this, e.g. with editing
     // 'event:playlistChanged': function(playlist) {
@@ -208,6 +208,14 @@ angular.module('mopidy-mobile.playlists', [
       }).then(function(playlist) {
         $scope.playlist = playlist;
       });
+    }
+  });
+
+  $scope.$on('$ionicView.loaded', function() {
+    if (!$ionicHistory.backView()) {
+      $log.warn('Redirecting from playlist', playlist.uri);
+      $ionicHistory.nextViewOptions({historyRoot: true});
+      $state.go('main.playlists');
     }
   });
 

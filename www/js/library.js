@@ -117,7 +117,7 @@ angular.module('mopidy-mobile.library', [
   connection.on(listeners);
 })
 
-.controller('BrowseCtrl', function(actions, connection, ref, items, $scope, $state) {
+.controller('BrowseCtrl', function(actions, connection, ref, items, $ionicHistory, $log, $scope, $state) {
   angular.extend($scope, {
     ref: ref,
     items: items,
@@ -140,9 +140,17 @@ angular.module('mopidy-mobile.library', [
       $state.go('^.search', {q: q, uri: ref.uri});
     }
   });
+
+  $scope.$on('$ionicView.loaded', function() {
+    if (!$ionicHistory.backView()) {
+      $log.warn('Redirecting from browsing', ref.uri);
+      $ionicHistory.nextViewOptions({historyRoot: true});
+      $state.go('main.library.root');
+    }
+  });
 })
 
-.controller('SearchCtrl', function(actions, connection, coverart, q, results, $scope) {
+.controller('SearchCtrl', function(actions, connection, coverart, q, results, $ionicHistory, $log, $scope, $state) {
   function compare(a, b) {
     if ((a.name || '') > (b.name || '')) {
       return 1;
@@ -188,9 +196,17 @@ angular.module('mopidy-mobile.library', [
   }).then(function(result) {
     angular.extend($scope.images, result);
   });
+
+  $scope.$on('$ionicView.loaded', function() {
+    if (!$ionicHistory.backView()) {
+      $log.warn('Redirecting from searching', q);
+      $ionicHistory.nextViewOptions({historyRoot: true});
+      $state.go('main.library.root');
+    }
+  });
 })
 
-.controller('LookupCtrl', function(actions, connection, coverart, name, tracks, uri, $scope) {
+.controller('LookupCtrl', function(actions, connection, coverart, name, tracks, uri, $ionicHistory, $log, $scope, $state) {
   angular.extend($scope, {
     name: name,
     tracks: tracks,
@@ -203,6 +219,14 @@ angular.module('mopidy-mobile.library', [
     height: $scope.thumbnailHeight
   }).then(function(images) {
     $scope.images = images;
+  });
+
+  $scope.$on('$ionicView.loaded', function() {
+    if (!$ionicHistory.backView()) {
+      $log.warn('Redirecting from lookup', uri);
+      $ionicHistory.nextViewOptions({historyRoot: true});
+      $state.go('main.library.root');
+    }
   });
 })
 
