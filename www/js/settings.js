@@ -295,7 +295,7 @@ angular.module('mopidy-mobile.settings', [
         try {
           return angular.fromJson(window.localStorage[key]);
         } catch (e) {
-          window.console.log('exception', window.localStorage[key]);
+          //window.console.log('exception', window.localStorage[key]);
           return defaultValue;
         }
       } else {
