@@ -1,4 +1,4 @@
-<ion-view view-title="{{playlist.uri ? 'Edit playlist' : 'Create playlist' | translate}}">
+<ion-view cache-view="false" view-title="{{playlist.uri ? 'Edit playlist' : 'Create playlist' | translate}}">
   <ion-nav-bar class="bar-stable">
     <ion-nav-back-button class="button-clear" ng-click="save().then(goBack)">
       <i class="mopidy-mobile-icon-check"></i> {{'Save' | translate}}
@@ -19,7 +19,7 @@
     </form>
     <ion-list show-delete="true" show-reorder="true">
       <ion-item ng-repeat="track in playlist.tracks">
-        {{track.name}}
+        {{track.name || track.uri}}
         <ion-delete-button class="ion-minus-circled" ng-click="remove($index)">
         </ion-delete-button>
         <ion-reorder-button class="ion-navicon" on-reorder="move($fromIndex, $toIndex)">
