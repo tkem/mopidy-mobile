@@ -166,15 +166,15 @@ angular.module('mopidy-mobile.connection', [
             var promises = {};
             angular.forEach(result, function(images, uri) {
               if (!images || !images.length) {
-                $log.debug('Mopidy found no images for ' + uri);
+                //$log.debug('Mopidy found no images for ' + uri);
               } else if (images.length === 1) {
-                $log.debug('Mopidy found one image for ' + uri);
+                //$log.debug('Mopidy found one image for ' + uri);
                 // common case: single image, no need for width/height
                 promises[uri] = [angular.extend(images[0], {
                   uri: resolveURI(images[0].uri)
                 })];
               } else {
-                $log.debug('Mopidy found ' + images.length + ' images for ' + uri);
+                //$log.debug('Mopidy found ' + images.length + ' images for ' + uri);
                 // most backends won't provide image dimensions anytime soon
                 promises[uri] = $q.all(images.map(function(image) {
                   image.uri = resolveURI(image.uri);
