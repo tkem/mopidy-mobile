@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget android-versionCode="930" id="com.ionicframework.mopidymobile190318" version="0.9.3">
+<widget android-versionCode="940" id="com.ionicframework.mopidymobile190318" version="0.9.4">
   <name>Mopidy Mobile</name>
   <description>
     Mopidy Mobile is a Mopidy_ Web client extension and hybrid mobile

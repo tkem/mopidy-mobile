@@ -1,3 +1,13 @@
+0.9.4 2015-05-11
+----------------
+
+- Improve browser reload behavior.
+
+- Disable caching for certain views.
+
+- Reduce log/debug messages.
+
+
 0.9.3 2015-05-07
 ----------------
 
