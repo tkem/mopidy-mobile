@@ -1,9 +1,9 @@
 angular.module('mopidy-mobile.actions', [
   'mopidy-mobile.connection',
-  'mopidy-mobile.settings'
+  'mopidy-mobile.storage'
 ])
 
-.factory('actions', function(connection, settings) {
+.factory('actions', function(connection, storage) {
   function addParams(obj, pos) {
     var params = {};
     if (angular.isArray(obj)) {
@@ -65,9 +65,9 @@ angular.module('mopidy-mobile.actions', [
     },
   };
 
-  // FIXME: remove settings dependency - check where default is used
+  // FIXME: remove storage dependency - check where default is used
   actions['default'] = function(obj) {
-    return (actions[settings.get('action', 'play')] || actions.play)(obj);
+    return (actions[storage.get('action', 'play')] || actions.play)(obj);
   };
 
   return actions;

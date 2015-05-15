@@ -7,6 +7,7 @@ angular.module('mopidy-mobile.settings', [
   'mopidy-mobile.lastfm',
   'mopidy-mobile.locales',
   'mopidy-mobile.logging',
+  'mopidy-mobile.storage',
   'mopidy-mobile.ui',
   'mopidy-mobile.util'
 ])
@@ -60,8 +61,9 @@ angular.module('mopidy-mobile.settings', [
   });
 })
 
-.config(function($translateProvider, connectionProvider, coverartProvider, settingsProvider, stylesheet, themes) {
-  var theme = settingsProvider.get('theme');
+.config(function($translateProvider, connectionProvider, coverartProvider, storageProvider, stylesheet, themes) {
+  // FIXME: remove storageProvider
+  var theme = storageProvider.get('theme');
   if (theme && theme in themes) {
     stylesheet.setTheme(theme);
   }
@@ -70,8 +72,8 @@ angular.module('mopidy-mobile.settings', [
   connectionProvider.loadingDelay(100);
   connectionProvider.loadingDuration(10000);
 
-  if (settingsProvider.has('webSocketUrl')) {
-    connectionProvider.webSocketUrl(settingsProvider.get('webSocketUrl'));
+  if (storageProvider.has('webSocketUrl')) {
+    connectionProvider.webSocketUrl(storageProvider.get('webSocketUrl'));
   } else {
     connectionProvider.webSocketUrl(angular.element(document).find('html').attr('data-ws-url'));
   }
@@ -79,12 +81,12 @@ angular.module('mopidy-mobile.settings', [
   connectionProvider.backoffDelayMax(2000);  // TODO: check behavior...
 
   // TODO: determine browser language
-  $translateProvider.preferredLanguage(settingsProvider.get('locale', 'en'));
+  $translateProvider.preferredLanguage(storageProvider.get('locale', 'en'));
 
-  angular.forEach(settingsProvider.get('coverart.services', ['connection']), function(service) {
+  angular.forEach(storageProvider.get('coverart.services', ['connection']), function(service) {
     coverartProvider.enable(service);
   });
-  coverartProvider.maxCache(settingsProvider.get('coverart.maxcache', 100));
+  coverartProvider.maxCache(storageProvider.get('coverart.maxcache', 100));
 })
 
 .constant('stylesheet', {
@@ -106,7 +108,7 @@ angular.module('mopidy-mobile.settings', [
   'ionic-dark': 'Ionic Dark'
 })
 
-.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, coverart, locales, settings, stylesheet, themes, util, version) {
+.controller('SettingsCtrl', function($scope, $state, $rootScope, $log, $window, $document, $translate, coverart, locales, storage, stylesheet, themes, util, version) {
   $scope.cordova = $window.cordova;
   $scope.locales = locales;
   $scope.themes = themes;
@@ -115,7 +117,7 @@ angular.module('mopidy-mobile.settings', [
   $scope.coverart = {
     services: angular.extend(
       util.fromKeys(['connection', 'coverartarchive', 'lastfm'], false),
-      util.fromKeys(settings.get('coverart.services', ['connection']), true)
+      util.fromKeys(storage.get('coverart.services', ['connection']), true)
     ),
     cache: {
       size: coverart.maxCache(),
@@ -124,11 +126,11 @@ angular.module('mopidy-mobile.settings', [
   };
 
   $scope.settings = {
-    action: settings.get('action', 'play'),
-    locale: settings.get('locale', 'en'),
-    servers: settings.get('servers', {}),  // TODO: array?
+    action: storage.get('action', 'play'),
+    locale: storage.get('locale', 'en'),
+    servers: storage.get('servers', {}),  // TODO: array?
     theme: stylesheet.getTheme(),
-    webSocketUrl: settings.get('webSocketUrl', $document.find('html').attr('data-ws-url'))
+    webSocketUrl: storage.get('webSocketUrl', $document.find('html').attr('data-ws-url'))
   };
 
   $log.debug('Default action', $scope.settings.action);
@@ -152,7 +154,7 @@ angular.module('mopidy-mobile.settings', [
   $scope.$watch('settings.action', function(newValue, oldValue) {
     if (newValue !== oldValue) {
       $log.info('New default action: "' + newValue + '"');
-      settings.set('action', newValue);
+      storage.set('action', newValue);
       //TODO: actions.defaultAction(value);
     }
   });
@@ -166,7 +168,7 @@ angular.module('mopidy-mobile.settings', [
           coverart.disable(service);
         }
       });
-      settings.set('coverart.services', Object.keys(newValue).filter(function(key) {
+      storage.set('coverart.services', Object.keys(newValue).filter(function(key) {
         return newValue[key];
       }));
     }
@@ -175,14 +177,14 @@ angular.module('mopidy-mobile.settings', [
   $scope.$watch('coverart.cache.size', function(newValue, oldValue) {
     if (newValue !== oldValue) {
       coverart.maxCache(newValue);
-      settings.set('coverart.maxcache', newValue);
+      storage.set('coverart.maxcache', newValue);
     }
   });
 
   $scope.$watch('settings.locale', function(newValue, oldValue) {
     if (newValue !== oldValue) {
       $log.info('New locale: "' + newValue + '"');
-      settings.set('locale', newValue);
+      storage.set('locale', newValue);
       $translate.use(newValue);
     }
   });
@@ -190,7 +192,7 @@ angular.module('mopidy-mobile.settings', [
   $scope.$watchCollection('settings.servers', function(newValue, oldValue) {
     if (newValue !== oldValue) {
       $log.log('servers changed', newValue, oldValue);
-      settings.set('servers', newValue);
+      storage.set('servers', newValue);
       if (!(util.contains(newValue, $scope.settings.webSocketUrl || ''))) {
         $scope.settings.webSocketUrl = newValue[Object.keys(newValue)[0]];
       }
@@ -201,14 +203,14 @@ angular.module('mopidy-mobile.settings', [
     if (newValue !== oldValue) {
       $log.info('New theme: "' + newValue + '"');
       stylesheet.setTheme(newValue);
-      settings.set('theme', newValue);
+      storage.set('theme', newValue);
     }
   });
 
   $scope.$watch('settings.webSocketUrl', function(newValue, oldValue) {
     if (newValue !== oldValue) {
       $log.log('webSocketUrl changed', newValue, oldValue);
-      settings.set('webSocketUrl', newValue);
+      storage.set('webSocketUrl', newValue);
       $log.log('Reconnecting to ' + newValue);
       // FIXME...
       $window.location.hash = '';
@@ -283,36 +285,4 @@ angular.module('mopidy-mobile.settings', [
     }
     $scope.settings.servers[$scope.server.name] = $scope.getWebSocketURL();
   });
-})
-
-.provider('settings', function() {
-  var provider = this;
-  var prefix = 'mopidy-mobile.';
-  angular.extend(provider, {
-    get: function(key, defaultValue) {
-      key = prefix + key;
-      if (key in window.localStorage) {
-        try {
-          return angular.fromJson(window.localStorage[key]);
-        } catch (e) {
-          //window.console.log('exception', window.localStorage[key]);
-          return defaultValue;
-        }
-      } else {
-        return defaultValue;
-      }
-    },
-    has: function(key) {
-      return prefix + key in window.localStorage;
-    }
-  });
-
-  provider.$get = function() {
-    return angular.extend(provider, {
-      set: function(key, value) {
-        window.localStorage[prefix + key] = angular.toJson(value);
-        return this;
-      }
-    });
-  };
 });
