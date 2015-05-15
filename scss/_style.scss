@@ -42,14 +42,16 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     min-width: 32px;
 }
 
-/* TODO: $link-color? */
-a {
-    color: $base-color;
-}
-
 /* clickable anchors in toggle labels */
 .item-toggle a {
     pointer-events: initial !important;
+}
+
+/* standard text links */
+h1, h2, h3, h4, h5, h6, p {
+    a {
+        color: $base-color;
+    }
 }
 
 /* "i" is for icons */
