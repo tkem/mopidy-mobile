@@ -2,49 +2,67 @@ angular.module('mopidy-mobile.storage', [
   'LocalStorageModule'
 ])
 
+.config(function(localStorageServiceProvider) {
+  localStorageServiceProvider.setNotify(true, true);
+})
+
 .provider('storage', function(localStorageServiceProvider) {
-  function unquote(s) {
-    if (angular.isString(s) && s[0] === '"' && s[s.length - 1] === '"') {
-      return s.slice(1, s.length - 1);
-    } else {
-      return s;
-    }
-  }
-  localStorageServiceProvider.setPrefix('mopidy-mobile');
+  var bindings = {};  // TODO: multiple bindings for same key
+  var defaults = {};
+  var prefix = null;
   return angular.extend(this, {
-    $get: function(localStorageService) {
+    $get: function($log, $parse, $rootScope, localStorageService) {
+      $rootScope.$on('LocalStorageModule.notification.removeitem', function(event, args) {
+        if (args.key in bindings) {
+          bindings[args.key](defaults[args.key]);
+        }
+      });
+      // $rootScope.$on('LocalStorageModule.notification.setitem', function(event, args) {
+      //   if (args.key in bindings) {
+      ///    bindings[args.key](args.newvalue);
+      //   }
+      // });
       return {
+        bind: function(scope, property, key) {
+          key = key || property;
+          var value = angular.copy(defaults[key]);
+          var unbind = localStorageService.bind(scope, property, value, key);
+          bindings[key] = function(value) {
+            $parse(property).assign(scope, angular.copy(value));
+          };
+          return function() {
+            delete bindings[key];
+            unbind();
+          };
+        },
         clear: function() {
           localStorageService.clearAll();
         },
-        get: function(key, defaultValue) {
+        get: function(key) {
           if (localStorageService.keys().indexOf(key) >= 0) {
-            return unquote(localStorageService.get(key));
+            return localStorageService.get(key);
           } else {
-            return defaultValue;
+            return angular.copy(defaults[key]);
           }
         },
         set: function(key, value) {
-          localStorageService.set(key, value);
+          localStorageService.set(key, angular.copy(value));
         }
       };
     },
-    // FIXME: remove
-    get: function(key, defaultValue) {
-      key = 'mopidy-mobile.' + key;
-      if (key in window.localStorage) {
-        try {
-          return angular.fromJson(window.localStorage[key]);
-        } catch (e) {
-          return window.localStorage[key];
-        }
+    defaults: function(obj) {
+      if (arguments.length) {
+        angular.extend(defaults, obj);
       } else {
-        return defaultValue;
+        return angular.copy(defaults);
       }
     },
-    has: function(key) {
-      return 'mopidy-mobile.' + key in window.localStorage;
+    prefix: function(value) {
+      if (arguments.length) {
+        localStorageServiceProvider.setPrefix(prefix = value);
+      } else {
+        return prefix;
+      }
     }
-
   });
 });

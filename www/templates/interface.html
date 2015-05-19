@@ -1,0 +1,35 @@
+<ion-view view-title="{{'User interface' | translate}}">
+  <ion-content>
+    <div class="list">
+      <label class="item item-input item-select">
+        <div class="input-label" translate>
+          Language
+        </div>
+        <select ng-model="settings.locale"
+                ng-options="id as locale.displayName for (id, locale) in locales"
+                >
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <div class="input-label" translate>
+          Theme
+        </div>
+        <select ng-model="settings.theme"
+                ng-options="theme as name for (theme, name) in themes"
+                >
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <div class="input-label" translate>
+          Default click action
+        </div>
+        <select ng-model="settings.action">
+          <option value="play" translate>Play now</option>
+          <option value="next" translate>Play next</option>
+          <option value="add" translate>Add to tracklist</option>
+          <option value="replace" translate>Replace tracklist</option>
+        </select>
+      </label>
+    </div>
+  </ion-content>
+</ion-view>

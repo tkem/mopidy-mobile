@@ -1,36 +1,28 @@
 <ion-view view-title="{{'Cover art' | translate}}">
+  <ion-nav-buttons side="secondary">
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
+            ng-click="popover.show($event)"
+            ng-controller="CoverartMenuCtrl"
+            >
+    </button>
+  </ion-nav-buttons>
   <ion-content>
     <div class="list">
-      <div class="item item-divider" translate>
-        Cover art sources
-      </div>
-      <ion-toggle class="item-input" ng-model="coverart.services.connection">
-        <a href="#" ng-click="open('http://coverartarchive.org')">
+      <ion-toggle class="item-input" ng-model="coverart.connection">
+        <a href="http://coverartarchive.org" target="_system">
           <img class="mopidy-mobile-logo" src="images/mopidy.png">
         </a>
       </ion-toggle>
-      <ion-toggle class="item-input" ng-model="coverart.services.lastfm">
-        <a href="#" ng-click="open('http://last.fm')">
+      <ion-toggle class="item-input" ng-model="coverart.lastfm">
+        <a href="http://last.fm" target="_system">
           <img class="mopidy-mobile-logo" src="images/lastfm.gif" height="20">
         </a>
       </ion-toggle>
-      <ion-toggle class="item-input" ng-model="coverart.services.coverartarchive">
-        <a href="#" ng-click="open('http://coverartarchive.org')">
+      <ion-toggle class="item-input" ng-model="coverart.coverartarchive">
+        <a href="http://coverartarchive.org" target="_system">
           <img class="mopidy-mobile-logo" src="images/coverartarchive.png">
         </a>
       </ion-toggle>
-      <div class="item item-divider" translate>
-        Cache settings
-      </div>
-      <label class="item item-input">
-        <span class="input-label" translate>Cache size</span>
-        <input ng-model="coverart.cache.size" type="number">
-      </label>
-      <label class="item item-input">
-        <button class="button" ng-click="coverart.cache.clear()" translate>
-          Clear cache
-        </button>
-      </label>
     </div>
   </ion-content>
 </ion-view>

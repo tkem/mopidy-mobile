@@ -40,9 +40,35 @@ angular.module('mopidy-mobile.util', [])
   fromKeys: function(keys, value) {
     var obj = {};
     for (var i = keys.length - 1; i >= 0; --i) {
-      obj[keys[i]] = value;
+      obj[keys[i]] = angular.isFunction(value) ? value(keys[i]) : value;
     }
     return obj;
+  },
+
+  data: function(element, name) {
+    function camelCase(name) {
+      return name.replace(/([\:\-\_]+(.))/g, function(_, separator, letter, offset) {
+        return offset ? letter.toUpperCase() : letter;
+      });
+    }
+    function snakeCase(name, separator) {
+      separator = separator || '_';
+      return name.replace(/[A-Z]/g, function(letter, pos) {
+        return (pos ? separator : '') + letter.toLowerCase();
+      });
+    }
+    if (name) {
+      var attr = element.attributes['data-' + snakeCase(name, '-')];
+      return attr ? attr.value : undefined;
+    } else {
+      var data = {};
+      Array.prototype.slice.call(element.attributes).filter(function(attr) {
+        return attr.name.indexOf('data-') === 0;
+      }).forEach(function(attr) {
+        data[camelCase(attr.name.substr(5))] = attr.value;
+      });
+      return data;
+    }
   },
 
   parseURI: function(uri) {

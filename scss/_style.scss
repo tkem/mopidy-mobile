@@ -189,7 +189,7 @@ i {
 /* Popover menus; see http://forum.ionicframework.com/t/popover-sizing/8251/8 */
 ion-popover-view.mopidy-mobile-menu {
     height: auto !important;
-    min-height: 100px !important;
+    min-height: 20px !important;
     max-height: 80% !important;
 }
 ion-popover-view.mopidy-mobile-menu ion-content {

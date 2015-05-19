@@ -67,7 +67,7 @@ angular.module('mopidy-mobile.actions', [
 
   // FIXME: remove storage dependency - check where default is used
   actions['default'] = function(obj) {
-    return (actions[storage.get('action', 'play')] || actions.play)(obj);
+    return (actions[storage.get('action')] || actions.play)(obj);
   };
 
   return actions;

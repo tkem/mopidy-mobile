@@ -190,6 +190,20 @@ angular.module('mopidy-mobile.connection', [
           });
         }
       });
+    },
+    loadingOptions: function(value) {
+      if (arguments.length) {
+        angular.extend(loadingOptions, value);
+      } else {
+        return angular.copy(loadingOptions);
+      }
+    },
+    settings: function(value) {
+      if (arguments.length) {
+        angular.extend(settings, value);
+      } else {
+        return angular.copy(settings);
+      }
     }
   });
 })

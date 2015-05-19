@@ -5,25 +5,11 @@ angular.module('mopidy-mobile', [
   'mopidy-mobile.playback',
   'mopidy-mobile.playlists',
   'mopidy-mobile.settings',
-  'mopidy-mobile.tracklist'
+  'mopidy-mobile.tracklist',
+  'mopidy-mobile.util'
 ])
 
-.config(function($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
-  $stateProvider.state('main', {
-    abstract: true,
-    url: '',
-    controller: 'MainCtrl',
-    templateUrl: 'templates/main.html'
-  });
-
-  // TODO: use redirect, otherwise for error page?
-  // https://github.com/angular-ui/ui-router/wiki/Frequently-Asked-Questions#how-to-set-up-a-defaultindex-child-state
-  if (angular.element(document).find('html').attr('data-ws-url') !== undefined) {
-    $urlRouterProvider.otherwise('/playback');
-  } else {
-    $urlRouterProvider.otherwise('/settings');
-  }
-
+.config(function($ionicConfigProvider) {
   // TODO: platform defaults/configurable?
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');
@@ -74,32 +60,86 @@ angular.module('mopidy-mobile', [
   });
 })
 
-.run(function($rootScope, $filter, $window, $ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // FIXME: cordova initialization, etc.
-    if ($window.cordova) {
-      //$window.alert('cordova ready');
-      //$window.alert('cordova getAppVersion ' + $window.cordova.getAppVersion);
-      //if ($window.cordova.getAppVersion) {
-      //  $window.cordova.getAppVersion(function(version) {
-      //    $window.alert('appVersion: ' + version);
-      //  });
-      //}
+.config(function($stateProvider) {
+  $stateProvider.state('main', {
+    abstract: true,
+    url: '',
+    controller: 'MainCtrl',
+    templateUrl: 'templates/main.html'
+  });
+})
 
-      // Hide the accessory bar by default (remove this to show the
-      // accessory bar above the keyboard for form inputs)
-      //if ($window.cordova.plugins.Keyboard) {
-      //  $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      //}
-      //if (window.StatusBar) {
-      //  // org.apache.cordova.statusbar required
-      //  StatusBar.styleDefault();
-      //}
+.config(function($urlRouterProvider, util) {
+  if (util.data(document.documentElement, 'webSocketUrl') !== undefined) {
+    $urlRouterProvider.otherwise('/playback');
+  } else {
+    $urlRouterProvider.otherwise('/settings');
+  }
+})
+
+.config(function(connectionProvider) {
+  connectionProvider.loadingOptions({
+    delay: 100,
+    duration: 10000
+  });
+  connectionProvider.settings({
+    backoffDelayMax: 2000,
+    backoffDelayMin: 500
+  });
+})
+
+.config(function(coverartProvider) {
+  coverartProvider.maxCache(100);
+})
+
+.config(function(storageProvider, util) {
+  storageProvider.prefix('mopidy-mobile');
+  storageProvider.defaults(angular.extend({
+    action: 'play',
+    coverart: {connection: true},
+    locale: 'en',
+    theme: 'ionic-light'
+  }, util.data(document.documentElement)));
+})
+
+.constant('stylesheet', {
+  getTheme: function() {
+    var element = window.document.getElementById('stylesheet');
+    var match = /([^.\/]+).min.css(?:\?.*)?$/.exec(element.href);
+    //console.log(element.href, match);
+    return match ? match[1] : null;
+  },
+  setTheme: function(name) {
+    var element = window.document.getElementById('stylesheet');
+    var version = angular.element(document).find('html').attr('data-version');
+    element.href = 'css/' + name + '.min.css' + (version ? '?v=' + version : '');
+  }
+})
+
+.run(function($ionicPlatform, $log, $translate, $window, coverart, storage, stylesheet) {
+  $ionicPlatform.ready(function() {
+    if ($window.cordova) {
+      $log.debug('cordova ready');
     }
   });
 
-  // FIXME: how to handle $stateChangeError
-  //$rootScope.$on('$stateChangeError', popup.stateChangeError);
+  if (storage.get('storageVersion') !== 2) {
+    storage.clear();
+    storage.set('storageVersion', 2);
+  }
+
+  $translate.use(storage.get('locale'));
+
+  angular.forEach(storage.get('coverart'), function(enabled, service) {
+    if (enabled) {
+      coverart.enable(service);
+    }
+  });
+
+  var theme = storage.get('theme');
+  if (theme) {
+    stylesheet.setTheme(theme);
+  }
 })
 
 .controller('MainCtrl', function($scope) {

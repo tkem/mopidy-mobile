@@ -3,6 +3,22 @@ angular.module('mopidy-mobile.ui', [
   'pascalprecht.translate'
 ])
 
+.directive('target', function($window) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attr) {
+      var href = attr.href;
+      var target = attr.target;
+      element.on('click', function(event) {
+        $window.open(href, target);
+      });
+      // Hack for iOS Safari's benefit. It goes searching for onclick
+      // handlers and is liable to click something else nearby.
+      element.onclick = angular.noop;
+    }
+  };
+})
+
 .factory('popoverMenu', function(util, $filter, $log, $ionicPopover, $rootScope) {
   var popoverMenus = [];
   $rootScope.$on('$translateChangeSuccess', function() {
@@ -32,6 +48,9 @@ angular.module('mopidy-mobile.ui', [
         }
         if (item.disabled) {
           template.push(' ng-disabled="' + item.disabled + '"');
+        }
+        if (item.hidden) {
+          template.push(' ng-hide="' + item.hidden + '"');
         }
         template.push('>');
         template.push(translate(item.text));
