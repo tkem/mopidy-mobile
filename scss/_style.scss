@@ -2,6 +2,9 @@
 $item-thumbnail-width:            64px;
 $item-thumbnail-height:           64px;
 
+/* Give playback controls a little more space */
+$bar-footer-height:               48px;
+
 /* Increase width of popup for German translation */
 $popup-width:                     280px;
 
@@ -207,15 +210,43 @@ ion-popover-view.mopidy-mobile-menu ion-content {
     color: #ccc !important;  /* FIXME: configurable, transform? */
 }
 
-/* TODO: configurable? */
-.mopidy-mobile-trackview {
-    text-align: center;
-}
-.mopidy-mobile-trackview img {
-    width: 75%;
-    height: 75%;
-}
 img.mopidy-mobile-logo {
     height: 32px;
     vertical-align: text-bottom;
+}
+
+.mopidy-mobile-playback {
+    text-align: center;
+
+    img {
+        width: 75%;
+        height: 75%;
+    }
+
+    ion-footer-bar {
+        background-image: none;
+        border: 0;
+        padding: 0 5px;
+        vertical-align: top;
+    }
+
+    .button-bar {
+        border: 0;
+        vertical-align: top;
+
+        button {
+            border: 0;
+            vertical-align: top;
+        }
+    }
+
+    .range {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+
+        input {
+            margin-top: 0;
+        }
+    }
 }

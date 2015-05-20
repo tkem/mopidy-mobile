@@ -1,6 +1,47 @@
-<ion-view hide-nav-bar="true" view-title="{{'Playback' | translate}}">
-  <ion-header-bar>
-    <div class="range" style="width: 100%">
+<ion-view class="mopidy-mobile-playback" ng-controller="MixerCtrl as mixer" view-title="{{'Playback' | translate}}">
+  <ion-nav-buttons side="primary">
+    <button class="button button-clear icon mopidy-mobile-icon-mute"
+            ng-class="{'button-assertive': mixer.mute}"
+            ng-click="mixer.setMute(!mixer.mute)"
+            >
+    </button>
+  </ion-nav-buttons>
+
+  <ion-nav-title class="mopidy-mobile-playback">
+    <div class="range">
+      <i class="mopidy-mobile-icon-volume-low"></i>
+      <input ng-change="mixer.changeVolume()"
+             ng-model="mixer.volume"
+             type="range"
+             min="0"
+             max="100"
+             >
+      <i class="mopidy-mobile-icon-volume-high"></i>
+    </div>
+  </ion-nav-title>
+
+  <ion-content class="has-header has-footer has-subfooter padding">
+    <div ng-if="track.artists[0].name">
+      {{track.artists[0].name}}
+    </div>
+    <div>
+      <strong>
+        {{track.name || ('Nothing playing' | translate)}}
+      </strong>
+    </div>
+    <div ng-if="track.album.name">
+      {{track.album.name}}
+    </div>
+    <div ng-if="stream.title">
+      {{stream.title}}
+    </div>
+    <div ng-if="image">
+      <img ng-src="{{image.uri}}">
+    </div>
+  </ion-content>
+
+  <ion-footer-bar class="bar-subfooter">
+    <div class="range">
       {{time.position | duration}}
       <input min="0" max="{{track.length || 0}}"
              ng-change="seek()"
@@ -9,42 +50,9 @@
              type="range">
       {{track.length | duration}}
     </div>
-  </ion-header-bar>
+  </ion-footer-bar>
 
-  <ion-content class="has-header has-subfooter">
-    <div class="mopidy-mobile-trackview">
-      <div class="padding">
-        <div ng-if="track.artists[0].name">
-          {{track.artists[0].name}}
-        </div>
-        <div>
-          <strong>
-            {{track.name || ('Nothing playing' | translate)}}
-          </strong>
-        </div>
-        <div ng-if="track.album.name">
-          {{track.album.name}}
-        </div>
-        <div ng-if="stream.title">
-          {{stream.title}}
-        </div>
-      </div>
-
-      <div ng-if="debug">
-        <p>State: {{state}}</p>
-        <p>Current: {{tlTracks.current.tlid}}</p>
-        <p>EOT: {{tlTracks.eot.tlid}}</p>
-        <p>Next: {{tlTracks.next.tlid}}</p>
-        <p>Previous: {{tlTracks.previous.tlid}}</p>
-      </div>
-
-      <div ng-if="image">
-        <img ng-src="{{image.uri}}">
-      </div>
-    </div>
-  </ion-content>
-
-  <ion-footer-bar class="bar-subfooter">
+  <ion-footer-bar>
     <div class="button-bar">
       <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-random"
               ng-class="{'button-positive': options.random}"
@@ -76,25 +84,6 @@
               ng-click="setRepeat(!options.repeat)"
               >
       </button>
-    </div>
-  </ion-footer-bar>
-  <ion-footer-bar ng-controller="MixerCtrl as mixer">
-    <div class="buttons">
-      <button class="button button-clear icon mopidy-mobile-icon-mute"
-              ng-class="{'button-assertive': mixer.mute}"
-              ng-click="mixer.setMute(!mixer.mute)"
-              >
-      </button>
-    </div>
-    <div class="range" style="width: 100%">
-      <i class="mopidy-mobile-icon-volume-low"></i>
-      <input ng-change="mixer.changeVolume()"
-             ng-model="mixer.volume"
-             type="range"
-             min="0"
-             max="100"
-             >
-      <i class="mopidy-mobile-icon-volume-high"></i>
     </div>
   </ion-footer-bar>
 </ion-view>

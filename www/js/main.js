@@ -77,14 +77,15 @@ angular.module('mopidy-mobile', [
   }
 })
 
-.config(function(connectionProvider) {
+.config(function(connectionProvider, util) {
   connectionProvider.loadingOptions({
     delay: 100,
     duration: 10000
   });
   connectionProvider.settings({
     backoffDelayMax: 2000,
-    backoffDelayMin: 500
+    backoffDelayMin: 500,
+    webSocketUrl: util.data(document.documentElement, 'webSocketUrl')
   });
 })
 
