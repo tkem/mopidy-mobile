@@ -9,7 +9,7 @@ angular.module('mopidy-mobile.ui', [
     link: function(scope, element, attr) {
       var href = attr.href;
       var target = attr.target;
-      element.on('click', function(event) {
+      element.on('click', function() {
         $window.open(href, target);
       });
       // Hack for iOS Safari's benefit. It goes searching for onclick

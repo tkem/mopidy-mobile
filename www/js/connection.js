@@ -81,6 +81,7 @@ angular.module('mopidy-mobile.connection', [
         return mopidy(settings).then(
           function(mopidy) {
             connected = true;
+            $log.debug('hide loading');
             $ionicLoading.hide();
             notify.call(mopidy, 'connection:online');
             mopidy.on(notify.bind(mopidy));
@@ -88,6 +89,7 @@ angular.module('mopidy-mobile.connection', [
           },
           function(mopidy) {
             connected = false;
+            $log.debug('hide loading');
             $ionicLoading.hide();
             notify.call(mopidy, 'connection:offline');
             throw {name: 'ConnectionError'};
@@ -110,6 +112,7 @@ angular.module('mopidy-mobile.connection', [
         // FIXME: handle pending count?
         $ionicLoading.show(loadingOptions);
         return promise.then(callback).finally(function() {
+          $log.debug('hide loading');
           $ionicLoading.hide();
         }).catch(function(error) {
           return connectionErrorHandler(error, connection, callback);

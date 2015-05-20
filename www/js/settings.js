@@ -88,8 +88,7 @@ angular.module('mopidy-mobile.settings', [
   });
 
   $scope.$watch('settings.locale', function(value) {
-    $log.debug('locale', value);
-    $ionicHistory.clearCache()
+    $ionicHistory.clearCache();
     $translate.use(value);
   });
 
