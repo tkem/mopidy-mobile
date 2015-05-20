@@ -14,9 +14,8 @@ $mopidy-mobile-thumbnail-artist-bg:     url("#{$sprites-path}?v=#{$sprites-versi
 $mopidy-mobile-thumbnail-directory-bg:  url("#{$sprites-path}?v=#{$sprites-version}") -128px 0;
 $mopidy-mobile-thumbnail-track-bg:      url("#{$sprites-path}?v=#{$sprites-version}") -192px 0;
 
-/* unchanged, but need to put these into scope... */
 $light:                           #fff !default;
-$stable:                          #f8f8f8 !default;
+$stable:                          #ccc !default;
 $positive:                        #387ef5 !default;
 $dark:                            #444 !default;
 
