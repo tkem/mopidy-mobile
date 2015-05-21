@@ -98,7 +98,6 @@ angular.module('mopidy-mobile', [
   storageProvider.defaults(angular.extend({
     action: 'play',
     coverart: {connection: true},
-    locale: 'en',
     theme: 'ionic-light'
   }, util.data(document.documentElement)));
 })
