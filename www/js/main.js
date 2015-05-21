@@ -123,18 +123,24 @@ angular.module('mopidy-mobile', [
     }
   });
 
-  if (storage.get('storageVersion') !== 2) {
+  // clear local storage on upgrade
+  if (storage.get('theme') && storage.get('theme')[0] === '"') {
     storage.clear();
-    storage.set('storageVersion', 2);
   }
-
-  locale.set(storage.get('locale'));
+  if (storage.get('locale') && storage.get('locale')[0] === '"') {
+    storage.clear();
+  }
+  if (storage.get('action') && storage.get('action')[0] === '"') {
+    storage.clear();
+  }
 
   angular.forEach(storage.get('coverart'), function(enabled, service) {
     if (enabled) {
       coverart.enable(service);
     }
   });
+
+  locale.set(storage.get('locale'));
 
   var theme = storage.get('theme');
   if (theme) {
