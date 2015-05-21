@@ -1,10 +1,14 @@
-angular.module('mopidy-mobile.locales', [
-  'pascalprecht.translate',
-  'mopidy-mobile.ui'
+angular.module('mopidy-mobile.locale', [
+  'pascalprecht.translate'
 ])
 
-.constant('locales', {
-  'en': {
+.config(function($translateProvider) {
+  $translateProvider.useLoader('translationLoader');
+  $translateProvider.useMissingTranslationHandler('missingTranslationHandler');
+})
+
+.config(function(localeProvider) {
+  localeProvider.locale('en', {
     displayName: 'English',
     messages: {
       'About': 'About',
@@ -76,9 +80,11 @@ angular.module('mopidy-mobile.locales', [
       '{count} tracks': '{{count}} tracks',
       '{index} of {count}': '{{index}} of {{count}}',
     }
-  },
+  });
+})
 
-  'de': {
+.config(function(localeProvider) {
+  localeProvider.locale('de', {
     displayName: 'Deutsch',
     messages: {
       'About': 'Über',
@@ -150,7 +156,20 @@ angular.module('mopidy-mobile.locales', [
       '{count} tracks': '{{count}} Titel',
       '{index} of {count}': '{{index}} von {{count}}',
     }
-  }
+  });
+})
+
+.factory('translationLoader', function($q, locale) {
+  return function(options) {
+    return $q(function(resolve, reject) {
+      var lc = locale.get(options.key);
+      if (lc) {
+        resolve(lc.messages);
+      } else {
+        reject(options.key);
+      }
+    });
+  };
 })
 
 .factory('missingTranslationHandler', function($log) {
@@ -173,10 +192,45 @@ angular.module('mopidy-mobile.locales', [
   };
 })
 
-.config(function($translateProvider, locales) {
-  angular.forEach(locales, function(locale, id) {
-    $translateProvider.translations(id, locale.messages);
+.provider('locale', function() {
+  var locales = {};
+  var provider = angular.extend(this, {
+    $get: function($log, $translate, util) {
+      function getLocale() {
+        var languages = util.getLanguages();
+        $log.info('Preferred languages: ' + languages);
+        for (var i = 0; i !== languages.length; ++i) {
+          var fields = angular.lowercase(languages[i]).split(/[^a-z]/);
+          for (var j = fields.length; j !== 0; --j) {
+            var id = fields.slice(0, j).join('-');
+            if (id in locales) {
+              $log.info('Found matching locale: ' + id);
+              return id;
+            }
+          }
+        }
+        $log.info('Using fallback locale: ' + provider.fallback);
+        return provider.fallback;
+      }
+
+      var locale = getLocale();
+
+      return {
+        all: function() {
+          return locales;
+        },
+        get: function(id) {
+          return locales[id || locale];
+        },
+        set: function(id) {
+          $translate.use(locale = id || getLocale());
+        }
+      };
+    },
+    fallback: 'en',
+    locale: function(id, obj) {
+      locales[id] = obj;
+    }
   });
-  $translateProvider.useMissingTranslationHandler('missingTranslationHandler');
 })
 ;

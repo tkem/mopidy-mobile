@@ -45,6 +45,23 @@ angular.module('mopidy-mobile.util', [])
     return obj;
   },
 
+  getLanguages: function() {
+    var navigator = window.navigator;
+    var properties = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
+    // support for HTML 5.1 "navigator.languages"
+    if (angular.isArray(navigator.languages)) {
+      return navigator.languages;
+    }
+    // support for other well known properties in browsers
+    for (var i = 0; i !== properties.length; ++i) {
+      var language = navigator[properties[i]];
+      if (language && language.length) {
+        return [language];
+      }
+    }
+    return [];
+  },
+
   data: function(element, name) {
     function camelCase(name) {
       return name.replace(/([\:\-\_]+(.))/g, function(_, separator, letter, offset) {

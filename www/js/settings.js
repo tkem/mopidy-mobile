@@ -1,11 +1,10 @@
 angular.module('mopidy-mobile.settings', [
   'ionic',
-  'pascalprecht.translate',
   'mopidy-mobile.connection',
   'mopidy-mobile.coverart',
   'mopidy-mobile.coverartarchive',
   'mopidy-mobile.lastfm',
-  'mopidy-mobile.locales',
+  'mopidy-mobile.locale',
   'mopidy-mobile.logging',
   'mopidy-mobile.storage',
   'mopidy-mobile.ui',
@@ -60,11 +59,11 @@ angular.module('mopidy-mobile.settings', [
   'ionic-dark': 'Ionic Dark'
 })
 
-.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $translate, $window, coverart, locales, storage, stylesheet, themes, version) {
+.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, storage, stylesheet, themes, version) {
   angular.extend($scope, {
     cordova: $window.cordova,
     coverart: {},
-    locales: locales,
+    locales: locale.all(),
     settings: {},
     themes: themes,
     version: version
@@ -89,7 +88,7 @@ angular.module('mopidy-mobile.settings', [
 
   $scope.$watch('settings.locale', function(value) {
     $ionicHistory.clearCache();
-    $translate.use(value);
+    locale.set(value);
   });
 
   $scope.$watch('settings.theme', function(value) {

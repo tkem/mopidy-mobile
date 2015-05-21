@@ -8,6 +8,7 @@
         <select ng-model="settings.locale"
                 ng-options="id as locale.displayName for (id, locale) in locales"
                 >
+          <option value="" translate>System</option>
         </select>
       </label>
       <label class="item item-input item-select">

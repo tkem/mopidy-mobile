@@ -117,7 +117,7 @@ angular.module('mopidy-mobile', [
   }
 })
 
-.run(function($ionicPlatform, $log, $translate, $window, coverart, storage, stylesheet) {
+.run(function($ionicPlatform, $log, $window, coverart, locale, storage, stylesheet) {
   $ionicPlatform.ready(function() {
     if ($window.cordova) {
       $log.debug('cordova ready');
@@ -129,7 +129,7 @@ angular.module('mopidy-mobile', [
     storage.set('storageVersion', 2);
   }
 
-  $translate.use(storage.get('locale'));
+  locale.set(storage.get('locale'));
 
   angular.forEach(storage.get('coverart'), function(enabled, service) {
     if (enabled) {
