@@ -35,6 +35,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     margin: 0 !important;
 }
 
+/* Popover menus; see http://forum.ionicframework.com/t/popover-sizing/8251/8 */
+.platform-android ion-popover-view {
+    margin-top: 10px !important;
+}
+
 /* Style up your nav-bar */
 .nav-bar-title em {
     font-style: italic;
@@ -151,6 +156,9 @@ i {
 .mopidy-mobile-icon-error {
     @extend .#{$mopidy-mobile-icon-error};
 }
+.mopidy-mobile-icon-debug {
+    @extend .#{$mopidy-mobile-icon-debug};
+}
 
 /* button styles */
 .mopidy-mobile-button-icon {
@@ -189,64 +197,61 @@ i {
     }
 }
 
-/* Popover menus; see http://forum.ionicframework.com/t/popover-sizing/8251/8 */
-ion-popover-view.mopidy-mobile-menu {
+/* popover menus */
+.mopidy-mobile-menu {
     height: auto !important;
     min-height: 20px !important;
     max-height: 80% !important;
-}
-ion-popover-view.mopidy-mobile-menu ion-content {
-    position: relative !important;
-}
-.platform-android ion-popover-view.mopidy-mobile-menu {
-    margin-top: 10px !important;
-}
-
-.mopidy-mobile-menu button.item {
-    @extend .button-full;
-    text-align: left !important;
-}
-.mopidy-mobile-menu button[disabled] {
-    color: #ccc !important;  /* FIXME: configurable, transform? */
+    button.item {
+        @extend .button-full;
+        text-align: left !important;
+    }
+    button[disabled] {
+        color: #ccc !important;
+    }
+    ion-content {
+        position: relative !important;
+    }
 }
 
-img.mopidy-mobile-logo {
-    height: 32px;
-    vertical-align: text-bottom;
-}
-
+/* playback controls */
 .mopidy-mobile-playback {
     text-align: center;
-
     img {
         width: 75%;
         height: 75%;
     }
-
     ion-footer-bar {
         background-image: none;
         border: 0;
         padding: 0 5px;
         vertical-align: top;
     }
-
     .button-bar {
         border: 0;
         vertical-align: top;
-
         button {
             border: 0;
             vertical-align: top;
         }
     }
-
     .range {
         margin: 0;
         padding: 0;
         width: 100%;
-
         input {
             margin-top: 0;
         }
     }
+}
+
+/* logo/image styles */
+a img.mopidy-mobile-image {
+    height: 32px;
+    vertical-align: text-bottom;
+}
+
+img.mopidy-mobile-logo {
+    float: left;
+    margin-right:10px;
 }

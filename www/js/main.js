@@ -116,13 +116,7 @@ angular.module('mopidy-mobile', [
   }
 })
 
-.run(function($ionicPlatform, $log, $window, coverart, locale, storage, stylesheet) {
-  $ionicPlatform.ready(function() {
-    if ($window.cordova) {
-      $log.debug('cordova ready');
-    }
-  });
-
+.run(function(coverart, locale, storage, stylesheet) {
   // clear local storage on upgrade
   if (storage.get('theme') && storage.get('theme')[0] === '"') {
     storage.clear();
@@ -148,7 +142,22 @@ angular.module('mopidy-mobile', [
   }
 })
 
-.controller('MainCtrl', function($scope) {
+.controller('MainCtrl', function($ionicPlatform, $log, $q, $rootElement, $scope, $window) {
+  $ionicPlatform.ready().then(function() {
+    return $q(function(resolve) {
+      if ($window.cordova && $window.cordova.getAppVersion) {
+        $window.cordova.getAppVersion(function(version) {
+          resolve(version);
+        });
+      } else {
+        resolve($rootElement.attr('data-version'));
+      }
+    }).then(function(version) {
+      $log.info('Mopidy Mobile ' + version + ' (' + ionic.Platform.platform() + ')');
+      $scope.appVersion = version;
+    });
+  });
+
   // TODO: get from CSS, image size = device size?
   // TODO: other globals?
   angular.extend($scope, {

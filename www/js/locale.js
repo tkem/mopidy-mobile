@@ -198,18 +198,18 @@ angular.module('mopidy-mobile.locale', [
     $get: function($log, $translate, util) {
       function getLocale() {
         var languages = util.getLanguages();
-        $log.info('Preferred languages: ' + languages);
+        $log.debug('Preferred languages: ' + languages);
         for (var i = 0; i !== languages.length; ++i) {
           var fields = angular.lowercase(languages[i]).split(/[^a-z]/);
           for (var j = fields.length; j !== 0; --j) {
             var id = fields.slice(0, j).join('-');
             if (id in locales) {
-              $log.info('Found matching locale: ' + id);
+              $log.debug('Found matching locale: ' + id);
               return id;
             }
           }
         }
-        $log.info('Using fallback locale: ' + provider.fallback);
+        $log.debug('Using fallback locale: ' + provider.fallback);
         return provider.fallback;
       }
 

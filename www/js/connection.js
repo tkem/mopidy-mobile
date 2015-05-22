@@ -77,6 +77,7 @@ angular.module('mopidy-mobile.connection', [
       }
 
       function connect() {
+        $log.debug('show loading');
         $ionicLoading.show();
         return mopidy(settings).then(
           function(mopidy) {
@@ -109,7 +110,7 @@ angular.module('mopidy-mobile.connection', [
       var promise = connect();  // TODO: use settings for webSocketUrl, etc.
 
       var connection = function connection(callback) {
-        // FIXME: handle pending count?
+        $log.debug('show loading');
         $ionicLoading.show(loadingOptions);
         return promise.then(callback).finally(function() {
           $log.debug('hide loading');

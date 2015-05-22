@@ -18,22 +18,7 @@ angular.module('mopidy-mobile.settings', [
     views: {
       'settings': {
         template: '<ion-nav-view></ion-nav-view>',
-        controller: 'SettingsCtrl',
-        resolve: {
-          version: function($q, $document, $window, $log, $ionicPlatform) {
-            return $ionicPlatform.ready().then(function() {
-              return $q(function(resolve) {
-                if ($window.cordova && $window.cordova.getAppVersion) {
-                  $window.cordova.getAppVersion(function(version) {
-                    resolve(version);
-                  });
-                } else {
-                  resolve($document.find('html').attr('data-version') || 'dev');
-                }
-              });
-            });
-          }
-        }
+        controller: 'SettingsCtrl'
       }
     }
   }).state('main.settings.root', {
@@ -59,14 +44,13 @@ angular.module('mopidy-mobile.settings', [
   'ionic-dark': 'Ionic Dark'
 })
 
-.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, storage, stylesheet, themes, version) {
+.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, storage, stylesheet, themes) {
   angular.extend($scope, {
     cordova: $window.cordova,
     coverart: {},
     locales: locale.all(),
     settings: {},
-    themes: themes,
-    version: version
+    themes: themes
   });
 
   var bindings = [

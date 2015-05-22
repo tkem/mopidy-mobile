@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-version="{{version}}" data-web-socket-url="{{ws_url}}">
+<html data-web-socket-url="{{ws_url}}">
   <head>
     <title>{{title}}</title>
     <meta charset="utf-8">
@@ -27,7 +27,7 @@
     <link id="stylesheet" rel="stylesheet" href="{{static_url('css/ionic-light.min.css')}}">
     <script src="{{static_url('js/mopidy-mobile.bundle.min.js')}}"></script>
   </head>
-  <body ng-app="mopidy-mobile">
+  <body ng-app="mopidy-mobile" data-version="{{version}}">
     <ion-nav-bar class="bar-stable">
       <ion-nav-back-button></ion-nav-back-button>
     </ion-nav-bar>
