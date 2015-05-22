@@ -6,7 +6,8 @@ angular.module('mopidy-mobile', [
   'mopidy-mobile.playlists',
   'mopidy-mobile.settings',
   'mopidy-mobile.tracklist',
-  'mopidy-mobile.util'
+  'mopidy-mobile.util',
+  'mopidy-mobile.ui'
 ])
 
 .config(function($ionicConfigProvider) {
@@ -93,53 +94,14 @@ angular.module('mopidy-mobile', [
   coverartProvider.maxCache(100);
 })
 
-.config(function(storageProvider, util) {
+.config(function(storageProvider, stylesheetProvider, util) {
   storageProvider.prefix('mopidy-mobile');
   storageProvider.defaults(angular.extend({
     action: 'play',
     coverart: {connection: true},
-    theme: 'ionic-light'
+    locale: '',  // default/browser locale
+    stylesheet: stylesheetProvider.get()
   }, util.data(document.documentElement)));
-})
-
-.constant('stylesheet', {
-  getTheme: function() {
-    var element = window.document.getElementById('stylesheet');
-    var match = /([^.\/]+).min.css(?:\?.*)?$/.exec(element.href);
-    //console.log(element.href, match);
-    return match ? match[1] : null;
-  },
-  setTheme: function(name) {
-    var element = window.document.getElementById('stylesheet');
-    var version = angular.element(document).find('html').attr('data-version');
-    element.href = 'css/' + name + '.min.css' + (version ? '?v=' + version : '');
-  }
-})
-
-.run(function(coverart, locale, storage, stylesheet) {
-  // clear local storage on upgrade
-  if (storage.get('theme') && storage.get('theme')[0] === '"') {
-    storage.clear();
-  }
-  if (storage.get('locale') && storage.get('locale')[0] === '"') {
-    storage.clear();
-  }
-  if (storage.get('action') && storage.get('action')[0] === '"') {
-    storage.clear();
-  }
-
-  angular.forEach(storage.get('coverart'), function(enabled, service) {
-    if (enabled) {
-      coverart.enable(service);
-    }
-  });
-
-  locale.set(storage.get('locale'));
-
-  var theme = storage.get('theme');
-  if (theme) {
-    stylesheet.setTheme(theme);
-  }
 })
 
 .controller('MainCtrl', function($ionicPlatform, $log, $q, $rootElement, $scope, $window) {
@@ -164,4 +126,19 @@ angular.module('mopidy-mobile', [
     thumbnailWidth: 64,
     thumbnailHeight: 64
   });
-});
+})
+
+.run(function($log, coverart, locale, storage, stylesheet) {
+  if (storage.get('theme')) {
+    $log.warn('Clearing local settings, sorry for the inconvenience...');
+    storage.clear();  // clear deprecated settings
+  }
+  stylesheet.set(storage.get('stylesheet'));
+  locale.set(storage.get('locale'));
+  angular.forEach(storage.get('coverart'), function(enabled, service) {
+    if (enabled) {
+      coverart.enable(service);
+    }
+  });
+})
+;

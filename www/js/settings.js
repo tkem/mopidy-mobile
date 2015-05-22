@@ -1,14 +1,10 @@
 angular.module('mopidy-mobile.settings', [
   'ionic',
-  'mopidy-mobile.connection',
   'mopidy-mobile.coverart',
-  'mopidy-mobile.coverartarchive',
-  'mopidy-mobile.lastfm',
   'mopidy-mobile.locale',
   'mopidy-mobile.logging',
   'mopidy-mobile.storage',
-  'mopidy-mobile.ui',
-  'mopidy-mobile.util'
+  'mopidy-mobile.ui'
 ])
 
 .config(function($stateProvider) {
@@ -39,25 +35,20 @@ angular.module('mopidy-mobile.settings', [
   });
 })
 
-.constant('themes', {
-  'ionic-light': 'Ionic Light',
-  'ionic-dark': 'Ionic Dark'
-})
-
-.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, storage, stylesheet, themes) {
+.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, storage, stylesheet) {
   angular.extend($scope, {
+    clear: storage.clear,
     cordova: $window.cordova,
     coverart: {},
     locales: locale.all(),
-    settings: {},
-    themes: themes
+    settings: {}
   });
 
   var bindings = [
     storage.bind($scope, 'coverart'),
     storage.bind($scope, 'settings.action', 'action'),
     storage.bind($scope, 'settings.locale', 'locale'),
-    storage.bind($scope, 'settings.theme', 'theme')
+    storage.bind($scope, 'settings.stylesheet', 'stylesheet')
   ];
 
   $scope.$watchCollection('coverart', function(value) {
@@ -75,8 +66,8 @@ angular.module('mopidy-mobile.settings', [
     locale.set(value);
   });
 
-  $scope.$watch('settings.theme', function(value) {
-    stylesheet.setTheme(value);
+  $scope.$watch('settings.stylesheet', function(value) {
+    stylesheet.set(value);
   });
 
   $scope.$on('$destroy', function() {

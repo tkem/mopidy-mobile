@@ -15,9 +15,9 @@
         <div class="input-label" translate>
           Theme
         </div>
-        <select ng-model="settings.theme"
-                ng-options="theme as name for (theme, name) in themes"
-                >
+        <select ng-model="settings.stylesheet">
+          <option value="css/ionic-dark.min.css">Ionic Dark</option>
+          <option value="css/ionic-light.min.css">Ionic Light</option>
         </select>
       </label>
       <label class="item item-input item-select">

@@ -152,22 +152,20 @@ angular.module('mopidy-mobile.ui', [
   };
 })
 
-// TODO: remove or fix for collection-repeat?
-.factory('scroll', function($document, $log, $timeout, $ionicScrollDelegate) {
-  return {
-    anchorScroll: function(handle, id, shouldAnimate) {
-      var left = 0, top = 0;
-      for (var e = $document[0].getElementById(id); e; e = e.offsetParent) {
-        left += e.offsetLeft;
-        top += e.offsetTop;
-      }
-      $timeout(function() {
-        $log.debug('anchorScroll', left, top);
-        var delegate = $ionicScrollDelegate.$getByHandle(handle);
-        if (delegate) {
-          delegate.scrollTo(left, top - 100, shouldAnimate);
-        }
-      });
+.provider('stylesheet', function() {
+  var element = angular.element(document.getElementById('stylesheet'));
+  var href = element.attr('href');
+  var query = href.replace(/^[^?]*/, '');
+  var provider = angular.extend(this, {
+    $get: function() {
+      return provider;
+    },
+    get: function() {
+      return element.attr('href').replace(/[?].*/, '');
+    },
+    set: function(url) {
+      element.attr('href', url ? url + query : href);
     }
-  };
-});
+  });
+})
+;
