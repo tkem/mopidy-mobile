@@ -3,7 +3,7 @@ angular.module('mopidy-mobile.logging', [
   'mopidy-mobile.ui'
 ])
 
-.config(function($provide, $stateProvider) {
+.config(function($provide) {
   $provide.decorator('$log', function($delegate, logging) {
     var log = angular.copy($delegate);
 
@@ -23,7 +23,9 @@ angular.module('mopidy-mobile.logging', [
       debug: wrap('debug', log.debug)
     });
   });
+})
 
+.config(function($stateProvider) {
   $stateProvider.state('main.logging', {
     url: '/logging',
     views: {
@@ -36,102 +38,73 @@ angular.module('mopidy-mobile.logging', [
 })
 
 .provider('logging', function() {
-  var provider = this;
-  var enabled = false;
   var debugEnabled = false;
-  var maxBufferSize = 20;  // TODO: default?
-
-  angular.extend(provider, {
-    enabled: function(flag) {
-      if (flag !== undefined) {
-        enabled = flag;
-        return this;
-      } else {
-        return enabled;
-      }
+  var maxBufferSize = 50;
+  var provider = angular.extend(this, {
+    $get: function() {
+      var records = [];
+      return {
+        clear: function() {
+          records.splice(0, records.length);
+        },
+        debugEnabled: provider.debugEnabled,
+        log: function(level, args) {
+          if (level !== 'debug' || debugEnabled) {
+            var record = {
+              time: Date.now(),
+              level: level,
+              args: args
+            };
+            if (records.push(record) > maxBufferSize) {
+              records.splice(0, records.length - maxBufferSize);
+            }
+          }
+        },
+        records: records
+      };
     },
     debugEnabled: function(flag) {
-      if (flag !== undefined) {
+      if (arguments.length) {
         debugEnabled = flag;
-        return this;
       } else {
         return debugEnabled;
       }
     },
     maxBufferSize: function(value) {
-      if (value !== undefined) {
+      if (arguments.length) {
         maxBufferSize = value;
-        return this;
       } else {
         return maxBufferSize;
       }
     }
   });
-
-  provider.$get = function() {
-    var records = [];
-    return angular.extend(angular.copy(provider), {
-      records: records,
-      clear: function() {
-        records.splice(0, records.length);
-      },
-      log: function(level, args) {
-        if (enabled && (level !== 'debug' || debugEnabled)) {
-          var record = {
-            time: Date.now(),
-            level: level,
-            args: args
-          };
-          if (records.push(record) > maxBufferSize) {
-            records.splice(0, records.length - maxBufferSize);
-          }
-        }
-      },
-      maxBufferSize: function(value) {
-        var ret = provider.maxBufferSize(value);
-        if (records.length > maxBufferSize) {
-          records.splice(0, records.length - maxBufferSize);
-        }
-        return ret;
-      }
-    });
-  };
 })
 
 .controller('LoggingCtrl', function($scope, logging) {
-  $scope.records = logging.records;
-  $scope.toJson = angular.toJson;
+  angular.extend($scope, {
+    settings: {
+      debug: logging.debugEnabled()
+    },
+    clear: logging.clear,
+    records: logging.records,
+    toJson: angular.toJson
+  });
+
+  $scope.$watch('settings.debug', function(value) {
+    logging.debugEnabled(value);
+  });
 })
 
-.controller('LoggingMenuCtrl', function(logging, popoverMenu, $scope) {
+.controller('LoggingMenuCtrl', function($scope, popoverMenu) {
   angular.extend($scope, {
-    logging: {
-      enabled: logging.enabled(),
-      debugEnabled: logging.debugEnabled()
-    },
-    clear: function() {
-      logging.clear();
-    },
     popover: popoverMenu([{
-      text: 'Enable',
-      model: 'logging.enabled'
-    }, {
       text: 'Log debug messages',
-      model: 'logging.debugEnabled',
-      disabled: '!logging.enabled'
+      model: 'settings.debug'
     }, {
       text: 'Clear',
-      click: 'popover.hide() && clear()',
-      disabled: '!logging.enabled'
+      click: 'popover.hide() && clear()'
     }], {
       scope: $scope
     })
-  });
-
-  $scope.$watch('logging.enabled', function(value) {
-    logging.enabled(value);
-  });
-  $scope.$watch('logging.debugEnabled', function(value) {
-    logging.debugEnabled(value);
   });
 });
