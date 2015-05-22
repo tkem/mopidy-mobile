@@ -216,8 +216,6 @@ angular.module('mopidy-mobile.tracklist', [
               playlist.tracks = $scope.getTracks();
               return mopidy.playlists.save({playlist: playlist});
             });
-          }).then(function() {
-            popup.alert('Playlist saved');
           });
         }
       });

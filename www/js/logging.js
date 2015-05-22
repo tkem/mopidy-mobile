@@ -98,7 +98,7 @@ angular.module('mopidy-mobile.logging', [
 .controller('LoggingMenuCtrl', function($scope, popoverMenu) {
   angular.extend($scope, {
     popover: popoverMenu([{
-      text: 'Log debug messages',
+      text: 'Debug messages',
       model: 'settings.debug'
     }, {
       text: 'Clear',
