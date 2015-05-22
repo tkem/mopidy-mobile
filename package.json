@@ -1,20 +1,23 @@
 {
   "name": "mopidy-mobile",
-  "version": "0.9.1",
+  "version": "0.10.1",
   "description": "mopidy-mobile: An Ionic project",
   "repository": {
     "url": "https://github.com/tkem/mopidy-mobile/"
   },
-  "devDependencies": {
-    "bower": "^1.3.3",
-    "del": "^1.1.1",
-    "gulp": "^3.7.0",
+  "dependencies": {
+    "gulp": "^3.8.11",
+    "gulp-angular-templatecache": "~1.6.0",
+    "gulp-sass": "^1.3.3",
     "gulp-concat": "^2.2.0",
     "gulp-jshint": "^1.5.0",
     "gulp-minify-css": "^0.3.0",
     "gulp-rename": "^1.2.0",
-    "gulp-sass": "^0.7.1",
-    "gulp-uglifyjs": "^0.5.0",
+    "gulp-uglifyjs": "^0.5.0"
+  },
+  "devDependencies": {
+    "bower": "^1.3.3",
+    "del": "^1.1.1",
     "gulp-util": "^2.2.14",
     "jshint-summary": "^0.3.0",
     "shelljs": "^0.3.0"

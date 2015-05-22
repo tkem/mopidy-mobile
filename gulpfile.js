@@ -8,13 +8,14 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sh = require('shelljs');
+var templateCache = require('gulp-angular-templatecache');
 var uglifyjs = require('gulp-uglifyjs');
 
 var paths = {
   css: 'www/css/',
-  js: 'www/js/',
+  dist: 'mopidy_mobile/www/',
   images: 'www/images/',
-  dist: 'mopidy_mobile/www/'
+  js: 'www/js/'
 };
 
 gulp.task('install', function() {
@@ -56,25 +57,32 @@ gulp.task('uglifyjs', function() {
     .pipe(gulp.dest(paths.js));
 });
 
+gulp.task('templatesjs', function () {
+  gulp.src('www/templates/**/*.html')
+    .pipe(templateCache({module: 'mopidy-mobile', root: 'templates/'}))
+    .pipe(uglifyjs('templates.min.js'))
+    .pipe(gulp.dest(paths.js));
+});
+
 gulp.task('bundlejs', ['uglifyjs'], function() {
   return gulp.src([
     'www/lib/ionic/js/ionic.bundle.min.js',
     'www/lib/angular-local-storage/dist/angular-local-storage.min.js',
     'www/lib/angular-translate/angular-translate.min.js',
     'www/lib/mopidy/dist/mopidy.min.js',
-    'www/js/mopidy-mobile.min.js'
+    'www/js/mopidy-mobile.min.js',
+    'www/js/templates.min.js'
   ]).pipe(concat('mopidy-mobile.bundle.min.js'))
     .pipe(gulp.dest(paths.js));
 });
 
-gulp.task('dist', ['sass', 'bundlejs'], function() {
+gulp.task('dist', ['sass', 'bundlejs', 'templatesjs'], function() {
   return gulp.src([
     'www/css/*.min.css',
     'www/css/**/*.png',
     'www/images/**',
     'www/js/mopidy-mobile.bundle.min.js',
-    'www/lib/ionic/fonts/**',
-    'www/templates/**'
+    'www/lib/ionic/fonts/**'
   ], {base: 'www'})
     .pipe(gulp.dest(paths.dist));
 });
@@ -83,6 +91,7 @@ gulp.task('clean', function(cb) {
   del([
     paths.css,
     paths.dist + '{css,images,js,lib,templates}',
+    paths.js + 'templates.js',
     paths.js + '*.min.js'
   ], cb);
 });
