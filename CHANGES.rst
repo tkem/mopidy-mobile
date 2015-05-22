@@ -1,3 +1,17 @@
+0.10.0 2015-05-22
+-----------------
+
+- Add reset functionality.
+
+- Detect browser language.
+
+- Upgrade `ionic` to version `1.0.0`.
+
+- Integrate `angular-local-storage`.
+
+- Various bug fixes and UI improvements.
+
+
 0.9.4 2015-05-11
 ----------------
 
