@@ -24,6 +24,7 @@ angular.module('mopidy-mobile.locale', [
       'Debug messages': 'Debug messages',
       'Default click action': 'Default click action',
       'Default': 'Default',
+      'Delete this playlist': 'Delete this playlist',
       'Delete': 'Delete',
       'Done': 'Done',
       'Edit playlist': 'Edit playlist',
@@ -50,6 +51,9 @@ angular.module('mopidy-mobile.locale', [
       'Rename': 'Rename',
       'Repeat': 'Repeat',
       'Replace tracklist': 'Replace tracklist',
+      'Reset all settings to default values and restart application': (
+        'Reset all settings to default values and restart application'
+      ),
       'Reset': 'Reset',
       'Retry': 'Retry',
       'Save as': 'Save as',
@@ -88,6 +92,7 @@ angular.module('mopidy-mobile.locale', [
       'Debug messages': 'Debug-Meldungen',
       'Default click action': 'Beim Klicken',
       'Default': 'Standard',
+      'Delete this playlist': 'Diese Liste löschen',
       'Delete': 'Löschen',
       'Done': 'Fertig',
       'Edit playlist': 'Liste bearbeiten',
@@ -114,6 +119,9 @@ angular.module('mopidy-mobile.locale', [
       'Rename': 'Umbenennen',
       'Repeat': 'Wiederholen',
       'Replace tracklist': 'Titel ersetzen',
+      'Reset all settings to default values and restart application': (
+        'Alle Einstellungen auf Standardwerte zurücksetzen und Applikation neu starten'
+      ),
       'Reset': 'Zurücksetzen',
       'Retry': 'Wiederholen',
       'Save as': 'Speichern unter',

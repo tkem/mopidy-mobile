@@ -37,19 +37,15 @@ angular.module('mopidy-mobile.settings', [
 
 .controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, storage, stylesheet) {
   angular.extend($scope, {
-    clear: storage.clear,
     cordova: $window.cordova,
-    coverart: {},
     locales: locale.all(),
     settings: {}
   });
 
-  var bindings = [
-    storage.bind($scope, 'coverart'),
-    storage.bind($scope, 'settings.action', 'action'),
-    storage.bind($scope, 'settings.locale', 'locale'),
-    storage.bind($scope, 'settings.stylesheet', 'stylesheet')
-  ];
+  storage.bind($scope, 'coverart');
+  storage.bind($scope, 'settings.action', 'action');
+  storage.bind($scope, 'settings.locale', 'locale');
+  storage.bind($scope, 'settings.stylesheet', 'stylesheet');
 
   $scope.$watchCollection('coverart', function(value) {
     angular.forEach(value, function(enabled, service) {
@@ -61,29 +57,37 @@ angular.module('mopidy-mobile.settings', [
     });
   });
 
-  $scope.$watch('settings.locale', function(value) {
-    $ionicHistory.clearCache();
-    locale.set(value);
+  $scope.$watch('settings.locale', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      $log.info('Locale set to "' + newValue + '"');
+      $ionicHistory.clearCache();
+      locale.set(newValue);
+    }
   });
 
-  $scope.$watch('settings.stylesheet', function(value) {
-    stylesheet.set(value);
-  });
-
-  $scope.$on('$destroy', function() {
-    bindings.forEach(function(unbind) {
-      unbind();
-    });
+  $scope.$watch('settings.stylesheet', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      $log.info('Style sheet set to "' + newValue + '"');
+      stylesheet.set(newValue);
+    }
   });
 })
 
-.controller('SettingsMenuCtrl', function($scope, storage, popoverMenu) {
+.controller('SettingsMenuCtrl', function($scope, $window, storage, popoverMenu, popup) {
   angular.extend($scope, {
-    clear: storage.clear,
+    confirmReset: function() {
+      popup.confirm('Reset all settings to default values and restart application').then(function(result) {
+        if (result) {
+          storage.clear();
+          $window.location.hash = '';
+          $window.location.reload(true);
+        }
+      });
+    },
     exit: ionic.Platform.isWebView() ? ionic.Platform.exitApp : null,
     popover: popoverMenu([{
       text: 'Reset',
-        click: 'popover.hide() && clear()',
+        click: 'popover.hide() && confirmReset()',
         hellip: true
     }, {
       text: 'Exit',

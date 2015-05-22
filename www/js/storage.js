@@ -7,33 +7,14 @@ angular.module('mopidy-mobile.storage', [
 })
 
 .provider('storage', function(localStorageServiceProvider) {
-  var bindings = {};  // TODO: multiple bindings for same key
   var defaults = {};
   var prefix = null;
   return angular.extend(this, {
-    $get: function($log, $parse, $rootScope, localStorageService) {
-      $rootScope.$on('LocalStorageModule.notification.removeitem', function(event, args) {
-        if (args.key in bindings) {
-          bindings[args.key](defaults[args.key]);
-        }
-      });
-      // $rootScope.$on('LocalStorageModule.notification.setitem', function(event, args) {
-      //   if (args.key in bindings) {
-      ///    bindings[args.key](args.newvalue);
-      //   }
-      // });
+    $get: function($log, localStorageService) {
       return {
         bind: function(scope, property, key) {
-          key = key || property;
-          var value = angular.copy(defaults[key]);
-          var unbind = localStorageService.bind(scope, property, value, key);
-          bindings[key] = function(value) {
-            $parse(property).assign(scope, angular.copy(value));
-          };
-          return function() {
-            delete bindings[key];
-            unbind();
-          };
+          var value = angular.copy(defaults[key || property]);
+          return localStorageService.bind(scope, property, value, key);
         },
         clear: function() {
           localStorageService.clearAll();

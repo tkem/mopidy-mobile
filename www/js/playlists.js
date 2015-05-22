@@ -280,7 +280,7 @@ angular.module('mopidy-mobile.playlists', [
       });
     },
     confirmDelete: function() {
-      popup.confirm('Delete this playlist?').then(function(result) {
+      popup.confirm('Delete this playlist').then(function(result) {
         if (result) {
           $scope.delete().then(function() {
             $scope.goBack(2);
