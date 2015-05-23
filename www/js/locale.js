@@ -14,6 +14,7 @@ angular.module('mopidy-mobile.locale', [
       'About': 'About',
       'Add stream': 'Add stream',
       'Add to tracklist': 'Add to tracklist',
+      'Back': 'Back',
       'Cancel': 'Cancel',
       'Clear cache': 'Clear cache',
       'Clear': 'Clear',
@@ -82,6 +83,7 @@ angular.module('mopidy-mobile.locale', [
       'About': 'Über',
       'Add stream': 'Stream hinzufügen',
       'Add to tracklist': 'Titel hinzufügen',
+      'Back': 'Zurück',
       'Cancel': 'Abbrechen',
       'Clear cache': 'Cache leeren',
       'Clear': 'Leeren',
@@ -179,7 +181,7 @@ angular.module('mopidy-mobile.locale', [
 .provider('locale', function() {
   var locales = {};
   var provider = angular.extend(this, {
-    $get: function($log, $translate, util) {
+    $get: function($ionicConfig, $log, $translate, util) {
       function getLocale() {
         var languages = util.getLanguages();
         $log.debug('Preferred languages: ' + languages);
@@ -207,7 +209,9 @@ angular.module('mopidy-mobile.locale', [
           return locales[id || locale];
         },
         set: function(id) {
-          $translate.use(locale = id || getLocale());
+          locale = id || getLocale();
+          $ionicConfig.backButton.text(locales[locale].messages['Back']);
+          $translate.use(locale);
         }
       };
     },
