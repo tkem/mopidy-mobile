@@ -5,6 +5,7 @@ angular.module('mopidy-mobile.locale', [
 .config(function($translateProvider) {
   $translateProvider.useLoader('translationLoader');
   $translateProvider.useMissingTranslationHandler('missingTranslationHandler');
+  $translateProvider.useSanitizeValueStrategy('escaped');
 })
 
 .config(function(localeProvider) {
@@ -60,7 +61,6 @@ angular.module('mopidy-mobile.locale', [
       'Save as': 'Save as',
       'Save': 'Save',
       'Search here': 'Search here',
-      'Search results for {query}': 'Search results for {{query}}',
       'Search results': 'Search results',
       'Search': 'Search',
       'Settings': 'Settings',
@@ -129,7 +129,6 @@ angular.module('mopidy-mobile.locale', [
       'Save as': 'Speichern unter',
       'Save': 'Speichern',
       'Search here': 'Hier suchen',
-      'Search results for {query}': 'Suchergebnisse für {{query}}',
       'Search results': 'Suchergebnisse',
       'Search': 'Suchen',
       'Settings': 'Einstellungen',
