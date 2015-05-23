@@ -83,8 +83,8 @@ angular.module('mopidy-mobile', [
 
 .config(function(connectionProvider, util) {
   connectionProvider.loadingOptions({
-    delay: 100,
-    duration: 10000
+    delay: 200,
+    duration: 5000
   });
   connectionProvider.settings({
     backoffDelayMax: 2000,

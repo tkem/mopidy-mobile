@@ -54,6 +54,7 @@ angular.module('mopidy-mobile.connection', [
     $get: function(connectionErrorHandler, coverart, mopidy, $ionicLoading, $log, $q, $rootScope) {
       var connected = false;
       var listeners = {};
+      var pending = 0;
 
       function notify(event) {
         var mopidy = this;
@@ -61,10 +62,12 @@ angular.module('mopidy-mobile.connection', [
         var args = Array.prototype.slice.call(arguments, 1);
         switch (event) {
         case 'state:online':
+          $log.info('Mopidy connection online');
           handlers = handlers.concat(listeners['connection:online'] || []);
           connected = true;
           break;
         case 'state:offline':
+          $log.warn('Mopidy connection offline');
           handlers = handlers.concat(listeners['connection:offline'] || []);
           connected = false;
           break;
@@ -77,12 +80,10 @@ angular.module('mopidy-mobile.connection', [
       }
 
       function connect() {
-        $log.debug('show loading');
         $ionicLoading.show();
         return mopidy(settings).then(
           function(mopidy) {
             connected = true;
-            $log.debug('hide loading');
             $ionicLoading.hide();
             notify.call(mopidy, 'connection:online');
             mopidy.on(notify.bind(mopidy));
@@ -90,7 +91,6 @@ angular.module('mopidy-mobile.connection', [
           },
           function(mopidy) {
             connected = false;
-            $log.debug('hide loading');
             $ionicLoading.hide();
             notify.call(mopidy, 'connection:offline');
             throw {name: 'ConnectionError'};
@@ -110,14 +110,24 @@ angular.module('mopidy-mobile.connection', [
       var promise = connect();  // TODO: use settings for webSocketUrl, etc.
 
       var connection = function connection(callback) {
-        $log.debug('show loading');
-        $ionicLoading.show(loadingOptions);
-        return promise.then(callback).finally(function() {
-          $log.debug('hide loading');
-          $ionicLoading.hide();
-        }).catch(function(error) {
-          return connectionErrorHandler(error, connection, callback);
-        });
+        if (callback) {
+          if (pending++ === 0) {
+            $ionicLoading.show(loadingOptions);
+          } else {
+            $log.debug('Pending requests: ' + pending);
+          }
+          return promise.then(callback).finally(function() {
+            if (--pending === 0) {
+              $ionicLoading.hide();
+            } else {
+              $log.debug('Pending requests: ' + pending);
+            }
+          }).catch(function(error) {
+            return connectionErrorHandler(error, connection, callback);
+          });
+        } else {
+          return promise;
+        }
       };
 
       return angular.extend(connection, {

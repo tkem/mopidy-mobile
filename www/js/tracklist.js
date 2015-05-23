@@ -104,8 +104,7 @@ angular.module('mopidy-mobile.tracklist', [
       });
     },
     refresh: function() {
-      // FIXME: loading vs. refresh
-      return connection(function(mopidy) {
+      return connection().then(function(mopidy) {
         return $q.all({
           currentTlTrack: mopidy.playback.getCurrentTlTrack(),
           options: mopidy.tracklist.getOptions(),

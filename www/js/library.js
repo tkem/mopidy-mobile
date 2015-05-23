@@ -93,7 +93,7 @@ angular.module('mopidy-mobile.library', [
 
   angular.extend($scope, {
     refresh: function() {
-      connection(function(mopidy) {
+      connection().then(function(mopidy) {
         return mopidy.library.refresh({
           uri: null
         }).then(function() {
@@ -124,7 +124,7 @@ angular.module('mopidy-mobile.library', [
     tracks: items.filter(function(ref) { return ref.type === 'track'; }),
     click: actions.default,
     refresh: function() {
-      connection(function(mopidy) {
+      connection().then(function(mopidy) {
         return mopidy.library.refresh({
           uri: null
         }).then(function() {
