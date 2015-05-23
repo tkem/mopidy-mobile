@@ -37,7 +37,9 @@
            ng-class="{'item-positive': tlTrack.tlid == currentTlTrack.tlid}"
            ng-click="play(tlTrack)"
            >
-        <img class="mopidy-mobile-thumbnail-track" ng-src="{{images[tlTrack.track.uri].uri}}">
+        <img ng-class="{'mopidy-mobile-thumbnail-track': !images[tlTrack.track.uri].uri}"
+             ng-src="{{images[tlTrack.track.uri].uri || thumbnailSrc}}"
+             >
         <h2>{{tlTrack.track.name}}</h2>
         <h3>{{tlTrack.track.artists[0].name}}</h3>
         <h4>{{tlTrack.track.album.name}}</h4>

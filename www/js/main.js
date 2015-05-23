@@ -130,7 +130,8 @@ angular.module('mopidy-mobile', [
   // TODO: other globals?
   angular.extend($scope, {
     thumbnailWidth: 64,
-    thumbnailHeight: 64
+    thumbnailHeight: 64,
+    thumbnailSrc: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
   });
 })
 

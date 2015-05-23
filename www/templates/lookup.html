@@ -12,7 +12,9 @@
          collection-repeat="track in tracks"
          ng-click="click(track)"
          >
-        <img class="mopidy-mobile-thumbnail-track" ng-src="{{images[track.uri].uri}}">
+        <img ng-class="{'mopidy-mobile-thumbnail-track': !images[track.uri].uri}"
+             ng-src="{{images[track.uri].uri || thumbnailSrc}}"
+             >
         <h2>{{track.name}}</h2>
         <h3>{{track.artists[0].name}}</h3>
         <h4>{{track.album.name}}</h4>

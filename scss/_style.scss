@@ -176,25 +176,19 @@ i {
 
 /* thumbnail default backgrounds */
 .mopidy-mobile-thumbnail-artist {
-    &:not([src]) {
-        width: $item-thumbnail-width;
-        height: $item-thumbnail-height;
-        background: $mopidy-mobile-thumbnail-artist-bg;
-    }
+    width: $item-thumbnail-width;
+    height: $item-thumbnail-height;
+    background: $mopidy-mobile-thumbnail-artist-bg;
 }
 .mopidy-mobile-thumbnail-album {
-    &:not([src]) {
-        width: $item-thumbnail-width;
-        height: $item-thumbnail-height;
-        background: $mopidy-mobile-thumbnail-album-bg;
-    }
+    width: $item-thumbnail-width;
+    height: $item-thumbnail-height;
+    background: $mopidy-mobile-thumbnail-album-bg;
 }
 .mopidy-mobile-thumbnail-track {
-    &:not([src]) {
-        width: $item-thumbnail-width;
-        height: $item-thumbnail-height;
-        background: $mopidy-mobile-thumbnail-track-bg;
-    }
+    width: $item-thumbnail-width;
+    height: $item-thumbnail-height;
+    background: $mopidy-mobile-thumbnail-track-bg;
 }
 
 /* popover menus */
