@@ -1,3 +1,17 @@
+0.10.3 2015-05-23
+-----------------
+
+- Improve loading overlay issues.
+
+- Improve handling of fallback thumbnail images.
+
+- Change search results title to only show query.
+
+- Add "Back" button translations.
+
+- Various UI improvements.
+
+
 0.10.2 2015-05-23
 -----------------
 
