@@ -1,6 +1,9 @@
 angular.module('mopidy-mobile', [
   'ionic',
   'mopidy-mobile.connection',
+  'mopidy-mobile.coverart',
+  'mopidy-mobile.coverartarchive',
+  'mopidy-mobile.lastfm',
   'mopidy-mobile.library',
   'mopidy-mobile.playback',
   'mopidy-mobile.playlists',
