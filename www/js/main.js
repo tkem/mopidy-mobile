@@ -105,6 +105,9 @@ angular.module('mopidy-mobile', [
     locale: '',  // default/browser locale
     stylesheet: stylesheetProvider.get()
   }, util.data(document.documentElement)));
+  // TODO: configurable?
+  stylesheetProvider.add('css/ionic-dark.min.css');
+  stylesheetProvider.add('css/ionic-light.min.css');
 })
 
 .controller('MainCtrl', function($ionicPlatform, $log, $q, $rootElement, $scope, $window) {

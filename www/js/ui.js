@@ -152,19 +152,28 @@ angular.module('mopidy-mobile.ui', [
   };
 })
 
-.provider('stylesheet', function() {
+.provider('stylesheet', function(util) {
   var element = angular.element(document.getElementById('stylesheet'));
-  var href = element.attr('href');
-  var query = href.replace(/^[^?]*/, '');
+  var hrefs = util.fromKeys([element.attr('href').replace(/[?].*/, '')], true);
+  var query = element.attr('href').replace(/^[^?]*/, '');
   var provider = angular.extend(this, {
-    $get: function() {
-      return provider;
+    $get: function($log) {
+      return {
+        get: provider.get,
+        set: function(href) {
+          if (href in hrefs) {
+            element.attr('href', href + query);
+          } else {
+            $log.error('Invalid stylesheet "' + href + '"');
+          }
+        }
+      };
+    },
+    add: function(href) {
+      hrefs[href] = true;
     },
     get: function() {
       return element.attr('href').replace(/[?].*/, '');
-    },
-    set: function(url) {
-      element.attr('href', url ? url + query : href);
     }
   });
 })
