@@ -1,3 +1,11 @@
+0.10.2 2015-05-23
+-----------------
+
+- Fix broken cover art providers.
+
+- Improve stylesheet handling.
+
+
 0.10.1 2015-05-22
 -----------------
 
