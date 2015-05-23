@@ -217,9 +217,26 @@ i {
 /* playback controls */
 .mopidy-mobile-playback {
     text-align: center;
+    h2, h3, h4 {
+        margin-top: 0;
+    }
+    h2 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 2px;
+    }
+    h3 {
+        font-size: 14px;
+        font-weight: inherit;
+        margin-bottom: 4px;
+    }
+    h4 {
+        font-size: 12px;
+        font-weight: inherit;
+    }
     img {
-        width: 75%;
         height: 75%;
+        width: 75%;
     }
     ion-footer-bar {
         background-image: none;
@@ -229,6 +246,7 @@ i {
     }
     .button-bar {
         border: 0;
+        margin-bottom: 6px;
         vertical-align: top;
         button {
             border: 0;

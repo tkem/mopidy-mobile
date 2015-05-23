@@ -21,20 +21,10 @@
   </ion-nav-title>
 
   <ion-content class="has-header has-footer has-subfooter padding">
-    <div ng-if="track.artists[0].name">
-      {{track.artists[0].name}}
-    </div>
-    <div>
-      <strong>
-        {{track.name || ('Nothing playing' | translate)}}
-      </strong>
-    </div>
-    <div ng-if="track.album.name">
-      {{track.album.name}}
-    </div>
-    <div ng-if="stream.title">
-      {{stream.title}}
-    </div>
+    <h2>{{track.name || ('Nothing playing' | translate)}}</h2>
+    <h3 ng-show="stream.title">{{stream.title}}</h3>
+    <h3 ng-show="track.artists[0].name">{{track.artists[0].name}}</h3>
+    <h4 ng-show="track.album.name">{{track.album.name}}</h4>
     <div ng-if="image">
       <img ng-src="{{image.uri}}">
     </div>
