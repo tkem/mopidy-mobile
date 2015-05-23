@@ -18,6 +18,14 @@ The Android app is available for beta testing for members of the
 Mopidy `announcement mailing list`_.  If you are a member and want to
 participate in testing, please follow these instructions_.
 
+Note that the Web client is designed to be added to your home screen,
+so it is launched in full-screen "app mode".  In fact, the only major
+difference between the Web client and the hybrid app is that the app
+will let you manage multiple Mopidy server instances.  Other than
+that, they are functionally equivalent.  If you don't know how to add
+a Web application to your home screen, there are plenty of
+instructions available online for both Android_ and iOS_.
+
 
 Configuration
 ------------------------------------------------------------------------
@@ -99,6 +107,8 @@ Licensed under the `Apache License, Version 2.0`_.
 .. _pip: https://pip.pypa.io/en/latest/
 .. _announcement mailing list: https://groups.google.com/d/forum/mopidy
 .. _instructions: https://play.google.com/apps/testing/com.ionicframework.mopidymobile190318
+.. _Android: https://www.google.at/search?q=android+chrome+add+to+homescreen
+.. _iOS: https://www.google.at/search?q=ios+safari+add+to+homescreen
 
 .. _Ionic: http://ionicframework.com/
 .. _AngularJS: https://angularjs.org/
