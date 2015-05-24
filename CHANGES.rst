@@ -1,3 +1,13 @@
+0.10.4 2015-05-24
+-----------------
+
+- Add refresh to playback view.
+
+- Reload application after language change.
+
+- Redirect to application root URL on browser reload.
+
+
 0.10.3 2015-05-23
 -----------------
 
