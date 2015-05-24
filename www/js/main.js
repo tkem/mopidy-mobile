@@ -135,7 +135,7 @@ angular.module('mopidy-mobile', [
   });
 })
 
-.run(function($log, coverart, locale, storage, stylesheet) {
+.run(function($location, $log, coverart, locale, storage, stylesheet) {
   if (storage.get('theme')) {
     $log.warn('Clearing local settings, sorry for the inconvenience...');
     storage.clear();  // clear deprecated settings
@@ -147,5 +147,11 @@ angular.module('mopidy-mobile', [
       coverart.enable(service);
     }
   });
+
+  if ($location.url()) {
+    $log.info('Redirecting from ' + $location.url());
+    $location.url('');
+    $location.replace();
+  }
 })
 ;
