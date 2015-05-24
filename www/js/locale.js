@@ -56,6 +56,9 @@ angular.module('mopidy-mobile.locale', [
       'Reset all settings to default values and restart application': (
         'Reset all settings to default values and restart application'
       ),
+      'Restarting application to change language': (
+        'Restarting application to change language'
+      ),
       'Reset': 'Reset',
       'Retry': 'Retry',
       'Save as': 'Save as',
@@ -123,6 +126,9 @@ angular.module('mopidy-mobile.locale', [
       'Replace tracklist': 'Titel ersetzen',
       'Reset all settings to default values and restart application': (
         'Alle Einstellungen auf Standardwerte zurücksetzen und Applikation neu starten'
+      ),
+      'Restarting application to change language': (
+        'Applikation wird neu gestartet, um die Sprache zu ändern'
       ),
       'Reset': 'Zurücksetzen',
       'Retry': 'Wiederholen',

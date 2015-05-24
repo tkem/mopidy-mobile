@@ -35,10 +35,16 @@ angular.module('mopidy-mobile.settings', [
   });
 })
 
-.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, storage, stylesheet) {
+.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, popup, storage, stylesheet) {
   angular.extend($scope, {
     cordova: $window.cordova,
     locales: locale.all(),
+    reset: function(clearSettings) {
+      if (clearSettings) {
+        storage.clear();
+      }
+      $window.location.reload(true);
+    },
     settings: {}
   });
 
@@ -60,8 +66,15 @@ angular.module('mopidy-mobile.settings', [
   $scope.$watch('settings.locale', function(newValue, oldValue) {
     if (newValue !== oldValue) {
       $log.info('Locale set to "' + newValue + '"');
-      $ionicHistory.clearCache();
-      locale.set(newValue);
+      // layout issues with ion-nav-bar back button title:
+      // https://github.com/tkem/mopidy-mobile/issues/87
+      //$ionicHistory.clearCache();
+      //locale.set(newValue);
+      popup.confirm('Restarting application to change language').then(function(result) {
+        if (result) {
+          $scope.reset();
+        }
+      });
     }
   });
 
@@ -73,14 +86,12 @@ angular.module('mopidy-mobile.settings', [
   });
 })
 
-.controller('SettingsMenuCtrl', function($scope, $window, storage, popoverMenu, popup) {
+.controller('SettingsMenuCtrl', function($scope, popoverMenu, popup) {
   angular.extend($scope, {
     confirmReset: function() {
       popup.confirm('Reset all settings to default values and restart application').then(function(result) {
         if (result) {
-          storage.clear();
-          $window.location.hash = '';
-          $window.location.reload(true);
+          $scope.reset(true);
         }
       });
     },
