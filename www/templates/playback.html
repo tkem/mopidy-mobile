@@ -21,6 +21,8 @@
   </ion-nav-title>
 
   <ion-content class="has-header has-footer has-subfooter padding">
+    <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
+    </ion-refresher>
     <h2>{{track.name || ('Nothing playing' | translate)}}</h2>
     <h3 ng-show="stream.title">{{stream.title}}</h3>
     <h3 ng-show="track.artists[0].name">{{track.artists[0].name}}</h3>

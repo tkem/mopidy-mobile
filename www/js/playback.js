@@ -212,6 +212,27 @@ angular.module('mopidy-mobile.playback', [
         });
       });
     },
+    refresh: function() {
+      return connection().then(function(mopidy) {
+        return $q.all({
+          // TODO: use getCurrentTlid()
+          currentTlTrack: mopidy.playback.getCurrentTlTrack(),
+          state: mopidy.playback.getState(),
+          timePosition: mopidy.playback.getTimePosition()
+        });
+      }).then(function(results) {
+        angular.extend($scope, results);
+      }).then(function() {
+        if ($scope.state === 'playing') {
+          positionTimer.start($scope.timePosition, $scope.currentTlTrack.track.length || null);
+        } else {
+          positionTimer.stop($scope.timePosition);
+        }
+        setCurrentTlTrack($scope.currentTlTrack);
+      }).finally(function() {
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    },
     setRandom: function(value) {
       return connection(function(mopidy) {
         mopidy.tracklist.setRandom({value: value});
