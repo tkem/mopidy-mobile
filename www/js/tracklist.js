@@ -33,7 +33,7 @@ angular.module('mopidy-mobile.tracklist', [
     'connection:online': function() {
       connection(function(mopidy) {
         return $q.all({
-          // TODO: use getCurrentTlid()
+          // TODO: use getCurrentTlid() - how to handle index in title?
           currentTlTrack: mopidy.playback.getCurrentTlTrack(),
           options: mopidy.tracklist.getOptions(),
           tlTracks: mopidy.tracklist.getTlTracks()

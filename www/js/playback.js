@@ -68,37 +68,37 @@ angular.module('mopidy-mobile.playback', [
 })
 
 .controller('PlaybackCtrl', function(connection, coverart, timer, $log, $q, $scope, $window) {
-  // TODO: update to Mopidy v1.1 "tlid" APIs
   function setCurrentTlTrack(currentTlTrack) {
     return connection(function(mopidy) {
-      var params = {tl_track: currentTlTrack};
+      // TODO: only call eotTrack if needed
       return mopidy.constructor.when.join(
-        mopidy.tracklist.eotTrack(params),
-        mopidy.tracklist.nextTrack(params),
-        mopidy.tracklist.previousTrack(params),
+        mopidy.tracklist.eotTrack({tl_track: null}),
+        mopidy.tracklist.getNextTlid(),
+        mopidy.tracklist.getPreviousTlid(),
         mopidy.playback.getStreamTitle()
       );
     }).then(function(results) {
-      var tlTracks = $scope.tlTracks = {
-        current: currentTlTrack,
-        eot: results[0],
-        next: results[1],
-        previous: results[2]
-      };
+      //$log.log('current: ' + (currentTlTrack ? currentTlTrack.tlid : null));
+      //$log.log('eot: ' + (results[0] ? results[0].tlid : null));
+      //$log.log('next: ' + results[1]);
+      //$log.log('previous: ' + results[2]);
       if (currentTlTrack) {
         $scope.track = currentTlTrack.track;
-      } else if (tlTracks.eot) {
-        $scope.track = tlTracks.eot.track;
+      } else if (results[0]) {
+        $scope.track = results[0].track;
       } else {
         $scope.track = null;
       }
+      $scope.hasNext = results[1] !== null;
+      $scope.hasPrevious = results[2] !== null;
+      $scope.streamTitle = results[3];
+      // reset image
       $scope.image = null;
       if ($scope.track) {
         coverart.getImage($scope.track).then(function(image) {
           $scope.image = image;
         });
       }
-      $scope.stream = {title: results[3]};
       return $scope.track;
     });
   }
@@ -119,7 +119,6 @@ angular.module('mopidy-mobile.playback', [
     'connection:online': function() {
       connection(function(mopidy) {
         return $q.all({
-          // TODO: use getCurrentTlid()
           currentTlTrack: mopidy.playback.getCurrentTlTrack(),
           state: mopidy.playback.getState(),
           timePosition: mopidy.playback.getTimePosition(),
@@ -152,7 +151,7 @@ angular.module('mopidy-mobile.playback', [
       positionTimer.set(event.time_position);
     },
     'event:streamTitleChanged': function(event) {
-      $scope.stream.title = event.title;
+      $scope.streamTitle = event.title;
     },
     'event:tracklistChanged': function() {
       this.playback.getCurrentTlTrack().then(setCurrentTlTrack);
@@ -174,7 +173,8 @@ angular.module('mopidy-mobile.playback', [
 
   angular.extend($scope, {
     options: {},
-    tlTracks: {},
+    hasNext: false,
+    hasPrevious: false,
     play: function() {
       return connection(function(mopidy) {
         return mopidy.playback.play();
@@ -215,7 +215,6 @@ angular.module('mopidy-mobile.playback', [
     refresh: function() {
       return connection().then(function(mopidy) {
         return $q.all({
-          // TODO: use getCurrentTlid()
           currentTlTrack: mopidy.playback.getCurrentTlTrack(),
           state: mopidy.playback.getState(),
           timePosition: mopidy.playback.getTimePosition()

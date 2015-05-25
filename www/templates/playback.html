@@ -24,7 +24,7 @@
     <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
     </ion-refresher>
     <h2>{{track.name || ('Nothing playing' | translate)}}</h2>
-    <h3 ng-show="stream.title">{{stream.title}}</h3>
+    <h3 ng-show="streamTitle">{{streamTitle}}</h3>
     <h3 ng-show="track.artists[0].name">{{track.artists[0].name}}</h3>
     <h4 ng-show="track.album.name">{{track.album.name}}</h4>
     <div ng-if="image">
@@ -53,7 +53,7 @@
       </button>
       <button class="mopidy-mobile-button-control mopidy-mobile-icon-previous"
               ng-click="previous()"
-              ng-disabled="!tlTracks.previous"
+              ng-disabled="!hasPrevious"
               >
       </button>
       <button class="mopidy-mobile-button-control"
@@ -68,7 +68,7 @@
       </button>
       <button class="mopidy-mobile-button-control mopidy-mobile-icon-next"
               ng-click="next()"
-              ng-disabled="!tlTracks.next"
+              ng-disabled="!hasNext"
               >
       </button>
       <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-repeat"

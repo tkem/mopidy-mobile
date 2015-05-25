@@ -24,54 +24,6 @@ angular.module('mopidy-mobile.mopidy', [
         uri: model.uri
       };
     }
-
-    mopidy.mixer = mopidy.mixer || {
-      getMute: mopidy.playback.getMute,
-      setMute: function(params) {
-        return mopidy.playback.setMute({value: params.mute});
-      },
-      getVolume: mopidy.playback.getVolume,
-      setVolume: mopidy.playback.setVolume
-    };
-    mopidy.library = angular.extend({
-      getImages: function(params) {
-        return mopidy.library.lookup(params).then(function(result) {
-          var images = {};
-          angular.forEach(result, function(tracks, uri) {
-            var uris = {};
-            tracks.forEach(function(track) {
-              if (track.album && track.album.images) {
-                angular.extend(uris, util.fromKeys(track.album.images));
-              }
-            });
-            images[uri] = Object.keys(uris).map(function(uri) {
-              return {__model__: 'Image', uri: uri};
-            });
-          });
-          return images;
-        });
-      }
-    }, mopidy.library);
-    mopidy.playback = angular.extend({
-      getStreamTitle: function() {
-        return null;
-      }
-    }, mopidy.playback);
-    mopidy.playlists = angular.extend({
-      asList: function() {
-        return mopidy.playlists.getPlaylists().then(function(playlists) {
-          return playlists.map(toRef);
-        });
-      },
-      getItems: function(params) {
-        return mopidy.playlists.lookup({uri: params.uri}).then(function(playlist) {
-          return playlist ? playlist.tracks.map(toRef) : playlist;
-        });
-      },
-      editable: !!mopidy.playlists.asList  // Mopidy >= 1.0
-    }, mopidy.playlists);
-
-
     // Mopidy v1.0 library.lookup({uris: [...]})
     if (!hasParam(mopidy.library.lookup, 'uris')) {
       var lookup = mopidy.library.lookup;
@@ -110,17 +62,95 @@ angular.module('mopidy-mobile.mopidy', [
         }
       };
     }
-    // Mopidy getOptions API (TBD)
-    mopidy.tracklist.getOptions = function() {
-      return Mopidy.when.all([
-        mopidy.tracklist.getConsume(),
-        mopidy.tracklist.getRandom(),
-        mopidy.tracklist.getRepeat(),
-        mopidy.tracklist.getSingle()
-      ]).then(function(results) {
-        return util.zipObject(['consume', 'random', 'repeat', 'single'], results);
-      });
-    };
+    // additional Mopidy v1.0/v1.1 (or possibly future) API features
+    angular.forEach({
+      tracklist: {
+        getEotTlid: function() {
+          return mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {
+            return mopidy.tracklist.eotTrack({tl_track: tlTrack});
+          }).then(function(tlTrack) {
+            return tlTrack ? tlTrack.tlid : null;
+          });
+        },
+        getNextTlid: function() {
+          return mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {
+            return mopidy.tracklist.nextTrack({tl_track: tlTrack});
+          }).then(function(tlTrack) {
+            return tlTrack ? tlTrack.tlid : null;
+          });
+        },
+        getPreviousTlid: function() {
+          return mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {
+            return mopidy.tracklist.previousTrack({tl_track: tlTrack});
+          }).then(function(tlTrack) {
+            return tlTrack ? tlTrack.tlid : null;
+          });
+        },
+        // FIXME: see https://github.com/mopidy/mopidy/issues/977
+        getOptions: function() {
+          return Mopidy.when.all([
+            mopidy.tracklist.getConsume(),
+            mopidy.tracklist.getRandom(),
+            mopidy.tracklist.getRepeat(),
+            mopidy.tracklist.getSingle()
+          ]).then(function(results) {
+            return util.zipObject(['consume', 'random', 'repeat', 'single'], results);
+          });
+        }
+      },
+      playback: {
+        getCurrentTlid: function() {
+          return mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {
+            return tlTrack ? tlTrack.tlid : null;
+          });
+        },
+        getStreamTitle: function() {
+          return Mopidy.when(null);
+        }
+      },
+      library: {
+        getImages: function(params) {
+          return mopidy.library.lookup(params).then(function(result) {
+            var images = {};
+            angular.forEach(result, function(tracks, uri) {
+              var uris = {};
+              tracks.forEach(function(track) {
+                if (track.album && track.album.images) {
+                  angular.extend(uris, util.fromKeys(track.album.images));
+                }
+              });
+              images[uri] = Object.keys(uris).map(function(uri) {
+                return {__model__: 'Image', uri: uri};
+              });
+            });
+            return images;
+          });
+        }
+      },
+      playlists: {
+        asList: function() {
+          return mopidy.playlists.getPlaylists().then(function(playlists) {
+            return playlists.map(toRef);
+          });
+        },
+        getItems: function(params) {
+          return mopidy.playlists.lookup({uri: params.uri}).then(function(playlist) {
+            return playlist ? playlist.tracks.map(toRef) : playlist;
+          });
+        },
+        editable: !!mopidy.playlists.asList  // FIXME: Mopidy >= 1.0
+      },
+      mixer: {
+        getMute: mopidy.playback.getMute,
+        setMute: function(params) {
+          return mopidy.playback.setMute({value: params.mute});
+        },
+        getVolume: mopidy.playback.getVolume,
+        setVolume: mopidy.playback.setVolume
+      }
+    }, function(value, key) {
+      mopidy[key] = angular.extend(value, mopidy[key] || {});
+    });
     return mopidy;
   }
 
