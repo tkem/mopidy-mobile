@@ -64,19 +64,20 @@ gulp.task('templatesjs', function () {
     .pipe(gulp.dest(paths.js));
 });
 
-gulp.task('bundlejs', ['uglifyjs'], function() {
+gulp.task('bundlejs', ['uglifyjs', 'templatesjs'], function() {
   return gulp.src([
+    'www/lib/mopidy/dist/mopidy.min.js',
     'www/lib/ionic/js/ionic.bundle.min.js',
+    'www/lib/ngCordova/dist/ng-cordova-mocks.min.js',
     'www/lib/angular-local-storage/dist/angular-local-storage.min.js',
     'www/lib/angular-translate/angular-translate.min.js',
-    'www/lib/mopidy/dist/mopidy.min.js',
     'www/js/mopidy-mobile.min.js',
     'www/js/templates.min.js'
   ]).pipe(concat('mopidy-mobile.bundle.min.js'))
     .pipe(gulp.dest(paths.js));
 });
 
-gulp.task('dist', ['sass', 'bundlejs', 'templatesjs'], function() {
+gulp.task('dist', ['sass', 'bundlejs'], function() {
   return gulp.src([
     'www/css/*.min.css',
     'www/css/**/*.png',

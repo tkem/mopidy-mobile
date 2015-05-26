@@ -1,5 +1,6 @@
 angular.module('mopidy-mobile', [
   'ionic',
+  ionic.Platform.isWebView() ? 'ngCordova' : 'ngCordovaMocks',
   'mopidy-mobile.connection',
   'mopidy-mobile.coverart',
   'mopidy-mobile.coverartarchive',
@@ -110,22 +111,7 @@ angular.module('mopidy-mobile', [
   stylesheetProvider.add('css/ionic-light.min.css');
 })
 
-.controller('MainCtrl', function($ionicPlatform, $log, $q, $rootElement, $scope, $window) {
-  $ionicPlatform.ready().then(function() {
-    return $q(function(resolve) {
-      if ($window.cordova && $window.cordova.getAppVersion) {
-        $window.cordova.getAppVersion(function(version) {
-          resolve(version);
-        });
-      } else {
-        resolve($rootElement.attr('data-version'));
-      }
-    }).then(function(version) {
-      $log.info('Mopidy Mobile ' + version + ' (' + ionic.Platform.platform() + ')');
-      $scope.appVersion = version;
-    });
-  });
-
+.controller('MainCtrl', function($scope) {
   // TODO: get from CSS, image size = device size?
   // TODO: other globals?
   angular.extend($scope, {
@@ -133,6 +119,19 @@ angular.module('mopidy-mobile', [
     thumbnailHeight: 64,
     thumbnailSrc: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
   });
+})
+
+.run(function($cordovaAppVersion, $ionicPlatform, $log, $rootElement, $rootScope) {
+    $ionicPlatform.ready().then(function() {
+        if ($rootElement.attr('data-version')) {
+            return $rootElement.attr('data-version');
+        } else {
+            return $cordovaAppVersion.getAppVersion();
+        }
+    }).then(function(version) {
+        $log.info('Mopidy Mobile ' + version + ' (' + ionic.Platform.platform() + ')');
+        $rootScope.appVersion = version;
+    });
 })
 
 .run(function($location, $log, coverart, locale, storage, stylesheet) {
