@@ -137,7 +137,10 @@ angular.module('mopidy-mobile', [
   stylesheetProvider.add('css/ionic-light.min.css');
 })
 
-.controller('MainCtrl', function($scope) {
+.controller('MainCtrl', function($cordovaSplashscreen, $ionicPlatform, $scope) {
+  $ionicPlatform.ready().then(function() {
+    $cordovaSplashscreen.hide();
+  });
   // TODO: get from CSS, image size = device size?
   // TODO: other globals?
   angular.extend($scope, {
