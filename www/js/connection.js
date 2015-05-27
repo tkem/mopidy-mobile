@@ -51,7 +51,7 @@ angular.module('mopidy-mobile.connection', [
         return settings.webSocketUrl;
       }
     },
-    $get: function(connectionErrorHandler, coverart, mopidy, $ionicLoading, $log, $q, $rootScope) {
+    $get: function(connectionErrorHandler, coverart, mopidy, $ionicLoading, $log, $q, $timeout, $rootScope) {
       var connected = false;
       var listeners = {};
       var pending = 0;
@@ -113,14 +113,22 @@ angular.module('mopidy-mobile.connection', [
         if (callback) {
           if (pending++ === 0) {
             $ionicLoading.show(loadingOptions);
-          } else {
-            $log.debug('Pending requests: ' + pending);
           }
           return promise.then(callback).finally(function() {
             if (--pending === 0) {
+              // see http://forum.ionicframework.com/t/ionicloading-bug/8001
+              if (loadingOptions.delay) {
+                $timeout(function() {
+                  var body = angular.element(document.body);
+                  if (!pending && body.hasClass('loading-active')) {
+                    $log.warn('Loading overlay still active!');
+                    $ionicLoading.hide();
+                  }
+                }, loadingOptions.delay);
+              }
               $ionicLoading.hide();
             } else {
-              $log.debug('Pending requests: ' + pending);
+              $log.debug('Requests pending: ' + pending);
             }
           }).catch(function(error) {
             return connectionErrorHandler(error, connection, callback);
