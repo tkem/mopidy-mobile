@@ -34,10 +34,13 @@ angular.module('mopidy-mobile.library', [
             uri: $stateParams.uri,
           };
         },
-        items: function($stateParams, connection) {
-          return connection(function(mopidy) {
-            return mopidy.library.browse({uri: $stateParams.uri});
-          });
+        items: function($ionicNavViewDelegate, $state, $stateParams, connection) {
+          var href = $state.href('main.library.browse', $stateParams);
+          if (!$ionicNavViewDelegate.isCached(href)) {
+            return connection(function(mopidy) {
+              return mopidy.library.browse({uri: $stateParams.uri});
+            });
+          }
         }
       }
     })
@@ -49,13 +52,19 @@ angular.module('mopidy-mobile.library', [
         q: function($stateParams) {
           return $stateParams.q;
         },
-        results: function($stateParams, connection) {
-          return connection(function(mopidy) {
-            return mopidy.library.search({
-              query: {any: [$stateParams.q]},
-              uris: $stateParams.uri ? [$stateParams.uri] : null
+        uri: function($stateParams) {
+          return $stateParams.uri;
+        },
+        results: function($ionicNavViewDelegate, $state, $stateParams, connection) {
+          var href = $state.href('main.library.search', $stateParams);
+          if (!$ionicNavViewDelegate.isCached(href)) {
+            return connection(function(mopidy) {
+              return mopidy.library.search({
+                query: {any: [$stateParams.q]},
+                uris: $stateParams.uri ? [$stateParams.uri] : null
+              });
             });
-          });
+          }
         }
       }
     })
@@ -70,10 +79,13 @@ angular.module('mopidy-mobile.library', [
         uri: function($stateParams) {
           return $stateParams.uri;
         },
-        tracks: function($stateParams, connection) {
-          return connection(function(mopidy) {
-            return mopidy.library.lookup({uri: $stateParams.uri});
-          });
+        tracks: function($ionicNavViewDelegate, $state, $stateParams, connection) {
+          var href = $state.href('main.library.lookup', $stateParams);
+          if (!$ionicNavViewDelegate.isCached(href)) {
+            return connection(function(mopidy) {
+              return mopidy.library.lookup({uri: $stateParams.uri});
+            });
+          }
         }
       }
     })

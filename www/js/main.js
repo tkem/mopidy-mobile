@@ -65,6 +65,32 @@ angular.module('mopidy-mobile', [
   });
 })
 
+.config(function($provide) {
+  // http://forum.ionicframework.com/t/state-resolving-and-cached-views-in-beta-14/17870/
+  $provide.decorator('$ionicNavViewDelegate', function($delegate) {
+    function getByDelegateHref(elements, href) {
+      for (var i = elements.length - 1; i >= 0; --i) {
+        var element = elements.eq(i);
+        if (element.attr('delegate-href') === href) {
+          return element;
+        }
+      }
+      return null;
+    }
+    return angular.extend($delegate, {
+      isCached: function(id) {
+        for (var i = $delegate._instances.length - 1; i >= 0; --i) {
+          var elements = $delegate._instances[i].getViewElements();
+          if (getByDelegateHref(elements, id)) {
+            return true;
+          }
+        }
+        return false;
+      }
+    });
+  });
+})
+
 .config(function($stateProvider) {
   $stateProvider.state('main', {
     abstract: true,
@@ -119,6 +145,19 @@ angular.module('mopidy-mobile', [
     thumbnailHeight: 64,
     thumbnailSrc: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
   });
+})
+
+.directive('delegateHref', function($state, $stateParams) {
+  // http://forum.ionicframework.com/t/state-resolving-and-cached-views-in-beta-14/17870/
+  return {
+    priority: 1000,
+    restrict: 'A',
+    compile: function(element, attrs) {
+      var href = $state.href($state.current.name, $stateParams);
+      attrs.$set('delegateHref', href);
+      return angular.noop();
+    }
+  };
 })
 
 .run(function($cordovaAppVersion, $ionicPlatform, $log, $rootElement, $rootScope) {
