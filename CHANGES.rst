@@ -1,3 +1,13 @@
+0.10.5 2015-05-28
+-----------------
+
+- Add workaround for loading overlay issues.
+
+- Start using Mopidy v1.1 `tlid` methods.
+
+- Add `ngCordova`.
+
+
 0.10.4 2015-05-24
 -----------------
 
