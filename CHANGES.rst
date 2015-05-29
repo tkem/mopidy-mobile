@@ -1,3 +1,9 @@
+0.10.6 2015-05-29
+-----------------
+
+- Add workaround for library browsing cache/resolve issues.
+
+
 0.10.5 2015-05-28
 -----------------
 
