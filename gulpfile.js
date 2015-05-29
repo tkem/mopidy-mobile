@@ -58,7 +58,7 @@ gulp.task('uglifyjs', function() {
 });
 
 gulp.task('templatesjs', function () {
-  gulp.src('www/templates/**/*.html')
+  return gulp.src('www/templates/**/*.html')
     .pipe(templateCache({module: 'mopidy-mobile', root: 'templates/'}))
     .pipe(uglifyjs('templates.min.js'))
     .pipe(gulp.dest(paths.js));
