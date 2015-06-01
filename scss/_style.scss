@@ -1,20 +1,20 @@
-/* Mopidy-Mobile uses 64x64 px thumbnails */
+/* mopidy-mobile uses 64x64 px thumbnails */
 $item-thumbnail-width:            64px;
 $item-thumbnail-height:           64px;
 
-/* Give playback controls a little more space */
+/* give playback controls a little more breathing space */
 $bar-footer-height:               48px;
 
-/* Increase width of popup for German translation */
+/* increase width of popup for German translation */
 $popup-width:                     280px;
 
-/* The path to the ionicons font files, relative to the built CSS in www/css */
+/* path to ionicons font files, relative to www/css */
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
-/* Include all of Ionic */
+/* include all of Ionic */
 @import "www/lib/ionic/scss/ionic";
 
-/* Include default variables */
+/* include default variables */
 @import "variables";
 
 /* FIXME: https://github.com/driftyco/ionic/issues/2932 */
@@ -35,17 +35,17 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     margin: 0 !important;
 }
 
-/* Popover menus; see http://forum.ionicframework.com/t/popover-sizing/8251/8 */
+/* popover menus: http://forum.ionicframework.com/t/popover-sizing/8251/ */
 .platform-android ion-popover-view {
     margin-top: 10px !important;
 }
 
-/* Style up your nav-bar */
+/* style up your nav-bar */
 .nav-bar-title em {
     font-style: italic;
 }
 
-/* this is for ion-android-more-vertical */
+/* make ion-android-more-vertical as wide as other buttons */
 .bar-stable .button {
     min-width: 32px;
 }
@@ -53,6 +53,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 /* clickable anchors in toggle labels */
 .item-toggle a {
     pointer-events: initial !important;
+}
+
+/* anchors as items */
+a.item {
+  color: $button-default-text;
 }
 
 /* standard text links */
@@ -67,6 +72,7 @@ i {
     @extend .icon
 }
 
+/* custom icon classes */
 .mopidy-mobile-icon-playback {
     @extend .#{$mopidy-mobile-icon-playback};
 }
@@ -160,7 +166,7 @@ i {
     @extend .#{$mopidy-mobile-icon-debug};
 }
 
-/* button styles */
+/* custom button styles */
 .mopidy-mobile-button-icon {
     @extend .button;
     @extend .button-clear;
