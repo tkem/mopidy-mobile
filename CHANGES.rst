@@ -1,3 +1,15 @@
+0.10.7 2015-06-01
+-----------------
+
+- Various logging improvements,
+
+- Fix CSS color for anchor items.
+
+- Add platform information to `About` screen.
+
+- Delay hiding of splash screen in Android app.
+
+
 0.10.6 2015-05-29
 -----------------
 
