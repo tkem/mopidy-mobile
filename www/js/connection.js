@@ -15,42 +15,6 @@ angular.module('mopidy-mobile.connection', [
   };
 
   angular.extend(this, {
-    backoffDelayMin: function(value) {
-      if (arguments.length) {
-        settings.backoffDelayMin = value;
-      } else {
-        return settings.backoffDelayMin;
-      }
-    },
-    backoffDelayMax: function(value) {
-      if (arguments.length) {
-        settings.backoffDelayMax = value;
-      } else {
-        return settings.backoffDelayMax;
-      }
-    },
-    loadingDelay: function(value) {
-      if (arguments.length) {
-        loadingOptions.delay = value;
-      } else {
-        return loadingOptions.delay;
-      }
-    },
-    loadingDuration: function(value) {
-      if (arguments.length) {
-        loadingOptions.duration = value;
-      } else {
-        return loadingOptions.duration;
-      }
-    },
-    // TODO: pass as param to connect()?
-    webSocketUrl: function(value) {
-      if (arguments.length) {
-        settings.webSocketUrl = value;
-      } else {
-        return settings.webSocketUrl;
-      }
-    },
     $get: function(connectionErrorHandler, coverart, mopidy, $ionicLoading, $log, $q, $timeout, $rootScope) {
       var connected = false;
       var listeners = {};
@@ -79,7 +43,7 @@ angular.module('mopidy-mobile.connection', [
         });
       }
 
-      function connect() {
+      function connect(settings) {
         $ionicLoading.show();
         return mopidy(settings).then(
           function(mopidy) {
@@ -107,7 +71,7 @@ angular.module('mopidy-mobile.connection', [
         }
       }
 
-      var promise = connect();  // TODO: use settings for webSocketUrl, etc.
+      var promise = connect(settings);
 
       var connection = function connection(callback) {
         if (callback) {
@@ -170,13 +134,21 @@ angular.module('mopidy-mobile.connection', [
             util.remove(listeners[obj], listener);
           }
         },
-        reset: function() {
-          // FIXME: check mopidy.close() behavior when not connected
+        reset: function(webSocketUrl) {
           promise.finally(function(mopidy) {
             mopidy.close();
             mopidy.off();
           });
+          if (webSocketUrl) {
+            settings.webSocketUrl = webSocketUrl;
+          }
           promise = connect(settings);
+          return promise;
+        },
+        settings: function() {
+          return promise.then(function() {
+            return settings;
+          });
         },
         getImages: function(models) {
           // works "in background", so no loading shown

@@ -20,6 +20,10 @@ angular.module('mopidy-mobile.settings', [
   }).state('main.settings.root', {
     url: '',
     templateUrl: 'templates/settings.html',
+  }).state('main.settings.servers', {
+    controller: 'ServerCtrl',
+    url: '/servers',
+    templateUrl: 'templates/servers.html'
   }).state('main.settings.interface', {
     url: '/interface',
     templateUrl: 'templates/interface.html'
@@ -69,7 +73,7 @@ angular.module('mopidy-mobile.settings', [
       // https://github.com/tkem/mopidy-mobile/issues/87
       //$ionicHistory.clearCache();
       //locale.set(newValue);
-      popup.confirm('Restarting application to change language').then(function(result) {
+      popup.confirm('Restart application').then(function(result) {
         if (result) {
           $scope.reset();
         }
@@ -82,6 +86,25 @@ angular.module('mopidy-mobile.settings', [
       $log.info('Style sheet set to "' + newValue + '"');
       stylesheet.set(newValue);
     }
+  });
+})
+
+.controller('ServerCtrl', function($ionicHistory, $scope, $state, connection) {
+  angular.extend($scope, {
+    connect: function(url) {
+      connection.reset(url).then(function() {
+        $ionicHistory.clearCache();
+      }).then(function() {
+        return $state.go('main.playback');
+      }).then(function() {
+        $ionicHistory.clearHistory();
+      });
+    },
+    webSocketUrl: null
+  });
+
+  connection.settings().then(function(settings) {
+    $scope.webSocketUrl = settings.webSocketUrl;
   });
 })
 

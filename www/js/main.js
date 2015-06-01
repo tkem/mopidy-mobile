@@ -11,7 +11,8 @@ angular.module('mopidy-mobile', [
   'mopidy-mobile.settings',
   'mopidy-mobile.tracklist',
   'mopidy-mobile.util',
-  'mopidy-mobile.ui'
+  'mopidy-mobile.ui',
+  'mopidy-mobile.zeroconf'
 ])
 
 .config(function($ionicConfigProvider) {
@@ -97,26 +98,28 @@ angular.module('mopidy-mobile', [
     url: '',
     controller: 'MainCtrl',
     templateUrl: 'templates/main.html'
+  }).state('servers', {
+    templateUrl: 'templates/servers.html',
+    url: '/servers'
   });
 })
 
-.config(function($urlRouterProvider, util) {
-  if (util.data(document.documentElement, 'webSocketUrl') !== undefined) {
-    $urlRouterProvider.otherwise('/playback');
+.config(function($urlRouterProvider) {
+  if (ionic.Platform.isWebView()) {
+    $urlRouterProvider.otherwise('/servers');
   } else {
-    $urlRouterProvider.otherwise('/settings');
+    $urlRouterProvider.otherwise('/playback');
   }
 })
 
-.config(function(connectionProvider, util) {
+.config(function(connectionProvider) {
   connectionProvider.loadingOptions({
     delay: 100,
     duration: 10000  // defensive
   });
   connectionProvider.settings({
     backoffDelayMax: 2000,
-    backoffDelayMin: 500,
-    webSocketUrl: util.data(document.documentElement, 'webSocketUrl')
+    backoffDelayMin: 500
   });
 })
 
@@ -124,29 +127,49 @@ angular.module('mopidy-mobile', [
   coverartProvider.maxCache(100);
 })
 
-.config(function(storageProvider, stylesheetProvider, util) {
+.config(function(storageProvider, stylesheetProvider) {
   storageProvider.prefix('mopidy-mobile');
-  storageProvider.defaults(angular.extend({
+  storageProvider.defaults({
     action: 'play',
     coverart: {connection: true},
     locale: '',  // default/browser locale
     stylesheet: stylesheetProvider.get()
-  }, util.data(document.documentElement)));
+  });
   // TODO: configurable?
   stylesheetProvider.add('css/ionic-dark.min.css');
   stylesheetProvider.add('css/ionic-light.min.css');
 })
 
-.controller('MainCtrl', function($cordovaSplashscreen, $ionicPlatform, $scope) {
-  $ionicPlatform.ready().then(function() {
-    $cordovaSplashscreen.hide();
-  });
+.controller('MainCtrl', function($scope) {
   // TODO: get from CSS, image size = device size?
   // TODO: other globals?
   angular.extend($scope, {
     thumbnailWidth: 64,
     thumbnailHeight: 64,
     thumbnailSrc: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+  });
+})
+
+.controller('ServersMenuCtrl', function($scope, $window, popoverMenu, popup) {
+  angular.extend($scope, {
+    confirmRestart: function() {
+      popup.confirm('Restart application').then(function(result) {
+        if (result) {
+          $window.location.reload(true);
+        }
+      });
+    },
+    popover: popoverMenu([{
+      text: 'Restart',
+        click: 'popover.hide() && confirmRestart()',
+        hellip: true
+    }, {
+      text: 'Exit',
+      click: 'popover.hide() && platform.exitApp()',
+      hidden: '!platform.isWebView()'
+    }], {
+      scope: $scope
+    })
   });
 })
 
@@ -163,18 +186,92 @@ angular.module('mopidy-mobile', [
   };
 })
 
-.run(function($cordovaAppVersion, $ionicPlatform, $log, $rootElement, $rootScope) {
-    $ionicPlatform.ready().then(function() {
-        if ($rootElement.attr('data-version')) {
-            return $rootElement.attr('data-version');
-        } else {
-            return $cordovaAppVersion.getAppVersion();
+.factory('servers', function($log, $q, $rootElement, $rootScope, $timeout, util, webSocketUrl, zeroconf) {
+  var dataWebSocketUrl = $rootElement.attr('data-web-socket-url');
+  return function() {
+    if (ionic.Platform.isWebView()) {
+      return $q(function(resolve) {
+        var servers = [];
+        // TODO: figure out ZeroConf.list()
+        zeroconf.watch('_mopidy-http._tcp.local.', function(service) {
+          var url = service.urls[0].replace(/^http/, 'ws') + '/mopidy/ws/';
+          // avoid double entries
+          if (!servers.filter(function(obj) { return obj.url === url; }).length) {
+            $rootScope.$apply(function() {
+              servers.push({
+                name: service.name,
+                url: service.urls[0].replace(/^http/, 'ws') + '/mopidy/ws/'
+              });
+            });
+          }
+          resolve(servers);
+        });
+        $timeout(function() {
+          resolve(servers);
+        }, 5000);
+      });
+    } else if (angular.isString(dataWebSocketUrl)) {
+      return $q.when(dataWebSocketUrl.split(/\s+/).map(function(url, index) {
+        if (index === 0) {
+          webSocketUrl(url);
         }
-    }).then(function(version) {
-        $log.info('Mopidy Mobile ' + version + ' (' + ionic.Platform.platform() + ')');
-        $rootScope.version = version;
+        return {
+          name: 'Mopidy HTTP server on ' + (util.parseURI(url).host || 'default host'),
+          url: url
+        };
+      }));
+    } else {
+      return $q.when([]);
+    }
+  };
+})
+
+.provider('webSocketUrl', function(connectionProvider) {
+  angular.extend(this, {
+    $get: function() {
+      return function(webSocketUrl) {
+        connectionProvider.settings({webSocketUrl: webSocketUrl});
+      };
+    }
+  });
+})
+
+.run(function($cordovaAppVersion, $ionicPlatform, $log, $rootElement, $rootScope) {
+  $ionicPlatform.ready().then(function() {
+    return $rootElement.attr('data-version') || $cordovaAppVersion.getAppVersion();
+  }).then(function(version) {
+    $log.info('Mopidy Mobile ' + version + ' (' + ionic.Platform.platform() + ')');
+    $rootScope.version = version;
+  });
+  $rootScope.platform = ionic.Platform;
+})
+
+.run(function($cordovaSplashscreen, $ionicHistory, $ionicPlatform, $log, $rootScope, $state, servers, webSocketUrl) {
+  angular.extend($rootScope, {
+    connect: function(url) {
+      webSocketUrl(url);
+      $state.go('main.playback').then(function() {
+        if ($ionicHistory.backView()) {
+          $ionicHistory.clearHistory();
+        } else {
+          $log.warn('No servers back view');
+        }
+      });
+    },
+    refresh: function() {
+      servers().then(function(servers) {
+        $rootScope.servers = servers;
+        $rootScope.$broadcast('scroll.refreshComplete');
+      });
+    },
+    servers: []
+  });
+  servers().then(function(servers) {
+    $ionicPlatform.ready().then(function() {
+      $cordovaSplashscreen.hide();
     });
-    $rootScope.platform = ionic.Platform;
+    $rootScope.servers = servers;
+  });
 })
 
 .run(function($location, $log, coverart, locale, storage, stylesheet) {

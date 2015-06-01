@@ -26,7 +26,11 @@
     "cordova-plugin-inappbrowser",
     "cordova-plugin-splashscreen",
     "cordova-plugin-whitelist",
-    "uk.co.whiteoctober.cordova.appversion"
+    "uk.co.whiteoctober.cordova.appversion",
+    {
+      "locator": "https://github.com/vstirbu/ZeroConf",
+      "id": "com.triggertrap.ZeroConf"
+    }
   ],
   "cordovaPlatforms": [
     "android"

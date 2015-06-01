@@ -29,6 +29,14 @@ angular.module('mopidy-mobile.util', [])
     return obj;
   },
 
+  values: function(obj) {
+    var values = [];
+    angular.forEach(obj, function(value) {
+      values.push(value);
+    });
+    return values;
+  },
+
   zipObject: function(keys, values) {
     var obj = {};
     for (var i = 0, length = keys.length; i !== length; ++i) {
@@ -49,7 +57,7 @@ angular.module('mopidy-mobile.util', [])
     var navigator = window.navigator;
     var properties = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
     // support for HTML 5.1 "navigator.languages"
-    if (angular.isArray(navigator.languages)) {
+    if (angular.isArray(navigator.languages) && navigator.languages.length) {
       return navigator.languages;
     }
     // support for other well known properties in browsers
@@ -60,32 +68,6 @@ angular.module('mopidy-mobile.util', [])
       }
     }
     return [];
-  },
-
-  data: function(element, name) {
-    function camelCase(name) {
-      return name.replace(/([\:\-\_]+(.))/g, function(_, separator, letter, offset) {
-        return offset ? letter.toUpperCase() : letter;
-      });
-    }
-    function snakeCase(name, separator) {
-      separator = separator || '_';
-      return name.replace(/[A-Z]/g, function(letter, pos) {
-        return (pos ? separator : '') + letter.toLowerCase();
-      });
-    }
-    if (name) {
-      var attr = element.attributes['data-' + snakeCase(name, '-')];
-      return attr ? attr.value : undefined;
-    } else {
-      var data = {};
-      Array.prototype.slice.call(element.attributes).filter(function(attr) {
-        return attr.name.indexOf('data-') === 0;
-      }).forEach(function(attr) {
-        data[camelCase(attr.name.substr(5))] = attr.value;
-      });
-      return data;
-    }
   },
 
   parseURI: function(uri) {
