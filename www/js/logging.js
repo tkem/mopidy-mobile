@@ -87,7 +87,15 @@ angular.module('mopidy-mobile.logging', [
     },
     clear: logging.clear,
     records: logging.records,
-    toJson: angular.toJson
+    toJson: function(obj) {
+      // FIXME: workaround for Error, etc.
+      var json = angular.toJson(obj);
+      if (json !== '{}') {
+        return json;
+      } else {
+        return obj.toString();
+      }
+    }
   });
 
   $scope.$watch('settings.debug', function(value) {

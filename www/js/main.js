@@ -186,8 +186,9 @@ angular.module('mopidy-mobile', [
     }
   });
 
+  // workaround for lost history/back view after browser reset
   if ($location.url()) {
-    $log.info('Redirecting from ' + $location.url());
+    $log.debug('Redirecting from ' + $location.url());
     $location.url('');
     $location.replace();
   }

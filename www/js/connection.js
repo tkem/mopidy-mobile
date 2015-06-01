@@ -121,7 +121,7 @@ angular.module('mopidy-mobile.connection', [
                 $timeout(function() {
                   var body = angular.element(document.body);
                   if (!pending && body.hasClass('loading-active')) {
-                    $log.warn('Loading overlay still active!');
+                    $log.debug('Loading overlay still active!');
                     $ionicLoading.hide();
                   }
                 }, loadingOptions.delay);
