@@ -37,7 +37,6 @@ angular.module('mopidy-mobile.settings', [
 
 .controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, popup, storage, stylesheet) {
   angular.extend($scope, {
-    cordova: $window.cordova,
     locales: locale.all(),
     reset: function(clearSettings) {
       if (clearSettings) {
@@ -95,15 +94,14 @@ angular.module('mopidy-mobile.settings', [
         }
       });
     },
-    exit: ionic.Platform.isWebView() ? ionic.Platform.exitApp : null,
     popover: popoverMenu([{
       text: 'Reset',
         click: 'popover.hide() && confirmReset()',
         hellip: true
     }, {
       text: 'Exit',
-      click: 'popover.hide() && exit()',
-      hidden: '!exit'
+      click: 'popover.hide() && platform.exitApp()',
+      hidden: '!platform.isWebView()'
     }], {
       scope: $scope
     })

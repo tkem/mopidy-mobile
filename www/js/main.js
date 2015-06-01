@@ -169,8 +169,9 @@ angular.module('mopidy-mobile', [
         }
     }).then(function(version) {
         $log.info('Mopidy Mobile ' + version + ' (' + ionic.Platform.platform() + ')');
-        $rootScope.appVersion = version;
+        $rootScope.version = version;
     });
+    $rootScope.platform = ionic.Platform;
 })
 
 .run(function($location, $log, coverart, locale, storage, stylesheet) {

@@ -72,7 +72,7 @@ angular.module('mopidy-mobile.locale', [
       'Sort by scheme': 'Sort by scheme',
       'Theme': 'Theme',
       'Tracklist': 'Tracklist',
-      'Version {version}': 'Version {{version}}',
+      'Version {version} ({platform})': 'Version {{version}} ({{platform}})',
       '{count} tracks': '{{count}} tracks',
       '{index} of {count}': '{{index}} of {{count}}',
     }
@@ -143,7 +143,7 @@ angular.module('mopidy-mobile.locale', [
       'Sort by scheme': 'Nach Schema',
       'Theme': 'Design',
       'Tracklist': 'Titel',
-      'Version {version}': 'Version {{version}}',
+      'Version {version} ({platform})': 'Version {{version}} ({{platform}})',
       '{count} tracks': '{{count}} Titel',
       '{index} of {count}': '{{index}} von {{count}}',
     }
