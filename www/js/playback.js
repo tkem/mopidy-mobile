@@ -232,18 +232,6 @@ angular.module('mopidy-mobile.playback', [
         $scope.$broadcast('scroll.refreshComplete');
       });
     },
-    setRandom: function(value) {
-      return connection(function(mopidy) {
-        mopidy.tracklist.setRandom({value: value});
-      });
-      // TODO: then(update options)
-     },
-    setRepeat: function(value) {
-      return connection(function(mopidy) {
-        mopidy.tracklist.setRepeat({value: value});
-      });
-       // TODO: then(update options)
-    },
     seek: function() {
       if (time.pending) {
         return;
@@ -274,6 +262,35 @@ angular.module('mopidy-mobile.playback', [
           update($window.parseInt(time.position));
         }
       );
+    },
+    togglePlay: function() {
+      return connection(function(mopidy) {
+        if ($scope.state !== 'playing') {
+          return mopidy.playback.play();
+        } else {
+          return mopidy.playback.pause();
+        }
+      });
+    },
+    toggleRandom: function() {
+      return connection(function(mopidy) {
+        return mopidy.tracklist.setRandom({value: !$scope.options.random});
+      });
+    },
+    toggleRepeat: function() {
+      return connection(function(mopidy) {
+        if ($scope.options.repeat && $scope.options.single) {
+          // TODO: setOptions() API?
+          return mopidy.constructor.when.join(
+            mopidy.tracklist.setRepeat({value: false}),
+            mopidy.tracklist.setSingle({value: false})
+          );
+        } else if ($scope.options.repeat) {
+          return mopidy.tracklist.setSingle({value: true});
+        } else {
+          return mopidy.tracklist.setRepeat({value: true});
+        }
+      });
     }
   });
 

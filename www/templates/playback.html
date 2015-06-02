@@ -48,7 +48,7 @@
     <div class="button-bar">
       <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-random"
               ng-class="{'button-positive': options.random}"
-              ng-click="setRandom(!options.random)"
+              ng-click="toggleRandom()"
               >
       </button>
       <button class="mopidy-mobile-button-control mopidy-mobile-icon-previous"
@@ -57,8 +57,8 @@
               >
       </button>
       <button class="mopidy-mobile-button-control"
-              ng-class="state != 'playing' ? 'mopidy-mobile-icon-play' : 'mopidy-mobile-icon-pause'"
-              ng-click="state != 'playing' ? play() : pause()"
+              ng-class="'mopidy-mobile-icon-' + (state != 'playing' ? 'play' : 'pause')"
+              ng-click="togglePlay()"
               >
       </button>
       <button class="mopidy-mobile-button-control mopidy-mobile-icon-stop"
@@ -71,9 +71,9 @@
               ng-disabled="!hasNext"
               >
       </button>
-      <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-repeat"
-              ng-class="{'button-positive': options.repeat}"
-              ng-click="setRepeat(!options.repeat)"
+      <button class="button button-clear button-icon button-small icon"
+              ng-class="'mopidy-mobile-icon-repeat' + (options.single ? '1' : '') + (options.repeat ? ' button-positive' : '')"
+              ng-click="toggleRepeat()"
               >
       </button>
     </div>
