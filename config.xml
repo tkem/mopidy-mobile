@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget android-versionCode="944" id="com.ionicframework.mopidymobile190318" version="0.10.7">
+<widget android-versionCode="1" id="at.co.kemmer.mopidy-mobile" version="0.10.8">
   <name>Mopidy Mobile</name>
   <description>
-    Mopidy Mobile is a Mopidy_ Web client extension and hybrid mobile
-    app, currently supporting iOS 7+ and Android 4.4 and higher.
-    Users of older Android versions may still access the Web extension
-    using Google's Chrome browser.
+    Mopidy Mobile aims to be a simple, easy to use remote that lets
+    you fully control your Mopidy music server from your mobile
+    device.
   </description>
   <author email="tkemmer@computer.org">
     Thomas Kemmer
@@ -43,9 +42,9 @@
     <splash src="resources/android/splash/drawable-port-xxhdpi-screen.png" density="port-xxhdpi"/>
     <splash src="resources/android/splash/drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
   </platform>
-  <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
   <plugin name="cordova-plugin-inappbrowser" spec="^1.0.0"/>
   <plugin name="cordova-plugin-splashscreen" spec="^2.0.0"/>
   <plugin name="cordova-plugin-whitelist" spec="^1.0.1-dev"/>
   <plugin name="uk.co.whiteoctober.cordova.appversion" spec="^0.1.5"/>
+  <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>

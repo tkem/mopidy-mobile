@@ -10,6 +10,8 @@ platforms/
 plugins/
 resources/android/icon/
 resources/android/splash/
+resources/ios/icon/
+resources/ios/splash/
 www/css/
 www/js/*.min.js
 www/lib/
