@@ -166,47 +166,23 @@ angular.module('mopidy-mobile.tracklist', [
   connection.on(listeners);
 })
 
-.controller('TracklistViewMenuCtrl', function(popoverMenu, popup, $scope) {
-  // TODO: move options here?
+.controller('TracklistMenuCtrl', function(connection, popoverMenu, popup, $scope) {
   angular.extend($scope, {
-    playURL: function() {
+    addStream: function() {
       popup.prompt('Stream URL', 'http://example.com/stream.mp3').then(function(url) {
         if (url) {
-          $scope.add([url]).then(function(tlTracks) {
-            $scope.play(tlTracks[0]);
-          });
+          $scope.add([url]);
         }
       });
     },
-    popover: popoverMenu([{
-      text: 'Play stream',
-      click: 'popover.hide() && playURL()',
-      hellip: true,
-    }, {
-      text: 'Repeat',
-      model: 'options.repeat',
-      change: 'setRepeat(options.repeat)',
-    }, {
-      text: 'Random',
-      model: 'options.random',
-      change: 'setRandom(options.random)',
-    }, {
-      text: 'Single',
-      model: 'options.single',
-      change: 'setSingle(options.single)',
-    }, {
-      text: 'Consume',
-      model: 'options.consume',
-      change: 'setConsume(options.consume)',
-    }], {
-      scope: $scope
-    })
-  });
-})
-
-.controller('TracklistEditMenuCtrl', function(connection, popoverMenu, popup, $scope) {
-  angular.extend($scope, {
-    save: function() {
+    confirmClear: function() {
+      popup.confirm('Clear tracklist').then(function(result) {
+        if (result) {
+          $scope.clear();
+        }
+      });
+    },
+    saveAs: function() {
       popup.prompt('Playlist Name', 'My Playlist').then(function(name) {
         if (name) {
           connection(function(mopidy) {
@@ -220,14 +196,23 @@ angular.module('mopidy-mobile.tracklist', [
       });
     },
     popover: popoverMenu([{
+      text: 'Add stream',
+      click: 'popover.hide() && addStream()',
+      hellip: true,
+    }, {
       text: 'Save as',
-      click: 'popover.hide() && save()',
+      click: 'popover.hide() && saveAs()',
       disabled: '!tlTracks.length',
       hellip: true
     }, {
       text: 'Clear',
-      click: 'popover.hide() && clear()',
+      click: 'popover.hide() && confirmClear()',
       disabled: '!tlTracks.length',
+      hellip: true
+    }, {
+      text: 'Consume mode',
+      model: 'options.consume',
+      change: 'setConsume(options.consume)',
     }], {
       scope: $scope
     })
