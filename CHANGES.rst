@@ -1,3 +1,15 @@
+1.0.0 2015-06-05
+-----------------
+
+- Merge tracklist menus.
+
+- Add three-state repeat button.
+
+- Add `ZeroConf` cordova plugin.
+
+- New logo/icon.
+
+
 0.10.7 2015-06-01
 -----------------
 

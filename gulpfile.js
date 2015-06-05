@@ -42,12 +42,7 @@ gulp.task('sass', ['sass:images'], function() {
 gulp.task('jshint', function() {
   return gulp.src(['www/js/*.js', '!www/js/*.min.js'])
     .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter(require('jshint-summary')({
-      fileColCol: ',bold',
-      positionCol: ',bold',
-      codeCol: 'green,bold',
-      reasonCol: 'cyan'
-    })))
+    .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));
 });
 

@@ -1,10 +1,11 @@
 Mopidy Mobile
 ========================================================================
 
-Mopidy Mobile is a Mopidy_ Web client extension and hybrid mobile app,
-currently supporting iOS 7+ and Android 4.4 and higher.  Users of
+Mopidy Mobile is a Mopidy_ Web client extension for mobile devices,
+and a `hybrid app`_ for Android version 4.4 and higher.  Users of
 older Android versions may still access the Web extension using
-Google's `Chrome browser`_.
+Google's `Chrome browser`_.  On Apple devices, the Web client should
+work with iOS 7 or higher.
 
 
 Installation
@@ -14,9 +15,7 @@ The Web extension can be installed using pip_ by running::
 
   pip install Mopidy-Mobile
 
-The Android app is available for beta testing for members of the
-Mopidy `announcement mailing list`_.  If you are a member and want to
-participate in testing, please follow these instructions_.
+The Android app is available from the `Google Play`_ store.
 
 Note that the Web client is designed to be added to your home screen,
 so it is launched in full-screen "app mode".  In fact, the only major
@@ -30,18 +29,21 @@ instructions available online for both Android_ and iOS_.
 Configuration
 ------------------------------------------------------------------------
 
-Note that configuration settings for the Web extension are still
-subject to change::
+The following configuration values are available for the Web
+extension:
 
-  [mobile]
-  enabled = true
+- ``mobile/enabled``: Whether the Mopidy Mobile Web extension should
+  be enabled.  Defaults to ``true``.
 
-  # application title - $hostname and $port can be used in the title
-  title = Mopidy Mobile on $hostname
+- ``mobile/title``: The Web application's title, which will also be
+  displayed when added to your home screen.  The variables
+  ``$hostname`` and ``$port`` can be used in the title.  Defaults to
+  ``Mopidy Mobile on $hostname``.
 
-  # WebSocket URL - set this if Mopidy's WebSocket is not available at
-  # its default path /mopidy/ws/, e.g. when using a reverse proxy
-  ws_url =
+- ``mobile/ws_url``: The WebSocket URL used to connect to your Mopidy
+  server.  Set this if Mopidy's WebSocket is not available at its
+  default path ``/mopidy/ws/``, for example when using a reverse
+  proxy.
 
 
 Building from Source
@@ -66,6 +68,7 @@ Android development.  Then run::
   ionic resources android
   ionic platform add android
   cordova prepare
+  ionic plugin add https://github.com/vstirbu/ZeroConf
   ionic build android
 
 
@@ -102,11 +105,11 @@ Licensed under the `Apache License, Version 2.0`_.
 
 
 .. _Mopidy: http://www.mopidy.com/
+.. _hybrid app: http://en.wikipedia.org/wiki/HTML5_in_mobile_devices#Hybrid_Mobile_Apps
 .. _Chrome browser: https://play.google.com/store/apps/details?id=com.android.chrome
 
 .. _pip: https://pip.pypa.io/en/latest/
-.. _announcement mailing list: https://groups.google.com/d/forum/mopidy
-.. _instructions: https://play.google.com/apps/testing/com.ionicframework.mopidymobile190318
+.. _Google Play: https://play.google.com/store/apps/details?id=at.co.kemmer.mopidy-mobile
 .. _Android: https://www.google.at/search?q=android+chrome+add+to+homescreen
 .. _iOS: https://www.google.at/search?q=ios+safari+add+to+homescreen
 
