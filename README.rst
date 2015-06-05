@@ -109,7 +109,7 @@ Licensed under the `Apache License, Version 2.0`_.
 .. _Chrome browser: https://play.google.com/store/apps/details?id=com.android.chrome
 
 .. _pip: https://pip.pypa.io/en/latest/
-.. _Google Play: https://play.google.com/store/apps/details?id=at.co.kemmer.mopidy-mobile
+.. _Google Play: https://play.google.com/store/apps/details?id=at.co.kemmer.mopidy_mobile
 .. _Android: https://www.google.at/search?q=android+chrome+add+to+homescreen
 .. _iOS: https://www.google.at/search?q=ios+safari+add+to+homescreen
 
