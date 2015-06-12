@@ -1,5 +1,9 @@
 <ion-view delegate-href view-title="{{ref.name || ref.uri}}">
   <ion-nav-buttons side="secondary">
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-search"
+            ui-sref="^.query({name: ref.name, type: ref.type, uri: ref.uri})"
+            >
+    </button>
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
             ng-click="popover.show($event)"
             ng-controller="LibraryMenuCtrl"

@@ -25,6 +25,17 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     bottom: $tabs-height + $bar-footer-height + $bar-subfooter-height;
 }
 
+/* FIXME: input items with buttons */
+.item-input.item-button-left {
+    padding-left: 72px;
+}
+.item-input.item-button-left > .button {
+    top: 4px;
+}
+.item-toggle.item-button-left > .button {
+    top: 4px;
+}
+
 /* FIXME: ionic bug? */
 .bar .button.button-small.button-icon:before {
     font-size: $button-icon-size;
@@ -50,8 +61,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     min-width: 32px;
 }
 
-/* clickable anchors in toggle labels */
+/* clickable anchors and buttons in toggle labels */
 .item-toggle a {
+    pointer-events: initial !important;
+}
+.item-toggle button {
     pointer-events: initial !important;
 }
 

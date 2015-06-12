@@ -7,89 +7,125 @@ angular.module('mopidy-mobile.library', [
 ])
 
 .config(function($stateProvider) {
-  $stateProvider
-    .state('main.library', {
-      abstract: true,
-      url: '/library',
-      views: {
-        'library': {
-          template: '<ion-nav-view></ion-nav-view>',
-        }
+  $stateProvider.state('main.library', {
+    abstract: true,
+    url: '/library',
+    views: {
+      'library': {
+        template: '<ion-nav-view></ion-nav-view>',
       }
-    })
-    .state('main.library.root', {
-      url: '',
-      templateUrl: 'templates/library.html',
-      controller: 'LibraryCtrl'
-    })
-    .state('main.library.browse', {
-      url: '/browse?name&type&uri',
-      controller: 'BrowseCtrl',
-      templateUrl: 'templates/browse.html',
-      resolve: {
-        ref: function($stateParams) {
-          return {
-            type: $stateParams.type,
-            name: $stateParams.name,
-            uri: $stateParams.uri,
-          };
-        },
-        items: function($ionicNavViewDelegate, $state, $stateParams, connection) {
-          var href = $state.href('main.library.browse', $stateParams);
-          if (!$ionicNavViewDelegate.isCached(href)) {
-            return connection(function(mopidy) {
-              return mopidy.library.browse({uri: $stateParams.uri});
+    }
+  }).state('main.library.root', {
+    controller: 'LibraryCtrl',
+    templateUrl: 'templates/library.html',
+    url: ''
+  }).state('main.library.browse', {
+    controller: 'BrowseCtrl',
+    params: {
+      name: 'Library',
+      type: 'directory',
+      uri: null
+    },
+    resolve: {
+      items: function($ionicNavViewDelegate, $state, $stateParams, connection) {
+        var href = $state.href('main.library.browse', $stateParams);
+        if (!$ionicNavViewDelegate.isCached(href)) {
+          return connection(function(mopidy) {
+            return mopidy.library.browse({uri: $stateParams.uri});
+          });
+        }
+      },
+      ref: function($stateParams) {
+        return {
+          type: $stateParams.type,
+          name: $stateParams.name,
+          uri: $stateParams.uri,
+        };
+      }
+    },
+    templateUrl: 'templates/browse.html',
+    url: '/{uri}'
+  }).state('main.library.lookup', {
+    controller: 'LookupCtrl',
+    params: {
+      name: undefined,
+      uri: undefined,
+    },
+    resolve: {
+      name: function($stateParams) {
+        return $stateParams.name;
+      },
+      tracks: function($ionicNavViewDelegate, $state, $stateParams, connection) {
+        var href = $state.href('main.library.lookup', $stateParams);
+        if (!$ionicNavViewDelegate.isCached(href)) {
+          return connection(function(mopidy) {
+            return mopidy.library.lookup({uri: $stateParams.uri});
+          });
+        }
+      },
+      uri: function($stateParams) {
+        return $stateParams.uri;
+      }
+    },
+    templateUrl: 'templates/lookup.html',
+    url: '/{uri}/'
+  }).state('main.library.query', {
+    controller: 'QueryCtrl',
+    params: {
+      name: 'Library',
+      type: 'directory',
+      uri: null
+    },
+    resolve: {
+      ref: function($stateParams) {
+        return $stateParams.uri ? {
+          name: $stateParams.name,
+          type: $stateParams.type,
+          uri: $stateParams.uri,
+        } : null;
+      }
+    },
+    templateUrl: 'templates/query.html',
+    url: '/{uri}?'
+  }).state('main.library.search', {
+    controller: 'SearchCtrl',
+    params: {
+      album: {array: true},
+      albumartist: {array: true},
+      any: {array: true},
+      artist: {array: true},
+      comment: {array: true},
+      composer: {array: true},
+      date: {array: true},
+      exact: {squash: true, value: 'false'},
+      genre: {array: true},
+      performer: {array: true},
+      track_name: {array: true},
+      uris: {array: true}
+    },
+    resolve: {
+      results: function($ionicNavViewDelegate, $state, $stateParams, connection) {
+        var href = $state.href('main.library.search', $stateParams);
+        if (!$ionicNavViewDelegate.isCached(href)) {
+          return connection(function(mopidy) {
+            var query = {};
+            angular.forEach($stateParams, function(values, key) {
+              if (angular.isArray(values) && key !== 'uris') {
+                query[key] = values;
+              }
             });
-          }
-        }
-      }
-    })
-    .state('main.library.search', {
-      url: '/search?q&uri',
-      controller: 'SearchCtrl',
-      templateUrl: 'templates/search.html',
-      resolve: {
-        q: function($stateParams) {
-          return $stateParams.q;
-        },
-        uri: function($stateParams) {
-          return $stateParams.uri;
-        },
-        results: function($ionicNavViewDelegate, $state, $stateParams, connection) {
-          var href = $state.href('main.library.search', $stateParams);
-          if (!$ionicNavViewDelegate.isCached(href)) {
-            return connection(function(mopidy) {
-              return mopidy.library.search({
-                query: {any: [$stateParams.q]},
-                uris: $stateParams.uri ? [$stateParams.uri] : null
-              });
+            return mopidy.library.search({
+              query: query,
+              uris: $stateParams.uris || null,
+              exact: $stateParams.exact === 'true'
             });
-          }
+          });
         }
       }
-    })
-    .state('main.library.lookup', {
-      url: '/lookup?name&uri',
-      controller: 'LookupCtrl',
-      templateUrl: 'templates/lookup.html',
-      resolve: {
-        name: function($stateParams) {
-          return $stateParams.name;
-        },
-        uri: function($stateParams) {
-          return $stateParams.uri;
-        },
-        tracks: function($ionicNavViewDelegate, $state, $stateParams, connection) {
-          var href = $state.href('main.library.lookup', $stateParams);
-          if (!$ionicNavViewDelegate.isCached(href)) {
-            return connection(function(mopidy) {
-              return mopidy.library.lookup({uri: $stateParams.uri});
-            });
-          }
-        }
-      }
-    })
-  ;
+    },
+    templateUrl: 'templates/search.html',
+    url: '?album&albumartist&any&artist&comment&composer&date&genre&performer&track_name&uri&exact}'
+  });
 })
 
 .controller('LibraryCtrl', function(connection, $scope, $state) {
@@ -118,7 +154,7 @@ angular.module('mopidy-mobile.library', [
       });
     },
     search: function(q) {
-      $state.go('^.search', {q: q});
+      $state.go('^.search', {any: [q]});
     }
   });
 
@@ -149,12 +185,58 @@ angular.module('mopidy-mobile.library', [
       });
     },
     search: function(q) {
-      $state.go('^.search', {q: q, uri: ref.uri});
+      $state.go('^.search', {any: [q], uris: [ref.uri]});
     }
   });
 })
 
-.controller('SearchCtrl', function(actions, connection, coverart, q, results, $ionicHistory, $log, $scope) {
+.controller('LookupCtrl', function(actions, connection, coverart, name, tracks, uri, $ionicHistory, $log, $scope) {
+  angular.extend($scope, {
+    click: actions.default,
+    name: name,
+    tracks: tracks,
+    uri: uri
+  });
+
+  coverart.getImages(tracks, {
+    width: $scope.thumbnailWidth,
+    height: $scope.thumbnailHeight
+  }).then(function(images) {
+    $scope.images = images;
+  });
+})
+
+.controller('QueryCtrl', function(ref, $scope, $state) {
+  angular.extend($scope, {
+    add: function(term) {
+      $scope.terms.push(term);
+    },
+    params: {
+      exact: false,
+      uris: ref ? [ref.uri] : undefined
+    },
+    ref: ref,
+    remove: function(index) {
+      $scope.terms.splice(index, 1);
+    },
+    search: function() {
+      var params = {};
+      $scope.terms.forEach(function(term) {
+        if (term.value) {
+          if (term.key in params) {
+            params[term.key].push(term.value);
+          } else {
+            params[term.key] = [term.value];
+          }
+        }
+      });
+      $state.go('^.search', angular.extend(params, $scope.params));
+    },
+    terms: [{key: 'any', value: ''}]
+  });
+})
+
+.controller('SearchCtrl', function(actions, connection, coverart, results, $ionicHistory, $log, $scope) {
   function compare(a, b) {
     if ((a.name || '') > (b.name || '')) {
       return 1;
@@ -164,6 +246,11 @@ angular.module('mopidy-mobile.library', [
       return 0;
     }
   }
+
+  angular.extend($scope, {
+    click: actions.default,
+    images: {}
+  });
 
   switch (results.length) {
   case 0:
@@ -188,33 +275,11 @@ angular.module('mopidy-mobile.library', [
     })).sort(compare);
   }
 
-  angular.extend($scope, {
-    q: q,
-    click: actions.default,
-    images: {}
-  });
-
   coverart.getImages([].concat($scope.artists, $scope.albums, $scope.tracks), {
     width: $scope.thumbnailWidth,
     height: $scope.thumbnailHeight
   }).then(function(result) {
     angular.extend($scope.images, result);
-  });
-})
-
-.controller('LookupCtrl', function(actions, connection, coverart, name, tracks, uri, $ionicHistory, $log, $scope) {
-  angular.extend($scope, {
-    name: name,
-    tracks: tracks,
-    uri: uri,
-    click: actions.default
-  });
-
-  coverart.getImages(tracks, {
-    width: $scope.thumbnailWidth,
-    height: $scope.thumbnailHeight
-  }).then(function(images) {
-    $scope.images = images;
   });
 })
 

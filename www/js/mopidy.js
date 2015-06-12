@@ -62,6 +62,17 @@ angular.module('mopidy-mobile.mopidy', [
         }
       };
     }
+    // Mopidy v1.0 library.lookup({exact: true|false})
+    if (!hasParam(mopidy.library.search, 'exact')) {
+      var search = mopidy.library.search;
+      mopidy.library.search = function(params) {
+        if (params.exact) {
+          return mopidy.library.findExact({query: params.query, uris: params.uris});
+        } else {
+          return search({query: params.query, uris: params.uris});
+        }
+      };
+    }
     // additional Mopidy v1.0/v1.1 (or possibly future) API features
     angular.forEach({
       tracklist: {
