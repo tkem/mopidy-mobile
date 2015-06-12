@@ -152,14 +152,6 @@ angular.module('mopidy-mobile.playlists', [
     getScheme: function(uri) {
       return uri ? uri.substr(0, uri.indexOf(':')) : null;
     },
-    goBack: function(backCount) {
-      if (backCount !== undefined) {
-        // ionic uses negative count value...
-        return $ionicHistory.goBack(-backCount);
-      } else {
-        return $ionicHistory.goBack();
-      }
-    },
     move: function(fromIndex, toIndex) {
       var tracks = $scope.playlist.tracks.splice(fromIndex, 1);
       $scope.playlist.tracks.splice(toIndex, 0, tracks[0]);

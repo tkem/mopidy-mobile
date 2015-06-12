@@ -18,24 +18,34 @@ angular.module('mopidy-mobile.settings', [
       }
     }
   }).state('main.settings.root', {
-    url: '',
     templateUrl: 'templates/settings.html',
+    url: ''
   }).state('main.settings.servers', {
+    abstract: true,
     controller: 'ServerCtrl',
-    url: '/servers',
-    templateUrl: 'templates/servers.html'
+    template: '<ion-nav-view></ion-nav-view>',
+    url: '/servers'
+  }).state('main.settings.servers.add', {
+    templateUrl: 'templates/servers.add.html',
+    url: '/add'
+  }).state('main.settings.servers.edit', {
+    templateUrl: 'templates/servers.edit.html',
+    url: '/edit'
+  }).state('main.settings.servers.select', {
+    templateUrl: 'templates/servers.html',
+    url: ''
   }).state('main.settings.interface', {
-    url: '/interface',
-    templateUrl: 'templates/interface.html'
+    templateUrl: 'templates/interface.html',
+    url: '/interface'
   }).state('main.settings.coverart', {
-    url: '/coverart',
-    templateUrl: 'templates/coverart.html'
+    templateUrl: 'templates/coverart.html',
+    url: '/coverart'
   }).state('main.settings.licenses', {
-    url: '/licenses',
-    templateUrl: 'templates/licenses.html'
-  }).state('main.settings.about', {
-    url: '/about',
-    templateUrl: 'templates/about.html'
+    templateUrl: 'templates/licenses.html',
+    url: '/licenses'
+ }).state('main.settings.about', {
+    templateUrl: 'templates/about.html',
+    url: '/about'
   });
 })
 
@@ -55,6 +65,9 @@ angular.module('mopidy-mobile.settings', [
   storage.bind($scope, 'settings.action', 'action');
   storage.bind($scope, 'settings.locale', 'locale');
   storage.bind($scope, 'settings.stylesheet', 'stylesheet');
+
+  // storage.bind doesn't handle arrays...
+  $scope.settings.servers = storage.get('servers'),
 
   $scope.$watchCollection('coverart', function(value) {
     angular.forEach(value, function(enabled, service) {
@@ -81,6 +94,13 @@ angular.module('mopidy-mobile.settings', [
     }
   });
 
+  $scope.$watchCollection('settings.servers', function(newValue, oldValue) {
+    if (newValue !== oldValue) {
+      storage.set('servers', newValue);
+      $scope.refreshServers();
+    }
+  });
+
   $scope.$watch('settings.stylesheet', function(newValue, oldValue) {
     if (newValue !== oldValue) {
       $log.info('Style sheet set to "' + newValue + '"');
@@ -89,7 +109,7 @@ angular.module('mopidy-mobile.settings', [
   });
 })
 
-.controller('ServerCtrl', function($ionicHistory, $scope, $state, connection) {
+.controller('ServerCtrl', function($ionicHistory, $q, $scope, $state, connection) {
   angular.extend($scope, {
     connect: function(url) {
       connection.reset(url).then(function() {
@@ -100,9 +120,29 @@ angular.module('mopidy-mobile.settings', [
         $ionicHistory.clearHistory();
       });
     },
-    webSocketUrl: null
+    addServer: function(server) {
+      return $q(function(resolve, reject) {
+        if (server.host && server.name) {
+          var webSocketUrl = [
+            server.secure ? 'wss' : 'ws',
+            '://',
+            server.host,
+            ':',
+            server.port,
+            server.path
+          ].join('');
+          $scope.settings.servers.push({name: $scope.server.name, url: webSocketUrl});
+          resolve();
+        } else {
+          reject();
+        }
+      });
+    },
+    removeServer: function(index) {
+      $scope.settings.servers.splice(index, 1);
+    },
+    webSocketUrl: ''
   });
-
   connection.settings().then(function(settings) {
     $scope.webSocketUrl = settings.webSocketUrl;
   });

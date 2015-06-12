@@ -1,20 +1,24 @@
-<ion-view cache-view="false" view-title="{{'Servers' | translate}}">
+<ion-view cache-view="false" view-title="{{'Mopidy servers' | translate}}">
   <ion-nav-buttons side="secondary">
-    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
-            ng-click="popover.show($event)"
-            ng-controller="ServersMenuCtrl"
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-create"
             ng-if="!webSocketUrl"
+            ui-sref="^.add"
+            >
+    </button>
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-edit"
+            ng-if="webSocketUrl"
+            ui-sref="^.edit"
             >
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
+    <ion-refresher on-refresh="refreshServers()" pulling-text="{{'Pull to refresh' | translate}}">
     </ion-refresher>
     <div ng-switch="servers.length">
       <div class="padding" ng-switch-when="0">
         <h2 translate>No servers found</h2>
         <p translate>Please make sure Zeroconf is enabled for any Mopidy servers in the same WiFi network as your device.</p>
-        <p translate>Then pull to refresh, or restart the application.</p>
+        <p translate>Then pull to refresh, or add a server manually.</p>
       </div>
       <div class="list" ng-switch-default>
         <a class="item item-icon-right"

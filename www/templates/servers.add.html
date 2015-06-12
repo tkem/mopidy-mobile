@@ -1,0 +1,36 @@
+<ion-view cache-view="false" view-title="{{'Add server' | translate}}">
+  <ion-nav-bar class="bar-stable">
+    <ion-nav-back-button class="button-clear" ng-click="addServer(server).then(goBack)">
+      <i class="mopidy-mobile-icon-check"></i> {{'Done' | translate}}
+    </ion-nav-back-button>
+  </ion-nav-bar>
+  <ion-content>
+    <form class="list" ng-submit="addServer(server).then(goBack)">
+      <label class="item item-input">
+        <span class="input-label" translate>Name</span>
+        <input name="name" ng-model="server.name" placeholder="My Mopidy Server" type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" translate>Host</span>
+        <input name="host" ng-model="server.host" placeholder="192.168.1.1" type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" translate>Port</span>
+        <input ng-model="server.port" placeholder="6680" type="number">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" translate>Path</span>
+        <input ng-model="server.path" placeholder="/mopidy/ws/" type="text">
+      </label>
+      <label class="item item-toggle">
+        <span translate>Secure connection</span>
+        <label class="toggle">
+          <input ng-model="server.secure" type="checkbox">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </label>
+    </form>
+  </ion-content>
+</ion-view>

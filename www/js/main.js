@@ -95,12 +95,19 @@ angular.module('mopidy-mobile', [
 .config(function($stateProvider) {
   $stateProvider.state('main', {
     abstract: true,
-    url: '',
     controller: 'MainCtrl',
-    templateUrl: 'templates/main.html'
+    templateUrl: 'templates/main.html',
+    url: ''
   }).state('servers', {
-    templateUrl: 'templates/servers.html',
+    abstract: true,
+    template: '<ion-nav-view></ion-nav-view>',
     url: '/servers'
+  }).state('servers.select', {
+    templateUrl: 'templates/servers.html',
+    url: ''
+  }).state('servers.add', {
+    templateUrl: 'templates/servers.add.html',
+    url: '/add'
   });
 })
 
@@ -133,6 +140,7 @@ angular.module('mopidy-mobile', [
     action: 'play',
     coverart: {connection: true},
     locale: '',  // default/browser locale
+    servers: [],
     stylesheet: stylesheetProvider.get()
   });
   // TODO: configurable?
@@ -150,29 +158,6 @@ angular.module('mopidy-mobile', [
   });
 })
 
-.controller('ServersMenuCtrl', function($scope, $window, popoverMenu, popup) {
-  angular.extend($scope, {
-    confirmRestart: function() {
-      popup.confirm('Restart application').then(function(result) {
-        if (result) {
-          $window.location.reload(true);
-        }
-      });
-    },
-    popover: popoverMenu([{
-      text: 'Restart',
-        click: 'popover.hide() && confirmRestart()',
-        hellip: true
-    }, {
-      text: 'Exit',
-      click: 'popover.hide() && platform.exitApp()',
-      hidden: '!platform.isWebView()'
-    }], {
-      scope: $scope
-    })
-  });
-})
-
 .directive('delegateHref', function($state, $stateParams) {
   // http://forum.ionicframework.com/t/state-resolving-and-cached-views-in-beta-14/17870/
   return {
@@ -186,12 +171,12 @@ angular.module('mopidy-mobile', [
   };
 })
 
-.factory('servers', function($log, $q, $rootElement, $rootScope, $timeout, util, webSocketUrl, zeroconf) {
+.factory('servers', function($log, $q, $rootElement, $rootScope, $timeout, storage, util, webSocketUrl, zeroconf) {
   var dataWebSocketUrl = $rootElement.attr('data-web-socket-url');
   return function() {
+    var servers = storage.get('servers');
     if (ionic.Platform.isWebView()) {
       return $q(function(resolve) {
-        var servers = [];
         // TODO: figure out ZeroConf.list()
         zeroconf.watch('_mopidy-http._tcp.local.', function(service) {
           var url = service.urls[0].replace(/^http/, 'ws') + '/mopidy/ws/';
@@ -211,7 +196,7 @@ angular.module('mopidy-mobile', [
         }, 5000);
       });
     } else if (angular.isString(dataWebSocketUrl)) {
-      return $q.when(dataWebSocketUrl.split(/\s+/).map(function(url, index) {
+      return $q.when(servers.concat(dataWebSocketUrl.split(/\s+/).map(function(url, index) {
         if (index === 0) {
           webSocketUrl(url);
         }
@@ -219,9 +204,9 @@ angular.module('mopidy-mobile', [
           name: 'Mopidy HTTP server on ' + (util.parseURI(url).host || 'default host'),
           url: url
         };
-      }));
+      })));
     } else {
-      return $q.when([]);
+      return $q.when(servers);
     }
   };
 })
@@ -246,8 +231,31 @@ angular.module('mopidy-mobile', [
   $rootScope.platform = ionic.Platform;
 })
 
-.run(function($cordovaSplashscreen, $ionicHistory, $ionicPlatform, $log, $rootScope, $state, servers, webSocketUrl) {
+.run(function($cordovaSplashscreen, $ionicHistory, $ionicPlatform, $log, $q, $rootScope, $state, servers, storage, webSocketUrl) {
   angular.extend($rootScope, {
+    addServer: function(server) {
+      return $q(function(resolve, reject) {
+        if (server.host && server.name) {
+          var webSocketUrl = [
+            server.secure ? 'wss' : 'ws',
+            '://',
+            server.host,
+            ':',
+            server.port,
+            server.path
+          ].join('');
+          storage.set('servers', storage.get('servers').concat([{
+            name: server.name,
+            url: webSocketUrl
+          }]));
+          return servers().then(function(servers) {
+            $rootScope.servers = servers;
+          });
+        } else {
+          reject();
+        }
+      });
+    },
     connect: function(url) {
       webSocketUrl(url);
       $state.go('main.playback').then(function() {
@@ -258,11 +266,26 @@ angular.module('mopidy-mobile', [
         }
       });
     },
-    refresh: function() {
+    goBack: function(backCount) {
+      if (backCount !== undefined) {
+        // ionic uses negative count value...
+        return $ionicHistory.goBack(-backCount);
+      } else {
+        return $ionicHistory.goBack();
+      }
+    },
+    refreshServers: function() {
       servers().then(function(servers) {
         $rootScope.servers = servers;
         $rootScope.$broadcast('scroll.refreshComplete');
       });
+    },
+    // FIXME: remove
+    server: {
+      host: '',
+      path: '/mopidy/ws/',
+      port: 6680,
+      secure: false
     },
     servers: []
   });
