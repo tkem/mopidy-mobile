@@ -1,5 +1,10 @@
 <ion-view delegate-href view-title="{{'Search results' | translate}}">
   <ion-nav-buttons side="secondary">
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-play"
+            ng-click="actions.default(tracks)"
+            ng-disabled="!tracks.length"
+            >
+    </button>
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
             ng-click="popover.show($event)"
             ng-controller="LibraryMenuCtrl"
@@ -31,7 +36,7 @@
       </a>
       <a class="item item-thumbnail-left"
          ng-repeat="track in tracks"
-         ng-click="click(track)"
+         ng-click="actions.default(track)"
          >
         <img ng-class="{'mopidy-mobile-thumbnail-track': !images[track.uri].uri}"
              ng-src="{{images[track.uri].uri || thumbnailSrc}}"

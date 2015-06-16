@@ -167,10 +167,10 @@ angular.module('mopidy-mobile.library', [
 
 .controller('BrowseCtrl', function(actions, connection, ref, items, $ionicHistory, $log, $scope, $state) {
   angular.extend($scope, {
+    actions: actions,
     ref: ref,
     items: items,
     tracks: items.filter(function(ref) { return ref.type === 'track'; }),
-    click: actions.default,
     refresh: function() {
       connection().then(function(mopidy) {
         return mopidy.library.refresh({
@@ -187,22 +187,6 @@ angular.module('mopidy-mobile.library', [
     search: function(q) {
       $state.go('^.search', {any: [q], uris: [ref.uri]});
     }
-  });
-})
-
-.controller('LookupCtrl', function(actions, connection, coverart, name, tracks, uri, $ionicHistory, $log, $scope) {
-  angular.extend($scope, {
-    click: actions.default,
-    name: name,
-    tracks: tracks,
-    uri: uri
-  });
-
-  coverart.getImages(tracks, {
-    width: $scope.thumbnailWidth,
-    height: $scope.thumbnailHeight
-  }).then(function(images) {
-    $scope.images = images;
   });
 })
 
@@ -247,11 +231,6 @@ angular.module('mopidy-mobile.library', [
     }
   }
 
-  angular.extend($scope, {
-    click: actions.default,
-    images: {}
-  });
-
   switch (results.length) {
   case 0:
     $scope.artists = $scope.albums = $scope.tracks = [];
@@ -275,6 +254,11 @@ angular.module('mopidy-mobile.library', [
     })).sort(compare);
   }
 
+  angular.extend($scope, {
+    actions: actions,
+    images: {}
+  });
+
   coverart.getImages([].concat($scope.artists, $scope.albums, $scope.tracks), {
     width: $scope.thumbnailWidth,
     height: $scope.thumbnailHeight
@@ -283,9 +267,24 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('LibraryMenuCtrl', function(actions, popoverMenu, $scope) {
+.controller('LookupCtrl', function(actions, connection, coverart, name, tracks, uri, $ionicHistory, $log, $scope) {
   angular.extend($scope, {
     actions: actions,
+    name: name,
+    tracks: tracks,
+    uri: uri
+  });
+
+  coverart.getImages(tracks, {
+    width: $scope.thumbnailWidth,
+    height: $scope.thumbnailHeight
+  }).then(function(images) {
+    $scope.images = images;
+  });
+})
+
+.controller('LibraryMenuCtrl', function(popoverMenu, $scope) {
+  angular.extend($scope, {
     popover: popoverMenu([{
       text: 'Play now',
       click: 'popover.hide() && actions.play(tracks)',

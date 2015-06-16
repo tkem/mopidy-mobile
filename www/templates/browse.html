@@ -1,5 +1,10 @@
 <ion-view delegate-href view-title="{{ref.name || ref.uri}}">
   <ion-nav-buttons side="secondary">
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-play"
+            ng-click="actions.default(tracks)"
+            ng-disabled="!tracks.length"
+            >
+    </button>
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-search"
             ui-sref="^.query({name: ref.name, type: ref.type, uri: ref.uri})"
             >
@@ -26,7 +31,7 @@
            >
         <a class="item-content"
            href=""
-           ng-click="click(ref)"
+           ng-click="actions.default(ref)"
            ng-switch-when="track"
            >
           <i class="mopidy-mobile-icon-track"></i>

@@ -131,9 +131,9 @@ angular.module('mopidy-mobile.playlists', [
   };
 
   angular.extend($scope, {
+    actions: actions,
     editable: editable,
     playlist: playlist,
-    click: actions.default,
     delete: function() {
       return connection(function(mopidy) {
         return mopidy.playlists.delete({
@@ -232,9 +232,8 @@ angular.module('mopidy-mobile.playlists', [
   });
 })
 
-.controller('PlaylistViewMenuCtrl', function(actions, popoverMenu, $scope) {
+.controller('PlaylistViewMenuCtrl', function(popoverMenu, $scope) {
   angular.extend($scope, {
-    actions: actions,
     popover: popoverMenu([{
       text: 'Play now',
       click: 'popover.hide() && actions.play(playlist.tracks)'
