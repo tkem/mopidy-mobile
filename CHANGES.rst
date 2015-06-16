@@ -1,3 +1,12 @@
+1.1.0 2015-06-16
+-----------------
+
+- Add advanced search.
+
+- Add play button to library and playlist nav-bar.
+
+- Add server management in Android app.
+
 1.0.0 2015-06-05
 -----------------
 
