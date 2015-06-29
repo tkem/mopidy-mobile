@@ -12,11 +12,12 @@ angular.module('mopidy-mobile.library', [
     url: '/library',
     views: {
       'library': {
+        controller: 'LibraryCtrl',
         template: '<ion-nav-view></ion-nav-view>',
       }
     }
   }).state('main.library.root', {
-    controller: 'LibraryCtrl',
+    controller: 'RootDirectoryCtrl',
     templateUrl: 'templates/library.html',
     url: ''
   }).state('main.library.browse', {
@@ -44,7 +45,7 @@ angular.module('mopidy-mobile.library', [
       }
     },
     templateUrl: 'templates/browse.html',
-    url: '/{uri}'
+    url: '/{uri}/'
   }).state('main.library.lookup', {
     controller: 'LookupCtrl',
     params: {
@@ -68,7 +69,7 @@ angular.module('mopidy-mobile.library', [
       }
     },
     templateUrl: 'templates/lookup.html',
-    url: '/{uri}/'
+    url: '/{uri}'
   }).state('main.library.query', {
     controller: 'QueryCtrl',
     params: {
@@ -124,11 +125,52 @@ angular.module('mopidy-mobile.library', [
       }
     },
     templateUrl: 'templates/search.html',
-    url: '?album&albumartist&any&artist&comment&composer&date&genre&performer&track_name&uri&exact}'
+    url: '?album&albumartist&any&artist&comment&composer&date&genre&performer&track_name&uri&exact'
   });
 })
 
-.controller('LibraryCtrl', function(connection, $scope, $state) {
+.controller('LibraryCtrl', function(actions, coverart, popoverMenu, $scope, $state) {
+  var popover = popoverMenu(
+    [{
+      text: 'Play now',
+      click: 'popover.hide() && actions.play(track)'
+    }, {
+      text: 'Play next',
+      click: 'popover.hide() && actions.next(track)'
+    }, {
+      text: 'Add to tracklist',
+      click: 'popover.hide() && actions.add(track)'
+    }], {
+      scope: $scope
+    }
+  );
+  angular.extend($scope, {
+    actions: actions,
+    getImages: function(models) {
+      var images = {};
+      coverart.getImages(models, {
+        width: $scope.thumbnailWidth,
+        height: $scope.thumbnailHeight
+      }).then(function(result) {
+        angular.extend(images, result);
+      });
+      return images;
+    },
+    popover: angular.extend({}, popover, {
+      show: function(event, track) {
+        event.preventDefault();
+        event.stopPropagation();
+        $scope.track = track;  // FIXME: more elegant way of passing track?
+        popover.show(event);
+      }
+    }),
+    search: function(params) {
+      $state.go('^.search', params);
+    }
+  });
+})
+
+.controller('RootDirectoryCtrl', function(connection, $scope) {
   var listeners = {
     'connection:online': function() {
       connection(function(mopidy) {
@@ -152,9 +194,6 @@ angular.module('mopidy-mobile.library', [
       }).finally(function() {
         $scope.$broadcast('scroll.refreshComplete');
       });
-    },
-    search: function(q) {
-      $state.go('^.search', {any: [q]});
     }
   });
 
@@ -165,12 +204,10 @@ angular.module('mopidy-mobile.library', [
   connection.on(listeners);
 })
 
-.controller('BrowseCtrl', function(actions, connection, ref, items, $ionicHistory, $log, $scope, $state) {
+.controller('BrowseCtrl', function(connection, items, ref, $scope) {
   angular.extend($scope, {
-    actions: actions,
-    ref: ref,
     items: items,
-    tracks: items.filter(function(ref) { return ref.type === 'track'; }),
+    ref: ref,
     refresh: function() {
       connection().then(function(mopidy) {
         return mopidy.library.refresh({
@@ -184,13 +221,13 @@ angular.module('mopidy-mobile.library', [
         $scope.$broadcast('scroll.refreshComplete');
       });
     },
-    search: function(q) {
-      $state.go('^.search', {any: [q], uris: [ref.uri]});
-    }
+    tracks: items.filter(function(ref) { 
+      return ref.type === 'track'; 
+    })
   });
 })
 
-.controller('QueryCtrl', function(ref, $scope, $state) {
+.controller('QueryCtrl', function(ref, $scope) {
   angular.extend($scope, {
     add: function(term) {
       $scope.terms.push(term);
@@ -203,7 +240,7 @@ angular.module('mopidy-mobile.library', [
     remove: function(index) {
       $scope.terms.splice(index, 1);
     },
-    search: function() {
+    submit: function() {
       var params = {};
       $scope.terms.forEach(function(term) {
         if (term.value) {
@@ -214,13 +251,13 @@ angular.module('mopidy-mobile.library', [
           }
         }
       });
-      $state.go('^.search', angular.extend(params, $scope.params));
+      $scope.search(angular.extend(params, $scope.params));
     },
     terms: [{key: 'any', value: ''}]
   });
 })
 
-.controller('SearchCtrl', function(actions, connection, coverart, results, $ionicHistory, $log, $scope) {
+.controller('SearchCtrl', function(results, $scope) {
   function compare(a, b) {
     if ((a.name || '') > (b.name || '')) {
       return 1;
@@ -255,31 +292,16 @@ angular.module('mopidy-mobile.library', [
   }
 
   angular.extend($scope, {
-    actions: actions,
-    images: {}
-  });
-
-  coverart.getImages([].concat($scope.artists, $scope.albums, $scope.tracks), {
-    width: $scope.thumbnailWidth,
-    height: $scope.thumbnailHeight
-  }).then(function(result) {
-    angular.extend($scope.images, result);
+    images: $scope.getImages([].concat($scope.artists, $scope.albums, $scope.tracks))
   });
 })
 
-.controller('LookupCtrl', function(actions, connection, coverart, name, tracks, uri, $ionicHistory, $log, $scope) {
+.controller('LookupCtrl', function(name, tracks, uri, $scope) {
   angular.extend($scope, {
-    actions: actions,
+    images: $scope.getImages(tracks),
     name: name,
     tracks: tracks,
     uri: uri
-  });
-
-  coverart.getImages(tracks, {
-    width: $scope.thumbnailWidth,
-    height: $scope.thumbnailHeight
-  }).then(function(images) {
-    $scope.images = images;
   });
 })
 

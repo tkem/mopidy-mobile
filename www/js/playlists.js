@@ -120,7 +120,7 @@ angular.module('mopidy-mobile.playlists', [
   connection.on(listeners);
 })
 
-.controller('PlaylistCtrl', function(actions, connection, editable, playlist, $ionicHistory, $log, $scope) {
+.controller('PlaylistCtrl', function(actions, connection, editable, playlist, popoverMenu, $ionicHistory, $log, $scope) {
   var listeners = {
     // TODO: how to handle this, e.g. with editing
     // 'event:playlistChanged': function(playlist) {
@@ -129,7 +129,20 @@ angular.module('mopidy-mobile.playlists', [
     //   }
     // }
   };
-
+  var popover = popoverMenu(
+    [{
+      text: 'Play now',
+      click: 'popover.hide() && actions.play(track)'
+    }, {
+      text: 'Play next',
+      click: 'popover.hide() && actions.next(track)'
+    }, {
+      text: 'Add to tracklist',
+      click: 'popover.hide() && actions.add(track)'
+    }], {
+      scope: $scope
+    }
+  );
   angular.extend($scope, {
     actions: actions,
     editable: editable,
@@ -156,6 +169,14 @@ angular.module('mopidy-mobile.playlists', [
       var tracks = $scope.playlist.tracks.splice(fromIndex, 1);
       $scope.playlist.tracks.splice(toIndex, 0, tracks[0]);
     },
+    popover: angular.extend({}, popover, {
+      show: function(event) {
+        $scope.track = angular.element(event.target).scope().track;
+        event.preventDefault();
+        event.stopPropagation();
+        popover.show(event);
+      }
+    }),
     refresh: function() {
       // FIXME: loading vs. refresh
       connection(function(mopidy) {

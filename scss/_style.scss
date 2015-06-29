@@ -58,7 +58,17 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 /* make ion-android-more-vertical as wide as other buttons */
 .bar-stable .button {
-    min-width: 32px;
+    min-width: 34px;
+}
+
+/* FIXME: Ionic bug? */
+.item-button-right button:last-child {
+    left: auto !important;
+    right: 3px !important;
+    padding: 0 !important;
+}
+.item-button-right .icon:before {
+    width: 32px !important;
 }
 
 /* clickable anchors and buttons in toggle labels */

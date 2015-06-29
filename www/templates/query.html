@@ -1,6 +1,6 @@
 <ion-view view-title="{{'Search {name}' | translate:(ref || {name: ('Library' | translate)}) }}">
   <ion-content>
-    <!--form ng-submit="search()"-->
+    <!--form ng-submit="submit()"-->
       <div class="list">
         <div class="item item-input item-button-left" ng-repeat="term in terms">
           <button class="button button-assertive button-clear button-icon icon ion-ios-minus"
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="padding">
-        <button class="button button-block button-positive" ng-click="search()" translate>
+        <button class="button button-block button-positive" ng-click="submit()" translate>
           Search
         </button>
       </div>

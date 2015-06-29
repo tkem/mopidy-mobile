@@ -34,7 +34,7 @@
         <h3>{{album.artist[0].name}}</h3>
         <i class="mopidy-mobile-icon-link icon-accessory"></i>
       </a>
-      <a class="item item-thumbnail-left"
+      <a class="item item-thumbnail-left item-button-right"
          ng-repeat="track in tracks"
          ng-click="actions.default(track)"
          >
@@ -44,6 +44,9 @@
         <h2>{{track.name}}</h2>
         <h3>{{track.artists[0].name}}</h3>
         <h4>{{track.album.name}}</h4>
+        <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu icon-accessory"
+                ng-click="popover.show($event, track)">
+        </button>
       </a>
     </div>
   </ion-content>
