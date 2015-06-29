@@ -31,7 +31,7 @@ class Extension(ext.Extension):
         path = os.path.join(os.path.dirname(__file__), 'www')
         return [
             (r'/', RedirectHandler, {'url': 'index.html'}),
-            (r'/(index.html)', IndexHandler, {'config': config, 'path': path}),
-            (r'/(manifest.json)', IndexHandler, {'config': config, 'path': path}),
+            (r'/(.*\.html)', IndexHandler, {'config': config, 'path': path}),
+            (r'/(.*\.json)', IndexHandler, {'config': config, 'path': path}),
             (r'/(.*)', StaticHandler, {'path': path})
         ]

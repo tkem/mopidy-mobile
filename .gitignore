@@ -5,6 +5,7 @@ build/
 dist/
 hooks/
 mopidy_mobile/www/*/
+mopidy_mobile/www/bundle.min.js
 node_modules/
 platforms/
 plugins/
@@ -13,5 +14,4 @@ resources/android/splash/
 resources/ios/icon/
 resources/ios/splash/
 www/css/
-www/js/*.min.js
 www/lib/

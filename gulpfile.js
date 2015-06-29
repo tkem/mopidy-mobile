@@ -9,13 +9,14 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sh = require('shelljs');
 var templateCache = require('gulp-angular-templatecache');
-var uglifyjs = require('gulp-uglifyjs');
+var uglify = require('gulp-uglify');
 
 var paths = {
+  build: 'build/',
   css: 'www/css/',
   dist: 'mopidy_mobile/www/',
   images: 'www/images/',
-  js: 'www/js/'
+  lib: 'www/lib/'
 };
 
 gulp.task('install', function() {
@@ -46,38 +47,40 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('uglifyjs', function() {
-  return gulp.src(['www/js/*.js', '!www/js/*.min.js'])
-    .pipe(uglifyjs('mopidy-mobile.min.js', {mangle: false}))
-    .pipe(gulp.dest(paths.js));
+gulp.task('uglify', function() {
+  return gulp.src('www/js/**.js')
+    .pipe(concat('mopidy-mobile.js'))
+    .pipe(uglify({mangle: false}))
+    .pipe(rename({extname: '.min.js'}))
+    .pipe(gulp.dest(paths.build));
 });
 
-gulp.task('templatesjs', function () {
+gulp.task('templates', function () {
   return gulp.src('www/templates/**/*.html')
     .pipe(templateCache({module: 'mopidy-mobile', root: 'templates/'}))
-    .pipe(uglifyjs('templates.min.js'))
-    .pipe(gulp.dest(paths.js));
+    .pipe(uglify())
+    .pipe(rename('templates.min.js'))
+    .pipe(gulp.dest(paths.build));
 });
 
-gulp.task('bundlejs', ['uglifyjs', 'templatesjs'], function() {
+gulp.task('bundle', ['uglify', 'templates'], function() {
   return gulp.src([
-    'www/lib/mopidy/dist/mopidy.min.js',
-    'www/lib/ionic/js/ionic.bundle.min.js',
-    'www/lib/ngCordova/dist/ng-cordova-mocks.min.js',
-    'www/lib/angular-local-storage/dist/angular-local-storage.min.js',
-    'www/lib/angular-translate/angular-translate.min.js',
-    'www/js/mopidy-mobile.min.js',
-    'www/js/templates.min.js'
-  ]).pipe(concat('mopidy-mobile.bundle.min.js'))
-    .pipe(gulp.dest(paths.js));
+    paths.lib + '/mopidy/dist/mopidy.min.js',
+    paths.lib + '/ionic/js/ionic.bundle.min.js',
+    paths.lib + '/ngCordova/dist/ng-cordova-mocks.min.js',
+    paths.lib + '/angular-local-storage/dist/angular-local-storage.min.js',
+    paths.lib + '/angular-translate/angular-translate.min.js',
+    paths.build + '/mopidy-mobile.min.js',
+    paths.build + '/templates.min.js'
+  ]).pipe(concat('bundle.min.js'))
+    .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('dist', ['sass', 'bundlejs'], function() {
+gulp.task('dist', ['sass', 'bundle'], function() {
   return gulp.src([
     'www/css/*.min.css',
     'www/css/**/*.png',
     'www/images/**',
-    'www/js/mopidy-mobile.bundle.min.js',
     'www/lib/ionic/fonts/**'
   ], {base: 'www'})
     .pipe(gulp.dest(paths.dist));
@@ -85,10 +88,9 @@ gulp.task('dist', ['sass', 'bundlejs'], function() {
 
 gulp.task('clean', function(cb) {
   del([
+    paths.build,
     paths.css,
-    paths.dist + '{css,images,js,lib,templates}',
-    paths.js + 'templates.js',
-    paths.js + '*.min.js'
+    paths.dist + '{css,images,lib,bundle.min.js}'
   ], cb);
 });
 

@@ -3,9 +3,9 @@
   "private": "true",
   "devDependencies": {
     "mopidy": "mopidy/mopidy.js#0.5.0",
-    "ionic": "driftyco/ionic-bower#v1.0.0",
-    "ngCordova": "~0.1.15-alpha",
-    "angular-local-storage": "~0.2.0",
-    "angular-translate": "~2.5.2"
+    "ionic": "driftyco/ionic-bower#v1.0.1",
+    "ngCordova": "~0.1.17-alpha",
+    "angular-local-storage": "~0.2.2",
+    "angular-translate": "~2.7.2"
   }
 }

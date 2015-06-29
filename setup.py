@@ -3,14 +3,15 @@ from __future__ import unicode_literals
 import os
 import re
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-assert os.path.exists('mopidy_mobile/www/js/mopidy-mobile.bundle.min.js')
+assert os.path.exists('mopidy_mobile/www/bundle.min.js')
+
 
 def get_version(filename):
-    content = open(filename).read()
-    metadata = dict(re.findall("__([a-z]+)__ = '([^']+)'", content))
-    return metadata['version']
+    with open(filename) as fh:
+        metadata = dict(re.findall("__([a-z]+)__ = '([^']+)'", fh.read()))
+        return metadata['version']
 
 setup(
     name='Mopidy-Mobile',
@@ -27,11 +28,6 @@ setup(
     install_requires=[
         'setuptools',
         'Mopidy >= 0.19'
-    ],
-    test_suite='nose.collector',
-    tests_require=[
-        'nose',
-        'mock >= 1.0',
     ],
     entry_points={
         'mopidy.ext': [
