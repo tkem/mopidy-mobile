@@ -3,7 +3,6 @@
 .coverage
 build/
 dist/
-hooks/
 mopidy_mobile/www/*/
 mopidy_mobile/www/bundle.min.js
 node_modules/
