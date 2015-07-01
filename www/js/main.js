@@ -3,8 +3,9 @@ angular.module('mopidy-mobile', [
   ionic.Platform.isWebView() ? 'ngCordova' : 'ngCordovaMocks',
   'mopidy-mobile.connection',
   'mopidy-mobile.coverart',
-  'mopidy-mobile.coverartarchive',
-  'mopidy-mobile.lastfm',
+  'mopidy-mobile.coverart.archive',
+  'mopidy-mobile.coverart.lastfm',
+  'mopidy-mobile.coverart.mopidy',
   'mopidy-mobile.library',
   'mopidy-mobile.playback',
   'mopidy-mobile.playlists',
@@ -138,7 +139,7 @@ angular.module('mopidy-mobile', [
   storageProvider.prefix('mopidy-mobile');
   storageProvider.defaults({
     action: 'play',
-    coverart: {connection: true},
+    coverart: {mopidy: true},
     locale: '',  // default/browser locale
     servers: [],
     stylesheet: stylesheetProvider.get()

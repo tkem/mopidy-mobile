@@ -24,6 +24,7 @@ angular.module('mopidy-mobile.coverart', [
     }
     return dst;
   }
+
   function select(images, width, height) {
     if (!images || !images.length) {
       return null;
@@ -38,28 +39,27 @@ angular.module('mopidy-mobile.coverart', [
     }
     return images[images.length - 1];
   }
-  var services = [];
+
   var cacheOptions = {};
+  var serviceProviders = {};
 
   angular.extend(this, {
-    // TODO: replace $injector with coverartProvider.service(name, fn)
-    $get: function($cacheFactory, $injector, $log, $q) {
+    $get: function(util, $cacheFactory, $injector, $log, $q) {
       var cache = $cacheFactory('images', cacheOptions);
+      var services = {};
 
       return {
         clearCache: function() {
           cache.removeAll();
         },
         disable: function(service) {
-          var index = services.indexOf(service);
-          if (index >= 0) {
-            services.splice(index, 1);
-          }
+          delete services[service];
         },
         enable: function(service) {
-          var index = services.indexOf(service);
-          if (index < 0) {
-            services.push(service);
+          if (service in serviceProviders) {
+            services[service] = $injector.invoke(serviceProviders[service]);
+          } else {
+            $log.error('Unknown coverart service ' + service);
           }
         },
         // TODO: merge geImage(s) methods?
@@ -72,9 +72,9 @@ angular.module('mopidy-mobile.coverart', [
             return $q.when(select(images, width, height));
           } else {
             $log.debug('cache(' + cache.info().size + ') miss for ' + model.uri);
-            return $q.all(services.map(function(service) {
-              return $injector.get(service).getImages([model]).catch(function(error) {
-                $log.error('Error loading cover art from ' + service, error);
+            return $q.all(util.values(services).map(function(service) {
+              return service.getImages([model]).catch(function(error) {
+                $log.error('Error loading cover art from ' + service.displayName, error);
                 return {};
               });
             })).then(function(results) {
@@ -102,10 +102,10 @@ angular.module('mopidy-mobile.coverart', [
               return true;
             }
           });
-          $log.debug('Loading cover art from ' + services);
-          return $q.all(services.map(function(service) {
-            return $injector.get(service).getImages(models).catch(function(error) {
-              $log.error('Error loading cover art from ' + service, error);
+          $log.debug('Loading cover art from ' + Object.keys(services));
+          return $q.all(util.values(services).map(function(service) {
+            return service.getImages(models).catch(function(error) {
+              $log.error('Error loading cover art from ' + service.displayName, error);
               return {};
             });
           })).then(function(results) {
@@ -145,6 +145,9 @@ angular.module('mopidy-mobile.coverart', [
       } else {
         return cacheOptions.capacity;
       }
+    },
+    service: function(id, fn) {
+      serviceProviders[id] = fn;
     }
   });
 });

@@ -41,7 +41,7 @@ gulp.task('sass', ['sass:images'], function() {
 });
 
 gulp.task('jshint', function() {
-  return gulp.src(['www/js/*.js', '!www/js/*.min.js'])
+  return gulp.src('www/js/**/*.js')
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));

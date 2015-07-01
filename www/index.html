@@ -2,7 +2,7 @@
 <html data-web-socket-url="ws://localhost:6680/mopidy/ws">
   <head>
     <title>Mopidy Mobile</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <link id="stylesheet" rel="stylesheet" href="css/ionic-light.min.css">
@@ -16,8 +16,9 @@
     <script src="js/actions.js"></script>
     <script src="js/connection.js"></script>
     <script src="js/coverart.js"></script>
-    <script src="js/coverartarchive.js"></script>
-    <script src="js/lastfm.js"></script>
+    <script src="js/coverart/archive.js"></script>
+    <script src="js/coverart/lastfm.js"></script>
+    <script src="js/coverart/mopidy.js"></script>
     <script src="js/library.js"></script>
     <script src="js/locale.js"></script>
     <script src="js/logging.js"></script>

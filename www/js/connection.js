@@ -1,6 +1,5 @@
 angular.module('mopidy-mobile.connection', [
   'ionic',
-  'mopidy-mobile.coverart',
   'mopidy-mobile.mopidy',
   'mopidy-mobile.util'
 ])
@@ -60,15 +59,6 @@ angular.module('mopidy-mobile.connection', [
             throw {name: 'ConnectionError'};
           }
         );
-      }
-
-      function resolveURI(uri) {
-        if (settings.webSocketUrl && uri.charAt(0) == '/') {
-          var match = /^wss?:\/\/([^\/]+)/.exec(settings.webSocketUrl);
-          return 'http://' + match[1] + uri;
-        } else {
-          return uri;
-        }
       }
 
       var promise = connect(settings);
@@ -150,39 +140,6 @@ angular.module('mopidy-mobile.connection', [
             return settings;
           });
         },
-        getImages: function(models) {
-          // works "in background", so no loading shown
-          return promise.then(function(mopidy) {
-            return mopidy.library.getImages({
-              uris: models.map(function(model) { return model.uri; })
-            });
-          }).then(function(result) {
-            var promises = {};
-            angular.forEach(result, function(images, uri) {
-              if (!images || !images.length) {
-                //$log.debug('Mopidy found no images for ' + uri);
-              } else if (images.length === 1) {
-                //$log.debug('Mopidy found one image for ' + uri);
-                // common case: single image, no need for width/height
-                promises[uri] = [angular.extend(images[0], {
-                  uri: resolveURI(images[0].uri)
-                })];
-              } else {
-                //$log.debug('Mopidy found ' + images.length + ' images for ' + uri);
-                // most backends won't provide image dimensions anytime soon
-                promises[uri] = $q.all(images.map(function(image) {
-                  image.uri = resolveURI(image.uri);
-                  if (!image.width || !image.height) {
-                    return coverart.resolveImage(image.uri);
-                  } else {
-                  return image;
-                  }
-                }));
-              }
-            });
-            return $q.all(promises);
-          });
-        }
       });
     },
     loadingOptions: function(value) {
