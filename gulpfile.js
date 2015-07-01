@@ -48,7 +48,7 @@ gulp.task('jshint', function() {
 });
 
 gulp.task('uglify', function() {
-  return gulp.src('www/js/**.js')
+  return gulp.src('www/js/**/*.js')
     .pipe(concat('mopidy-mobile.js'))
     .pipe(uglify({mangle: false}))
     .pipe(rename({extname: '.min.js'}))
