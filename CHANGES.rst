@@ -1,3 +1,13 @@
+1.2.0 2015-07-03
+-----------------
+
+- Add popup menu for track items.
+
+- Add create button to edit views.
+
+- Various UI improvements.
+
+
 1.1.0 2015-06-16
 -----------------
 
