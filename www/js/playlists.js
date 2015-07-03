@@ -6,52 +6,60 @@ angular.module('mopidy-mobile.playlists', [
 ])
 
 .config(function($stateProvider) {
-  $stateProvider
-    .state('main.playlists', {
-      url: '/playlists',
-      views: {
-        'playlists': {
-          controller: 'PlaylistsCtrl',
-          templateUrl: 'templates/playlists.html',
-        }
+  $stateProvider.state('main.playlists', {
+    abstract: true,
+    url: '/playlists',
+    views: {
+      'playlists': {
+        controller: 'PlaylistsCtrl',
+        template: '<ion-nav-view></ion-nav-view>'
       }
-    })
-    .state('main.playlist', {
-      abstract: true,
-      url: '/playlists/{uri}',
-      views: {
-        'playlists': {
-          controller: 'PlaylistCtrl',
-          template: '<ion-nav-view></ion-nav-view>',
-          resolve: {
-            playlist: function(connection, $stateParams) {
-              if ($stateParams.uri) {
-                return connection(function(mopidy) {
-                  return mopidy.playlists.lookup({uri: $stateParams.uri});
-                });
-              } else {
-                return {uri: null, name: null, tracks: []};
-              }
-            },
-            editable: function(connection) {
+    }
+  }).state('main.playlists.edit', {
+    templateUrl: 'templates/playlists.edit.html',
+    url: '/edit'
+  }).state('main.playlists.view', {
+    templateUrl: 'templates/playlists.view.html',
+    url: ''
+  }).state('main.playlist', {
+    abstract: true,
+    url: '/playlist/{uri}',
+    views: {
+      'playlists': {
+        controller: 'PlaylistCtrl',
+        template: '<ion-nav-view cache-view="false"></ion-nav-view>',
+        resolve: {
+          uri: function($stateParams) {
+            return $stateParams.uri;
+          },
+          playlist: function(connection, $stateParams) {
+            if ($stateParams.uri) {
               return connection(function(mopidy) {
-                // TODO: smarter handling based on scheme?
-                return mopidy.playlists.editable;
+                return mopidy.playlists.lookup({uri: $stateParams.uri});
               });
+            } else {
+              return {uri: null, name: null, tracks: []};
             }
+          },
+          editable: function(connection) {
+            return connection(function(mopidy) {
+              // TODO: smarter handling based on scheme?
+              return mopidy.playlists.editable;
+            });
           }
         }
       }
-    })
-    .state('main.playlist.view', {
-      url: '',
-      templateUrl: 'templates/playlist.view.html'
-    })
-    .state('main.playlist.edit', {
-      url: '/edit',
-      templateUrl: 'templates/playlist.edit.html'
-    })
-  ;
+    }
+  }).state('main.playlist.add', {
+    templateUrl: 'templates/playlist.add.html',
+    url: '/add'
+  }).state('main.playlist.edit', {
+    templateUrl: 'templates/playlist.edit.html',
+    url: '/edit'
+  }).state('main.playlist.view', {
+    templateUrl: 'templates/playlist.view.html',
+    url: ''
+  });
 })
 
 .filter('playlistOrder', function($filter) {
@@ -69,7 +77,7 @@ angular.module('mopidy-mobile.playlists', [
   };
 })
 
-.controller('PlaylistsCtrl', function(connection, $ionicHistory, $q, $scope) {
+.controller('PlaylistsCtrl', function(connection, popup, $q, $scope) {
   var listeners = {
     'connection:online': function() {
       connection(function(mopidy) {
@@ -92,8 +100,24 @@ angular.module('mopidy-mobile.playlists', [
   };
 
   angular.extend($scope, {
-    order: {},
-    playlists: [],
+    confirmDelete: function(ref) {
+      popup.confirm('Delete playlist').then(function(result) {
+        if (result) {
+          return $scope.delete(ref.uri);
+        }
+      });
+    },
+    delete: function(uri) {
+      return connection(function(mopidy) {
+        return mopidy.playlists.delete({
+          uri: uri
+        }).then(function() {
+          return mopidy.playlists.asList();
+        }).then(function(playlists) {
+          $scope.playlists = playlists;
+        });
+      });
+    },
     getScheme: function(uri) {
       return uri ? uri.substr(0, uri.indexOf(':')) : null;
     },
@@ -110,7 +134,9 @@ angular.module('mopidy-mobile.playlists', [
       }).finally(function() {
         $scope.$broadcast('scroll.refreshComplete');
       });
-    }
+    },
+    order: {},
+    playlists: []
   });
 
   $scope.$on('$destroy', function() {
@@ -120,7 +146,8 @@ angular.module('mopidy-mobile.playlists', [
   connection.on(listeners);
 })
 
-.controller('PlaylistCtrl', function(actions, connection, editable, playlist, popoverMenu, $ionicHistory, $log, $scope) {
+.controller('PlaylistCtrl', function(actions, connection, editable, playlist, popoverMenu, uri, $q, $scope) {
+
   var listeners = {
     // TODO: how to handle this, e.g. with editing
     // 'event:playlistChanged': function(playlist) {
@@ -145,23 +172,27 @@ angular.module('mopidy-mobile.playlists', [
   );
   angular.extend($scope, {
     actions: actions,
-    editable: editable,
-    playlist: playlist,
-    delete: function() {
+    add: function(track) {
+      if ($scope.playlist.tracks) {
+        $scope.playlist.tracks.push(track);
+      } else {
+        $scope.playlist.tracks = [track];
+      }
+      return $q.when($scope.playlist.tracks);
+    },
+    cancel: function() {
       return connection(function(mopidy) {
-        return mopidy.playlists.delete({
-          uri: $scope.playlist.uri
-        }).then(function() {
-          // workaround for https://github.com/mopidy/mopidy/issues/996
-          return mopidy.playlists.refresh({
-            uri_scheme: $scope.getScheme($scope.playlist.uri)
-          });
-        });
-      }).then(function() {
-        $scope.playlist = {uri: null, name: null, tracks: []};
+        if ($scope.playlist.uri) {
+          return mopidy.playlists.lookup({uri: $scope.playlist.uri});
+        } else {
+          return {uri: null, name: null, tracks: []};
+        }
+      }).then(function(playlist) {
+        $scope.playlist = playlist;
+        return playlist;
       });
     },
-    // TODO: global?
+    editable: editable,
     getScheme: function(uri) {
       return uri ? uri.substr(0, uri.indexOf(':')) : null;
     },
@@ -169,6 +200,7 @@ angular.module('mopidy-mobile.playlists', [
       var tracks = $scope.playlist.tracks.splice(fromIndex, 1);
       $scope.playlist.tracks.splice(toIndex, 0, tracks[0]);
     },
+    playlist: playlist,
     popover: angular.extend({}, popover, {
       show: function(event) {
         $scope.track = angular.element(event.target).scope().track;
@@ -194,17 +226,6 @@ angular.module('mopidy-mobile.playlists', [
     remove: function(index) {
       $scope.playlist.tracks.splice(index, 1);
     },
-    reset: function() {
-      return connection(function(mopidy) {
-        if ($scope.playlist.uri) {
-          return mopidy.playlists.lookup({uri: $scope.playlist.uri});
-        } else {
-          return {uri: null, name: null, tracks: []};
-        }
-      }).then(function(playlist) {
-        $scope.playlist = playlist;
-      });
-    },
     save: function() {
       return connection(function(mopidy) {
         if ($scope.playlist.uri) {
@@ -220,6 +241,7 @@ angular.module('mopidy-mobile.playlists', [
         }
       }).then(function(playlist) {
         $scope.playlist = playlist;
+        return playlist;
       });
     }
   });
@@ -245,7 +267,7 @@ angular.module('mopidy-mobile.playlists', [
   });
 })
 
-.controller('PlaylistViewMenuCtrl', function(popoverMenu, $scope) {
+.controller('PlaylistMenuCtrl', function(popoverMenu, $scope) {
   angular.extend($scope, {
     popover: popoverMenu([{
       text: 'Play now',
@@ -264,48 +286,4 @@ angular.module('mopidy-mobile.playlists', [
     })
   });
 })
-
-.controller('PlaylistEditMenuCtrl', function(popoverMenu, popup, $scope) {
-  angular.extend($scope, {
-    addURL: function() {
-      popup.fromTemplateUrl('Add stream', 'templates/stream.html').then(function(result) {
-        if (result.name && result.url) {
-          var track = {
-            __model__: 'Track',
-            name: result.name,
-            uri: result.url
-          };
-          if ($scope.playlist.tracks) {
-            $scope.playlist.tracks.push(track);
-          } else {
-            $scope.playlist.tracks = [track];
-          }
-        }
-      });
-    },
-    confirmDelete: function() {
-      popup.confirm('Delete this playlist').then(function(result) {
-        if (result) {
-          $scope.delete().then(function() {
-            $scope.goBack(2);
-          });
-        }
-      });
-    },
-    popover: popoverMenu([{
-      text: 'Add stream',
-      click: 'popover.hide() && addURL()',
-      hellip: true
-    }, {
-      text: 'Delete',
-      click: 'popover.hide() && confirmDelete()',
-      disabled: '!playlist.uri',
-      hellip: true
-    }, {
-      text: 'Cancel',
-      click: 'popover.hide() && reset().then(goBack)'
-    }], {
-      scope: $scope
-    })
-  });
-});
+;

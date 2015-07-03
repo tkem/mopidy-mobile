@@ -12,11 +12,9 @@ angular.module('mopidy-mobile', [
   'mopidy-mobile.locale.en',
   'mopidy-mobile.playback',
   'mopidy-mobile.playlists',
+  'mopidy-mobile.servers',
   'mopidy-mobile.settings',
-  'mopidy-mobile.tracklist',
-  'mopidy-mobile.util',
-  'mopidy-mobile.ui',
-  'mopidy-mobile.zeroconf'
+  'mopidy-mobile.tracklist'
 ])
 
 .config(function($ionicConfigProvider) {
@@ -102,16 +100,6 @@ angular.module('mopidy-mobile', [
     controller: 'MainCtrl',
     templateUrl: 'templates/main.html',
     url: ''
-  }).state('servers', {
-    abstract: true,
-    template: '<ion-nav-view></ion-nav-view>',
-    url: '/servers'
-  }).state('servers.select', {
-    templateUrl: 'templates/servers.html',
-    url: ''
-  }).state('servers.add', {
-    templateUrl: 'templates/servers.add.html',
-    url: '/add'
   });
 })
 
@@ -162,6 +150,29 @@ angular.module('mopidy-mobile', [
   });
 })
 
+.controller('ServerCtrl', function() {
+  this.name = null;
+  this.host = null;
+  this.path = '/mopidy/ws/';
+  this.port = 6680;
+  this.secure = false;
+  this.webSocketUrl = function() {
+    return [this.secure ? 'wss' : 'ws', '://', this.host, ':', this.port, this.path].join('');
+  };
+  this.getConfig = function() {
+    return {
+      name: this.name,
+      url: this.webSocketUrl()
+    };
+  };
+})
+
+.controller('TrackCtrl', function() {
+  this.__model__ = 'Track';
+  this.name = null;
+  this.uri = null;
+})
+
 .directive('delegateHref', function($state, $stateParams) {
   // http://forum.ionicframework.com/t/state-resolving-and-cached-views-in-beta-14/17870/
   return {
@@ -175,56 +186,6 @@ angular.module('mopidy-mobile', [
   };
 })
 
-.factory('servers', function($log, $q, $rootElement, $rootScope, $timeout, storage, util, webSocketUrl, zeroconf) {
-  var dataWebSocketUrl = $rootElement.attr('data-web-socket-url');
-  return function() {
-    var servers = storage.get('servers');
-    if (ionic.Platform.isWebView()) {
-      return $q(function(resolve) {
-        // TODO: figure out ZeroConf.list()
-        zeroconf.watch('_mopidy-http._tcp.local.', function(service) {
-          var url = service.urls[0].replace(/^http/, 'ws') + '/mopidy/ws/';
-          // avoid double entries
-          if (!servers.filter(function(obj) { return obj.url === url; }).length) {
-            $rootScope.$apply(function() {
-              servers.push({
-                name: service.name,
-                url: service.urls[0].replace(/^http/, 'ws') + '/mopidy/ws/'
-              });
-            });
-          }
-          resolve(servers);
-        });
-        $timeout(function() {
-          resolve(servers);
-        }, 5000);
-      });
-    } else if (angular.isString(dataWebSocketUrl)) {
-      return $q.when(servers.concat(dataWebSocketUrl.split(/\s+/).map(function(url, index) {
-        if (index === 0) {
-          webSocketUrl(url);
-        }
-        return {
-          name: 'Mopidy HTTP server on ' + (util.parseURI(url).host || 'default host'),
-          url: url
-        };
-      })));
-    } else {
-      return $q.when(servers);
-    }
-  };
-})
-
-.provider('webSocketUrl', function(connectionProvider) {
-  angular.extend(this, {
-    $get: function() {
-      return function(webSocketUrl) {
-        connectionProvider.settings({webSocketUrl: webSocketUrl});
-      };
-    }
-  });
-})
-
 .run(function($cordovaAppVersion, $ionicPlatform, $log, $rootElement, $rootScope) {
   $ionicPlatform.ready().then(function() {
     return $rootElement.attr('data-version') || $cordovaAppVersion.getAppVersion();
@@ -235,73 +196,22 @@ angular.module('mopidy-mobile', [
   $rootScope.platform = ionic.Platform;
 })
 
-.run(function($cordovaSplashscreen, $ionicHistory, $ionicPlatform, $log, $q, $rootScope, $state, servers, storage, webSocketUrl) {
+.run(function($ionicHistory, $rootScope) {
   angular.extend($rootScope, {
-    addServer: function(server) {
-      return $q(function(resolve, reject) {
-        if (server.host && server.name) {
-          var webSocketUrl = [
-            server.secure ? 'wss' : 'ws',
-            '://',
-            server.host,
-            ':',
-            server.port,
-            server.path
-          ].join('');
-          storage.set('servers', storage.get('servers').concat([{
-            name: server.name,
-            url: webSocketUrl
-          }]));
-          return servers().then(function(servers) {
-            $rootScope.servers = servers;
-          });
-        } else {
-          reject();
-        }
-      });
-    },
-    connect: function(url) {
-      webSocketUrl(url);
-      $state.go('main.playback').then(function() {
-        if ($ionicHistory.backView()) {
-          $ionicHistory.clearHistory();
-        } else {
-          $log.warn('No servers back view');
-        }
-      });
-    },
-    goBack: function(backCount) {
-      if (backCount !== undefined) {
-        // ionic uses negative count value...
-        return $ionicHistory.goBack(-backCount);
-      } else {
-        return $ionicHistory.goBack();
-      }
-    },
-    refreshServers: function() {
-      servers().then(function(servers) {
-        $rootScope.servers = servers;
-        $rootScope.$broadcast('scroll.refreshComplete');
-      });
-    },
-    // FIXME: remove
-    server: {
-      host: '',
-      path: '/mopidy/ws/',
-      port: 6680,
-      secure: false
-    },
-    servers: []
-  });
-  servers().then(function(servers) {
-    $ionicPlatform.ready().then(function() {
-      $cordovaSplashscreen.hide();
-    });
-    $rootScope.servers = servers;
+    goBack: function() {
+      $ionicHistory.nextViewOptions({disableAnimate: true});
+      return $ionicHistory.goBack();
+    }
   });
 })
 
 .run(function($location, $log, coverart, locale, storage, stylesheet) {
+  // workaround for lost history/back view after browser reset
+  if ($location.url()) {
+    $log.debug('Redirecting from ' + $location.url());
+    $location.url('');
+    $location.replace();
+  }
   if (storage.get('theme')) {
     $log.warn('Clearing local settings, sorry for the inconvenience...');
     storage.clear();  // clear deprecated settings
@@ -313,12 +223,5 @@ angular.module('mopidy-mobile', [
       coverart.enable(service);
     }
   });
-
-  // workaround for lost history/back view after browser reset
-  if ($location.url()) {
-    $log.debug('Redirecting from ' + $location.url());
-    $location.url('');
-    $location.replace();
-  }
 })
 ;

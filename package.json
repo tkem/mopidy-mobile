@@ -21,7 +21,12 @@
     "del": "^1.2",
     "shelljs": "^0.5"
   },
-  "cordovaPlugins": [],
+  "cordovaPlugins": [
+    {
+      "locator": "https://github.com/vstirbu/ZeroConf",
+      "id": "com.triggertrap.ZeroConf"
+    }
+  ],
   "cordovaPlatforms": [
     "android"
   ]

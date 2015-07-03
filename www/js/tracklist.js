@@ -17,13 +17,17 @@ angular.module('mopidy-mobile.tracklist', [
         }
       }
     })
-    .state('main.tracklist.view', {
-      url: '',
-      templateUrl: 'templates/tracklist.view.html',
+    .state('main.tracklist.add', {
+      url: '/add',
+      templateUrl: 'templates/tracklist.add.html',
     })
     .state('main.tracklist.edit', {
       url: '/edit',
       templateUrl: 'templates/tracklist.edit.html',
+    })
+    .state('main.tracklist.view', {
+      url: '',
+      templateUrl: 'templates/tracklist.view.html',
     })
   ;
 })
@@ -63,10 +67,11 @@ angular.module('mopidy-mobile.tracklist', [
   angular.extend($scope, {
     images: {},
     options: {},
+    ref: {},
     tlTracks: [],
-    add: function(uris) {
+    add: function(uri) {
       return connection(function(mopidy) {
-        return mopidy.tracklist.add({uris: uris});
+        return mopidy.tracklist.add({uris: [uri]});
       });
     },
     clear: function() {
@@ -168,13 +173,6 @@ angular.module('mopidy-mobile.tracklist', [
 
 .controller('TracklistMenuCtrl', function(connection, popoverMenu, popup, $scope) {
   angular.extend($scope, {
-    addStream: function() {
-      popup.prompt('Stream URL', 'http://example.com/stream.mp3').then(function(url) {
-        if (url) {
-          $scope.add([url]);
-        }
-      });
-    },
     confirmClear: function() {
       popup.confirm('Clear tracklist').then(function(result) {
         if (result) {
@@ -196,9 +194,9 @@ angular.module('mopidy-mobile.tracklist', [
       });
     },
     popover: popoverMenu([{
-      text: 'Add stream',
-      click: 'popover.hide() && addStream()',
-      hellip: true,
+      text: 'Consume mode',
+      model: 'options.consume',
+      change: 'setConsume(options.consume)',
     }, {
       text: 'Save as',
       click: 'popover.hide() && saveAs()',
@@ -209,10 +207,6 @@ angular.module('mopidy-mobile.tracklist', [
       click: 'popover.hide() && confirmClear()',
       disabled: '!tlTracks.length',
       hellip: true
-    }, {
-      text: 'Consume mode',
-      model: 'options.consume',
-      change: 'setConsume(options.consume)',
     }], {
       scope: $scope
     })

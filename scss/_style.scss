@@ -62,13 +62,13 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 }
 
 /* FIXME: Ionic bug? */
+.item-button-right {
+    padding-right: 0;
+}
 .item-button-right button:last-child {
     left: auto !important;
     right: 3px !important;
     padding: 0 !important;
-}
-.item-button-right .icon:before {
-    width: 32px !important;
 }
 
 /* clickable anchors and buttons in toggle labels */
@@ -118,6 +118,9 @@ i {
 }
 .mopidy-mobile-icon-check {
     @extend .#{$mopidy-mobile-icon-check};
+}
+.mopidy-mobile-icon-close {
+    @extend .#{$mopidy-mobile-icon-close};
 }
 .mopidy-mobile-icon-edit {
     @extend .#{$mopidy-mobile-icon-edit};

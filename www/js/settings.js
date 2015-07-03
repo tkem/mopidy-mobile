@@ -31,8 +31,8 @@ angular.module('mopidy-mobile.settings', [
   }).state('main.settings.servers.edit', {
     templateUrl: 'templates/servers.edit.html',
     url: '/edit'
-  }).state('main.settings.servers.select', {
-    templateUrl: 'templates/servers.html',
+  }).state('main.settings.servers.view', {
+    templateUrl: 'templates/servers.view.html',
     url: ''
   }).state('main.settings.interface', {
     templateUrl: 'templates/interface.html',
@@ -49,9 +49,41 @@ angular.module('mopidy-mobile.settings', [
   });
 })
 
-.controller('SettingsCtrl', function($ionicHistory, $log, $scope, $window, coverart, locale, popup, storage, stylesheet) {
+.controller('SettingsCtrl', function(connection, coverart, locale, popup, servers, storage, stylesheet, $ionicHistory, $log, $q, $rootScope, $scope, $state, $window) {
   angular.extend($scope, {
+    addServer: function(server) {
+      $scope.settings.servers.push(server);
+      storage.set('servers', $scope.settings.servers);
+      return servers().then(function(servers) {
+        $rootScope.servers = servers;
+        return servers;
+      });
+    },
+    confirmRemoveServer: function(index) {
+      popup.confirm('Remove server').then(function(result) {
+        if (result) {
+          return $scope.removeServer(index);
+        }
+      });
+    },
+    connect: function(url) {
+      connection.reset(url).then(function() {
+        $ionicHistory.clearCache();
+      }).then(function() {
+        return $state.go('main.playback');
+      }).then(function() {
+        $ionicHistory.clearHistory();
+      });
+    },
     locales: locale.all(),
+    removeServer: function(index) {
+      $scope.settings.servers.splice(index, 1);
+      storage.set('servers', $scope.settings.servers);
+      return servers().then(function(servers) {
+        $rootScope.servers = servers;
+        return servers;
+      });
+    },
     reset: function(clearSettings) {
       if (clearSettings) {
         storage.clear();
@@ -61,15 +93,14 @@ angular.module('mopidy-mobile.settings', [
     settings: {}
   });
 
-  storage.bind($scope, 'coverart');
+  storage.bind($scope, 'settings.coverart', 'coverart');
   storage.bind($scope, 'settings.action', 'action');
   storage.bind($scope, 'settings.locale', 'locale');
   storage.bind($scope, 'settings.stylesheet', 'stylesheet');
-
   // storage.bind doesn't handle arrays...
   $scope.settings.servers = storage.get('servers'),
 
-  $scope.$watchCollection('coverart', function(value) {
+  $scope.$watchCollection('settings.coverart', function(value) {
     angular.forEach(value, function(enabled, service) {
       if (enabled) {
         coverart.enable(service);
@@ -94,55 +125,13 @@ angular.module('mopidy-mobile.settings', [
     }
   });
 
-  $scope.$watchCollection('settings.servers', function(newValue, oldValue) {
-    if (newValue !== oldValue) {
-      storage.set('servers', newValue);
-      $scope.refreshServers();
-    }
-  });
-
   $scope.$watch('settings.stylesheet', function(newValue, oldValue) {
     if (newValue !== oldValue) {
       $log.info('Style sheet set to "' + newValue + '"');
       stylesheet.set(newValue);
     }
   });
-})
 
-.controller('ServerCtrl', function($ionicHistory, $q, $scope, $state, connection) {
-  angular.extend($scope, {
-    connect: function(url) {
-      connection.reset(url).then(function() {
-        $ionicHistory.clearCache();
-      }).then(function() {
-        return $state.go('main.playback');
-      }).then(function() {
-        $ionicHistory.clearHistory();
-      });
-    },
-    addServer: function(server) {
-      return $q(function(resolve, reject) {
-        if (server.host && server.name) {
-          var webSocketUrl = [
-            server.secure ? 'wss' : 'ws',
-            '://',
-            server.host,
-            ':',
-            server.port,
-            server.path
-          ].join('');
-          $scope.settings.servers.push({name: $scope.server.name, url: webSocketUrl});
-          resolve();
-        } else {
-          reject();
-        }
-      });
-    },
-    removeServer: function(index) {
-      $scope.settings.servers.splice(index, 1);
-    },
-    webSocketUrl: ''
-  });
   connection.settings().then(function(settings) {
     $scope.webSocketUrl = settings.webSocketUrl;
   });

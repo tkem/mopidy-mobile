@@ -1,0 +1,25 @@
+<ion-view cache-view="false" view-title="{{'Add stream' | translate}}">
+  <ion-nav-bar class="bar-stable">
+    <ion-nav-back-button class="button-clear" ng-click="goBack()">
+      <i class="mopidy-mobile-icon-close"></i> {{'Cancel' | translate}}
+    </ion-nav-back-button>
+  </ion-nav-bar>
+  <ion-content ng-controller="TrackCtrl as track">
+    <form class="list" name="form" ng-submit="add(track).then(goBack)">
+      <label class="item item-input">
+        <span class="input-label" translate>Name</span>
+        <input name="name" ng-model="track.name" placeholder="Radio Stream" required type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" translate>URL</span>
+        <input name="uri" ng-model="track.uri" placeholder="http://example.com/stream.mp3" required type="text">
+      </label>
+      <button class="button button-positive button-full item"
+              ng-disabled="form.$invalid"
+              translate
+              type="submit">
+        Add stream
+      </button>
+    </form>
+  </ion-content>
+</ion-view>

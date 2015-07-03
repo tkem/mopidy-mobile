@@ -1,15 +1,19 @@
 <ion-view cache-view="false" view-title="{{'Mopidy servers' | translate}}">
   <ion-nav-buttons side="secondary">
-    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-create"
-            ng-if="!webSocketUrl"
-            ui-sref="^.add"
-            >
-    </button>
-    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-edit"
-            ng-if="webSocketUrl"
-            ui-sref="^.edit"
-            >
-    </button>
+    <div ng-switch="webSocketUrl ? settings.servers.length : 0">
+      <button class="mopidy-mobile-button-icon mopidy-mobile-icon-create"
+              nav-transition="none"
+              ng-switch-when="0"
+              ui-sref="^.add"
+              >
+      </button>
+      <button class="mopidy-mobile-button-icon mopidy-mobile-icon-edit"
+              nav-transition="none"
+              ng-switch-default
+              ui-sref="^.edit"
+              >
+      </button>
+    </div>
   </ion-nav-buttons>
   <ion-content>
     <ion-refresher on-refresh="refreshServers()" pulling-text="{{'Pull to refresh' | translate}}">

@@ -24,14 +24,13 @@
         <input type="search" placeholder="{{'Search here' | translate}}..." ng-model="q">
       </label>
     </form>
-    <ion-list>
-      <ion-item class="item-icon-left"
+    <div class="list">
+      <div class="item item-complex item-icon-left"
            collection-repeat="ref in items"
            ng-class="ref.type == 'track' ? 'item-button-right' : 'item-icon-right'"
            ng-switch="ref.type"
            >
-        <a class="item-content"
-           href=""
+        <div class="item-content item-icon-right"
            ng-click="actions.default(ref)"
            ng-switch-when="track"
            >
@@ -40,7 +39,7 @@
           <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu icon-accessory"
                   ng-click="popover.show($event, ref)">
           </button>
-        </a>
+        </div>
         <a class="item-content"
            ui-sref="main.library.browse({type: ref.type, name: ref.name, uri: ref.uri})"
            ng-switch-default
@@ -49,7 +48,7 @@
           {{ref.name}}
           <i class="mopidy-mobile-icon-link icon-accessory"></i>
         </a>
-      </ion-item>
-    </ion-list>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

@@ -5,9 +5,18 @@
     </ion-nav-back-button>
   </ion-nav-bar>
   <ion-nav-buttons side="secondary">
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-close"
+            ng-click="cancel().then(goBack)"
+            >
+    </button>
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-create"
+            nav-transition="none"
+            ui-sref="^.add"
+            >
+    </button>
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
             ng-click="popover.show($event)"
-            ng-controller="PlaylistEditMenuCtrl"
+            ng-controller="PlaylistMenuCtrl"
             >
     </button>
   </ion-nav-buttons>

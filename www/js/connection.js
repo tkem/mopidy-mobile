@@ -61,7 +61,7 @@ angular.module('mopidy-mobile.connection', [
         );
       }
 
-      var promise = connect(settings);
+      var promise = null;
 
       var connection = function connection(callback) {
         if (callback) {
@@ -125,10 +125,12 @@ angular.module('mopidy-mobile.connection', [
           }
         },
         reset: function(webSocketUrl) {
-          promise.finally(function(mopidy) {
-            mopidy.close();
-            mopidy.off();
-          });
+          if (promise) {
+            promise.finally(function(mopidy) {
+              mopidy.close();
+              mopidy.off();
+            });
+          }
           if (webSocketUrl) {
             settings.webSocketUrl = webSocketUrl;
           }
