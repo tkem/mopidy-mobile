@@ -1,3 +1,11 @@
+1.2.1 2015-07-04
+-----------------
+
+- Fix CSS issues with track menus.
+
+- Advanced search form improvements.
+
+
 1.2.0 2015-07-03
 -----------------
 
