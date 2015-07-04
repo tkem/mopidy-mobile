@@ -12,8 +12,8 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <div class="list">
-      <div class="item item-thumbnail-left item-button-right"
+    <ion-list>
+      <ion-item class="item-thumbnail-left item-button-right"
            collection-repeat="track in tracks"
            ng-click="actions.default(track)"
            >
@@ -23,10 +23,10 @@
         <h2>{{track.name}}</h2>
         <h3>{{track.artists[0].name}}</h3>
         <h4>{{track.album.name}}</h4>
-        <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu icon-accessory"
+        <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
                 ng-click="popover.show($event, track)">
         </button>
-      </div>
-    </div>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

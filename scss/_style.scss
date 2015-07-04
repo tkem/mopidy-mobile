@@ -51,24 +51,22 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     margin-top: 10px !important;
 }
 
-/* style up your nav-bar */
-.nav-bar-title em {
-    font-style: italic;
-}
-
 /* make ion-android-more-vertical as wide as other buttons */
 .bar-stable .button {
     min-width: 34px;
 }
 
 /* FIXME: Ionic bug? */
-.item-button-right {
-    padding-right: 0;
-}
-.item-button-right button:last-child {
+.item-button-right > .mopidy-mobile-button-icon {
+    /*height: 100% !important;*/
     left: auto !important;
-    right: 3px !important;
     padding: 0 !important;
+    right: 3px !important;
+}
+.item-button-right .mopidy-mobile-button-icon:before {
+    display: block;
+    width: 32px;
+    text-align: center;
 }
 
 /* clickable anchors and buttons in toggle labels */

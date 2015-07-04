@@ -24,31 +24,29 @@
         <input type="search" placeholder="{{'Search here' | translate}}..." ng-model="q">
       </label>
     </form>
-    <div class="list">
-      <div class="item item-complex item-icon-left"
-           collection-repeat="ref in items"
-           ng-class="ref.type == 'track' ? 'item-button-right' : 'item-icon-right'"
+    <ion-list>
+      <div collection-repeat="ref in items"
            ng-switch="ref.type"
            >
-        <div class="item-content item-icon-right"
-           ng-click="actions.default(ref)"
-           ng-switch-when="track"
-           >
+        <ion-item class="item-icon-left item-button-right"
+                  ng-click="actions.default(ref)"
+                  ng-switch-when="track"
+                  >
           <i class="mopidy-mobile-icon-track"></i>
           {{ref.name}}
-          <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu icon-accessory"
+          <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
                   ng-click="popover.show($event, ref)">
           </button>
-        </div>
-        <a class="item-content"
-           ui-sref="main.library.browse({type: ref.type, name: ref.name, uri: ref.uri})"
-           ng-switch-default
-           >
+        </ion-item>
+        <ion-item class="item-icon-left item-icon-right"
+                  ui-sref="main.library.browse({type: ref.type, name: ref.name, uri: ref.uri})"
+                  ng-switch-default
+                  >
           <i ng-class="'mopidy-mobile-icon-' + ref.type"></i>
           {{ref.name}}
           <i class="mopidy-mobile-icon-link icon-accessory"></i>
-        </a>
+        </ion-item>
       </div>
-    </div>
+    </ion-list>
   </ion-content>
 </ion-view>
