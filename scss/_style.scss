@@ -25,17 +25,6 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     bottom: $tabs-height + $bar-footer-height + $bar-subfooter-height;
 }
 
-/* FIXME: input items with buttons */
-.item-input.item-button-left {
-    padding-left: 72px;
-}
-.item-input.item-button-left > .button {
-    top: 4px;
-}
-.item-toggle.item-button-left > .button {
-    top: 4px;
-}
-
 /* FIXME: ionic bug? */
 .bar .button.button-small.button-icon:before {
     font-size: $button-icon-size;

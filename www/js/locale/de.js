@@ -69,6 +69,7 @@ angular.module('mopidy-mobile.locale.de', ['mopidy-mobile.locale']).config(funct
       'Save': 'Speichern',
       'Search here': 'Hier suchen',
       'Search results': 'Suchergebnisse',
+      'Search term': 'Suchbegriff',
       'Search {name}': 'Suche in {{name}}',
       'Search': 'Suchen',
       'Secure connection': 'Sichere Verbindung',

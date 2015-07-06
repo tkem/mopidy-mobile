@@ -1,13 +1,7 @@
 <ion-view view-title="{{'Search {name}' | translate:(ref || {name: ('Library' | translate)}) }}">
   <ion-content>
     <form class="list" name="form" ng-submit="submit()">
-      <div class="item item-input item-button-left" ng-repeat="term in terms">
-        <button class="button button-assertive button-clear button-icon icon ion-ios-minus"
-                ng-click="remove($index)"
-                ng-disabled="terms.length < 2"
-                type="button"
-                >
-        </button>
+      <div class="item item-input item-button-right" ng-repeat="term in terms">
         <label class="input-label">
           <select ng-model="term.key" style="vertical-align: middle;">
             <option value="any" translate>Any</option>
@@ -22,14 +16,18 @@
             <option value="track_name" translate>Track</option>
           </select>
         </label>
-        <input class="" ng-model="term.value" required type="text">
-      </div>
-      <div class="item item-toggle item-button-left">
-        <button class="button button-balanced button-clear button-icon icon ion-ios-plus"
-                ng-click="add({key: 'any', value: ''})"
+        <input ng-model="term.value"
+               ng-required="$index == 0 || $index != terms.length - 1"
+               placeholder="{{'Search term' | translate}}"
+               type="text">
+        <button class="button button-clear button-icon button-small mopidy-mobile-icon-close"
+                ng-click="terms.splice($index, 1)"
+                ng-show="$index != terms.length - 1"
                 type="button"
                 >
         </button>
+      </div>
+      <label class="item item-toggle">
         <span translate>Find exact</span>
         <label class="toggle">
           <input name="exact" ng-model="params.exact" type="checkbox">
@@ -37,7 +35,7 @@
             <div class="handle"></div>
           </div>
         </label>
-      </div>
+      </label>
       <button class="button button-positive button-full item"
               ng-disabled="form.$invalid"
               translate

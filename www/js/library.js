@@ -221,8 +221,8 @@ angular.module('mopidy-mobile.library', [
         $scope.$broadcast('scroll.refreshComplete');
       });
     },
-    tracks: items.filter(function(ref) { 
-      return ref.type === 'track'; 
+    tracks: items.filter(function(ref) {
+      return ref.type === 'track';
     })
   });
 })
@@ -237,9 +237,6 @@ angular.module('mopidy-mobile.library', [
       uris: ref ? [ref.uri] : undefined
     },
     ref: ref,
-    remove: function(index) {
-      $scope.terms.splice(index, 1);
-    },
     submit: function() {
       var params = {};
       $scope.terms.forEach(function(term) {
@@ -255,6 +252,12 @@ angular.module('mopidy-mobile.library', [
     },
     terms: [{key: 'any', value: ''}]
   });
+
+  $scope.$watch('terms', function(terms) {
+    if (terms[terms.length - 1].value) {
+      terms.push({key: 'any', value: ''});
+    }
+  }, true);
 })
 
 .controller('SearchCtrl', function(results, $scope) {
