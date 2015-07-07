@@ -146,7 +146,7 @@ angular.module('mopidy-mobile.playlists', [
   connection.on(listeners);
 })
 
-.controller('PlaylistCtrl', function(actions, connection, editable, playlist, popoverMenu, uri, $q, $scope) {
+.controller('PlaylistCtrl', function(actions, connection, editable, playlist, popoverMenu, popup, uri, $q, $scope) {
 
   var listeners = {
     // TODO: how to handle this, e.g. with editing
@@ -166,6 +166,10 @@ angular.module('mopidy-mobile.playlists', [
     }, {
       text: 'Add to tracklist',
       click: 'popover.hide() && actions.add(track)'
+    }, {
+      text: 'Show track info',
+      hellip: true,
+      click: 'popover.hide() && info(track)'
     }], {
       scope: $scope
     }
@@ -195,6 +199,21 @@ angular.module('mopidy-mobile.playlists', [
     editable: editable,
     getScheme: function(uri) {
       return uri ? uri.substr(0, uri.indexOf(':')) : null;
+    },
+    info: function(track) {
+        return connection(function(mopidy) {
+            return mopidy.library.lookup({uri: track.uri}).then(function(tracks) {
+                // FIXME: more elegant way of passing track?
+                if (tracks && tracks.length) {
+                    $scope.track = angular.extend({}, track, tracks[0]);
+                } else {
+                    $scope.track = track;
+                }
+                popup.fromTemplateUrl('Track info', 'templates/info.html', $scope, [
+                  {text: 'OK', type: 'button-positive'}
+                ]);
+            });
+        });
     },
     move: function(fromIndex, toIndex) {
       var tracks = $scope.playlist.tracks.splice(fromIndex, 1);

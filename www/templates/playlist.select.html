@@ -1,0 +1,7 @@
+<ion-list>
+  <ion-item ng-click="actions.addToPlaylist(playlist.uri, track) && $buttonTapped({}, $event)" 
+            ng-repeat="playlist in playlists"
+            >
+    {{playlist.name}}
+  </ion-item>
+</div>

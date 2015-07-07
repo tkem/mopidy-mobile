@@ -111,8 +111,8 @@ angular.module('mopidy-mobile.ui', [
   return {
     alert: function(message) {
       return $ionicPopup.alert({
-        title: translate(message),
-        okText: translate('OK')
+        okText: translate('OK'),
+        title: translate(message)
       });
     },
     confirm: function(message) {
@@ -130,23 +130,15 @@ angular.module('mopidy-mobile.ui', [
         cancelText: translate('Cancel')
       });
     },
-    fromTemplateUrl: function(title, templateUrl) {
-      var scope = $rootScope.$new(true);
-      scope.data = {};
+      fromTemplateUrl: function(title, templateUrl, scope, buttons) {
       return $ionicPopup.show({
-        templateUrl: templateUrl,
         title: translate(title),
+        cssClass: 'mopidy-mobile-popup',
+        templateUrl: templateUrl,
         scope: scope,
-        buttons: [
-          { text: translate('Cancel') },
-          {
-            text: translate('OK'),
-            type: 'button-positive',
-            onTap: function() {
-              return scope.data;
-            }
-          }
-        ]
+        buttons: (buttons || []).map(function(button) {
+            return angular.extend({}, button, {text: translate(button.text)});
+        }),
       });
     }
   };

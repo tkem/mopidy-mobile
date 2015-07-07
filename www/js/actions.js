@@ -31,6 +31,20 @@ angular.module('mopidy-mobile.actions', [
         return mopidy.tracklist.add(addParams(obj));
       });
     },
+    addToPlaylist: function(uri, obj) {
+      return connection(function(mopidy) {
+          return mopidy.library.lookup({uri: obj.uri}).then(function(tracks) {
+              return tracks || [];
+          }).then(function(tracks) {
+              return mopidy.playlists.lookup({uri: uri}).then(function(playlist) {
+                  playlist.tracks = Array.prototype.concat(playlist.tracks || [], tracks);
+                  return playlist;
+              });
+          }).then(function(playlist) {
+              return mopidy.playlists.save({playlist: playlist});
+          });
+      });
+    },
     play: function(obj) {
       return connection(function(mopidy) {
         return mopidy.playback.getCurrentTlTrack().then(function(tlTrack) {

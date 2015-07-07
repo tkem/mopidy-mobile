@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget android-versionCode="6" id="at.co.kemmer.mopidy-mobile" version="1.2.2">
+<widget android-versionCode="7" id="at.co.kemmer.mopidy-mobile" version="1.3.0">
   <name>Mopidy Mobile</name>
   <description>
     Mopidy Mobile aims to be a simple, easy to use remote that lets

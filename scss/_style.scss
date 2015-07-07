@@ -30,21 +30,6 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     font-size: $button-icon-size;
 }
 
-/* FIXME: buttons and checkboxes are mis-aligned in android popovers */
-.platform-android .popover .item {
-    margin: 0 !important;
-}
-
-/* popover menus: http://forum.ionicframework.com/t/popover-sizing/8251/ */
-.platform-android ion-popover-view {
-    margin-top: 10px !important;
-}
-
-/* make ion-android-more-vertical as wide as other buttons */
-.bar-stable .button {
-    min-width: 34px;
-}
-
 /* FIXME: Ionic bug? */
 .item-button-right > .mopidy-mobile-button-icon {
     /*height: 100% !important;*/
@@ -56,6 +41,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     display: block;
     width: 32px;
     text-align: center;
+}
+
+/* make ion-android-more-vertical as wide as other buttons */
+.bar-stable .button {
+    min-width: 34px;
 }
 
 /* clickable anchors and buttons in toggle labels */
@@ -81,6 +71,11 @@ h1, h2, h3, h4, h5, h6, p {
 /* "i" is for icons */
 i {
     @extend .icon
+}
+
+/* wider popup if generated from template */
+.popup-container.mopidy-mobile-popup .popup {
+    width: 80% !important;
 }
 
 /* custom icon classes */
@@ -217,8 +212,6 @@ i {
 /* popover menus */
 .mopidy-mobile-menu {
     height: auto !important;
-    min-height: 20px !important;
-    max-height: 80% !important;
     button.item {
         @extend .button-full;
         text-align: left !important;
