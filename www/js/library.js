@@ -141,6 +141,10 @@ angular.module('mopidy-mobile.library', [
       text: 'Add to tracklist',
       click: 'popover.hide() && actions.add(track)'
     }, {
+      text: 'Add to playlist',
+      hellip: true,
+      click: 'popover.hide() && selectPlaylist(track)'
+    }, {
       text: 'Show track info',
       hellip: true,
       click: 'popover.hide() && info(track)'
@@ -169,7 +173,9 @@ angular.module('mopidy-mobile.library', [
                 } else {
                     $scope.track = track;
                 }
-                popup.fromTemplateUrl('Track info', 'templates/info.html', $scope);
+                popup.fromTemplateUrl('Track info', 'templates/info.html', $scope, [
+                  {text: 'OK', type: 'button-positive'}
+                ]);
             });
         });
     },
@@ -183,6 +189,18 @@ angular.module('mopidy-mobile.library', [
     }),
     search: function(params) {
       $state.go('^.search', params);
+    },
+    selectPlaylist: function(track) {
+      return connection(function(mopidy) {
+        return mopidy.playlists.asList();
+      }).then(function(playlists) {
+        // FIXME: pass arguments to popup...
+        $scope.track = track;
+        $scope.playlists = playlists;
+          popup.fromTemplateUrl('Add to playlist', 'templates/playlist.select.html', $scope, [
+            {text: 'Cancel', type: 'button-assertive'}
+          ]);
+      });
     }
   });
 })

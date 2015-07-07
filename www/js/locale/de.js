@@ -6,7 +6,8 @@ angular.module('mopidy-mobile.locale.de', ['mopidy-mobile.locale']).config(funct
       'About': 'Über',
       'Add server': 'Server hinzufügen',
       'Add stream': 'Stream hinzufügen',
-      'Add to tracklist': 'Titel hinzufügen',
+      'Add to playlist': 'Zu Liste hinzufügen',
+      'Add to tracklist': 'Zu Titeln hinzufügen',
       'Album artist': 'Albumkünstler ',  // ???
       'Album': 'Album',
       'Any': 'Alle',  // ???

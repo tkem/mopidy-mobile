@@ -32,7 +32,7 @@ angular.module('mopidy-mobile.tracklist', [
   ;
 })
 
-.controller('TracklistCtrl', function(connection, coverart, popoverMenu, popup, $q, $scope) {
+.controller('TracklistCtrl', function(actions, connection, coverart, popoverMenu, popup, $q, $scope) {
   var listeners = {
     'connection:online': function() {
       connection(function(mopidy) {
@@ -65,6 +65,10 @@ angular.module('mopidy-mobile.tracklist', [
   };
   var popover = popoverMenu(
     [{
+      text: 'Add to playlist',
+      hellip: true,
+      click: 'popover.hide() && selectPlaylist(track)'
+    }, {
       text: 'Show track info',
       hellip: true,
       click: 'popover.hide() && info(track)'
@@ -78,6 +82,7 @@ angular.module('mopidy-mobile.tracklist', [
     options: {},
     ref: {},
     tlTracks: [],
+    actions: actions,
     add: function(uri) {
       return connection(function(mopidy) {
         return mopidy.tracklist.add({uris: [uri]});
@@ -105,7 +110,9 @@ angular.module('mopidy-mobile.tracklist', [
     info: function(track) {
         // FIXME: more elegant way of passing track?
         $scope.track = track;
-        popup.fromTemplateUrl('Track info', 'templates/info.html', $scope);
+        popup.fromTemplateUrl('Track info', 'templates/info.html', $scope, [
+          {text: 'OK', type: 'button-positive'}
+        ]);
     },
     move: function(fromIndex, toIndex) {
       return connection(function(mopidy) {
@@ -148,6 +155,18 @@ angular.module('mopidy-mobile.tracklist', [
         return mopidy.tracklist.remove({criteria: {tlid: [tlTrack.tlid]}});
       });
       // TODO: then(update $scope.tlTracks) -- race condition with event?
+    },
+    selectPlaylist: function(track) {
+      return connection(function(mopidy) {
+        return mopidy.playlists.asList();
+      }).then(function(playlists) {
+        // FIXME: pass arguments to popup...
+        $scope.track = track;
+        $scope.playlists = playlists;
+          popup.fromTemplateUrl('Add to playlist', 'templates/playlist.select.html', $scope, [
+            {text: 'Cancel', type: 'button-assertive'}
+          ]);
+      });
     },
     setConsume: function(value) {
       return connection(function(mopidy) {

@@ -67,7 +67,7 @@ angular.module('mopidy-mobile.playback', [
   };
 })
 
-.controller('PlaybackCtrl', function(connection, coverart, timer, $log, $q, $scope, $window) {
+.controller('PlaybackCtrl', function(actions, connection, coverart, timer, $log, $q, $scope, $window) {
   function setCurrentTlTrack(currentTlTrack) {
     return connection(function(mopidy) {
       // TODO: only call eotTrack if needed
@@ -172,6 +172,7 @@ angular.module('mopidy-mobile.playback', [
   };
 
   angular.extend($scope, {
+    actions: actions,
     options: {},
     hasNext: false,
     hasPrevious: false,
@@ -378,14 +379,32 @@ angular.module('mopidy-mobile.playback', [
   connection.on(listeners);
 })
 
-    .controller('PlaybackMenuCtrl', function(popoverMenu, popup, $scope) {
+.controller('PlaybackMenuCtrl', function(connection, popoverMenu, popup, $scope) {
   angular.extend($scope, {
     info: function(track) {
-        // FIXME: more elegant way of passing track?
+      // FIXME: more elegant way of passing track?
+      $scope.track = track;
+      popup.fromTemplateUrl('Track info', 'templates/info.html', $scope, [
+        {text: 'OK', type: 'button-positive'}
+      ]);
+    },
+    selectPlaylist: function(track) {
+      return connection(function(mopidy) {
+        return mopidy.playlists.asList();
+      }).then(function(playlists) {
+        // FIXME: pass arguments to popup...
         $scope.track = track;
-        popup.fromTemplateUrl('Track info', 'templates/info.html', $scope);
+        $scope.playlists = playlists;
+          popup.fromTemplateUrl('Add to playlist', 'templates/playlist.select.html', $scope, [
+            {text: 'Cancel', type: 'button-assertive'}
+          ]);
+      });
     },
     popover: popoverMenu([{
+      text: 'Add to playlist',
+      hellip: true,
+      click: 'popover.hide() && selectPlaylist(track)'
+    }, {
       text: 'Show track info',
       hellip: true,
       click: 'popover.hide() && info(track)'

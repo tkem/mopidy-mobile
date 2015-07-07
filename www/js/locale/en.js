@@ -6,6 +6,7 @@ angular.module('mopidy-mobile.locale.en', ['mopidy-mobile.locale']).config(funct
       'About': 'About',
       'Add server': 'Add server',
       'Add stream': 'Add stream',
+      'Add to playlist': 'Add to playlist',
       'Add to tracklist': 'Add to tracklist',
       'Album artist': 'Album artist',
       'Album': 'Album',

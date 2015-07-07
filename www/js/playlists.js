@@ -209,7 +209,9 @@ angular.module('mopidy-mobile.playlists', [
                 } else {
                     $scope.track = track;
                 }
-                popup.fromTemplateUrl('Track info', 'templates/info.html', $scope);
+                popup.fromTemplateUrl('Track info', 'templates/info.html', $scope, [
+                  {text: 'OK', type: 'button-positive'}
+                ]);
             });
         });
     },

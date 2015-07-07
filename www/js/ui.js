@@ -130,12 +130,15 @@ angular.module('mopidy-mobile.ui', [
         cancelText: translate('Cancel')
       });
     },
-    fromTemplateUrl: function(title, templateUrl, scope) {
+      fromTemplateUrl: function(title, templateUrl, scope, buttons) {
       return $ionicPopup.show({
+        title: translate(title),
         cssClass: 'mopidy-mobile-popup',
         templateUrl: templateUrl,
-        title: translate(title),
-        scope: scope
+        scope: scope,
+        buttons: (buttons || []).map(function(button) {
+            return angular.extend({}, button, {text: translate(button.text)});
+        }),
       });
     }
   };
