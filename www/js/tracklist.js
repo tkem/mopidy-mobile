@@ -32,7 +32,7 @@ angular.module('mopidy-mobile.tracklist', [
   ;
 })
 
-.controller('TracklistCtrl', function(connection, coverart, $q, $scope) {
+.controller('TracklistCtrl', function(connection, coverart, popoverMenu, popup, $q, $scope) {
   var listeners = {
     'connection:online': function() {
       connection(function(mopidy) {
@@ -63,6 +63,15 @@ angular.module('mopidy-mobile.tracklist', [
       $scope.currentTlTrack = event.tl_track;
     }
   };
+  var popover = popoverMenu(
+    [{
+      text: 'Show track info',
+      hellip: true,
+      click: 'popover.hide() && info(track)'
+    }], {
+      scope: $scope
+    }
+  );
 
   angular.extend($scope, {
     images: {},
@@ -93,6 +102,11 @@ angular.module('mopidy-mobile.tracklist', [
       }
       return -1;
     },
+    info: function(track) {
+        // FIXME: more elegant way of passing track?
+        $scope.track = track;
+        popup.fromTemplateUrl('Track info', 'templates/info.html', $scope);
+    },
     move: function(fromIndex, toIndex) {
       return connection(function(mopidy) {
         return mopidy.tracklist.move({
@@ -108,6 +122,14 @@ angular.module('mopidy-mobile.tracklist', [
         return mopidy.playback.play({tl_track: angular.copy(tlTrack)});
       });
     },
+    popover: angular.extend({}, popover, {
+      show: function(event, track) {
+        event.preventDefault();
+        event.stopPropagation();
+        $scope.track = track;  // FIXME: more elegant way of passing track?
+        popover.show(event);
+      }
+    }),
     refresh: function() {
       return connection().then(function(mopidy) {
         return $q.all({

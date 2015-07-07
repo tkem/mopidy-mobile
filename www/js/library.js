@@ -129,7 +129,7 @@ angular.module('mopidy-mobile.library', [
   });
 })
 
-.controller('LibraryCtrl', function(actions, coverart, popoverMenu, $scope, $state) {
+.controller('LibraryCtrl', function(actions, connection, coverart, popoverMenu, popup, $scope, $state) {
   var popover = popoverMenu(
     [{
       text: 'Play now',
@@ -140,6 +140,10 @@ angular.module('mopidy-mobile.library', [
     }, {
       text: 'Add to tracklist',
       click: 'popover.hide() && actions.add(track)'
+    }, {
+      text: 'Show track info',
+      hellip: true,
+      click: 'popover.hide() && info(track)'
     }], {
       scope: $scope
     }
@@ -155,6 +159,19 @@ angular.module('mopidy-mobile.library', [
         angular.extend(images, result);
       });
       return images;
+    },
+    info: function(track) {
+        return connection(function(mopidy) {
+            return mopidy.library.lookup({uri: track.uri}).then(function(tracks) {
+                // FIXME: more elegant way of passing track?
+                if (tracks && tracks.length) {
+                    $scope.track = angular.extend({}, track, tracks[0]);
+                } else {
+                    $scope.track = track;
+                }
+                popup.fromTemplateUrl('Track info', 'templates/info.html', $scope);
+            });
+        });
     },
     popover: angular.extend({}, popover, {
       show: function(event, track) {

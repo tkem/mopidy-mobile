@@ -83,6 +83,11 @@ i {
     @extend .icon
 }
 
+/* wider popup if generated from template */
+.popup-container.mopidy-mobile-popup .popup {
+    width: 80% !important;
+}
+
 /* custom icon classes */
 .mopidy-mobile-icon-playback {
     @extend .#{$mopidy-mobile-icon-playback};

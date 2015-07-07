@@ -376,4 +376,21 @@ angular.module('mopidy-mobile.playback', [
   });
 
   connection.on(listeners);
+})
+
+    .controller('PlaybackMenuCtrl', function(popoverMenu, popup, $scope) {
+  angular.extend($scope, {
+    info: function(track) {
+        // FIXME: more elegant way of passing track?
+        $scope.track = track;
+        popup.fromTemplateUrl('Track info', 'templates/info.html', $scope);
+    },
+    popover: popoverMenu([{
+      text: 'Show track info',
+      hellip: true,
+      click: 'popover.hide() && info(track)'
+    }], {
+      scope: $scope
+    })
+  });
 });
