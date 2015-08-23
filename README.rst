@@ -67,8 +67,6 @@ Android development.  Then run::
 
   ionic resources android
   ionic platform add android
-  cordova prepare
-  ionic plugin add https://github.com/vstirbu/ZeroConf
   ionic build android
 
 

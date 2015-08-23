@@ -1,3 +1,15 @@
+1.3.1 2015-08-23
+-----------------
+
+- Display multiple track/album artists.
+
+- Display album artists in search results.
+
+- Correct splash screen alignment.
+
+- Upgrade `ionic` to v1.1.0.
+
+
 1.3.0 2015-07-07
 -----------------
 

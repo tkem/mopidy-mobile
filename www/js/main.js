@@ -186,9 +186,11 @@ angular.module('mopidy-mobile', [
   };
 })
 
-.run(function($cordovaAppVersion, $ionicPlatform, $log, $rootElement, $rootScope) {
+.run(function($ionicPlatform, $log, $rootElement, $rootScope, $window) {
   $ionicPlatform.ready().then(function() {
-    return $rootElement.attr('data-version') || $cordovaAppVersion.getAppVersion();
+    return $rootElement.attr('data-version') || (
+      $window.AppVersion ? $window.AppVersion.version : 'dev'
+    );
   }).then(function(version) {
     $log.info('Mopidy Mobile ' + version + ' (' + ionic.Platform.platform() + ')');
     $rootScope.version = version;
