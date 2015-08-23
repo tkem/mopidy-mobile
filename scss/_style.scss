@@ -283,3 +283,8 @@ img.mopidy-mobile-logo {
     float: left;
     margin-right:10px;
 }
+
+.mopidy-mobile-artists span + span:before{
+    content: "\00b7";
+    padding: 0 1ex;
+}

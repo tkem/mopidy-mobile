@@ -21,7 +21,9 @@
              ng-src="{{images[track.uri].uri || thumbnailSrc}}"
              >
         <h2>{{track.name}}</h2>
-        <h3>{{track.artists[0].name}}</h3>
+        <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">
+          <span ng-repeat="artist in track.artists">{{artist.name}}</span>
+        </h3>
         <h4>{{track.album.name}}</h4>
         <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
                 ng-click="popover.show($event, track)">

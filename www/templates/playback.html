@@ -32,7 +32,9 @@
     </ion-refresher>
     <h2>{{track.name || ('Nothing playing' | translate)}}</h2>
     <h3 ng-show="streamTitle">{{streamTitle}}</h3>
-    <h3 ng-show="track.artists[0].name">{{track.artists[0].name}}</h3>
+    <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">
+      <span ng-repeat="artist in track.artists">{{artist.name}}</span>
+    </h3>
     <h4 ng-show="track.album.name">{{track.album.name}}</h4>
     <div ng-if="image">
       <img ng-src="{{image.uri}}">

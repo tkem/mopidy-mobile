@@ -7,20 +7,28 @@
     <h2>{{track.album.name}}</h2>
     <h4 translate>Album</h4>
   </div>
-  <div class="item" ng-if="track.artists[0].name">
-    <h2>{{track.artists[0].name}}</h2>
+  <div class="item" ng-if="track.artists.length">
+    <h2 class="mopidy-mobile-artists">
+      <span ng-repeat="artist in track.artists">{{artist.name}}</span>
+    </h2>
     <h4 translate>Artist</h4>
   </div>
-  <div class="item" ng-if="track.composers[0].name">
-    <h2>{{track.composers[0].name}}</h2>
+  <div class="item" ng-if="track.composers.length">
+    <h2 class="mopidy-mobile-artists">
+      <span ng-repeat="artist in track.composers">{{artist.name}}</span>
+    </h2>
     <h4 translate>Composer</h4>
   </div>
-  <div class="item" ng-if="track.performers[0].name">
-    <h2>{{track.performers[0].name}}</h2>
+  <div class="item" ng-if="track.performers.length">
+    <h2 class="mopidy-mobile-artists">
+      <span ng-repeat="artist in track.performers">{{artist.name}}</span>
+    </h2>
     <h4 translate>Performer</h4>
   </div>
-  <div class="item" ng-if="track.album.artists[0].name">
-    <h2>{{track.album.artists[0].name}}</h2>
+  <div class="item" ng-if="track.album.artists.length">
+    <h2 class="mopidy-mobile-artists">
+      <span ng-repeat="artist in track.album.artists">{{artist.name}}</span>
+    </h2>
     <h4 translate>Album artist</h4>
   </div>
   <div class="item" ng-if="track.genre">
