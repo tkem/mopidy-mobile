@@ -4,7 +4,7 @@
 build/
 dist/
 mopidy_mobile/www/*/
-mopidy_mobile/www/bundle.min.js
+mopidy_mobile/www/mopidy-mobile.bundle.min.js
 node_modules/
 platforms/
 plugins/

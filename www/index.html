@@ -6,37 +6,46 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <link id="stylesheet" rel="stylesheet" href="css/ionic-light.min.css">
-    <script src="lib/mopidy/dist/mopidy.js"></script>
     <script src="lib/ionic/release/js/ionic.bundle.js"></script>
-    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
     <script src="lib/ngCordova/dist/ng-cordova-mocks.js"></script>
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
     <script src="lib/angular-local-storage/dist/angular-local-storage.js"></script>
     <script src="lib/angular-translate/angular-translate.js"></script>
+    <script src="lib/mopidy/dist/mopidy.js"></script>
+
     <script src="cordova.js"></script>
-    <script src="js/actions.js"></script>
-    <script src="js/connection.js"></script>
-    <script src="js/coverart.js"></script>
-    <script src="js/coverart/archive.js"></script>
-    <script src="js/coverart/lastfm.js"></script>
-    <script src="js/coverart/mopidy.js"></script>
-    <script src="js/library.js"></script>
-    <script src="js/locale.js"></script>
-    <script src="js/locale/en.js"></script>
-    <script src="js/locale/de.js"></script>
-    <script src="js/logging.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/mopidy.js"></script>
-    <script src="js/playback.js"></script>
-    <script src="js/playlists.js"></script>
-    <script src="js/servers.js"></script>
-    <script src="js/settings.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/tracklist.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/util.js"></script>
-    <script src="js/zeroconf.js"></script>
+
+    <script src="app/app.js"></script>
+    <script src="app/library/library.js"></script>
+    <script src="app/locale/de.js"></script>
+    <script src="app/locale/en.js"></script>
+    <script src="app/locale/locale.js"></script>
+    <script src="app/main/main.js"></script>
+    <script src="app/playback/playback.js"></script>
+    <script src="app/playlist/playlist.js"></script>
+    <script src="app/playlists/playlists.js"></script>
+    <script src="app/servers/servers.js"></script>
+    <script src="app/services/actions.js"></script>
+    <script src="app/services/connection.js"></script>
+    <script src="app/services/coverart.js"></script>
+    <script src="app/services/locale.js"></script>
+    <script src="app/services/logging.js"></script>
+    <script src="app/services/mopidy.js"></script>
+    <script src="app/services/router.js"></script>
+    <script src="app/services/services.js"></script>
+    <script src="app/services/storage.js"></script>
+    <script src="app/services/util.js"></script>
+    <script src="app/services/zeroconf.js"></script>
+    <script src="app/settings/settings.js"></script>
+    <script src="app/tracklist/tracklist.js"></script>
+    <script src="app/ui/menu.js"></script>
+    <script src="app/ui/popup.js"></script>
+    <script src="app/ui/stylesheet.js"></script>
+    <script src="app/ui/target.js"></script>
+    <script src="app/ui/ui.js"></script>
+
   </head>
-  <body ng-app="mopidy-mobile" data-web-socket-url="ws://localhost:6680/mopidy/ws">
+  <body ng-app="app" data-web-socket-url="ws://localhost:6680/mopidy/ws">
     <ion-nav-bar class="bar-stable">
       <ion-nav-back-button></ion-nav-back-button>
     </ion-nav-bar>

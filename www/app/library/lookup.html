@@ -1,0 +1,34 @@
+<ion-view view-title="{{name || uri}}">
+  <ion-nav-buttons side="secondary">
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-play"
+            ng-click="actions.default(tracks)"
+            ng-disabled="!tracks.length"
+            >
+    </button>
+    <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
+            ng-click="popover.show($event)"
+            ng-controller="LibraryMenuController"
+            >
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-thumbnail-left item-button-right"
+           collection-repeat="track in tracks"
+           ng-click="actions.default(track)"
+           >
+        <img ng-class="{'mopidy-mobile-thumbnail-track': !images[track.uri].uri}"
+             ng-src="{{images[track.uri].uri || thumbnailSrc}}"
+             >
+        <h2>{{track.name}}</h2>
+        <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">
+          <span ng-repeat="artist in track.artists">{{artist.name}}</span>
+        </h3>
+        <h4>{{track.album.name}}</h4>
+        <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
+                ng-click="popover.show($event, track)">
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

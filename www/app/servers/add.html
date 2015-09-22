@@ -1,0 +1,42 @@
+<ion-view cache-view="false" view-title="{{'Add server' | translate}}">
+  <ion-nav-bar class="bar-stable">
+    <ion-nav-back-button class="button-clear" ng-click="goBack()">
+      <i class="mopidy-mobile-icon-close"></i> {{'Cancel' | translate}}
+    </ion-nav-back-button>
+  </ion-nav-bar>
+  <ion-content ng-controller="ServerController as server">
+    <form class="list" name="form" ng-submit="addServer(server.getConfig()).then(goBack)">
+      <label class="item item-input">
+        <span class="input-label" translate>Name</span>
+        <input name="name" ng-model="server.name" placeholder="Mopidy Server" required type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" translate>Host</span>
+        <input name="host" ng-model="server.host" placeholder="192.168.1.1" required type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" translate>Port</span>
+        <input ng-model="server.port" placeholder="6680" required type="number">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" translate>Path</span>
+        <input ng-model="server.path" placeholder="/mopidy/ws/" required type="text">
+      </label>
+      <label class="item item-toggle">
+        <span translate>Secure connection</span>
+        <label class="toggle">
+          <input ng-model="server.secure" type="checkbox">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </label>
+      <button class="button button-positive button-full item"
+              ng-disabled="form.$invalid"
+              translate
+              type="submit">
+        Add server
+      </button>
+    </form>
+  </ion-content>
+</ion-view>

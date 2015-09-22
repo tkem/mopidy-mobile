@@ -20,6 +20,7 @@
   "devDependencies": {
     "bower": "^1.4",
     "del": "^1.2",
+    "gulp-ng-annotate": "^1.1.0",
     "shelljs": "^0.5"
   },
   "cordovaPlugins": [

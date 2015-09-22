@@ -5,7 +5,7 @@ import re
 
 from setuptools import find_packages, setup
 
-assert os.path.exists('mopidy_mobile/www/bundle.min.js')
+assert os.path.exists('mopidy_mobile/www/mopidy-mobile.bundle.min.js')
 
 
 def get_version(filename):

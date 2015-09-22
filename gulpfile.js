@@ -10,6 +10,7 @@ var sass = require('gulp-sass');
 var sh = require('shelljs');
 var templateCache = require('gulp-angular-templatecache');
 var uglify = require('gulp-uglify');
+var ngAnnotate = require('gulp-ng-annotate');
 
 var paths = {
   build: 'build/',
@@ -41,23 +42,24 @@ gulp.task('sass', ['sass:images'], function() {
 });
 
 gulp.task('jshint', function() {
-  return gulp.src('www/js/**/*.js')
+  return gulp.src(['www/app/**/*.js'])
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('uglify', function() {
-  return gulp.src('www/js/**/*.js')
+  return gulp.src(['www/app/**/*.js'])
     .pipe(concat('mopidy-mobile.js'))
+    .pipe(ngAnnotate({single_quotes: true}))
     .pipe(uglify({mangle: false}))
     .pipe(rename({extname: '.min.js'}))
     .pipe(gulp.dest(paths.build));
 });
 
 gulp.task('templates', function () {
-  return gulp.src('www/templates/**/*.html')
-    .pipe(templateCache({module: 'mopidy-mobile', root: 'templates/'}))
+  return gulp.src('www/app/**/*.html')
+    .pipe(templateCache({module: 'app', root: 'app/'}))
     .pipe(uglify())
     .pipe(rename('templates.min.js'))
     .pipe(gulp.dest(paths.build));
@@ -72,7 +74,7 @@ gulp.task('bundle', ['uglify', 'templates'], function() {
     paths.lib + '/angular-translate/angular-translate.min.js',
     paths.build + '/mopidy-mobile.min.js',
     paths.build + '/templates.min.js'
-  ]).pipe(concat('bundle.min.js'))
+  ]).pipe(concat('mopidy-mobile.bundle.min.js'))
     .pipe(gulp.dest(paths.dist));
 });
 
