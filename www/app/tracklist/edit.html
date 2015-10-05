@@ -22,7 +22,7 @@
                 ng-repeat="tlTrack in tlTracks"
                 >
         <img ng-class="{'mopidy-mobile-thumbnail-track': !images[tlTrack.track.uri].uri}"
-             ng-src="{{images[tlTrack.track.uri].uri || thumbnailSrc}}"
+             ng-src="{{images[tlTrack.track.uri].uri || thumbnail.src}}"
              >
         <h2>{{tlTrack.track.name}}</h2>
         <h3 class="mopidy-mobile-artists" ng-show="tlTrack.track.artists.length">

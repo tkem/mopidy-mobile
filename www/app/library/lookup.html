@@ -18,7 +18,7 @@
            ng-click="actions.default(track)"
            >
         <img ng-class="{'mopidy-mobile-thumbnail-track': !images[track.uri].uri}"
-             ng-src="{{images[track.uri].uri || thumbnailSrc}}"
+             ng-src="{{images[track.uri].uri || thumbnail.src}}"
              >
         <h2>{{track.name}}</h2>
         <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">

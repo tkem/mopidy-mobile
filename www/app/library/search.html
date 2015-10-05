@@ -18,7 +18,7 @@
          ui-sref="library.lookup({name: artist.name, uri: artist.uri})"
          >
         <img ng-class="{'mopidy-mobile-thumbnail-artist': !images[artist.uri].uri}"
-             ng-src="{{images[artist.uri].uri || thumbnailSrc}}"
+             ng-src="{{images[artist.uri].uri || thumbnail.src}}"
              >
         <h2>{{artist.name}}</h2>
         <h3></h3>
@@ -29,7 +29,7 @@
          ui-sref="library.lookup({name: album.name, uri: album.uri})"
          >
         <img ng-class="{'mopidy-mobile-thumbnail-album': !images[album.uri].uri}"
-             ng-src="{{images[album.uri].uri || thumbnailSrc}}"
+             ng-src="{{images[album.uri].uri || thumbnail.src}}"
              >
         <h2>{{album.name}}</h2>
         <h3 class="mopidy-mobile-artists" ng-show="album.artists.length">
@@ -42,7 +42,7 @@
            ng-click="actions.default(track)"
            >
         <img ng-class="{'mopidy-mobile-thumbnail-track': !images[track.uri].uri}"
-             ng-src="{{images[track.uri].uri || thumbnailSrc}}"
+             ng-src="{{images[track.uri].uri || thumbnail.src}}"
              >
         <h2>{{track.name}}</h2>
         <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">

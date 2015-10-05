@@ -70,7 +70,7 @@
   });
 
   /* @ngInject */
-  module.controller('PlaybackCtrl', function(actions, connection, coverart, timer, $log, $q, $scope, $window) {
+  module.controller('PlaybackCtrl', function($q, $scope, $window, connection, coverart, timer) {
     function setCurrentTlTrack(currentTlTrack) {
       return connection(function(mopidy) {
         // TODO: only call eotTrack if needed
@@ -118,192 +118,198 @@
       }
     }, 1000);
 
-    var listeners = {
-      'connection:online': function() {
-        connection(function(mopidy) {
-          return $q.all({
-            currentTlTrack: mopidy.playback.getCurrentTlTrack(),
-            state: mopidy.playback.getState(),
-            timePosition: mopidy.playback.getTimePosition(),
-            options: mopidy.tracklist.getOptions()
-          });
-        }).then(function(results) {
-          angular.extend($scope, results);
-        }).then(function() {
-          if ($scope.state === 'playing') {
-            positionTimer.start($scope.timePosition, $scope.currentTlTrack.track.length || null);
-          } else {
-            positionTimer.stop($scope.timePosition);
-          }
-          setCurrentTlTrack($scope.currentTlTrack);
-        });
-      },
-      'event:optionsChanged': function() {
-        $q.when(this.tracklist.getOptions()).then(function(options) {
-          $scope.options = options;
-        });
-      },
-      'event:playbackStateChanged': function(event) {
-        if (($scope.state = event.new_state) === 'playing') {
-          positionTimer.start();
-        } else {
-          positionTimer.stop();
-        }
-      },
-      'event:seeked': function(event) {
-        positionTimer.set(event.time_position);
-      },
-      'event:streamTitleChanged': function(event) {
-        $scope.streamTitle = event.title;
-      },
-      'event:tracklistChanged': function() {
-        this.playback.getCurrentTlTrack().then(setCurrentTlTrack);
-      },
-      'event:trackPlaybackEnded':function() {
-        positionTimer.stop(0);
-      },
-      'event:trackPlaybackPaused': function(event) {
-        positionTimer.stop(event.time_position);
-      },
-      'event:trackPlaybackResumed': function(event) {
-        positionTimer.start(event.time_position);
-      },
-      'event:trackPlaybackStarted': function(event) {
-        setCurrentTlTrack(event.tl_track);
-        positionTimer.start(0, event.tl_track.track.length || null);
-      }
+
+
+
+    angular.extend($scope, {options: {}, hasNext: false, hasPrevious: false});
+
+    $scope.play = function() {
+      return connection(function(mopidy) {
+        return mopidy.playback.play();
+      });
     };
 
-    angular.extend($scope, {
-      actions: actions,
-      options: {},
-      hasNext: false,
-      hasPrevious: false,
-      play: function() {
-        return connection(function(mopidy) {
-          return mopidy.playback.play();
+    $scope.pause = function() {
+      return connection(function(mopidy) {
+        return mopidy.playback.pause();
+      });
+    };
+
+    $scope.stop = function() {
+      return connection(function(mopidy) {
+        return mopidy.playback.stop();
+      });
+    };
+
+    $scope.next = function() {
+      // FIXME: calling next() while stopped triggers no events
+      var state = $scope.state;
+      return connection(function(mopidy) {
+        return mopidy.playback.next().then(function() {
+          if (state === 'stopped') {
+            mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
+          }
         });
-      },
-      pause: function() {
-        return connection(function(mopidy) {
-          return mopidy.playback.pause();
+      });
+    };
+
+    $scope.previous = function() {
+      // FIXME: calling previous() while stopped triggers no events
+      var state = $scope.state;
+      return connection(function(mopidy) {
+        mopidy.playback.previous().then(function() {
+          if (state === 'stopped') {
+            mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
+          }
         });
-      },
-      stop: function() {
-        return connection(function(mopidy) {
-          return mopidy.playback.stop();
+      });
+    };
+
+    $scope.refresh = function() {
+      $scope.reload().finally(function() {
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    };
+
+    $scope.reload = function() {
+      connection(function(mopidy) {
+        return $q.all({
+          currentTlTrack: mopidy.playback.getCurrentTlTrack(),
+          state: mopidy.playback.getState(),
+          timePosition: mopidy.playback.getTimePosition(),
+          options: mopidy.tracklist.getOptions()
         });
-      },
-      next: function() {
-        // FIXME: calling next() while stopped triggers no events
-        var state = $scope.state;
-        return connection(function(mopidy) {
-          return mopidy.playback.next().then(function() {
-            if (state === 'stopped') {
-              mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
-            }
-          });
-        });
-      },
-      previous: function() {
-        // FIXME: calling previous() while stopped triggers no events
-        var state = $scope.state;
-        return connection(function(mopidy) {
-          mopidy.playback.previous().then(function() {
-            if (state === 'stopped') {
-              mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
-            }
-          });
-        });
-      },
-      refresh: function() {
-        return connection().then(function(mopidy) {
-          return $q.all({
-            currentTlTrack: mopidy.playback.getCurrentTlTrack(),
-            state: mopidy.playback.getState(),
-            timePosition: mopidy.playback.getTimePosition()
-          });
-        }).then(function(results) {
-          angular.extend($scope, results);
+      }).then(function(results) {
+        angular.extend($scope, results);
+      }).then(function() {
+        if ($scope.state === 'playing') {
+          positionTimer.start($scope.timePosition, $scope.currentTlTrack.track.length || null);
+        } else {
+          positionTimer.stop($scope.timePosition);
+        }
+        setCurrentTlTrack($scope.currentTlTrack);
+      });
+    };
+
+    $scope.seek = function() {
+      if (time.pending) {
+        return;
+      }
+      var defer = $q.defer();
+      function update(value) {
+        connection(function(mopidy) {
+          return mopidy.playback.seek({time_position: value});
         }).then(function() {
-          if ($scope.state === 'playing') {
-            positionTimer.start($scope.timePosition, $scope.currentTlTrack.track.length || null);
+          if (value === $window.parseInt(time.position)) {
+            defer.resolve(value);
           } else {
-            positionTimer.stop($scope.timePosition);
-          }
-          setCurrentTlTrack($scope.currentTlTrack);
-        }).finally(function() {
-          $scope.$broadcast('scroll.refreshComplete');
-        });
-      },
-      seek: function() {
-        if (time.pending) {
-          return;
-        }
-        var defer = $q.defer();
-        function update(value) {
-          connection(function(mopidy) {
-            return mopidy.playback.seek({time_position: value});
-          }).then(function() {
-            if (value === $window.parseInt(time.position)) {
-              defer.resolve(value);
-            } else {
-              defer.notify(value);
-            }
-          });
-        }
-        time.pending = true;
-        update($window.parseInt(time.position));
-        defer.promise.then(
-          function(value) {
-            $log.debug('seek done: ' + value);
-            time.pending = false;
-          }, function() {
-            $log.debug('seek error');
-            time.pending = false;
-          }, function(value) {
-            $log.debug('seek pending: ' + value + ' (' + time.position + ')');
-            update($window.parseInt(time.position));
-          }
-        );
-      },
-      togglePlay: function() {
-        return connection(function(mopidy) {
-          if ($scope.state !== 'playing') {
-            return mopidy.playback.play();
-          } else {
-            return mopidy.playback.pause();
-          }
-        });
-      },
-      toggleRandom: function() {
-        return connection(function(mopidy) {
-          return mopidy.tracklist.setRandom({value: !$scope.options.random});
-        });
-      },
-      toggleRepeat: function() {
-        return connection(function(mopidy) {
-          if ($scope.options.repeat && $scope.options.single) {
-            // TODO: setOptions() API?
-            return mopidy.constructor.when.join(
-              mopidy.tracklist.setRepeat({value: false}),
-              mopidy.tracklist.setSingle({value: false})
-            );
-          } else if ($scope.options.repeat) {
-            return mopidy.tracklist.setSingle({value: true});
-          } else {
-            return mopidy.tracklist.setRepeat({value: true});
+            defer.notify(value);
           }
         });
       }
+      time.pending = true;
+      update($window.parseInt(time.position));
+      defer.promise.then(
+        function() {
+          time.pending = false;
+        }, function() {
+          time.pending = false;
+        }, function() {
+          update($window.parseInt(time.position));
+        }
+      );
+    };
+
+    $scope.togglePlay = function() {
+      return connection(function(mopidy) {
+        if ($scope.state !== 'playing') {
+          return mopidy.playback.play();
+        } else {
+          return mopidy.playback.pause();
+        }
+      });
+    };
+
+    $scope.toggleRandom = function() {
+      return connection(function(mopidy) {
+        return mopidy.tracklist.setRandom({value: !$scope.options.random});
+      });
+    };
+
+    $scope.toggleRepeat = function() {
+      return connection(function(mopidy) {
+        if ($scope.options.repeat && $scope.options.single) {
+          // TODO: setOptions() API?
+          return mopidy.constructor.when.join(
+            mopidy.tracklist.setRepeat({value: false}),
+            mopidy.tracklist.setSingle({value: false})
+          );
+        } else if ($scope.options.repeat) {
+          return mopidy.tracklist.setSingle({value: true});
+        } else {
+          return mopidy.tracklist.setRepeat({value: true});
+        }
+      });
+    };
+
+    $scope.$on('connection:event:optionsChanged', function() {
+      // TODO: data.options?
+      connection(function(mopidy) {
+        return mopidy.tracklist.getOptions();
+      }).then(function(options) {
+        $scope.options = options;
+      });
+    });
+
+    $scope.$on('connection:event:playbackStateChanged', function(event, data) {
+      if (($scope.state = data.new_state) === 'playing') {
+        positionTimer.start();
+      } else {
+        positionTimer.stop();
+      }
+    });
+
+    $scope.$on('connection:event:seeked', function(event, data) {
+      positionTimer.set(data.time_position);
+    });
+
+    $scope.$on('connection:event:streamTitleChanged', function(event, data) {
+      $scope.streamTitle = data.title;
+    });
+
+    $scope.$on('connection:event:tracklistChanged', function() {
+      // TODO: data.tracklist? data.current_track?
+      connection(function(mopidy) {
+        mopidy.playback.getCurrentTlTrack().then(setCurrentTlTrack);
+      });
+    });
+
+    $scope.$on('connection:event:trackPlaybackEnded', function() {
+      positionTimer.stop(0);
+    });
+
+    $scope.$on('connection:event:trackPlaybackPaused', function(event, data) {
+      positionTimer.stop(data.time_position);
+    });
+
+    $scope.$on('connection:event:trackPlaybackResumed', function(event, data) {
+      positionTimer.start(data.time_position);
+    });
+
+    $scope.$on('connection:event:trackPlaybackStarted', function(event, data) {
+      setCurrentTlTrack(data.tl_track);
+      positionTimer.start(0, data.tl_track.track.length || null);
+    });
+
+    $scope.$on('connection:state:online', function() {
+      $scope.reload();
     });
 
     $scope.$on('$destroy', function() {
-      connection.off(listeners);
       positionTimer.stop();
     });
 
-    connection.on(listeners);
+    $scope.reload();
   });
 
   /* @ngInject */
@@ -315,24 +321,24 @@
       mute:false
     });
 
-    var listeners = connection.on({
-      'connection:online': function() {
-        connection(function(mopidy) {
-          return $q.all({
-            mute: mopidy.mixer.getMute(),
-            volume: mopidy.mixer.getVolume()
-          });
-        }).then(function(results) {
-          angular.extend(scope, results);
+    $scope.$on('connection:state:online', function() {
+      connection(function(mopidy) {
+        return $q.all({
+          mute: mopidy.mixer.getMute(),
+          volume: mopidy.mixer.getVolume()
         });
-      },
-      'event:muteChanged': function(event) {
-        scope.mute = event.mute;
-      },
-      'event:volumeChanged': function(event) {
-        if (!scope.pending) {
-          scope.volume = event.volume;
-        }
+      }).then(function(results) {
+        angular.extend(scope, results);
+      });
+    });
+
+    $scope.$on('connection:event:muteChanged', function(event, data) {
+      scope.mute = data.mute;
+    });
+
+    $scope.$on('connection:event:volumeChanged', function(event, data) {
+      if (!scope.pending) {
+        scope.volume = data.volume;
       }
     });
 
@@ -375,12 +381,6 @@
         // TODO: then(update mute) -- race condition with event?
       }
     });
-
-    $scope.$on('$destroy', function() {
-      connection.off(listeners);
-    });
-
-    connection.on(listeners);
   });
 
   /* @ngInject */

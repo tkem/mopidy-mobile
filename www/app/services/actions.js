@@ -1,6 +1,7 @@
 ;(function(module) {
   'use strict';
 
+  /* @ngInject */
   module.factory('actions', function(connection, storage) {
     function addParams(obj, pos) {
       var params = {};

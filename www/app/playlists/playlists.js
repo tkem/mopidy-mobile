@@ -11,6 +11,14 @@
         views: {
           'playlists': {
             controller: 'PlaylistsController',
+            resolve: {
+              /* @ngInject */
+              playlists: function(connection) {
+                return connection(function(mopidy) {
+                  return mopidy.playlists.asList();
+                });
+              },
+            },
             template: '<ion-nav-view></ion-nav-view>'
           }
         }
@@ -27,87 +35,75 @@
   });
 
   /* @ngInject */
-  module.controller('PlaylistsController', function(connection, popup, $q, $scope) {
-    var listeners = {
-      'connection:online': function() {
-        connection(function(mopidy) {
+  module.controller('PlaylistsController', function($scope, connection, playlists, popup) {
+    angular.extend($scope, {'order': {}, 'playlists': playlists});
+
+    $scope.refresh = function() {
+      connection().then(function(mopidy) {
+        return mopidy.playlists.refresh({uri_scheme: null});
+      }).then(function() {
+        return $scope.reload();
+      }).finally(function() {
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    };
+
+    // TODO: replace with $state.go($state.current, {}, {reload: true});
+    $scope.reload = function() {
+      return connection().then(function(mopidy) {
+        return mopidy.playlists.asList();
+      }).then(function(playlists) {
+        $scope.playlists = playlists;
+      });
+    };
+
+    $scope.confirmDelete = function(ref) {
+      popup.confirm('Delete playlist').then(function(result) {
+        if (result) {
+          return $scope.delete(ref.uri);
+        }
+      });
+    };
+
+    $scope.delete = function(uri) {
+      return connection(function(mopidy) {
+        return mopidy.playlists.delete({
+          uri: uri
+        }).then(function() {
           return mopidy.playlists.asList();
         }).then(function(playlists) {
           $scope.playlists = playlists;
         });
-      },
-      'event:playlistChanged': function(/*playlist*/) {
-        // TODO: only update changed playlist
-        $q.when(this.playlists.asList()).then(function(playlists) {
-          $scope.playlists = playlists;
-        });
-      },
-      'event:playlistsLoaded': function() {
-        $q.when(this.playlists.asList()).then(function(playlists) {
-          $scope.playlists = playlists;
-        });
-      }
+      });
     };
 
-    angular.extend($scope, {
-      confirmDelete: function(ref) {
-        popup.confirm('Delete playlist').then(function(result) {
-          if (result) {
-            return $scope.delete(ref.uri);
-          }
-        });
-      },
-      delete: function(uri) {
-        return connection(function(mopidy) {
-          return mopidy.playlists.delete({
-            uri: uri
-          }).then(function() {
-            return mopidy.playlists.asList();
-          }).then(function(playlists) {
-            $scope.playlists = playlists;
-          });
-        });
-      },
-      getScheme: function(uri) {
-        return uri ? uri.substr(0, uri.indexOf(':')) : null;
-      },
-      refresh: function() {
-        // FIXME: loading vs. refresh
-        connection(function(mopidy) {
-          return mopidy.playlists.refresh({
-            uri_scheme: null
-          }).then(function() {
-            return mopidy.playlists.asList();
-          });
-        }).then(function(playlists) {
-          $scope.playlists = playlists;
-        }).finally(function() {
-          $scope.$broadcast('scroll.refreshComplete');
-        });
-      },
-      order: {},
-      playlists: []
+    $scope.getScheme = function(uri) {
+      return uri ? uri.substr(0, uri.indexOf(':')) : null;
+    };
+
+    $scope.$on('connection:state:online', function() {
+      $scope.reload();
     });
 
-    $scope.$on('$destroy', function() {
-      connection.off(listeners);
+    $scope.$on('connection:event:playlistChanged', function(/*playlist*/) {
+      $scope.reload();  // TODO: only update changed playlist
     });
 
-    connection.on(listeners);
+    $scope.$on('connection:event:playlistsLoaded', function() {
+      $scope.reload();
+    });
   });
 
   /* @ngInject */
   module.controller('PlaylistsMenuController', function(popoverMenu, $scope) {
-    angular.extend($scope, {
-      popover: popoverMenu([{
-        text: 'Sort by name',
-        model: 'order.name',
-      }, {
-        text: 'Sort by scheme',
-        model: 'order.scheme',
-      }], {
-        scope: $scope
-      })
+    $scope.popover = popoverMenu([{
+      text: 'Sort by name',
+      model: 'order.name',
+    }, {
+      text: 'Sort by scheme',
+      model: 'order.scheme',
+    }], {
+      scope: $scope
     });
   });
 

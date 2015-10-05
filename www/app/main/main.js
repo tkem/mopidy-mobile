@@ -113,14 +113,21 @@
     });
     $rootScope.platform = ionic.Platform;
     $rootScope.goBack = router.goBack.bind(router);
+  });
 
-    // TODO: get from CSS, image size = device size?
-    // TODO: other globals?
-    angular.extend($rootScope, {
-      thumbnailWidth: 64,
-      thumbnailHeight: 64,
-      thumbnailSrc: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-    });
+  /* @ngInject */
+  module.run(function($rootScope, actions) {
+    $rootScope.actions = actions;
+  });
+
+  /* @ngInject */
+  module.run(function($rootScope) {
+    // TODO: get from CSS
+    $rootScope.thumbnail = {
+      width: 64,
+      height: 64,
+      src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+    };
   });
 
   /* @ngInject */

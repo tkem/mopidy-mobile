@@ -26,22 +26,22 @@
     };
   }
 
-    function wrapResolve(name, resolve) {
-        var wrapper = {};
-        angular.forEach(resolve, function(factory, key) {
-            wrapper[key] = angular.isFunction(factory) ? wrapResolveFunction(name, factory) : factory;
-        });
-        return wrapper;
-    }
+  function wrapResolve(name, resolve) {
+    var wrapper = {};
+    angular.forEach(resolve, function(factory, key) {
+      wrapper[key] = angular.isFunction(factory) ? wrapResolveFunction(name, factory) : factory;
+    });
+    return wrapper;
+  }
 
-    function wrapStateConfig(name, config) {
-        var wrapper = angular.copy(config);  // deep copy
-        wrapper.resolve = wrapResolve(name, wrapper.resolve || {});
-        angular.forEach(wrapper.views || {}, function(view) {
-            view.resolve = wrapResolve(name, view.resolve || {});
-        });
-        return wrapper;
-    }
+  function wrapStateConfig(name, config) {
+    var wrapper = angular.copy(config);  // deep copy
+    wrapper.resolve = wrapResolve(name, wrapper.resolve || {});
+    angular.forEach(wrapper.views || {}, function(view) {
+      view.resolve = wrapResolve(name, view.resolve || {});
+    });
+    return wrapper;
+  }
 
   /* @ngInject */
   module.config(function($provide) {
@@ -63,7 +63,8 @@
       $delegate.isCached = function(href) {
         for (var i = $delegate._instances.length - 1; i >= 0; --i) {
           var elements = $delegate._instances[i].getViewElements();
-          if (getByDelegateHref(elements, href)) {
+          var view = getByDelegateHref(elements, href);
+          if (view && view.attr('cache-view') != 'false') {
             return true;
           }
         }
