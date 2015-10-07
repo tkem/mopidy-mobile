@@ -68,22 +68,19 @@
 
   /* @ngInject */
   module.config(function(coverartProvider) {
-    coverartProvider.maxCache(100);
+    coverartProvider.maxCache(1000);
   });
 
   /* @ngInject */
-  module.config(function(routerProvider) {
+  module.config(function(platformProvider, routerProvider) {
     routerProvider.state('tabs', {
       abstract: true,
       templateUrl: 'app/main/tabs.html',
       url: ''
     });
 
-    if (ionic.Platform.isWebView()) {
-      routerProvider.fallbackUrl('/servers');
-    } else {
-      routerProvider.fallbackUrl('/playback');
-    }
+    // TODO: change to 'servers' for android
+    routerProvider.fallbackUrl('/playback');
   });
 
   /* @ngInject */
@@ -102,15 +99,7 @@
   });
 
   /* @ngInject */
-  module.run(function($ionicPlatform, $log, $rootElement, $rootScope, $window, router) {
-    $ionicPlatform.ready().then(function() {
-      return $rootElement.attr('data-version') || (
-        $window.AppVersion ? $window.AppVersion.version : 'dev'
-      );
-    }).then(function(version) {
-      $log.info('Mopidy Mobile ' + version + ' (' + ionic.Platform.platform() + ')');
-      $rootScope.version = version;
-    });
+  module.run(function($rootScope, router) {
     $rootScope.platform = ionic.Platform;
     $rootScope.goBack = router.goBack.bind(router);
   });
@@ -142,6 +131,14 @@
       if (enabled) {
         coverart.enable(service);
       }
+    });
+  });
+
+  /* @ngInject */
+  module.run(function(connection, platform) {
+    platform.servers().then(function(servers) {
+      // TODO: connection interface
+      connection.reset(servers[0].url);
     });
   });
 

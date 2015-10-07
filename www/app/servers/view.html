@@ -1,4 +1,4 @@
-<ion-view cache-view="false" view-title="{{'Mopidy servers' | translate}}">
+<ion-view view-title="{{'Mopidy servers' | translate}}">
   <ion-nav-buttons side="secondary">
     <div ng-switch="webSocketUrl ? settings.servers.length : 0">
       <button class="mopidy-mobile-button-icon mopidy-mobile-icon-create"
@@ -16,7 +16,7 @@
     </div>
   </ion-nav-buttons>
   <ion-content>
-    <ion-refresher on-refresh="refreshServers()" pulling-text="{{'Pull to refresh' | translate}}">
+    <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
     </ion-refresher>
     <div ng-switch="servers.length">
       <div class="padding" ng-switch-when="0">

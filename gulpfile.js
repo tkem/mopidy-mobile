@@ -42,7 +42,7 @@ gulp.task('sass', ['sass:images'], function() {
 });
 
 gulp.task('jshint', function() {
-  return gulp.src(['www/app/**/*.js'])
+  return gulp.src(['www/app/**/*.js', 'merges/*/app/**/*.js'])
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));

@@ -5,7 +5,7 @@
     </ion-nav-back-button>
   </ion-nav-bar>
   <ion-content ng-controller="ServerController as server">
-    <form class="list" name="form" ng-submit="addServer(server.getConfig()).then(goBack)">
+    <form class="list" name="form" ng-submit="add(server.getConfig()).then(goBack)">
       <label class="item item-input">
         <span class="input-label" translate>Name</span>
         <input name="name" ng-model="server.name" placeholder="Mopidy Server" required type="text">
