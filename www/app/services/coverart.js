@@ -135,6 +135,16 @@
               };
               img.src = uri;
             });
+          },
+          useServices: function(names) {
+            services = {};
+            names.forEach(function(service) {
+              if (service in serviceProviders) {
+                services[service] = $injector.invoke(serviceProviders[service]);
+              } else {
+                $log.error('Unknown coverart service ' + service);
+              }
+            });
           }
         };
       },

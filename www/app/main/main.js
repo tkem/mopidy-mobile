@@ -84,15 +84,7 @@
   });
 
   /* @ngInject */
-  module.config(function(storageProvider, stylesheetProvider) {
-    storageProvider.prefix('mopidy-mobile');
-    storageProvider.defaults({
-      action: 'play',
-      coverart: {mopidy: true},
-      locale: '',  // default/browser locale
-      servers: [],
-      stylesheet: stylesheetProvider.get()
-    });
+  module.config(function(stylesheetProvider) {
     // TODO: configurable?
     stylesheetProvider.add('css/ionic-dark.min.css');
     stylesheetProvider.add('css/ionic-light.min.css');
@@ -117,21 +109,6 @@
       height: 64,
       src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
     };
-  });
-
-  /* @ngInject */
-  module.run(function($log, coverart, locale, storage, stylesheet) {
-    if (storage.get('theme')) {
-      $log.warn('Clearing local settings, sorry for the inconvenience...');
-      storage.clear();  // clear deprecated settings
-    }
-    stylesheet.set(storage.get('stylesheet'));
-    locale.set(storage.get('locale'));
-    angular.forEach(storage.get('coverart'), function(enabled, service) {
-      if (enabled) {
-        coverart.enable(service);
-      }
-    });
   });
 
   /* @ngInject */

@@ -7,7 +7,7 @@ angular.module('app.services', [
   'app.services.platform',
   'app.services.mopidy',
   'app.services.router',
-  'app.services.storage',
+  'app.services.settings',
   'app.services.util',
   'app.services.zeroconf'
 ]);

@@ -1,12 +1,12 @@
 <ion-view view-title="{{'Look and feel' | translate}}">
-  <ion-content>
+  <ion-content ng-controller="SettingsController as settings">
     <div class="list">
       <label class="item item-input item-select">
         <div class="input-label" translate>
           Language
         </div>
         <select ng-model="settings.locale"
-                ng-options="id as locale.displayName for (id, locale) in locales"
+                ng-options="id as locale.displayName for (id, locale) in settings.locales"
                 >
           <option value="" translate>Default</option>
         </select>

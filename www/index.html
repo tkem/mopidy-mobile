@@ -2,12 +2,11 @@
 <html data-web-socket-url="ws://localhost:6680/mopidy/ws">
   <head>
     <title>Mopidy Mobile</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; img-src * data:; style-src 'self' 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <link id="stylesheet" rel="stylesheet" href="css/ionic-light.min.css">
     <script src="lib/ionic/release/js/ionic.bundle.js"></script>
-    <script src="lib/angular-local-storage/dist/angular-local-storage.js"></script>
     <script src="lib/angular-translate/angular-translate.js"></script>
     <script src="lib/mopidy/dist/mopidy.js"></script>
 
@@ -32,7 +31,7 @@
     <script src="app/services/platform.js"></script>
     <script src="app/services/router.js"></script>
     <script src="app/services/services.js"></script>
-    <script src="app/services/storage.js"></script>
+    <script src="app/services/settings.js"></script>
     <script src="app/services/util.js"></script>
     <script src="app/services/zeroconf.js"></script>
     <script src="app/settings/settings.js"></script>

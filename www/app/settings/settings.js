@@ -1,6 +1,14 @@
 ;(function(module) {
   'use strict';
 
+  function fromKeys(keys, value) {
+    var obj = {};
+    for (var i = keys.length - 1; i >= 0; --i) {
+      obj[keys[i]] = angular.isFunction(value) ? value(keys[i]) : value;
+    }
+    return obj;
+  }
+
   /* @ngInject */
   module.config(function(routerProvider) {
     routerProvider.states({
@@ -11,17 +19,16 @@
         views: {
           'settings': {
             template: '<ion-nav-view></ion-nav-view>',
-            controller: 'SettingsController'
           }
         }
       },
       'settings.root': {
-        templateUrl: 'app/settings/settings.html',
+        templateUrl: 'app/settings/index.html',
         url: ''
       },
-      'settings.interface': {
-        templateUrl: 'app/settings/interface.html',
-        url: '/interface'
+      'settings.ui': {
+        templateUrl: 'app/settings/ui.html',
+        url: '/ui'
       },
       'settings.coverart': {
         templateUrl: 'app/settings/coverart.html',
@@ -44,57 +51,67 @@
   });
 
   /* @ngInject */
-  module.controller('SettingsController', function(connection, coverart, locale, popup, router, storage, stylesheet, $log, $q, $rootScope, $scope, $window) {
-    angular.extend($scope, {
-      locales: locale.all(),
-      reset: function(clearSettings) {
-        if (clearSettings) {
-          storage.clear();
-        }
-        $window.location.reload(true);
-      },
-      settings: {}
-    });
+  module.config(function(settingsProvider) {
+    settingsProvider.key('mopidy-mobile');
+  });
 
-    storage.bind($scope, 'settings.coverart', 'coverart');
-    storage.bind($scope, 'settings.action', 'action');
-    storage.bind($scope, 'settings.locale', 'locale');
-    storage.bind($scope, 'settings.stylesheet', 'stylesheet');
+  /* @ngInject */
+  module.controller('SettingsController', function($scope, $window, actions, coverart, locale, popup, settings, stylesheet) {
+    var self = this;
+    // TODO: DRY settings defaults
+    angular.extend(this, settings.get({
+      action: actions.getDefault(),
+      coverart: ['mopidy'],
+      stylesheet: stylesheet.get()
+    }));
+    self.coverart = fromKeys(self.coverart, true);
+    self.locales = locale.all();
 
-    $scope.$watchCollection('settings.coverart', function(value) {
-      angular.forEach(value, function(enabled, service) {
-        if (enabled) {
-          coverart.enable(service);
-        } else {
-          coverart.disable(service);
-        }
-      });
-    });
-
-    $scope.$watch('settings.locale', function(newValue, oldValue) {
+    $scope.$watch(function() {
+      return self.action;
+    }, function(newValue, oldValue) {
       if (newValue !== oldValue) {
-        $log.info('Locale set to "' + newValue + '"');
-        // layout issues with ion-nav-bar back button title:
+        settings.extend({action: newValue});
+        actions.setDefault(newValue);
+      }
+    });
+
+    $scope.$watch(function() {
+      return self.locale;
+    }, function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        settings.extend({locale: newValue});
+        // layout issues with ion-nav-bar back button title; see
         // https://github.com/tkem/mopidy-mobile/issues/87
-        //router.clearCache();
-        //locale.set(newValue);
+        //
+        // router.clearCache();
+        // locale.set(newValue);
         popup.confirm('Restart application').then(function(result) {
           if (result) {
-            $scope.reset();
+            $window.location.reload(true);
           }
         });
       }
     });
 
-    $scope.$watch('settings.stylesheet', function(newValue, oldValue) {
+    $scope.$watch(function() {
+      return self.stylesheet;
+    }, function(newValue, oldValue) {
       if (newValue !== oldValue) {
-        $log.info('Style sheet set to "' + newValue + '"');
+        settings.extend({stylesheet: newValue});
         stylesheet.set(newValue);
       }
     });
 
-    connection.settings().then(function(settings) {
-      $scope.webSocketUrl = settings.webSocketUrl;
+    $scope.$watchCollection('settings.coverart', function(value) {
+      var services = []
+      angular.forEach(value, function(enabled, service) {
+        if (enabled) {
+          services.push(service);
+        }
+      });
+      settings.extend({coverart: services});
+      coverart.useServices(services);
     });
   });
 
@@ -136,22 +153,26 @@
   });
 
   /* @ngInject */
-  module.controller('SettingsMenuController', function($scope, popoverMenu, popup) {
+  module.controller('SettingsMenuController', function($scope, $window, popoverMenu, popup, settings) {
     angular.extend($scope, {
-      confirmReset: function() {
+      exit: function() {
+        ionic.Platform.exitApp();
+      },
+      reset: function() {
         popup.confirm('Reset all settings to default values and restart application').then(function(result) {
           if (result) {
-            $scope.reset(true);
+            settings.clear();
+            $window.location.reload(true);
           }
         });
       },
       popover: popoverMenu([{
         text: 'Reset',
-        click: 'popover.hide() && confirmReset()',
+        click: 'popover.hide() && reset()',
         hellip: true
       }, {
         text: 'Exit',
-        click: 'popover.hide() && platform.exitApp()',
+        click: 'popover.hide() && exit()',
         hidden: '!platform.isWebView()'
       }], {
         scope: $scope
@@ -170,6 +191,21 @@
         scope: $scope
       })
     });
+  });
+
+  /* @ngInject */
+  module.run(function($window, actions, coverart, locale, settings, stylesheet) {
+    var obj = settings.get({
+      action: actions.getDefault(),
+      coverart: ['mopidy'],
+      locale: '',
+      stylesheet: stylesheet.get()
+    });
+
+    actions.setDefault(obj.action);
+    coverart.useServices(obj.coverart);
+    locale.set(obj.locale);
+    stylesheet.set(obj.stylesheet);
   });
 
 })(angular.module('app.settings', ['app.services', 'app.ui']));
