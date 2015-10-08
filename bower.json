@@ -3,9 +3,8 @@
   "private": "true",
   "devDependencies": {
     "angular-local-storage": "~0.2.2",
-    "angular-translate": "~2.7.2",
+    "angular-translate": "~2.8.1",
     "ionic": "~1.1.0",
-    "mopidy": "mopidy/mopidy.js#0.5.0",
-    "ngCordova": "~0.1.20-alpha"
+    "mopidy": "mopidy/mopidy.js#0.5.0"
   }
 }

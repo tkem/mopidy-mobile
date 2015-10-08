@@ -10,6 +10,5 @@ angular.module('app', [
   'app.settings',
   'app.tracklist',
   'app.ui',
-  ionic.Platform.isWebView() ? 'ngCordova' : 'ngCordovaMocks',
   'ionic'
 ]);

@@ -69,7 +69,6 @@ gulp.task('bundle', ['uglify', 'templates'], function() {
   return gulp.src([
     paths.lib + '/mopidy/dist/mopidy.min.js',
     paths.lib + '/ionic/release/js/ionic.bundle.min.js',
-    paths.lib + '/ngCordova/dist/ng-cordova-mocks.min.js',
     paths.lib + '/angular-local-storage/dist/angular-local-storage.min.js',
     paths.lib + '/angular-translate/angular-translate.min.js',
     paths.build + '/mopidy-mobile.min.js',

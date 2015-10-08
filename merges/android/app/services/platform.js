@@ -9,10 +9,10 @@
     return result;
   }
 
-    // zeroconf variables
-    var servers = {};
-    var service = '_mopidy-http._tcp.local.';
-    var watchers = 0;
+  // zeroconf variables
+  var servers = {};
+  var service = '_mopidy-http._tcp.local.';
+  var watchers = 0;
 
   /* @ngInject */
   module.service('platform', function($ionicPlatform, $log, $q, $timeout, $window) {
@@ -25,7 +25,7 @@
     this.servers = function() {
       return $ionicPlatform.ready().then(function(timeout) {
         var deferred = $q.defer();
-          
+
         $window.ZeroConf.watch(service, function(obj) {
           var url = obj.service.urls[0];
           $log.debug('zeroconf:' + obj.action + ' ' + url, obj.service);
