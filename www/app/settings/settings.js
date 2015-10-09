@@ -56,12 +56,13 @@
   });
 
   /* @ngInject */
-  module.controller('SettingsController', function($scope, $window, actions, coverart, locale, popup, settings, stylesheet) {
+  module.controller('SettingsController', function($scope, $window, actions, coverart, locale, logging, popup, settings, stylesheet) {
     var self = this;
     // TODO: DRY settings defaults
     angular.extend(this, settings.get({
       action: actions.getDefault(),
       coverart: ['mopidy'],
+      debug: false,
       stylesheet: stylesheet.get()
     }));
     self.coverart = fromKeys(self.coverart, true);
@@ -73,6 +74,15 @@
       if (newValue !== oldValue) {
         settings.extend({action: newValue});
         actions.setDefault(newValue);
+      }
+    });
+
+    $scope.$watch(function() {
+      return self.debug;
+    }, function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        settings.extend({debug: newValue});
+        logging.debugEnabled(newValue);
       }
     });
 
@@ -104,7 +114,7 @@
     });
 
     $scope.$watchCollection('settings.coverart', function(value) {
-      var services = []
+      var services = [];
       angular.forEach(value, function(enabled, service) {
         if (enabled) {
           services.push(service);
@@ -117,9 +127,6 @@
 
   module.controller('LoggingController', function($scope, logging) {
     angular.extend($scope, {
-      settings: {
-        debug: logging.debugEnabled()
-      },
       clear: logging.clear,
       records: logging.records,
       toJson: function(obj) {
@@ -131,10 +138,6 @@
           return obj.toString();
         }
       }
-    });
-
-    $scope.$watch('settings.debug', function(value) {
-      logging.debugEnabled(value);
     });
   });
 
@@ -194,10 +197,12 @@
   });
 
   /* @ngInject */
-  module.run(function($window, actions, coverart, locale, settings, stylesheet) {
+  module.run(function($window, actions, coverart, locale, logging, settings, stylesheet) {
+    // TODO: DRY defaults
     var obj = settings.get({
       action: actions.getDefault(),
       coverart: ['mopidy'],
+      debug: false,
       locale: '',
       stylesheet: stylesheet.get()
     });
@@ -205,6 +210,7 @@
     actions.setDefault(obj.action);
     coverart.useServices(obj.coverart);
     locale.set(obj.locale);
+    logging.debugEnabled(obj.debug);
     stylesheet.set(obj.stylesheet);
   });
 
