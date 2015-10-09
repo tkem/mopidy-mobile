@@ -89,7 +89,7 @@
         'Tracklist': 'Titel',
         'Track': 'Titel',
         'URL': 'URL',
-        'Version {version} ({platform})': 'Version {{version}} ({{platform}})',
+        'Version {version}': 'Version {{version}}',
         '{count} tracks': '{{count}} Titel',
         '{index} of {count}': '{{index}} von {{count}}',
       }

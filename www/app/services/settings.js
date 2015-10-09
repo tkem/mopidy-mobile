@@ -31,12 +31,14 @@
           storage[key] = angular.toJson(src);
         },
         extend: function(src) {
-          var obj = angular.fromJson(storage[key] || '{}');
-          storage[key] = angular.toJson(angular.extend(obj, src));
+          var obj = angular.extend(angular.fromJson(storage[key] || '{}'), src);
+          storage[key] = angular.toJson(obj);
+          return obj;
         },
         merge: function(src) {
-          var obj = angular.fromJson(storage[key] || '{}');
-          storage[key] = angular.toJson(angular.merge(obj, src));
+          var obj = angular.merge(angular.fromJson(storage[key] || '{}'), src);
+          storage[key] = angular.toJson(obj);
+          return obj;
         },
         clear: function() {
           delete storage[key];

@@ -27,4 +27,4 @@
     });
   });
 
-})(angular.module('app.ui.stylesheet', ['app.services.util', 'ionic']));
+})(angular.module('app.ui.stylesheet', ['app.services.util']));

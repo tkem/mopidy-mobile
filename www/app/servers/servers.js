@@ -26,35 +26,29 @@
   });
 
   /* @ngInject */
-  module.controller('ServersController', function($scope, connection, platform, popup, router, storage) {
-    $scope.settings = {servers: storage.get('servers')};
-    $scope.webSocketUrl = null;
+  module.controller('ServersController', function($q, $rootScope, $scope, connection, platform, popup, router, settings) {
+    $scope.settings = settings.get({servers: []});
+    $scope.zeroconf = {servers: []};
+
+    platform.servers(5000).then(
+      function(servers) {
+        $scope.zeroconf.servers = servers;
+      },
+      angular.noop,
+      function(server) {
+        $scope.zeroconf.servers.push(server);
+      }
+    );
 
     $scope.add = function(server) {
       $scope.settings.servers.push(server);
-      storage.set('servers', $scope.settings.servers);
-      // TODO: return promise
-    };
-
-    $scope.confirmRemove = function(index) {
-      popup.confirm('Remove server').then(function(result) {
-        if (result) {
-          return $scope.removeServer(index);
-        }
-      });
-    };
-
-    $scope.refresh = function() {
-      $scope.$broadcast('scroll.refreshComplete');
-    };
-
-    $scope.remove = function(index) {
-      $scope.settings.servers.splice(index, 1);
-      storage.set('servers', $scope.settings.servers);
+      settings.extend({'servers': $scope.settings.servers});
+      return $q.when();
     };
 
     $scope.connect = function(url) {
-      connection.reset(url).then(function() {
+      $rootScope.webSocketUrl = url;
+      return connection.reset(url).then(function() {
         return router.clearCache();
       }).then(function() {
         return router.clearHistory();
@@ -62,6 +56,45 @@
         return router.go('playback');
       });
     };
+
+    $scope.merge = function() {
+      var servers = {};
+      for (var i = arguments.length - 1; i >= 0; --i) {
+        for (var j = arguments[i].length - 1; j >= 0; --j) {
+          var server = arguments[i][j];
+          servers[server.url] = server;
+        }
+      }
+      return Object.keys(servers).map(function(url) {
+        return servers[url];
+      });
+    };
+
+    $scope.refresh = function() {
+      platform.servers(5000).then(
+        function(servers) {
+          $scope.zeroconf.servers = servers;
+        },
+        angular.noop,
+        function(server) {
+          $scope.zeroconf.servers.push(server);
+        }
+      );
+      $scope.$broadcast('scroll.refreshComplete');
+    };
+
+    $scope.remove = function(index) {
+      return popup.confirm('Remove server').then(function(result) {
+        if (result) {
+          $scope.settings.servers.splice(index, 1);
+          settings.extend({'servers': $scope.settings.servers});
+        }
+      });
+    };
+
+    $scope.$watchCollection('settings.servers', function(value) {
+      $scope.settings = settings.extend({servers: value});
+    });
   });
 
   /* @ngInject */
@@ -73,33 +106,18 @@
     this.secure = false;
 
     this.webSocketUrl = function() {
-      return [this.secure ? 'wss' : 'ws', '://', this.host, ':', this.port, this.path].join('');
-    };
-
-    this.getConfig = function() {
-      return {
-        name: this.name,
-        url: this.webSocketUrl()
-      };
+      var scheme = this.secure ? 'wss' : 'ws';
+      return [scheme, '://', this.host, ':', this.port, this.path].join('');
     };
   });
 
   /* @ngInject */
-//  module.run(function($log, $rootScope, connection, platform) {
-//    platform.servers().then(
-//      function(servers) {
-//        if (servers.length) {
-//          connection.reset(servers[0].url);
-//        }
-//        $rootScope.servers = servers;
-//      },
-//      function(error) {
-//        $log.error(error);
-//      },
-//      function(servers) {
-//        $rootScope.servers = servers;
-//      }
-//    );
-//  });
-//
-})(angular.module('app.servers', ['app.services', 'app.ui', 'ionic']));
+  module.run(function($rootScope, connection, platform) {
+    if (platform.isHosted()) {
+      platform.servers().then(function(servers) {
+        connection.reset(servers[0].url);
+      });
+    }
+  });
+
+})(angular.module('app.servers', ['app.services', 'app.ui']));

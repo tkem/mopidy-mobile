@@ -8,6 +8,5 @@ angular.module('app.services', [
   'app.services.mopidy',
   'app.services.router',
   'app.services.settings',
-  'app.services.util',
-  'app.services.zeroconf'
+  'app.services.util'
 ]);

@@ -59,12 +59,13 @@
     });
 
     /* @ngInject */
-    $provide.decorator('$ionicNavViewDelegate', function($delegate) {
+    $provide.decorator('$ionicNavViewDelegate', function($delegate, $log) {
       $delegate.isCached = function(href) {
         for (var i = $delegate._instances.length - 1; i >= 0; --i) {
           var elements = $delegate._instances[i].getViewElements();
           var view = getByDelegateHref(elements, href);
           if (view && view.attr('cache-view') != 'false') {
+            $log.info('view ' + href + ' is cached');
             return true;
           }
         }

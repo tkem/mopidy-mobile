@@ -46,6 +46,24 @@
       'settings.about': {
         templateUrl: 'app/settings/about.html',
         url: '/about'
+      },
+      'settings.servers': {
+        abstract: true,
+        controller: 'ServersController',
+        template: '<ion-nav-view></ion-nav-view>',
+        url: '/servers'
+      },
+      'settings.servers.add': {
+        templateUrl: 'app/servers/add.html',
+        url: '/add'
+      },
+      'settings.servers.edit': {
+        templateUrl: 'app/servers/edit.html',
+        url: '/edit'
+      },
+      'settings.servers.view': {
+        templateUrl: 'app/servers/view.html',
+        url: ''
       }
     });
   });
@@ -113,7 +131,9 @@
       }
     });
 
-    $scope.$watchCollection('settings.coverart', function(value) {
+    $scope.$watchCollection(function() {
+      return self.coverart;
+    }, function(value) {
       var services = [];
       angular.forEach(value, function(enabled, service) {
         if (enabled) {
@@ -158,9 +178,6 @@
   /* @ngInject */
   module.controller('SettingsMenuController', function($scope, $window, popoverMenu, popup, settings) {
     angular.extend($scope, {
-      exit: function() {
-        ionic.Platform.exitApp();
-      },
       reset: function() {
         popup.confirm('Reset all settings to default values and restart application').then(function(result) {
           if (result) {
@@ -175,7 +192,7 @@
         hellip: true
       }, {
         text: 'Exit',
-        click: 'popover.hide() && exit()',
+        click: 'popover.hide() && platform.exitApp()',
         hidden: '!platform.isWebView()'
       }], {
         scope: $scope

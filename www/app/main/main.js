@@ -79,8 +79,12 @@
       url: ''
     });
 
-    // TODO: change to 'servers' for android
-    routerProvider.fallbackUrl('/playback');
+    // TODO: move to run()?
+    if (platformProvider.isHosted()) {
+      routerProvider.fallbackUrl('/playback');
+    } else {
+      routerProvider.fallbackUrl('/servers');
+    }
   });
 
   /* @ngInject */
@@ -91,8 +95,23 @@
   });
 
   /* @ngInject */
+  module.controller('TrackController', function() {
+    // TODO: move to util?
+    this.__model__ = 'Track';
+    this.name = null;
+    this.uri = null;
+  });
+
+  /* @ngInject */
+  module.run(function($rootScope, platform) {
+    $rootScope.platform = platform;
+    platform.appVersion().then(function(version) {
+      $rootScope.version = version;
+    });
+  });
+
+  /* @ngInject */
   module.run(function($rootScope, router) {
-    $rootScope.platform = ionic.Platform;
     $rootScope.goBack = router.goBack.bind(router);
   });
 
@@ -109,14 +128,6 @@
       height: 64,
       src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
     };
-  });
-
-  /* @ngInject */
-  module.run(function(connection, platform) {
-    platform.servers().then(function(servers) {
-      // TODO: connection interface
-      connection.reset(servers[0].url);
-    });
   });
 
 })(angular.module('app.main', ['app.services', 'app.ui', 'ionic']));

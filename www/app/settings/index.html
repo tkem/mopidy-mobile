@@ -8,9 +8,7 @@
   </ion-nav-buttons>
   <ion-content>
     <div class="list">
-      <a class="item item-icon-right"
-         ng-if="platform.isWebView() || servers.length > 1"
-         ui-sref="servers.view">
+      <a class="item item-icon-right" ng-if="!platform.isHosted()" ui-sref="settings.servers.view">
         <span translate>Mopidy servers</span>
         <i class="mopidy-mobile-icon-link icon-accessory"></i>
       </a>

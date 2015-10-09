@@ -51,7 +51,7 @@ gulp.task('jshint', function() {
 gulp.task('uglify', function() {
   return gulp.src(['www/app/**/*.js'])
     .pipe(concat('mopidy-mobile.js'))
-    .pipe(ngAnnotate({single_quotes: true}))
+    //.pipe(ngAnnotate({single_quotes: true}))
     .pipe(uglify({mangle: false}))
     .pipe(rename({extname: '.min.js'}))
     .pipe(gulp.dest(paths.build));
@@ -80,7 +80,8 @@ gulp.task('dist', ['sass', 'bundle'], function() {
   return gulp.src([
     'www/css/*.min.css',
     'www/css/**/*.png',
-    'www/images/**',
+    'www/app/**/*.gif',
+    'www/app/**/*.png',
     'www/lib/ionic/release/fonts/**'
   ], {base: 'www'})
     .pipe(gulp.dest(paths.dist));
