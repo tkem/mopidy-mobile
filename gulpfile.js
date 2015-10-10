@@ -1,29 +1,13 @@
 var bower = require('bower');
-var concat = require('gulp-concat');
 var del = require('del');
 var gulp = require('gulp');
-var gutil = require('gulp-util');
-var jshint = require('gulp-jshint');
-var minifyCss = require('gulp-minify-css');
-var rename = require('gulp-rename');
-var sass = require('gulp-sass');
-var sh = require('shelljs');
-var templateCache = require('gulp-angular-templatecache');
-var uglify = require('gulp-uglify');
-var ngAnnotate = require('gulp-ng-annotate');
-
-var paths = {
-  build: 'build/',
-  css: 'www/css/',
-  dist: 'mopidy_mobile/www/',
-  images: 'www/images/',
-  lib: 'www/lib/'
-};
+var paths = require('./gulp.config.json');
+var plugins = require('gulp-load-plugins')();
 
 gulp.task('install', function() {
   return bower.commands.install()
     .on('log', function(data) {
-      gutil.log('bower', gutil.colors.cyan(data.id), data.message);
+      plugins.util.log('bower', plugins.util.colors.cyan(data.id), data.message);
     });
 });
 
@@ -34,34 +18,34 @@ gulp.task('sass:images', function() {
 
 gulp.task('sass', ['sass:images'], function() {
   return gulp.src('scss/[^_]*.scss')
-    .pipe(sass())
+    .pipe(plugins.sass())
     .pipe(gulp.dest(paths.css))
-    .pipe(minifyCss({keepSpecialComments: 0}))
-    .pipe(rename({extname: '.min.css'}))
+    .pipe(plugins.minifyCss({keepSpecialComments: 0}))
+    .pipe(plugins.rename({extname: '.min.css'}))
     .pipe(gulp.dest(paths.css));
 });
 
 gulp.task('jshint', function() {
   return gulp.src(['www/app/**/*.js', 'merges/*/app/**/*.js'])
-    .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter('default'))
-    .pipe(jshint.reporter('fail'));
+    .pipe(plugins.jshint('.jshintrc'))
+    .pipe(plugins.jshint.reporter('default'))
+    .pipe(plugins.jshint.reporter('fail'));
 });
 
 gulp.task('uglify', function() {
   return gulp.src(['www/app/**/*.js'])
-    .pipe(concat('mopidy-mobile.js'))
-    //.pipe(ngAnnotate({single_quotes: true}))
-    .pipe(uglify({mangle: false}))
-    .pipe(rename({extname: '.min.js'}))
+    .pipe(plugins.concat('mopidy-mobile.js'))
+    //.pipe(plugins.ngAnnotate({single_quotes: true}))
+    .pipe(plugins.uglify({mangle: false}))
+    .pipe(plugins.rename({extname: '.min.js'}))
     .pipe(gulp.dest(paths.build));
 });
 
 gulp.task('templates', function () {
   return gulp.src('www/app/**/*.html')
-    .pipe(templateCache({module: 'app', root: 'app/'}))
-    .pipe(uglify())
-    .pipe(rename('templates.min.js'))
+    .pipe(plugins.angularTemplatecache({module: 'app', root: 'app/'}))
+    .pipe(plugins.uglify())
+    .pipe(plugins.rename('templates.min.js'))
     .pipe(gulp.dest(paths.build));
 });
 
@@ -72,7 +56,7 @@ gulp.task('bundle', ['uglify', 'templates'], function() {
     paths.lib + '/mopidy/dist/mopidy.min.js',
     paths.build + '/mopidy-mobile.min.js',
     paths.build + '/templates.min.js'
-  ]).pipe(concat('mopidy-mobile.bundle.min.js'))
+  ]).pipe(plugins.concat('mopidy-mobile.bundle.min.js'))
     .pipe(gulp.dest(paths.dist));
 });
 
@@ -91,12 +75,8 @@ gulp.task('clean', function(cb) {
   del([
     paths.build,
     paths.css,
-    paths.dist + '{css,images,lib,bundle.min.js}'
+    paths.dist + '{app,css,images,lib,*.min.js}'
   ], cb);
-});
-
-gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
 });
 
 gulp.task('default', ['sass', 'jshint']);

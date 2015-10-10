@@ -1,7 +1,7 @@
 {
   "name": "mopidy-mobile",
   "private": "true",
-  "devDependencies": {
+  "dependencies": {
     "angular-translate": "~2.8.1",
     "ionic": "~1.1.0",
     "mopidy": "mopidy/mopidy.js#0.5.0"

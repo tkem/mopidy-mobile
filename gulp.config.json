@@ -1,0 +1,8 @@
+{
+  "build": "build/",
+  "css": "www/css/",
+  "dist": "mopidy_mobile/www/",
+  "images": "www/images/",
+  "lib": "www/lib/",
+  "sass": "scss/"
+}
