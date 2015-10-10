@@ -1,7 +1,22 @@
 ;(function(module) {
   'use strict';
 
-  module.factory('popoverMenu', function(util, $filter, $log, $ionicPopover, $rootScope) {
+  function remove(obj, value) {
+    if (Array.isArray(obj)) {
+      for (var i = obj.indexOf(value); i >= 0; i = obj.indexOf(value, i)) {
+        obj.splice(i, 1);
+      }
+    } else {
+      for (var name in obj) {
+        if (obj[name] === value) {
+          delete obj[name];
+        }
+      }
+    }
+    return obj;
+  }
+
+  module.factory('popoverMenu', function($filter, $log, $ionicPopover, $rootScope) {
     var popoverMenus = [];
     $rootScope.$on('$translateChangeSuccess', function() {
       angular.forEach(popoverMenus, function(popoverMenu) {
@@ -56,7 +71,7 @@
         },
         remove: function() {
           if (popover) {
-            util.remove(popoverMenus, this);
+            remove(popoverMenus, this);
             var promise = popover.remove();
             popover = null;
             return promise;
@@ -87,4 +102,4 @@
     };
   });
 
-})(angular.module('app.ui.menu', ['app.services.util', 'ionic', 'pascalprecht.translate']));
+})(angular.module('app.ui.menu', ['ionic', 'pascalprecht.translate']));

@@ -1,6 +1,12 @@
 ;(function(module) {
   'use strict';
 
+  function values(obj) {
+    return Object.keys(obj).map(function(key) {
+      return obj[key];
+    });
+  }
+
   module.provider('coverart', function() {
     function merge(dst, results) {
       for (var i = 0, reslen = results.length; i !== reslen; ++i) {
@@ -43,7 +49,7 @@
     var serviceProviders = {};
 
     angular.extend(this, {
-      $get: function(util, $cacheFactory, $injector, $log, $q) {
+      $get: function($cacheFactory, $injector, $log, $q) {
         var cache = $cacheFactory('images', cacheOptions);
         var services = {};
 
@@ -71,7 +77,7 @@
               return $q.when(select(images, width, height));
             } else {
               $log.debug('cache(' + cache.info().size + ') miss for ' + model.uri);
-              return $q.all(util.values(services).map(function(service) {
+              return $q.all(values(services).map(function(service) {
                 return service.getImages([model]).catch(function(error) {
                   $log.error('Error loading cover art from ' + service.displayName, error);
                   return {};
@@ -102,7 +108,7 @@
               }
             });
             $log.debug('Loading cover art from ' + Object.keys(services));
-            return $q.all(util.values(services).map(function(service) {
+            return $q.all(values(services).map(function(service) {
               return service.getImages(models).catch(function(error) {
                 $log.error('Error loading cover art from ' + service.displayName, error);
                 return {};
@@ -362,4 +368,4 @@
     });
   });
 
-})(angular.module('app.services.coverart', ['app.services.connection', 'app.services.util']));
+})(angular.module('app.services.coverart', ['app.services.connection']));

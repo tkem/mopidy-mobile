@@ -1,6 +1,23 @@
 ;(function(module) {
   'use strict';
 
+  function getLanguages() {
+    var navigator = window.navigator;
+    var properties = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
+    // support for HTML 5.1 "navigator.languages"
+    if (angular.isArray(navigator.languages) && navigator.languages.length) {
+      return navigator.languages;
+    }
+    // support for other well known properties in browsers
+    for (var i = 0; i !== properties.length; ++i) {
+      var language = navigator[properties[i]];
+      if (language && language.length) {
+        return [language];
+      }
+    }
+    return [];
+  }
+
   module.config(function($translateProvider) {
     $translateProvider.useLoader('translationLoader');
     $translateProvider.useMissingTranslationHandler('missingTranslationHandler');
@@ -43,9 +60,9 @@
   module.provider('locale', function() {
     var locales = {};
     var provider = angular.extend(this, {
-      $get: function($ionicConfig, $log, $translate, util) {
+      $get: function($ionicConfig, $log, $translate) {
         function getLocale() {
-          var languages = util.getLanguages();
+          var languages = getLanguages();
           $log.debug('Preferred languages: ' + languages);
           for (var i = 0; i !== languages.length; ++i) {
             var fields = angular.lowercase(languages[i]).split(/[^a-z]/);
@@ -83,4 +100,4 @@
       }
     });
   });
-})(angular.module('app.services.locale', ['app.services.util', 'pascalprecht.translate', 'ionic']));
+})(angular.module('app.services.locale', ['pascalprecht.translate', 'ionic']));

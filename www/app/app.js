@@ -9,6 +9,5 @@ angular.module('app', [
   'app.services',
   'app.settings',
   'app.tracklist',
-  'app.ui',
-  'ionic'
+  'app.ui'
 ]);
