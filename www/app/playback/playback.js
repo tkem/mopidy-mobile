@@ -118,9 +118,6 @@
       }
     }, 1000);
 
-
-
-
     angular.extend($scope, {options: {}, hasNext: false, hasPrevious: false});
 
     $scope.play = function() {
@@ -315,6 +312,7 @@
   /* @ngInject */
   module.controller('MixerCtrl', function(connection, $scope, $log, $q, $window) {
     // FIXME: re-think "as" scopes...
+    // TODO: "mixer" component?
     var scope = angular.extend(this, {
       volume: 0,
       pending: false,
@@ -381,6 +379,16 @@
         // TODO: then(update mute) -- race condition with event?
       }
     });
+
+    // TODO: refactor this
+    connection(function(mopidy) {
+      return $q.all({
+        mute: mopidy.mixer.getMute(),
+        volume: mopidy.mixer.getVolume()
+      });
+    }).then(function(results) {
+      angular.extend(scope, results);
+    });
   });
 
   /* @ngInject */
@@ -416,6 +424,30 @@
       }], {
         scope: $scope
       })
+    });
+  });
+
+  /* @ngInject */
+  module.run(function($document, $log, connection) {
+    $log.debug('volumeupbutton');
+    $document.on('volumeupbutton', function() {
+      connection(function(mopidy) {
+        return mopidy.mixer.getVolume().then(function(volume) {
+          if (volume < 100) {
+            return mopidy.mixer.setVolume({volume: Math.min(volume + 10, 100)});
+          }
+        });
+      });
+    });
+    $document.on('volumedownbutton', function() {
+      $log.debug('volumedownbutton');
+      connection(function(mopidy) {
+        return mopidy.mixer.getVolume().then(function(volume) {
+          if (volume > 0) {
+            return mopidy.mixer.setVolume({volume: Math.max(volume - 10, 0)});
+          }
+        });
+      });
     });
   });
 
