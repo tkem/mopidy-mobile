@@ -429,8 +429,8 @@
 
   /* @ngInject */
   module.run(function($document, $log, connection) {
-    $log.debug('volumeupbutton');
     $document.on('volumeupbutton', function() {
+      $log.debug('volumeupbutton');
       connection(function(mopidy) {
         return mopidy.mixer.getVolume().then(function(volume) {
           if (volume < 100) {
