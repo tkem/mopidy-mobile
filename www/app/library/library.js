@@ -197,7 +197,7 @@
         // FIXME: pass arguments to popup...
         $scope.track = track;
         $scope.playlists = playlists;
-        popup.fromTemplateUrl('Add to playlist', 'templates/playlist.select.html', $scope, [
+        popup.fromTemplateUrl('Add to playlist', 'app/playlists/select.html', $scope, [
           {text: 'Cancel', type: 'button-assertive'}
         ]);
       });
