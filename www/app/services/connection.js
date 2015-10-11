@@ -19,7 +19,7 @@
       var connected = false;
       var pending = 0;
 
-      function notify(event) {
+      function notify(event, data) {
         switch (event) {
         case 'state:online':
           $log.info('Mopidy connection online');
@@ -30,7 +30,9 @@
           connected = false;
           break;
         }
-        $rootScope.$broadcast('connection:' + event, arguments[1]);
+        $rootScope.$applyAsync(function(scope) {
+          scope.$broadcast('connection:' + event, data);
+        });
       }
 
       function connect(settings) {
