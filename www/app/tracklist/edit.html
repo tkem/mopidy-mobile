@@ -28,7 +28,7 @@
         <h3 class="mopidy-mobile-artists" ng-show="tlTrack.track.artists.length">
           <span ng-repeat="artist in tlTrack.track.artists">{{artist.name}}</span>
         </h3>
-        <h4>{{tlTrack.track.album.name}}</h4>
+        <h4>{{tlTrack.track.album.name || tlTrack.track.genre || tlTrack.track.comment}}</h4>
         <ion-delete-button class="ion-minus-circled" ng-click="remove(tlTrack)">
         </ion-delete-button>
         <ion-reorder-button class="ion-navicon" on-reorder="move($fromIndex, $toIndex)">

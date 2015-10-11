@@ -48,7 +48,7 @@
         <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">
           <span ng-repeat="artist in track.artists">{{artist.name}}</span>
         </h3>
-        <h4>{{track.album.name}}</h4>
+        <h4>{{track.album.name || track.genre || track.comment}}</h4>
         <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
                 ng-click="popover.show($event, track)">
         </button>
