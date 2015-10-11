@@ -15,7 +15,8 @@ The Web extension can be installed using pip_ by running::
 
   pip install Mopidy-Mobile
 
-The Android app is available from the `Google Play`_ store.
+The Android app is available from the `Google Play`_ store.  You may
+also join the `Beta testing program`_ to preview unreleased versions.
 
 Note that the Web client is designed to be added to your home screen,
 so it is launched in full-screen "app mode".  In fact, the only major
@@ -59,11 +60,11 @@ installed.  Then run::
   npm install
   gulp install
   gulp dist
-  python setup.py develop
+  pip install --editable .
 
 To build the hybrid app for Android, please follow Ionic's
 `installation guide`_ to make sure you have everything needed for
-Android development.  Then run::
+Android development.  Then, in addition to the commands above, run::
 
   ionic resources android
   ionic platform add android
@@ -108,6 +109,7 @@ Licensed under the `Apache License, Version 2.0`_.
 
 .. _pip: https://pip.pypa.io/en/latest/
 .. _Google Play: https://play.google.com/store/apps/details?id=at.co.kemmer.mopidy_mobile
+.. _Beta testing program: https://play.google.com/apps/testing/at.co.kemmer.mopidy_mobile
 .. _Android: https://www.google.at/search?q=android+chrome+add+to+homescreen
 .. _iOS: https://www.google.at/search?q=ios+safari+add+to+homescreen
 

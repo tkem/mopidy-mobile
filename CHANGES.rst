@@ -1,5 +1,22 @@
+1.4.0 2015-10-11
+----------------
+
+- Simplify storage of user settings.  Note that user interface
+  settings and cover art providers will be reset to default values
+  when updating to version 1.4.  Server settings configured in the
+  Android app should be retained, though.
+
+- Support hardware volume buttons in Android app.
+
+- Display track genre or comment if no album information is available.
+
+- Save logging configuration.
+
+- Lots of internal refactorings and code cleanups.
+
+
 1.3.1 2015-08-23
------------------
+----------------
 
 - Display multiple track/album artists.
 
@@ -11,7 +28,7 @@
 
 
 1.3.0 2015-07-07
------------------
+----------------
 
 - Add tracks to playlists.
 
@@ -19,13 +36,13 @@
 
 
 1.2.2 2015-07-06
------------------
+----------------
 
 - Improve advanced search layout.
 
 
 1.2.1 2015-07-04
------------------
+----------------
 
 - Fix CSS issues with track menus.
 
@@ -33,7 +50,7 @@
 
 
 1.2.0 2015-07-03
------------------
+----------------
 
 - Add popup menu for track items.
 
@@ -43,7 +60,7 @@
 
 
 1.1.0 2015-06-16
------------------
+----------------
 
 - Add advanced search.
 
@@ -52,7 +69,7 @@
 - Add server management in Android app.
 
 1.0.0 2015-06-05
------------------
+----------------
 
 - Merge tracklist menus.
 
