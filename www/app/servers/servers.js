@@ -120,4 +120,15 @@
     }
   });
 
+  /* @ngInject */
+  module.run(function($log, $window, settings) {
+    var storage = $window.localStorage;
+    var key = 'mopidy-mobile.servers';
+
+    if (storage[key]) {
+      settings.extend({servers: angular.fromJson(storage[key])});
+      delete storage[key];
+    }
+  });
+
 })(angular.module('app.servers', ['app.services', 'app.ui']));
