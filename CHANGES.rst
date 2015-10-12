@@ -1,16 +1,11 @@
 1.4.0 2015-10-11
 ----------------
 
-- Simplify storage of user settings.  Note that user interface
-  settings and cover art providers will be reset to default values
-  when updating to version 1.4.  Server settings configured in the
-  Android app should be retained, though.
-
 - Support hardware volume buttons in Android app.
 
 - Display track genre or comment if no album information is available.
 
-- Save logging configuration.
+- Save logging configuration with user settings.
 
 - Lots of internal refactorings and code cleanups.
 

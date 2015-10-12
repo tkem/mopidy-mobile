@@ -214,7 +214,28 @@
   });
 
   /* @ngInject */
+  module.run(function($log, $window, settings) {
+    var storage = $window.localStorage;
+    var key = 'mopidy-mobile.servers';
+
+    if (storage[key]) {
+      settings.extend({servers: angular.fromJson(storage[key])});
+      delete storage[key];
+    }
+  });
+
+  /* @ngInject */
   module.run(function($window, actions, coverart, locale, logging, settings, stylesheet) {
+    // migrate pre-1.4 user settings
+    var storage = $window.localStorage;
+    angular.forEach(['action', 'locale', 'stylesheet'], function(item) {
+      var key = 'mopidy-mobile.' + item;
+      if (storage[key]) {
+        settings.extend(fromKeys([item], angular.fromJson(storage[key])));
+        delete storage[key];
+      }
+    });
+
     // TODO: DRY defaults
     var obj = settings.get({
       action: actions.getDefault(),
