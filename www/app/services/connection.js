@@ -30,9 +30,11 @@
           connected = false;
           break;
         }
-        $rootScope.$applyAsync(function(scope) {
-          scope.$broadcast('connection:' + event, data);
-        });
+        if (!event.startsWith('websocket')) {
+          $rootScope.$applyAsync(function(scope) {
+            scope.$broadcast('connection:' + event, data);
+          });
+        }
       }
 
       function connect(settings) {
