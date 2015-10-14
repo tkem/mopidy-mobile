@@ -7,6 +7,8 @@
 
 - Save logging configuration with user settings.
 
+- Handle ``playlistDeleted`` event.
+
 - Lots of internal refactorings and code cleanups.
 
 

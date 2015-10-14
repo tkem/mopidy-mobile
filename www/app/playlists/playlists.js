@@ -85,11 +85,15 @@
       $scope.reload();
     });
 
-    $scope.$on('connection:event:playlistChanged', function(/*playlist*/) {
-      $scope.reload();  // TODO: only update changed playlist
+    $scope.$on('connection:event:playlistsLoaded', function() {
+      $scope.reload();
     });
 
-    $scope.$on('connection:event:playlistsLoaded', function() {
+    $scope.$on('connection:event:playlistChanged', function() {
+      $scope.reload();
+    });
+
+    $scope.$on('connection:event:playlistDeleted', function() {
       $scope.reload();
     });
   });
