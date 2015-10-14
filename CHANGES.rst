@@ -1,4 +1,4 @@
-1.4.0 2015-10-11
+1.4.0 UNRELEASED
 ----------------
 
 - Support hardware volume buttons in Android app.
