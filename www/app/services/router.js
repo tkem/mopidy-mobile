@@ -65,7 +65,7 @@
           var elements = $delegate._instances[i].getViewElements();
           var view = getByDelegateHref(elements, href);
           if (view && view.attr('cache-view') != 'false') {
-            //$log.debug('view ' + href + ' is cached');
+            $log.debug('view ' + href + ' is cached');
             return true;
           }
         }

@@ -2,7 +2,7 @@
   <ion-nav-buttons side="secondary">
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-edit"
             nav-transition="none"
-            ui-sref="^.edit"
+            ui-sref="playlists.index({mode: 'edit'})"
             >
     </button>
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
@@ -17,7 +17,7 @@
     <ion-list>
       <ion-item class="item-icon-right"
                 collection-repeat="playlist in playlists | playlistOrder : order"
-                ui-sref="playlist.view({uri: playlist.uri})"
+                ui-sref="playlists.lookup.list({uri: playlist.uri})"
                 >
         <h2>{{playlist.name}}</h2>
         <h4>{{getScheme(playlist.uri)}}</h4>

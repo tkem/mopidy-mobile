@@ -8,7 +8,7 @@
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-edit"
             nav-transition="none"
             ng-show="editable"
-            ui-sref="^.edit"
+            ui-sref="^.list({uri: playlist.uri, mode: 'edit'})"
             >
     </button>
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
