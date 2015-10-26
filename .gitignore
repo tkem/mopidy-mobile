@@ -1,6 +1,7 @@
 *.egg-info
 *.pyc
 .coverage
+.io-config.json
 build/
 dist/
 mopidy_mobile/www/*/
