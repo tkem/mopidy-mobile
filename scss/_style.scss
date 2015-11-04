@@ -17,6 +17,9 @@ $ionicons-font-path: "../lib/ionic/release/fonts" !default;
 /* include default variables */
 @import "variables";
 
+/* include icomoon icons */
+@import "icomoon";
+
 /* FIXME: https://github.com/driftyco/ionic/issues/2932 */
 .bar-subfooter.has-tabs {
     bottom: $tabs-height + $bar-footer-height;
@@ -113,6 +116,13 @@ i {
 .mopidy-mobile-icon-menu {
     @extend .#{$mopidy-mobile-icon-menu};
 }
+.mopidy-mobile-icon-search {
+    @extend .#{$mopidy-mobile-icon-search};
+}
+
+.mopidy-mobile-icon-consume {
+    @extend .#{$mopidy-mobile-icon-consume};
+}
 .mopidy-mobile-icon-random {
     @extend .#{$mopidy-mobile-icon-random};
 }
@@ -122,8 +132,8 @@ i {
 .mopidy-mobile-icon-repeat1 {
     @extend .#{$mopidy-mobile-icon-repeat1};
 }
-.mopidy-mobile-icon-search {
-    @extend .#{$mopidy-mobile-icon-search};
+.mopidy-mobile-icon-single {
+    @extend .#{$mopidy-mobile-icon-single};
 }
 
 .mopidy-mobile-icon-album {

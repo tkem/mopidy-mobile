@@ -66,7 +66,8 @@ gulp.task('dist', ['sass', 'bundle'], function() {
     'www/css/**/*.png',
     'www/app/**/*.gif',
     'www/app/**/*.png',
-    'www/lib/ionic/release/fonts/**'
+    'www/lib/ionic/release/fonts/**',
+    'www/lib/icomoon/fonts/**'
   ], {base: 'www'})
     .pipe(gulp.dest(paths.dist));
 });

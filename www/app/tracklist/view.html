@@ -5,8 +5,8 @@
             ui-sref="^.edit">
     </button>
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu"
-            ng-click="popover.show($event)"
-            ng-controller="TracklistMenuController"
+            ng-controller="TracklistMenuController as menu"
+            ng-click="menu.show($event)"
             >
     </button>
   </ion-nav-buttons>

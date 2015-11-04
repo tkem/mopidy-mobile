@@ -1,0 +1,1512 @@
+$icomoon-font-path: "../lib/icomoon/fonts" !default;
+$icomoon-font-family: "icomoon" !default;
+$icomoon-version: "0.1.0" !default;
+$icomoon-prefix: icomoon- !default;
+
+@font-face {
+    font-family: $icomoon-font-family;
+    src:url("#{$icomoon-font-path}/icomoon.eot?v=#{$icomoon-version}");
+    src:url("#{$icomoon-font-path}/icomoon.eot?v=#{$icomoon-version}#iefix") format('embedded-opentype'),
+    url("#{$icomoon-font-path}/icomoon.ttf?v=#{$icomoon-version}") format('truetype'),
+    url("#{$icomoon-font-path}/icomoon.woff?v=#{$icomoon-version}") format('woff'),
+    url("#{$icomoon-font-path}/icomoon.svg?v=#{$icomoon-version}#icomoon") format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.#{$icomoon-prefix}home, .#{$icomoon-prefix}home-2, .#{$icomoon-prefix}home-3, .#{$icomoon-prefix}office, .#{$icomoon-prefix}newspaper, .#{$icomoon-prefix}pencil, .#{$icomoon-prefix}pencil-2, .#{$icomoon-prefix}quill, .#{$icomoon-prefix}pen, .#{$icomoon-prefix}blog, .#{$icomoon-prefix}droplet, .#{$icomoon-prefix}paint-format, .#{$icomoon-prefix}image, .#{$icomoon-prefix}image-2, .#{$icomoon-prefix}images, .#{$icomoon-prefix}camera, .#{$icomoon-prefix}music, .#{$icomoon-prefix}headphones, .#{$icomoon-prefix}play, .#{$icomoon-prefix}film, .#{$icomoon-prefix}camera-2, .#{$icomoon-prefix}dice, .#{$icomoon-prefix}pacman, .#{$icomoon-prefix}spades, .#{$icomoon-prefix}clubs, .#{$icomoon-prefix}diamonds, .#{$icomoon-prefix}pawn, .#{$icomoon-prefix}bullhorn, .#{$icomoon-prefix}connection, .#{$icomoon-prefix}podcast, .#{$icomoon-prefix}feed, .#{$icomoon-prefix}book, .#{$icomoon-prefix}books, .#{$icomoon-prefix}library, .#{$icomoon-prefix}file, .#{$icomoon-prefix}profile, .#{$icomoon-prefix}file-2, .#{$icomoon-prefix}file-3, .#{$icomoon-prefix}file-4, .#{$icomoon-prefix}copy, .#{$icomoon-prefix}copy-2, .#{$icomoon-prefix}copy-3, .#{$icomoon-prefix}paste, .#{$icomoon-prefix}paste-2, .#{$icomoon-prefix}paste-3, .#{$icomoon-prefix}stack, .#{$icomoon-prefix}folder, .#{$icomoon-prefix}folder-open, .#{$icomoon-prefix}tag, .#{$icomoon-prefix}tags, .#{$icomoon-prefix}barcode, .#{$icomoon-prefix}qrcode, .#{$icomoon-prefix}ticket, .#{$icomoon-prefix}cart, .#{$icomoon-prefix}cart-2, .#{$icomoon-prefix}cart-3, .#{$icomoon-prefix}coin, .#{$icomoon-prefix}credit, .#{$icomoon-prefix}calculate, .#{$icomoon-prefix}support, .#{$icomoon-prefix}phone, .#{$icomoon-prefix}phone-hang-up, .#{$icomoon-prefix}address-book, .#{$icomoon-prefix}notebook, .#{$icomoon-prefix}envelop, .#{$icomoon-prefix}pushpin, .#{$icomoon-prefix}location, .#{$icomoon-prefix}location-2, .#{$icomoon-prefix}compass, .#{$icomoon-prefix}map, .#{$icomoon-prefix}map-2, .#{$icomoon-prefix}history, .#{$icomoon-prefix}clock, .#{$icomoon-prefix}clock-2, .#{$icomoon-prefix}alarm, .#{$icomoon-prefix}alarm-2, .#{$icomoon-prefix}bell, .#{$icomoon-prefix}stopwatch, .#{$icomoon-prefix}calendar, .#{$icomoon-prefix}calendar-2, .#{$icomoon-prefix}print, .#{$icomoon-prefix}keyboard, .#{$icomoon-prefix}screen, .#{$icomoon-prefix}laptop, .#{$icomoon-prefix}mobile, .#{$icomoon-prefix}mobile-2, .#{$icomoon-prefix}tablet, .#{$icomoon-prefix}tv, .#{$icomoon-prefix}cabinet, .#{$icomoon-prefix}drawer, .#{$icomoon-prefix}drawer-2, .#{$icomoon-prefix}drawer-3, .#{$icomoon-prefix}box-add, .#{$icomoon-prefix}box-remove, .#{$icomoon-prefix}download, .#{$icomoon-prefix}upload, .#{$icomoon-prefix}disk, .#{$icomoon-prefix}storage, .#{$icomoon-prefix}undo, .#{$icomoon-prefix}redo, .#{$icomoon-prefix}flip, .#{$icomoon-prefix}flip-2, .#{$icomoon-prefix}undo-2, .#{$icomoon-prefix}redo-2, .#{$icomoon-prefix}forward, .#{$icomoon-prefix}reply, .#{$icomoon-prefix}bubble, .#{$icomoon-prefix}bubbles, .#{$icomoon-prefix}bubbles-2, .#{$icomoon-prefix}bubble-2, .#{$icomoon-prefix}bubbles-3, .#{$icomoon-prefix}bubbles-4, .#{$icomoon-prefix}user, .#{$icomoon-prefix}users, .#{$icomoon-prefix}user-2, .#{$icomoon-prefix}users-2, .#{$icomoon-prefix}user-3, .#{$icomoon-prefix}user-4, .#{$icomoon-prefix}quotes-left, .#{$icomoon-prefix}busy, .#{$icomoon-prefix}spinner, .#{$icomoon-prefix}spinner-2, .#{$icomoon-prefix}spinner-3, .#{$icomoon-prefix}spinner-4, .#{$icomoon-prefix}spinner-5, .#{$icomoon-prefix}spinner-6, .#{$icomoon-prefix}binoculars, .#{$icomoon-prefix}search, .#{$icomoon-prefix}zoom-in, .#{$icomoon-prefix}zoom-out, .#{$icomoon-prefix}expand, .#{$icomoon-prefix}contract, .#{$icomoon-prefix}expand-2, .#{$icomoon-prefix}contract-2, .#{$icomoon-prefix}key, .#{$icomoon-prefix}key-2, .#{$icomoon-prefix}lock, .#{$icomoon-prefix}lock-2, .#{$icomoon-prefix}unlocked, .#{$icomoon-prefix}wrench, .#{$icomoon-prefix}settings, .#{$icomoon-prefix}equalizer, .#{$icomoon-prefix}cog, .#{$icomoon-prefix}cogs, .#{$icomoon-prefix}cog-2, .#{$icomoon-prefix}hammer, .#{$icomoon-prefix}wand, .#{$icomoon-prefix}aid, .#{$icomoon-prefix}bug, .#{$icomoon-prefix}pie, .#{$icomoon-prefix}stats, .#{$icomoon-prefix}bars, .#{$icomoon-prefix}bars-2, .#{$icomoon-prefix}gift, .#{$icomoon-prefix}trophy, .#{$icomoon-prefix}glass, .#{$icomoon-prefix}mug, .#{$icomoon-prefix}food, .#{$icomoon-prefix}leaf, .#{$icomoon-prefix}rocket, .#{$icomoon-prefix}meter, .#{$icomoon-prefix}meter2, .#{$icomoon-prefix}dashboard, .#{$icomoon-prefix}hammer-2, .#{$icomoon-prefix}fire, .#{$icomoon-prefix}lab, .#{$icomoon-prefix}magnet, .#{$icomoon-prefix}remove, .#{$icomoon-prefix}remove-2, .#{$icomoon-prefix}briefcase, .#{$icomoon-prefix}airplane, .#{$icomoon-prefix}truck, .#{$icomoon-prefix}road, .#{$icomoon-prefix}accessibility, .#{$icomoon-prefix}target, .#{$icomoon-prefix}shield, .#{$icomoon-prefix}lightning, .#{$icomoon-prefix}switch, .#{$icomoon-prefix}power-cord, .#{$icomoon-prefix}signup, .#{$icomoon-prefix}list, .#{$icomoon-prefix}list-2, .#{$icomoon-prefix}numbered-list, .#{$icomoon-prefix}menu, .#{$icomoon-prefix}menu-2, .#{$icomoon-prefix}tree, .#{$icomoon-prefix}cloud, .#{$icomoon-prefix}cloud-download, .#{$icomoon-prefix}cloud-upload, .#{$icomoon-prefix}download-2, .#{$icomoon-prefix}upload-2, .#{$icomoon-prefix}download-3, .#{$icomoon-prefix}upload-3, .#{$icomoon-prefix}globe, .#{$icomoon-prefix}earth, .#{$icomoon-prefix}link, .#{$icomoon-prefix}flag, .#{$icomoon-prefix}attachment, .#{$icomoon-prefix}eye, .#{$icomoon-prefix}eye-blocked, .#{$icomoon-prefix}eye-2, .#{$icomoon-prefix}bookmark, .#{$icomoon-prefix}bookmarks, .#{$icomoon-prefix}brightness-medium, .#{$icomoon-prefix}brightness-contrast, .#{$icomoon-prefix}contrast, .#{$icomoon-prefix}star, .#{$icomoon-prefix}star-2, .#{$icomoon-prefix}star-3, .#{$icomoon-prefix}heart, .#{$icomoon-prefix}heart-2, .#{$icomoon-prefix}heart-broken, .#{$icomoon-prefix}thumbs-up, .#{$icomoon-prefix}thumbs-up-2, .#{$icomoon-prefix}happy, .#{$icomoon-prefix}happy-2, .#{$icomoon-prefix}smiley, .#{$icomoon-prefix}smiley-2, .#{$icomoon-prefix}tongue, .#{$icomoon-prefix}tongue-2, .#{$icomoon-prefix}sad, .#{$icomoon-prefix}sad-2, .#{$icomoon-prefix}wink, .#{$icomoon-prefix}wink-2, .#{$icomoon-prefix}grin, .#{$icomoon-prefix}grin-2, .#{$icomoon-prefix}cool, .#{$icomoon-prefix}cool-2, .#{$icomoon-prefix}angry, .#{$icomoon-prefix}angry-2, .#{$icomoon-prefix}evil, .#{$icomoon-prefix}evil-2, .#{$icomoon-prefix}shocked, .#{$icomoon-prefix}shocked-2, .#{$icomoon-prefix}confused, .#{$icomoon-prefix}confused-2, .#{$icomoon-prefix}neutral, .#{$icomoon-prefix}neutral-2, .#{$icomoon-prefix}wondering, .#{$icomoon-prefix}wondering-2, .#{$icomoon-prefix}point-up, .#{$icomoon-prefix}point-right, .#{$icomoon-prefix}point-down, .#{$icomoon-prefix}point-left, .#{$icomoon-prefix}warning, .#{$icomoon-prefix}notification, .#{$icomoon-prefix}question, .#{$icomoon-prefix}info, .#{$icomoon-prefix}info-2, .#{$icomoon-prefix}blocked, .#{$icomoon-prefix}cancel-circle, .#{$icomoon-prefix}checkmark-circle, .#{$icomoon-prefix}spam, .#{$icomoon-prefix}close, .#{$icomoon-prefix}checkmark, .#{$icomoon-prefix}checkmark-2, .#{$icomoon-prefix}spell-check, .#{$icomoon-prefix}minus, .#{$icomoon-prefix}plus, .#{$icomoon-prefix}enter, .#{$icomoon-prefix}exit, .#{$icomoon-prefix}play-2, .#{$icomoon-prefix}pause, .#{$icomoon-prefix}stop, .#{$icomoon-prefix}backward, .#{$icomoon-prefix}forward-2, .#{$icomoon-prefix}play-3, .#{$icomoon-prefix}pause-2, .#{$icomoon-prefix}stop-2, .#{$icomoon-prefix}backward-2, .#{$icomoon-prefix}forward-3, .#{$icomoon-prefix}first, .#{$icomoon-prefix}last, .#{$icomoon-prefix}previous, .#{$icomoon-prefix}next, .#{$icomoon-prefix}eject, .#{$icomoon-prefix}volume-high, .#{$icomoon-prefix}volume-medium, .#{$icomoon-prefix}volume-low, .#{$icomoon-prefix}volume-mute, .#{$icomoon-prefix}volume-mute-2, .#{$icomoon-prefix}volume-increase, .#{$icomoon-prefix}volume-decrease, .#{$icomoon-prefix}loop, .#{$icomoon-prefix}loop-2, .#{$icomoon-prefix}loop-3, .#{$icomoon-prefix}shuffle, .#{$icomoon-prefix}arrow-up-left, .#{$icomoon-prefix}arrow-up, .#{$icomoon-prefix}arrow-up-right, .#{$icomoon-prefix}arrow-right, .#{$icomoon-prefix}arrow-down-right, .#{$icomoon-prefix}arrow-down, .#{$icomoon-prefix}arrow-down-left, .#{$icomoon-prefix}arrow-left, .#{$icomoon-prefix}arrow-up-left-2, .#{$icomoon-prefix}arrow-up-2, .#{$icomoon-prefix}arrow-up-right-2, .#{$icomoon-prefix}arrow-right-2, .#{$icomoon-prefix}arrow-down-right-2, .#{$icomoon-prefix}arrow-down-2, .#{$icomoon-prefix}arrow-down-left-2, .#{$icomoon-prefix}arrow-left-2, .#{$icomoon-prefix}arrow-up-left-3, .#{$icomoon-prefix}arrow-up-3, .#{$icomoon-prefix}arrow-up-right-3, .#{$icomoon-prefix}arrow-right-3, .#{$icomoon-prefix}arrow-down-right-3, .#{$icomoon-prefix}arrow-down-3, .#{$icomoon-prefix}arrow-down-left-3, .#{$icomoon-prefix}arrow-left-3, .#{$icomoon-prefix}tab, .#{$icomoon-prefix}checkbox-checked, .#{$icomoon-prefix}checkbox-unchecked, .#{$icomoon-prefix}checkbox-partial, .#{$icomoon-prefix}radio-checked, .#{$icomoon-prefix}radio-unchecked, .#{$icomoon-prefix}crop, .#{$icomoon-prefix}scissors, .#{$icomoon-prefix}filter, .#{$icomoon-prefix}filter-2, .#{$icomoon-prefix}font, .#{$icomoon-prefix}text-height, .#{$icomoon-prefix}text-width, .#{$icomoon-prefix}bold, .#{$icomoon-prefix}underline, .#{$icomoon-prefix}italic, .#{$icomoon-prefix}strikethrough, .#{$icomoon-prefix}omega, .#{$icomoon-prefix}sigma, .#{$icomoon-prefix}table, .#{$icomoon-prefix}table-2, .#{$icomoon-prefix}insert-template, .#{$icomoon-prefix}pilcrow, .#{$icomoon-prefix}left-to-right, .#{$icomoon-prefix}right-to-left, .#{$icomoon-prefix}paragraph-left, .#{$icomoon-prefix}paragraph-center, .#{$icomoon-prefix}paragraph-right, .#{$icomoon-prefix}paragraph-justify, .#{$icomoon-prefix}paragraph-left-2, .#{$icomoon-prefix}paragraph-center-2, .#{$icomoon-prefix}paragraph-right-2, .#{$icomoon-prefix}paragraph-justify-2, .#{$icomoon-prefix}indent-increase, .#{$icomoon-prefix}indent-decrease, .#{$icomoon-prefix}new-tab, .#{$icomoon-prefix}embed, .#{$icomoon-prefix}code, .#{$icomoon-prefix}console, .#{$icomoon-prefix}share, .#{$icomoon-prefix}mail, .#{$icomoon-prefix}mail-2, .#{$icomoon-prefix}mail-3, .#{$icomoon-prefix}mail-4, .#{$icomoon-prefix}google, .#{$icomoon-prefix}google-plus, .#{$icomoon-prefix}google-plus-2, .#{$icomoon-prefix}google-plus-3, .#{$icomoon-prefix}google-plus-4, .#{$icomoon-prefix}google-drive, .#{$icomoon-prefix}facebook, .#{$icomoon-prefix}facebook-2, .#{$icomoon-prefix}facebook-3, .#{$icomoon-prefix}instagram, .#{$icomoon-prefix}twitter, .#{$icomoon-prefix}twitter-2, .#{$icomoon-prefix}twitter-3, .#{$icomoon-prefix}feed-2, .#{$icomoon-prefix}feed-3, .#{$icomoon-prefix}feed-4, .#{$icomoon-prefix}youtube, .#{$icomoon-prefix}youtube-2, .#{$icomoon-prefix}vimeo, .#{$icomoon-prefix}vimeo2, .#{$icomoon-prefix}vimeo-2, .#{$icomoon-prefix}lanyrd, .#{$icomoon-prefix}flickr, .#{$icomoon-prefix}flickr-2, .#{$icomoon-prefix}flickr-3, .#{$icomoon-prefix}flickr-4, .#{$icomoon-prefix}picassa, .#{$icomoon-prefix}picassa-2, .#{$icomoon-prefix}dribbble, .#{$icomoon-prefix}dribbble-2, .#{$icomoon-prefix}dribbble-3, .#{$icomoon-prefix}forrst, .#{$icomoon-prefix}forrst-2, .#{$icomoon-prefix}deviantart, .#{$icomoon-prefix}deviantart-2, .#{$icomoon-prefix}steam, .#{$icomoon-prefix}steam-2, .#{$icomoon-prefix}github, .#{$icomoon-prefix}github-2, .#{$icomoon-prefix}github-3, .#{$icomoon-prefix}github-4, .#{$icomoon-prefix}github-5, .#{$icomoon-prefix}wordpress, .#{$icomoon-prefix}wordpress-2, .#{$icomoon-prefix}joomla, .#{$icomoon-prefix}blogger, .#{$icomoon-prefix}blogger-2, .#{$icomoon-prefix}tumblr, .#{$icomoon-prefix}tumblr-2, .#{$icomoon-prefix}yahoo, .#{$icomoon-prefix}tux, .#{$icomoon-prefix}apple, .#{$icomoon-prefix}finder, .#{$icomoon-prefix}android, .#{$icomoon-prefix}windows, .#{$icomoon-prefix}windows8, .#{$icomoon-prefix}soundcloud, .#{$icomoon-prefix}soundcloud-2, .#{$icomoon-prefix}skype, .#{$icomoon-prefix}reddit, .#{$icomoon-prefix}linkedin, .#{$icomoon-prefix}lastfm, .#{$icomoon-prefix}lastfm-2, .#{$icomoon-prefix}delicious, .#{$icomoon-prefix}stumbleupon, .#{$icomoon-prefix}stumbleupon-2, .#{$icomoon-prefix}stackoverflow, .#{$icomoon-prefix}pinterest, .#{$icomoon-prefix}pinterest-2, .#{$icomoon-prefix}xing, .#{$icomoon-prefix}xing-2, .#{$icomoon-prefix}flattr, .#{$icomoon-prefix}foursquare, .#{$icomoon-prefix}foursquare-2, .#{$icomoon-prefix}paypal, .#{$icomoon-prefix}paypal-2, .#{$icomoon-prefix}paypal-3, .#{$icomoon-prefix}yelp, .#{$icomoon-prefix}libreoffice, .#{$icomoon-prefix}file-pdf, .#{$icomoon-prefix}file-openoffice, .#{$icomoon-prefix}file-word, .#{$icomoon-prefix}file-excel, .#{$icomoon-prefix}file-zip, .#{$icomoon-prefix}file-powerpoint, .#{$icomoon-prefix}file-xml, .#{$icomoon-prefix}file-css, .#{$icomoon-prefix}html5, .#{$icomoon-prefix}html5-2, .#{$icomoon-prefix}css3, .#{$icomoon-prefix}chrome, .#{$icomoon-prefix}firefox, .#{$icomoon-prefix}IE, .#{$icomoon-prefix}opera, .#{$icomoon-prefix}safari, .#{$icomoon-prefix}IcoMoon {
+    display: inline-block;
+    font-family: $icomoon-font-family;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    text-rendering: auto;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.#{$icomoon-prefix}home:before {
+	content: "\e900";
+}
+.#{$icomoon-prefix}home-2:before {
+	content: "\e901";
+}
+.#{$icomoon-prefix}home-3:before {
+	content: "\e902";
+}
+.#{$icomoon-prefix}office:before {
+	content: "\e903";
+}
+.#{$icomoon-prefix}newspaper:before {
+	content: "\e904";
+}
+.#{$icomoon-prefix}pencil:before {
+	content: "\e905";
+}
+.#{$icomoon-prefix}pencil-2:before {
+	content: "\e906";
+}
+.#{$icomoon-prefix}quill:before {
+	content: "\e907";
+}
+.#{$icomoon-prefix}pen:before {
+	content: "\e908";
+}
+.#{$icomoon-prefix}blog:before {
+	content: "\e909";
+}
+.#{$icomoon-prefix}eyedropper:before {
+	content: "\e90a";
+}
+.#{$icomoon-prefix}droplet:before {
+	content: "\e90b";
+}
+.#{$icomoon-prefix}paint-format:before {
+	content: "\e90c";
+}
+.#{$icomoon-prefix}image:before {
+	content: "\e90d";
+}
+.#{$icomoon-prefix}images:before {
+	content: "\e90e";
+}
+.#{$icomoon-prefix}camera:before {
+	content: "\e90f";
+}
+.#{$icomoon-prefix}headphones:before {
+	content: "\e910";
+}
+.#{$icomoon-prefix}music:before {
+	content: "\e911";
+}
+.#{$icomoon-prefix}play:before {
+	content: "\e912";
+}
+.#{$icomoon-prefix}film:before {
+	content: "\e913";
+}
+.#{$icomoon-prefix}video-camera:before {
+	content: "\e914";
+}
+.#{$icomoon-prefix}dice:before {
+	content: "\e915";
+}
+.#{$icomoon-prefix}pacman:before {
+	content: "\e916";
+}
+.#{$icomoon-prefix}spades:before {
+	content: "\e917";
+}
+.#{$icomoon-prefix}clubs:before {
+	content: "\e918";
+}
+.#{$icomoon-prefix}diamonds:before {
+	content: "\e919";
+}
+.#{$icomoon-prefix}bullhorn:before {
+	content: "\e91a";
+}
+.#{$icomoon-prefix}connection:before {
+	content: "\e91b";
+}
+.#{$icomoon-prefix}podcast:before {
+	content: "\e91c";
+}
+.#{$icomoon-prefix}feed:before {
+	content: "\e91d";
+}
+.#{$icomoon-prefix}mic:before {
+	content: "\e91e";
+}
+.#{$icomoon-prefix}book:before {
+	content: "\e91f";
+}
+.#{$icomoon-prefix}books:before {
+	content: "\e920";
+}
+.#{$icomoon-prefix}library:before {
+	content: "\e921";
+}
+.#{$icomoon-prefix}file-text:before {
+	content: "\e922";
+}
+.#{$icomoon-prefix}profile:before {
+	content: "\e923";
+}
+.#{$icomoon-prefix}file-empty:before {
+	content: "\e924";
+}
+.#{$icomoon-prefix}files-empty:before {
+	content: "\e925";
+}
+.#{$icomoon-prefix}file-text-2:before {
+	content: "\e926";
+}
+.#{$icomoon-prefix}file-picture:before {
+	content: "\e927";
+}
+.#{$icomoon-prefix}file-music:before {
+	content: "\e928";
+}
+.#{$icomoon-prefix}file-play:before {
+	content: "\e929";
+}
+.#{$icomoon-prefix}file-video:before {
+	content: "\e92a";
+}
+.#{$icomoon-prefix}file-zip:before {
+	content: "\e92b";
+}
+.#{$icomoon-prefix}copy:before {
+	content: "\e92c";
+}
+.#{$icomoon-prefix}paste:before {
+	content: "\e92d";
+}
+.#{$icomoon-prefix}stack:before {
+	content: "\e92e";
+}
+.#{$icomoon-prefix}folder:before {
+	content: "\e92f";
+}
+.#{$icomoon-prefix}folder-open:before {
+	content: "\e930";
+}
+.#{$icomoon-prefix}folder-plus:before {
+	content: "\e931";
+}
+.#{$icomoon-prefix}folder-minus:before {
+	content: "\e932";
+}
+.#{$icomoon-prefix}folder-download:before {
+	content: "\e933";
+}
+.#{$icomoon-prefix}folder-upload:before {
+	content: "\e934";
+}
+.#{$icomoon-prefix}price-tag:before {
+	content: "\e935";
+}
+.#{$icomoon-prefix}price-tags:before {
+	content: "\e936";
+}
+.#{$icomoon-prefix}barcode:before {
+	content: "\e937";
+}
+.#{$icomoon-prefix}qrcode:before {
+	content: "\e938";
+}
+.#{$icomoon-prefix}ticket:before {
+	content: "\e939";
+}
+.#{$icomoon-prefix}cart:before {
+	content: "\e93a";
+}
+.#{$icomoon-prefix}coin-dollar:before {
+	content: "\e93b";
+}
+.#{$icomoon-prefix}coin-euro:before {
+	content: "\e93c";
+}
+.#{$icomoon-prefix}coin-pound:before {
+	content: "\e93d";
+}
+.#{$icomoon-prefix}coin-yen:before {
+	content: "\e93e";
+}
+.#{$icomoon-prefix}credit-card:before {
+	content: "\e93f";
+}
+.#{$icomoon-prefix}calculator:before {
+	content: "\e940";
+}
+.#{$icomoon-prefix}lifebuoy:before {
+	content: "\e941";
+}
+.#{$icomoon-prefix}phone:before {
+	content: "\e942";
+}
+.#{$icomoon-prefix}phone-hang-up:before {
+	content: "\e943";
+}
+.#{$icomoon-prefix}address-book:before {
+	content: "\e944";
+}
+.#{$icomoon-prefix}envelop:before {
+	content: "\e945";
+}
+.#{$icomoon-prefix}pushpin:before {
+	content: "\e946";
+}
+.#{$icomoon-prefix}location:before {
+	content: "\e947";
+}
+.#{$icomoon-prefix}location2:before {
+	content: "\e948";
+}
+.#{$icomoon-prefix}compass:before {
+	content: "\e949";
+}
+.#{$icomoon-prefix}compass2:before {
+	content: "\e94a";
+}
+.#{$icomoon-prefix}map:before {
+	content: "\e94b";
+}
+.#{$icomoon-prefix}map2:before {
+	content: "\e94c";
+}
+.#{$icomoon-prefix}history:before {
+	content: "\e94d";
+}
+.#{$icomoon-prefix}clock:before {
+	content: "\e94e";
+}
+.#{$icomoon-prefix}clock2:before {
+	content: "\e94f";
+}
+.#{$icomoon-prefix}alarm:before {
+	content: "\e950";
+}
+.#{$icomoon-prefix}bell:before {
+	content: "\e951";
+}
+.#{$icomoon-prefix}stopwatch:before {
+	content: "\e952";
+}
+.#{$icomoon-prefix}calendar:before {
+	content: "\e953";
+}
+.#{$icomoon-prefix}printer:before {
+	content: "\e954";
+}
+.#{$icomoon-prefix}keyboard:before {
+	content: "\e955";
+}
+.#{$icomoon-prefix}display:before {
+	content: "\e956";
+}
+.#{$icomoon-prefix}laptop:before {
+	content: "\e957";
+}
+.#{$icomoon-prefix}mobile:before {
+	content: "\e958";
+}
+.#{$icomoon-prefix}mobile2:before {
+	content: "\e959";
+}
+.#{$icomoon-prefix}tablet:before {
+	content: "\e95a";
+}
+.#{$icomoon-prefix}tv:before {
+	content: "\e95b";
+}
+.#{$icomoon-prefix}drawer:before {
+	content: "\e95c";
+}
+.#{$icomoon-prefix}drawer2:before {
+	content: "\e95d";
+}
+.#{$icomoon-prefix}box-add:before {
+	content: "\e95e";
+}
+.#{$icomoon-prefix}box-remove:before {
+	content: "\e95f";
+}
+.#{$icomoon-prefix}download:before {
+	content: "\e960";
+}
+.#{$icomoon-prefix}upload:before {
+	content: "\e961";
+}
+.#{$icomoon-prefix}floppy-disk:before {
+	content: "\e962";
+}
+.#{$icomoon-prefix}drive:before {
+	content: "\e963";
+}
+.#{$icomoon-prefix}database:before {
+	content: "\e964";
+}
+.#{$icomoon-prefix}undo:before {
+	content: "\e965";
+}
+.#{$icomoon-prefix}redo:before {
+	content: "\e966";
+}
+.#{$icomoon-prefix}undo2:before {
+	content: "\e967";
+}
+.#{$icomoon-prefix}redo2:before {
+	content: "\e968";
+}
+.#{$icomoon-prefix}forward:before {
+	content: "\e969";
+}
+.#{$icomoon-prefix}reply:before {
+	content: "\e96a";
+}
+.#{$icomoon-prefix}bubble:before {
+	content: "\e96b";
+}
+.#{$icomoon-prefix}bubbles:before {
+	content: "\e96c";
+}
+.#{$icomoon-prefix}bubbles2:before {
+	content: "\e96d";
+}
+.#{$icomoon-prefix}bubble2:before {
+	content: "\e96e";
+}
+.#{$icomoon-prefix}bubbles3:before {
+	content: "\e96f";
+}
+.#{$icomoon-prefix}bubbles4:before {
+	content: "\e970";
+}
+.#{$icomoon-prefix}user:before {
+	content: "\e971";
+}
+.#{$icomoon-prefix}users:before {
+	content: "\e972";
+}
+.#{$icomoon-prefix}user-plus:before {
+	content: "\e973";
+}
+.#{$icomoon-prefix}user-minus:before {
+	content: "\e974";
+}
+.#{$icomoon-prefix}user-check:before {
+	content: "\e975";
+}
+.#{$icomoon-prefix}user-tie:before {
+	content: "\e976";
+}
+.#{$icomoon-prefix}quotes-left:before {
+	content: "\e977";
+}
+.#{$icomoon-prefix}quotes-right:before {
+	content: "\e978";
+}
+.#{$icomoon-prefix}hour-glass:before {
+	content: "\e979";
+}
+.#{$icomoon-prefix}spinner:before {
+	content: "\e97a";
+}
+.#{$icomoon-prefix}spinner2:before {
+	content: "\e97b";
+}
+.#{$icomoon-prefix}spinner3:before {
+	content: "\e97c";
+}
+.#{$icomoon-prefix}spinner4:before {
+	content: "\e97d";
+}
+.#{$icomoon-prefix}spinner5:before {
+	content: "\e97e";
+}
+.#{$icomoon-prefix}spinner6:before {
+	content: "\e97f";
+}
+.#{$icomoon-prefix}spinner7:before {
+	content: "\e980";
+}
+.#{$icomoon-prefix}spinner8:before {
+	content: "\e981";
+}
+.#{$icomoon-prefix}spinner9:before {
+	content: "\e982";
+}
+.#{$icomoon-prefix}spinner10:before {
+	content: "\e983";
+}
+.#{$icomoon-prefix}spinner11:before {
+	content: "\e984";
+}
+.#{$icomoon-prefix}binoculars:before {
+	content: "\e985";
+}
+.#{$icomoon-prefix}search:before {
+	content: "\e986";
+}
+.#{$icomoon-prefix}zoom-in:before {
+	content: "\e987";
+}
+.#{$icomoon-prefix}zoom-out:before {
+	content: "\e988";
+}
+.#{$icomoon-prefix}enlarge:before {
+	content: "\e989";
+}
+.#{$icomoon-prefix}shrink:before {
+	content: "\e98a";
+}
+.#{$icomoon-prefix}enlarge2:before {
+	content: "\e98b";
+}
+.#{$icomoon-prefix}shrink2:before {
+	content: "\e98c";
+}
+.#{$icomoon-prefix}key:before {
+	content: "\e98d";
+}
+.#{$icomoon-prefix}key2:before {
+	content: "\e98e";
+}
+.#{$icomoon-prefix}lock:before {
+	content: "\e98f";
+}
+.#{$icomoon-prefix}unlocked:before {
+	content: "\e990";
+}
+.#{$icomoon-prefix}wrench:before {
+	content: "\e991";
+}
+.#{$icomoon-prefix}equalizer:before {
+	content: "\e992";
+}
+.#{$icomoon-prefix}equalizer2:before {
+	content: "\e993";
+}
+.#{$icomoon-prefix}cog:before {
+	content: "\e994";
+}
+.#{$icomoon-prefix}cogs:before {
+	content: "\e995";
+}
+.#{$icomoon-prefix}hammer:before {
+	content: "\e996";
+}
+.#{$icomoon-prefix}magic-wand:before {
+	content: "\e997";
+}
+.#{$icomoon-prefix}aid-kit:before {
+	content: "\e998";
+}
+.#{$icomoon-prefix}bug:before {
+	content: "\e999";
+}
+.#{$icomoon-prefix}pie-chart:before {
+	content: "\e99a";
+}
+.#{$icomoon-prefix}stats-dots:before {
+	content: "\e99b";
+}
+.#{$icomoon-prefix}stats-bars:before {
+	content: "\e99c";
+}
+.#{$icomoon-prefix}stats-bars2:before {
+	content: "\e99d";
+}
+.#{$icomoon-prefix}trophy:before {
+	content: "\e99e";
+}
+.#{$icomoon-prefix}gift:before {
+	content: "\e99f";
+}
+.#{$icomoon-prefix}glass:before {
+	content: "\e9a0";
+}
+.#{$icomoon-prefix}glass2:before {
+	content: "\e9a1";
+}
+.#{$icomoon-prefix}mug:before {
+	content: "\e9a2";
+}
+.#{$icomoon-prefix}spoon-knife:before {
+	content: "\e9a3";
+}
+.#{$icomoon-prefix}leaf:before {
+	content: "\e9a4";
+}
+.#{$icomoon-prefix}rocket:before {
+	content: "\e9a5";
+}
+.#{$icomoon-prefix}meter:before {
+	content: "\e9a6";
+}
+.#{$icomoon-prefix}meter2:before {
+	content: "\e9a7";
+}
+.#{$icomoon-prefix}hammer2:before {
+	content: "\e9a8";
+}
+.#{$icomoon-prefix}fire:before {
+	content: "\e9a9";
+}
+.#{$icomoon-prefix}lab:before {
+	content: "\e9aa";
+}
+.#{$icomoon-prefix}magnet:before {
+	content: "\e9ab";
+}
+.#{$icomoon-prefix}bin:before {
+	content: "\e9ac";
+}
+.#{$icomoon-prefix}bin2:before {
+	content: "\e9ad";
+}
+.#{$icomoon-prefix}briefcase:before {
+	content: "\e9ae";
+}
+.#{$icomoon-prefix}airplane:before {
+	content: "\e9af";
+}
+.#{$icomoon-prefix}truck:before {
+	content: "\e9b0";
+}
+.#{$icomoon-prefix}road:before {
+	content: "\e9b1";
+}
+.#{$icomoon-prefix}accessibility:before {
+	content: "\e9b2";
+}
+.#{$icomoon-prefix}target:before {
+	content: "\e9b3";
+}
+.#{$icomoon-prefix}shield:before {
+	content: "\e9b4";
+}
+.#{$icomoon-prefix}power:before {
+	content: "\e9b5";
+}
+.#{$icomoon-prefix}switch:before {
+	content: "\e9b6";
+}
+.#{$icomoon-prefix}power-cord:before {
+	content: "\e9b7";
+}
+.#{$icomoon-prefix}clipboard:before {
+	content: "\e9b8";
+}
+.#{$icomoon-prefix}list-numbered:before {
+	content: "\e9b9";
+}
+.#{$icomoon-prefix}list:before {
+	content: "\e9ba";
+}
+.#{$icomoon-prefix}list2:before {
+	content: "\e9bb";
+}
+.#{$icomoon-prefix}tree:before {
+	content: "\e9bc";
+}
+.#{$icomoon-prefix}menu:before {
+	content: "\e9bd";
+}
+.#{$icomoon-prefix}menu2:before {
+	content: "\e9be";
+}
+.#{$icomoon-prefix}menu3:before {
+	content: "\e9bf";
+}
+.#{$icomoon-prefix}menu4:before {
+	content: "\e9c0";
+}
+.#{$icomoon-prefix}cloud:before {
+	content: "\e9c1";
+}
+.#{$icomoon-prefix}cloud-download:before {
+	content: "\e9c2";
+}
+.#{$icomoon-prefix}cloud-upload:before {
+	content: "\e9c3";
+}
+.#{$icomoon-prefix}cloud-check:before {
+	content: "\e9c4";
+}
+.#{$icomoon-prefix}download2:before {
+	content: "\e9c5";
+}
+.#{$icomoon-prefix}upload2:before {
+	content: "\e9c6";
+}
+.#{$icomoon-prefix}download3:before {
+	content: "\e9c7";
+}
+.#{$icomoon-prefix}upload3:before {
+	content: "\e9c8";
+}
+.#{$icomoon-prefix}sphere:before {
+	content: "\e9c9";
+}
+.#{$icomoon-prefix}earth:before {
+	content: "\e9ca";
+}
+.#{$icomoon-prefix}link:before {
+	content: "\e9cb";
+}
+.#{$icomoon-prefix}flag:before {
+	content: "\e9cc";
+}
+.#{$icomoon-prefix}attachment:before {
+	content: "\e9cd";
+}
+.#{$icomoon-prefix}eye:before {
+	content: "\e9ce";
+}
+.#{$icomoon-prefix}eye-plus:before {
+	content: "\e9cf";
+}
+.#{$icomoon-prefix}eye-minus:before {
+	content: "\e9d0";
+}
+.#{$icomoon-prefix}eye-blocked:before {
+	content: "\e9d1";
+}
+.#{$icomoon-prefix}bookmark:before {
+	content: "\e9d2";
+}
+.#{$icomoon-prefix}bookmarks:before {
+	content: "\e9d3";
+}
+.#{$icomoon-prefix}sun:before {
+	content: "\e9d4";
+}
+.#{$icomoon-prefix}contrast:before {
+	content: "\e9d5";
+}
+.#{$icomoon-prefix}brightness-contrast:before {
+	content: "\e9d6";
+}
+.#{$icomoon-prefix}star-empty:before {
+	content: "\e9d7";
+}
+.#{$icomoon-prefix}star-half:before {
+	content: "\e9d8";
+}
+.#{$icomoon-prefix}star-full:before {
+	content: "\e9d9";
+}
+.#{$icomoon-prefix}heart:before {
+	content: "\e9da";
+}
+.#{$icomoon-prefix}heart-broken:before {
+	content: "\e9db";
+}
+.#{$icomoon-prefix}man:before {
+	content: "\e9dc";
+}
+.#{$icomoon-prefix}woman:before {
+	content: "\e9dd";
+}
+.#{$icomoon-prefix}man-woman:before {
+	content: "\e9de";
+}
+.#{$icomoon-prefix}happy:before {
+	content: "\e9df";
+}
+.#{$icomoon-prefix}happy2:before {
+	content: "\e9e0";
+}
+.#{$icomoon-prefix}smile:before {
+	content: "\e9e1";
+}
+.#{$icomoon-prefix}smile2:before {
+	content: "\e9e2";
+}
+.#{$icomoon-prefix}tongue:before {
+	content: "\e9e3";
+}
+.#{$icomoon-prefix}tongue2:before {
+	content: "\e9e4";
+}
+.#{$icomoon-prefix}sad:before {
+	content: "\e9e5";
+}
+.#{$icomoon-prefix}sad2:before {
+	content: "\e9e6";
+}
+.#{$icomoon-prefix}wink:before {
+	content: "\e9e7";
+}
+.#{$icomoon-prefix}wink2:before {
+	content: "\e9e8";
+}
+.#{$icomoon-prefix}grin:before {
+	content: "\e9e9";
+}
+.#{$icomoon-prefix}grin2:before {
+	content: "\e9ea";
+}
+.#{$icomoon-prefix}cool:before {
+	content: "\e9eb";
+}
+.#{$icomoon-prefix}cool2:before {
+	content: "\e9ec";
+}
+.#{$icomoon-prefix}angry:before {
+	content: "\e9ed";
+}
+.#{$icomoon-prefix}angry2:before {
+	content: "\e9ee";
+}
+.#{$icomoon-prefix}evil:before {
+	content: "\e9ef";
+}
+.#{$icomoon-prefix}evil2:before {
+	content: "\e9f0";
+}
+.#{$icomoon-prefix}shocked:before {
+	content: "\e9f1";
+}
+.#{$icomoon-prefix}shocked2:before {
+	content: "\e9f2";
+}
+.#{$icomoon-prefix}baffled:before {
+	content: "\e9f3";
+}
+.#{$icomoon-prefix}baffled2:before {
+	content: "\e9f4";
+}
+.#{$icomoon-prefix}confused:before {
+	content: "\e9f5";
+}
+.#{$icomoon-prefix}confused2:before {
+	content: "\e9f6";
+}
+.#{$icomoon-prefix}neutral:before {
+	content: "\e9f7";
+}
+.#{$icomoon-prefix}neutral2:before {
+	content: "\e9f8";
+}
+.#{$icomoon-prefix}hipster:before {
+	content: "\e9f9";
+}
+.#{$icomoon-prefix}hipster2:before {
+	content: "\e9fa";
+}
+.#{$icomoon-prefix}wondering:before {
+	content: "\e9fb";
+}
+.#{$icomoon-prefix}wondering2:before {
+	content: "\e9fc";
+}
+.#{$icomoon-prefix}sleepy:before {
+	content: "\e9fd";
+}
+.#{$icomoon-prefix}sleepy2:before {
+	content: "\e9fe";
+}
+.#{$icomoon-prefix}frustrated:before {
+	content: "\e9ff";
+}
+.#{$icomoon-prefix}frustrated2:before {
+	content: "\ea00";
+}
+.#{$icomoon-prefix}crying:before {
+	content: "\ea01";
+}
+.#{$icomoon-prefix}crying2:before {
+	content: "\ea02";
+}
+.#{$icomoon-prefix}point-up:before {
+	content: "\ea03";
+}
+.#{$icomoon-prefix}point-right:before {
+	content: "\ea04";
+}
+.#{$icomoon-prefix}point-down:before {
+	content: "\ea05";
+}
+.#{$icomoon-prefix}point-left:before {
+	content: "\ea06";
+}
+.#{$icomoon-prefix}warning:before {
+	content: "\ea07";
+}
+.#{$icomoon-prefix}notification:before {
+	content: "\ea08";
+}
+.#{$icomoon-prefix}question:before {
+	content: "\ea09";
+}
+.#{$icomoon-prefix}plus:before {
+	content: "\ea0a";
+}
+.#{$icomoon-prefix}minus:before {
+	content: "\ea0b";
+}
+.#{$icomoon-prefix}info:before {
+	content: "\ea0c";
+}
+.#{$icomoon-prefix}cancel-circle:before {
+	content: "\ea0d";
+}
+.#{$icomoon-prefix}blocked:before {
+	content: "\ea0e";
+}
+.#{$icomoon-prefix}cross:before {
+	content: "\ea0f";
+}
+.#{$icomoon-prefix}checkmark:before {
+	content: "\ea10";
+}
+.#{$icomoon-prefix}checkmark2:before {
+	content: "\ea11";
+}
+.#{$icomoon-prefix}spell-check:before {
+	content: "\ea12";
+}
+.#{$icomoon-prefix}enter:before {
+	content: "\ea13";
+}
+.#{$icomoon-prefix}exit:before {
+	content: "\ea14";
+}
+.#{$icomoon-prefix}play2:before {
+	content: "\ea15";
+}
+.#{$icomoon-prefix}pause:before {
+	content: "\ea16";
+}
+.#{$icomoon-prefix}stop:before {
+	content: "\ea17";
+}
+.#{$icomoon-prefix}previous:before {
+	content: "\ea18";
+}
+.#{$icomoon-prefix}next:before {
+	content: "\ea19";
+}
+.#{$icomoon-prefix}backward:before {
+	content: "\ea1a";
+}
+.#{$icomoon-prefix}forward2:before {
+	content: "\ea1b";
+}
+.#{$icomoon-prefix}play3:before {
+	content: "\ea1c";
+}
+.#{$icomoon-prefix}pause2:before {
+	content: "\ea1d";
+}
+.#{$icomoon-prefix}stop2:before {
+	content: "\ea1e";
+}
+.#{$icomoon-prefix}backward2:before {
+	content: "\ea1f";
+}
+.#{$icomoon-prefix}forward3:before {
+	content: "\ea20";
+}
+.#{$icomoon-prefix}first:before {
+	content: "\ea21";
+}
+.#{$icomoon-prefix}last:before {
+	content: "\ea22";
+}
+.#{$icomoon-prefix}previous2:before {
+	content: "\ea23";
+}
+.#{$icomoon-prefix}next2:before {
+	content: "\ea24";
+}
+.#{$icomoon-prefix}eject:before {
+	content: "\ea25";
+}
+.#{$icomoon-prefix}volume-high:before {
+	content: "\ea26";
+}
+.#{$icomoon-prefix}volume-medium:before {
+	content: "\ea27";
+}
+.#{$icomoon-prefix}volume-low:before {
+	content: "\ea28";
+}
+.#{$icomoon-prefix}volume-mute:before {
+	content: "\ea29";
+}
+.#{$icomoon-prefix}volume-mute2:before {
+	content: "\ea2a";
+}
+.#{$icomoon-prefix}volume-increase:before {
+	content: "\ea2b";
+}
+.#{$icomoon-prefix}volume-decrease:before {
+	content: "\ea2c";
+}
+.#{$icomoon-prefix}loop:before {
+	content: "\ea2d";
+}
+.#{$icomoon-prefix}loop2:before {
+	content: "\ea2e";
+}
+.#{$icomoon-prefix}infinite:before {
+	content: "\ea2f";
+}
+.#{$icomoon-prefix}shuffle:before {
+	content: "\ea30";
+}
+.#{$icomoon-prefix}arrow-up-left:before {
+	content: "\ea31";
+}
+.#{$icomoon-prefix}arrow-up:before {
+	content: "\ea32";
+}
+.#{$icomoon-prefix}arrow-up-right:before {
+	content: "\ea33";
+}
+.#{$icomoon-prefix}arrow-right:before {
+	content: "\ea34";
+}
+.#{$icomoon-prefix}arrow-down-right:before {
+	content: "\ea35";
+}
+.#{$icomoon-prefix}arrow-down:before {
+	content: "\ea36";
+}
+.#{$icomoon-prefix}arrow-down-left:before {
+	content: "\ea37";
+}
+.#{$icomoon-prefix}arrow-left:before {
+	content: "\ea38";
+}
+.#{$icomoon-prefix}arrow-up-left2:before {
+	content: "\ea39";
+}
+.#{$icomoon-prefix}arrow-up2:before {
+	content: "\ea3a";
+}
+.#{$icomoon-prefix}arrow-up-right2:before {
+	content: "\ea3b";
+}
+.#{$icomoon-prefix}arrow-right2:before {
+	content: "\ea3c";
+}
+.#{$icomoon-prefix}arrow-down-right2:before {
+	content: "\ea3d";
+}
+.#{$icomoon-prefix}arrow-down2:before {
+	content: "\ea3e";
+}
+.#{$icomoon-prefix}arrow-down-left2:before {
+	content: "\ea3f";
+}
+.#{$icomoon-prefix}arrow-left2:before {
+	content: "\ea40";
+}
+.#{$icomoon-prefix}circle-up:before {
+	content: "\ea41";
+}
+.#{$icomoon-prefix}circle-right:before {
+	content: "\ea42";
+}
+.#{$icomoon-prefix}circle-down:before {
+	content: "\ea43";
+}
+.#{$icomoon-prefix}circle-left:before {
+	content: "\ea44";
+}
+.#{$icomoon-prefix}tab:before {
+	content: "\ea45";
+}
+.#{$icomoon-prefix}move-up:before {
+	content: "\ea46";
+}
+.#{$icomoon-prefix}move-down:before {
+	content: "\ea47";
+}
+.#{$icomoon-prefix}sort-alpha-asc:before {
+	content: "\ea48";
+}
+.#{$icomoon-prefix}sort-alpha-desc:before {
+	content: "\ea49";
+}
+.#{$icomoon-prefix}sort-numeric-asc:before {
+	content: "\ea4a";
+}
+.#{$icomoon-prefix}sort-numeric-desc:before {
+	content: "\ea4b";
+}
+.#{$icomoon-prefix}sort-amount-asc:before {
+	content: "\ea4c";
+}
+.#{$icomoon-prefix}sort-amount-desc:before {
+	content: "\ea4d";
+}
+.#{$icomoon-prefix}command:before {
+	content: "\ea4e";
+}
+.#{$icomoon-prefix}shift:before {
+	content: "\ea4f";
+}
+.#{$icomoon-prefix}ctrl:before {
+	content: "\ea50";
+}
+.#{$icomoon-prefix}opt:before {
+	content: "\ea51";
+}
+.#{$icomoon-prefix}checkbox-checked:before {
+	content: "\ea52";
+}
+.#{$icomoon-prefix}checkbox-unchecked:before {
+	content: "\ea53";
+}
+.#{$icomoon-prefix}radio-checked:before {
+	content: "\ea54";
+}
+.#{$icomoon-prefix}radio-checked2:before {
+	content: "\ea55";
+}
+.#{$icomoon-prefix}radio-unchecked:before {
+	content: "\ea56";
+}
+.#{$icomoon-prefix}crop:before {
+	content: "\ea57";
+}
+.#{$icomoon-prefix}make-group:before {
+	content: "\ea58";
+}
+.#{$icomoon-prefix}ungroup:before {
+	content: "\ea59";
+}
+.#{$icomoon-prefix}scissors:before {
+	content: "\ea5a";
+}
+.#{$icomoon-prefix}filter:before {
+	content: "\ea5b";
+}
+.#{$icomoon-prefix}font:before {
+	content: "\ea5c";
+}
+.#{$icomoon-prefix}ligature:before {
+	content: "\ea5d";
+}
+.#{$icomoon-prefix}ligature2:before {
+	content: "\ea5e";
+}
+.#{$icomoon-prefix}text-height:before {
+	content: "\ea5f";
+}
+.#{$icomoon-prefix}text-width:before {
+	content: "\ea60";
+}
+.#{$icomoon-prefix}font-size:before {
+	content: "\ea61";
+}
+.#{$icomoon-prefix}bold:before {
+	content: "\ea62";
+}
+.#{$icomoon-prefix}underline:before {
+	content: "\ea63";
+}
+.#{$icomoon-prefix}italic:before {
+	content: "\ea64";
+}
+.#{$icomoon-prefix}strikethrough:before {
+	content: "\ea65";
+}
+.#{$icomoon-prefix}omega:before {
+	content: "\ea66";
+}
+.#{$icomoon-prefix}sigma:before {
+	content: "\ea67";
+}
+.#{$icomoon-prefix}page-break:before {
+	content: "\ea68";
+}
+.#{$icomoon-prefix}superscript:before {
+	content: "\ea69";
+}
+.#{$icomoon-prefix}subscript:before {
+	content: "\ea6a";
+}
+.#{$icomoon-prefix}superscript2:before {
+	content: "\ea6b";
+}
+.#{$icomoon-prefix}subscript2:before {
+	content: "\ea6c";
+}
+.#{$icomoon-prefix}text-color:before {
+	content: "\ea6d";
+}
+.#{$icomoon-prefix}pagebreak:before {
+	content: "\ea6e";
+}
+.#{$icomoon-prefix}clear-formatting:before {
+	content: "\ea6f";
+}
+.#{$icomoon-prefix}table:before {
+	content: "\ea70";
+}
+.#{$icomoon-prefix}table2:before {
+	content: "\ea71";
+}
+.#{$icomoon-prefix}insert-template:before {
+	content: "\ea72";
+}
+.#{$icomoon-prefix}pilcrow:before {
+	content: "\ea73";
+}
+.#{$icomoon-prefix}ltr:before {
+	content: "\ea74";
+}
+.#{$icomoon-prefix}rtl:before {
+	content: "\ea75";
+}
+.#{$icomoon-prefix}section:before {
+	content: "\ea76";
+}
+.#{$icomoon-prefix}paragraph-left:before {
+	content: "\ea77";
+}
+.#{$icomoon-prefix}paragraph-center:before {
+	content: "\ea78";
+}
+.#{$icomoon-prefix}paragraph-right:before {
+	content: "\ea79";
+}
+.#{$icomoon-prefix}paragraph-justify:before {
+	content: "\ea7a";
+}
+.#{$icomoon-prefix}indent-increase:before {
+	content: "\ea7b";
+}
+.#{$icomoon-prefix}indent-decrease:before {
+	content: "\ea7c";
+}
+.#{$icomoon-prefix}share:before {
+	content: "\ea7d";
+}
+.#{$icomoon-prefix}new-tab:before {
+	content: "\ea7e";
+}
+.#{$icomoon-prefix}embed:before {
+	content: "\ea7f";
+}
+.#{$icomoon-prefix}embed2:before {
+	content: "\ea80";
+}
+.#{$icomoon-prefix}terminal:before {
+	content: "\ea81";
+}
+.#{$icomoon-prefix}share2:before {
+	content: "\ea82";
+}
+.#{$icomoon-prefix}mail:before {
+	content: "\ea83";
+}
+.#{$icomoon-prefix}mail2:before {
+	content: "\ea84";
+}
+.#{$icomoon-prefix}mail3:before {
+	content: "\ea85";
+}
+.#{$icomoon-prefix}mail4:before {
+	content: "\ea86";
+}
+.#{$icomoon-prefix}google:before {
+	content: "\ea87";
+}
+.#{$icomoon-prefix}google-plus:before {
+	content: "\ea88";
+}
+.#{$icomoon-prefix}google-plus2:before {
+	content: "\ea89";
+}
+.#{$icomoon-prefix}google-plus3:before {
+	content: "\ea8a";
+}
+.#{$icomoon-prefix}google-drive:before {
+	content: "\ea8b";
+}
+.#{$icomoon-prefix}facebook:before {
+	content: "\ea8c";
+}
+.#{$icomoon-prefix}facebook2:before {
+	content: "\ea8d";
+}
+.#{$icomoon-prefix}facebook3:before {
+	content: "\ea8e";
+}
+.#{$icomoon-prefix}ello:before {
+	content: "\ea8f";
+}
+.#{$icomoon-prefix}instagram:before {
+	content: "\ea90";
+}
+.#{$icomoon-prefix}twitter:before {
+	content: "\ea91";
+}
+.#{$icomoon-prefix}twitter2:before {
+	content: "\ea92";
+}
+.#{$icomoon-prefix}twitter3:before {
+	content: "\ea93";
+}
+.#{$icomoon-prefix}feed2:before {
+	content: "\ea94";
+}
+.#{$icomoon-prefix}feed3:before {
+	content: "\ea95";
+}
+.#{$icomoon-prefix}feed4:before {
+	content: "\ea96";
+}
+.#{$icomoon-prefix}youtube:before {
+	content: "\ea97";
+}
+.#{$icomoon-prefix}youtube2:before {
+	content: "\ea98";
+}
+.#{$icomoon-prefix}youtube3:before {
+	content: "\ea99";
+}
+.#{$icomoon-prefix}youtube4:before {
+	content: "\ea9a";
+}
+.#{$icomoon-prefix}twitch:before {
+	content: "\ea9b";
+}
+.#{$icomoon-prefix}vimeo:before {
+	content: "\ea9c";
+}
+.#{$icomoon-prefix}vimeo2:before {
+	content: "\ea9d";
+}
+.#{$icomoon-prefix}vimeo3:before {
+	content: "\ea9e";
+}
+.#{$icomoon-prefix}lanyrd:before {
+	content: "\ea9f";
+}
+.#{$icomoon-prefix}flickr:before {
+	content: "\eaa0";
+}
+.#{$icomoon-prefix}flickr2:before {
+	content: "\eaa1";
+}
+.#{$icomoon-prefix}flickr3:before {
+	content: "\eaa2";
+}
+.#{$icomoon-prefix}flickr4:before {
+	content: "\eaa3";
+}
+.#{$icomoon-prefix}picassa:before {
+	content: "\eaa4";
+}
+.#{$icomoon-prefix}picassa2:before {
+	content: "\eaa5";
+}
+.#{$icomoon-prefix}dribble:before {
+	content: "\eaa6";
+}
+.#{$icomoon-prefix}dribble2:before {
+	content: "\eaa7";
+}
+.#{$icomoon-prefix}dribble3:before {
+	content: "\eaa8";
+}
+.#{$icomoon-prefix}forrst:before {
+	content: "\eaa9";
+}
+.#{$icomoon-prefix}forrst2:before {
+	content: "\eaaa";
+}
+.#{$icomoon-prefix}deviantart:before {
+	content: "\eaab";
+}
+.#{$icomoon-prefix}deviantart2:before {
+	content: "\eaac";
+}
+.#{$icomoon-prefix}steam:before {
+	content: "\eaad";
+}
+.#{$icomoon-prefix}steam2:before {
+	content: "\eaae";
+}
+.#{$icomoon-prefix}dropbox:before {
+	content: "\eaaf";
+}
+.#{$icomoon-prefix}onedrive:before {
+	content: "\eab0";
+}
+.#{$icomoon-prefix}github:before {
+	content: "\eab1";
+}
+.#{$icomoon-prefix}github2:before {
+	content: "\eab2";
+}
+.#{$icomoon-prefix}github3:before {
+	content: "\eab3";
+}
+.#{$icomoon-prefix}github4:before {
+	content: "\eab4";
+}
+.#{$icomoon-prefix}github5:before {
+	content: "\eab5";
+}
+.#{$icomoon-prefix}wordpress:before {
+	content: "\eab6";
+}
+.#{$icomoon-prefix}wordpress2:before {
+	content: "\eab7";
+}
+.#{$icomoon-prefix}joomla:before {
+	content: "\eab8";
+}
+.#{$icomoon-prefix}blogger:before {
+	content: "\eab9";
+}
+.#{$icomoon-prefix}blogger2:before {
+	content: "\eaba";
+}
+.#{$icomoon-prefix}tumblr:before {
+	content: "\eabb";
+}
+.#{$icomoon-prefix}tumblr2:before {
+	content: "\eabc";
+}
+.#{$icomoon-prefix}yahoo:before {
+	content: "\eabd";
+}
+.#{$icomoon-prefix}tux:before {
+	content: "\eabe";
+}
+.#{$icomoon-prefix}apple:before {
+	content: "\eabf";
+}
+.#{$icomoon-prefix}finder:before {
+	content: "\eac0";
+}
+.#{$icomoon-prefix}android:before {
+	content: "\eac1";
+}
+.#{$icomoon-prefix}windows:before {
+	content: "\eac2";
+}
+.#{$icomoon-prefix}windows8:before {
+	content: "\eac3";
+}
+.#{$icomoon-prefix}soundcloud:before {
+	content: "\eac4";
+}
+.#{$icomoon-prefix}soundcloud2:before {
+	content: "\eac5";
+}
+.#{$icomoon-prefix}skype:before {
+	content: "\eac6";
+}
+.#{$icomoon-prefix}reddit:before {
+	content: "\eac7";
+}
+.#{$icomoon-prefix}linkedin:before {
+	content: "\eac8";
+}
+.#{$icomoon-prefix}linkedin2:before {
+	content: "\eac9";
+}
+.#{$icomoon-prefix}lastfm:before {
+	content: "\eaca";
+}
+.#{$icomoon-prefix}lastfm2:before {
+	content: "\eacb";
+}
+.#{$icomoon-prefix}delicious:before {
+	content: "\eacc";
+}
+.#{$icomoon-prefix}stumbleupon:before {
+	content: "\eacd";
+}
+.#{$icomoon-prefix}stumbleupon2:before {
+	content: "\eace";
+}
+.#{$icomoon-prefix}stackoverflow:before {
+	content: "\eacf";
+}
+.#{$icomoon-prefix}pinterest:before {
+	content: "\ead0";
+}
+.#{$icomoon-prefix}pinterest2:before {
+	content: "\ead1";
+}
+.#{$icomoon-prefix}xing:before {
+	content: "\ead2";
+}
+.#{$icomoon-prefix}xing2:before {
+	content: "\ead3";
+}
+.#{$icomoon-prefix}flattr:before {
+	content: "\ead4";
+}
+.#{$icomoon-prefix}foursquare:before {
+	content: "\ead5";
+}
+.#{$icomoon-prefix}paypal:before {
+	content: "\ead6";
+}
+.#{$icomoon-prefix}paypal2:before {
+	content: "\ead7";
+}
+.#{$icomoon-prefix}paypal3:before {
+	content: "\ead8";
+}
+.#{$icomoon-prefix}yelp:before {
+	content: "\ead9";
+}
+.#{$icomoon-prefix}file-pdf:before {
+	content: "\eada";
+}
+.#{$icomoon-prefix}file-openoffice:before {
+	content: "\eadb";
+}
+.#{$icomoon-prefix}file-word:before {
+	content: "\eadc";
+}
+.#{$icomoon-prefix}file-excel:before {
+	content: "\eadd";
+}
+.#{$icomoon-prefix}file-libreoffice:before {
+	content: "\eade";
+}
+.#{$icomoon-prefix}html5:before {
+	content: "\eadf";
+}
+.#{$icomoon-prefix}html52:before {
+	content: "\eae0";
+}
+.#{$icomoon-prefix}css3:before {
+	content: "\eae1";
+}
+.#{$icomoon-prefix}git:before {
+	content: "\eae2";
+}
+.#{$icomoon-prefix}svg:before {
+	content: "\eae3";
+}
+.#{$icomoon-prefix}codepen:before {
+	content: "\eae4";
+}
+.#{$icomoon-prefix}chrome:before {
+	content: "\eae5";
+}
+.#{$icomoon-prefix}firefox:before {
+	content: "\eae6";
+}
+.#{$icomoon-prefix}IE:before {
+	content: "\eae7";
+}
+.#{$icomoon-prefix}opera:before {
+	content: "\eae8";
+}
+.#{$icomoon-prefix}safari:before {
+	content: "\eae9";
+}
+.#{$icomoon-prefix}IcoMoon:before {
+	content: "\eaea";
+}
+.#{$icomoon-prefix}:before {
+	content: "\eae";
+}
+.#{$icomoon-prefix}:before {
+	content: "\eae";
+}
+.#{$icomoon-prefix}:before {
+	content: "\eae";
+}

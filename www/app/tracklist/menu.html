@@ -1,0 +1,36 @@
+<ion-popover-view class="mopidy-mobile-menu">
+  <ion-content scroll="false">
+    <ion-list>
+      <div class="item">
+        <div class="button-bar">
+        <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-consume"
+                ng-class="{'button-positive': options.consume}"
+                ng-click="toggleConsume()"
+                >
+        </button>
+        <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-random"
+                ng-class="{'button-positive': options.random}"
+                ng-click="toggleRandom()"
+                >
+        </button>
+        <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-repeat"
+                ng-class="{'button-positive': options.repeat}"
+                ng-click="toggleRepeat()"
+                >
+        </button>
+        <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-single"
+                ng-class="{'button-positive': options.single}"
+                ng-click="toggleSingle()"
+                >
+        </button>
+        </div>
+      </div>
+      <button class="item" ng-click="menu.hide().then(saveAs)" ng-disabled="!tlTracks.length">
+        {{'Save as' | translate}}&hellip;
+      </button>
+      <button class="item" ng-click="menu.hide().then(confirmClear)" ng-disabled="!tlTracks.length">
+        {{'Clear' | translate}}&hellip;
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-popover-view>

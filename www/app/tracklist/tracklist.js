@@ -61,6 +61,14 @@
       });
     };
 
+    $scope.confirmClear = function() {
+      popup.confirm('Clear tracklist').then(function(result) {
+        if (result) {
+          $scope.clear();
+        }
+      });
+    };
+
     $scope.getTracks = function() {
       return $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
     };
@@ -136,6 +144,20 @@
       // TODO: then(update $scope.tlTracks) -- race condition with event?
     };
 
+    $scope.saveAs = function() {
+      popup.prompt('Playlist Name', 'My Playlist').then(function(name) {
+        if (name) {
+          connection(function(mopidy) {
+            // TODO: error handling
+            return mopidy.playlists.create({name: name}).then(function(playlist) {
+              playlist.tracks = $scope.getTracks();
+              return mopidy.playlists.save({playlist: playlist});
+            });
+          });
+        }
+      });
+    };
+
     $scope.selectPlaylist = function(track) {
       return connection(function(mopidy) {
         return mopidy.playlists.asList();
@@ -149,32 +171,28 @@
       });
     };
 
-    $scope.setConsume = function(value) {
+    $scope.toggleConsume = function() {
       return connection(function(mopidy) {
-        mopidy.tracklist.setConsume({value: value});
+        mopidy.tracklist.setConsume({value: !$scope.options.consume});
       });
-      // TODO: then(update options)
     };
 
-    $scope.setRandom = function(value) {
+    $scope.toggleRandom = function() {
       return connection(function(mopidy) {
-        mopidy.tracklist.setRandom({value: value});
+        mopidy.tracklist.setRandom({value: !$scope.options.random});
       });
-      // TODO: then(update options)
     };
 
-    $scope.setRepeat = function(value) {
+    $scope.toggleRepeat = function() {
       return connection(function(mopidy) {
-        mopidy.tracklist.setRepeat({value: value});
+        mopidy.tracklist.setRepeat({value: !$scope.options.repeat});
       });
-      // TODO: then(update options)
     };
 
-    $scope.setSingle = function(value) {
+    $scope.toggleSingle = function() {
       return connection(function(mopidy) {
-        mopidy.tracklist.setSingle({value: value});
+        mopidy.tracklist.setSingle({value: !$scope.options.single});
       });
-      // TODO: then(update options)
     };
 
     $scope.$on('connection:state:online', function() {
@@ -233,45 +251,15 @@
   });
 
   /* @ngInject */
-  module.controller('TracklistMenuController', function($scope, connection, popoverMenu, popup) {
-    $scope.popover = popoverMenu([{
-      text: 'Consume mode',
-      model: 'options.consume',
-      change: 'setConsume(options.consume)',
-    }, {
-      text: 'Save as',
-      click: 'popover.hide() && saveAs()',
-      disabled: '!tlTracks.length',
-      hellip: true
-    }, {
-      text: 'Clear',
-      click: 'popover.hide() && confirmClear()',
-      disabled: '!tlTracks.length',
-      hellip: true
-    }], {
+  module.controller('TracklistMenuController', function($scope, popover) {
+    var menu = popover.fromTemplateUrl('app/tracklist/menu.html', {
       scope: $scope
     });
-
-    $scope.confirmClear = function() {
-      popup.confirm('Clear tracklist').then(function(result) {
-        if (result) {
-          $scope.clear();
-        }
-      });
+    this.show = function($event) {
+      return menu.show($event);
     };
-
-    $scope.saveAs = function() {
-      popup.prompt('Playlist Name', 'My Playlist').then(function(name) {
-        if (name) {
-          connection(function(mopidy) {
-            // TODO: error handling
-            return mopidy.playlists.create({name: name}).then(function(playlist) {
-              playlist.tracks = $scope.getTracks();
-              return mopidy.playlists.save({playlist: playlist});
-            });
-          });
-        }
-      });
+    this.hide = function() {
+      return menu.hide();
     };
   });
 
