@@ -30,13 +30,18 @@
   <ion-content class="has-header has-footer has-subfooter padding">
     <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
     </ion-refresher>
-    <h2>{{track.name || ('Nothing playing' | translate)}}</h2>
-    <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">
-      <span ng-repeat="artist in track.artists">{{artist.name}}</span>
-    </h3>
-    <h4>{{streamTitle || track.album.name || track.genre || track.comment}}</h4>
-    <div ng-if="image">
-      <img ng-src="{{image.uri}}">
+
+    <div class="row row-top responsive-sm">
+      <div class="col">
+        <h2>{{track.name || ('Nothing playing' | translate)}}</h2>
+        <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">
+          <span ng-repeat="artist in track.artists">{{artist.name}}</span>
+        </h3>
+        <h4>{{streamTitle || track.album.name || track.genre || track.comment}}</h4>
+      </div>
+      <div class="col" ng-if="image">
+        <img ng-src="{{image.uri}}">
+      </div>
     </div>
   </ion-content>
 
