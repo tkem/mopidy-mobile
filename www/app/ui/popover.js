@@ -44,7 +44,7 @@
         },
         hide: function() {
           return promise.then(function(popover) {
-            popover.hide()
+            return popover.hide();
           });
         },
         refresh: function() {

@@ -1,3 +1,11 @@
+1.5.0 2015-11-05
+----------------
+
+- Responsive playback layout.
+
+- Add option toggle buttons to tracklist menu.
+
+
 1.4.0 2015-10-17
 ----------------
 
