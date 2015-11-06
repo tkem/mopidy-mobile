@@ -232,6 +232,15 @@ i {
     ion-content {
         position: relative !important;
     }
+    .item.button-bar {
+        button {
+            padding: 0;
+        }
+        border-left: 0;
+        border-right: 0;
+        margin-left: 0;
+        margin-right: 0;
+     }
 }
 
 /* playback controls */

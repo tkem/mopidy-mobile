@@ -1,8 +1,7 @@
 <ion-popover-view class="mopidy-mobile-menu">
   <ion-content scroll="false">
     <ion-list>
-      <div class="item">
-        <div class="button-bar">
+      <div class="item button-bar">
         <button class="button button-clear button-icon button-small icon mopidy-mobile-icon-consume"
                 ng-class="{'button-positive': options.consume}"
                 ng-click="toggleConsume()"
@@ -23,7 +22,6 @@
                 ng-click="toggleSingle()"
                 >
         </button>
-        </div>
       </div>
       <button class="item" ng-click="menu.hide().then(saveAs)" ng-disabled="!tlTracks.length">
         {{'Save as' | translate}}&hellip;
