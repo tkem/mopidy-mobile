@@ -31,7 +31,7 @@
     <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
     </ion-refresher>
 
-    <div class="row row-top responsive-sm">
+    <div class="row row-top row-no-padding responsive-portrait">
       <div class="col">
         <h2>{{track.name || ('Nothing playing' | translate)}}</h2>
         <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">

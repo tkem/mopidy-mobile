@@ -8,8 +8,6 @@ $bar-footer-height:               48px;
 /* increase width of popup for German translation */
 $popup-width:                     280px;
 
-$grid-padding-width:              0;
-
 /* path to ionicons font files, relative to www/css */
 $ionicons-font-path: "../lib/ionic/release/fonts" !default;
 
@@ -256,6 +254,9 @@ i {
         font-size: 12px;
         font-weight: inherit;
     }
+    div {
+        margin: 0 !important;
+    }
     img {
         height: 75%;
         width: 75%;
@@ -300,3 +301,30 @@ img.mopidy-mobile-logo {
     content: "\00b7";
     padding: 0 1ex;
 }
+
+/* custom responsive-grid-break with orientation selector */
+@mixin orientation-grid-break($selector, $orientation) {
+  @media (orientation: $orientation) {
+    #{$selector} {
+      -webkit-box-direction: normal;
+      -moz-box-direction: normal;
+      -webkit-box-orient: vertical;
+      -moz-box-orient: vertical;
+      -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
+
+      .col, .col-10, .col-20, .col-25, .col-33, .col-34, .col-50, .col-66, .col-67, .col-75, .col-80, .col-90 {
+        @include flex(1);
+        margin-bottom: ($grid-padding-width * 3) / 2;
+        margin-left: 0;
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  }
+}
+
+@include orientation-grid-break('.responsive-portrait', 'portrait');
+/* doesn't really make sense */
+@include orientation-grid-break('.responsive-landscape', 'landscape');
