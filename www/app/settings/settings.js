@@ -141,7 +141,7 @@
         }
       });
       settings.extend({coverart: services});
-      coverart.useServices(services);
+      coverart.services(services);
     });
   });
 
@@ -246,7 +246,7 @@
     });
 
     actions.setDefault(obj.action);
-    coverart.useServices(obj.coverart);
+    coverart.services(obj.coverart);
     locale.set(obj.locale);
     logging.debugEnabled(obj.debug);
     stylesheet.set(obj.stylesheet);
