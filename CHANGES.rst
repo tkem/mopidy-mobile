@@ -1,7 +1,9 @@
-1.6.0 2015-11-08
+1.6.0 2015-11-07
 ----------------
 
 - Asynchronously load tracks in browse view.
+
+- Disable caching for tracklist view.
 
 
 1.5.1 2015-11-07
