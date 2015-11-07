@@ -150,8 +150,10 @@
       scope: $scope
     });
 
-    $scope.getImages = function(models) {
-      var images = {};
+    $scope.getImages = function(models, images) {
+      if (!images) {
+        images = {};
+      }
       coverart.getImages(models, {
         width: $scope.thumbnail.width,
         height: $scope.thumbnail.height
@@ -205,8 +207,42 @@
   });
 
   /* @ngInject */
-  module.controller('LibraryBrowseController', function($scope, connection, items, ref) {
-    angular.extend($scope, {'items': items, 'ref': ref});
+  module.controller('LibraryBrowseController', function($log, $scope, connection, items, ref) {
+    function getTracks(items, images) {
+      var tracks = items.filter(function(ref) {
+        return ref.type === 'track';
+      });
+      // TODO: make limit configurable?
+      if (tracks.length && tracks.length <= 100) {
+        var objs = {};
+        tracks.forEach(function(ref) {
+          objs[ref.uri] = ref;
+        });
+        connection().then(function(mopidy) {
+          return mopidy.library.lookup({uris: Object.keys(objs)});
+        }).then(function(result) {
+          angular.forEach(result, function(tracks, uri) {
+            if (tracks.length == 1) {
+              angular.extend(objs[uri], tracks[0]);
+            } else {
+              $log.warn('lookup returned ' + tracks.length + ' tracks', uri, tracks);
+            }
+          });
+          return tracks;
+        }).then(function(tracks) {
+          $scope.getImages(tracks, images);
+        });
+      }
+      return tracks;
+    }
+
+    angular.extend($scope, {
+      items: items,
+      ref: ref,
+      images: {}
+    });
+
+    $scope.tracks = getTracks(items, $scope.images);
 
     $scope.refresh = function() {
       connection().then(function(mopidy) {
@@ -223,13 +259,10 @@
       return connection().then(function(mopidy) {
         return mopidy.library.browse({uri: ref.uri});
       }).then(function(items) {
-        $scope.items = items;
+        $scope.items = items;  // FIXME: this will probably not work
+        $scope.tracks = getTracks(items, $scope.images);
       });
     };
-
-    $scope.tracks = items.filter(function(ref) {
-      return ref.type === 'track';
-    });
 
     $scope.$on('connection:state:online', function() {
       $scope.reload();
