@@ -1,3 +1,13 @@
+1.5.1 2015-11-07
+----------------
+
+- Fix "Search here..." in library root directory.
+
+- Enable caching for tracklist view.
+
+- Refactor coverart services.
+
+
 1.5.0 2015-11-06
 ----------------
 
