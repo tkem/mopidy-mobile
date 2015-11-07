@@ -100,7 +100,7 @@
           genre: {array: true},
           performer: {array: true},
           track_name: {array: true},
-          uris: {array: true}
+          uris: {array: true, value: null}
         },
         resolve: {
           /* @ngInject */
