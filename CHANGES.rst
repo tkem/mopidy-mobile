@@ -1,3 +1,9 @@
+1.6.0 2015-11-08
+----------------
+
+- Asynchronously load tracks in browse view.
+
+
 1.5.1 2015-11-07
 ----------------
 
