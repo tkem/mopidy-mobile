@@ -1,3 +1,9 @@
+1.6.1 2015-11-08
+----------------
+
+- Fix height of track items in "mixed" browse lists.
+
+
 1.6.0 2015-11-07
 ----------------
 
