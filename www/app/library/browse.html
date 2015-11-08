@@ -26,11 +26,11 @@
     </form>
     <ion-list>
       <div collection-repeat="item in items"
+           item-height="item.type == 'track' ? '84px' : '52px'"
+           item-width="100%"
            ng-switch="item.type"
            >
         <ion-item class="item-thumbnail-left item-button-right"
-                  item-height="68px"
-                  item-width="100%"
                   ng-click="actions.default(item)"
                   ng-switch-when="track"
                   >
@@ -47,8 +47,6 @@
           </button>
         </ion-item>
         <ion-item class="item-icon-left item-icon-right"
-                  item-height="54px"
-                  item-width="100%"
                   ng-switch-default
                   ui-sref="library.browse({type: item.type, name: item.name, uri: item.uri})"
                   >
