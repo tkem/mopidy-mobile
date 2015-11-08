@@ -1,3 +1,11 @@
+1.6.2 2015-11-08
+----------------
+
+- Hide splash screen when ZeroConf server is found.
+
+- Fix bottom border height for track items.
+
+
 1.6.1 2015-11-08
 ----------------
 
