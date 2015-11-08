@@ -35,6 +35,13 @@
         }
       };
 
+      service.splashScreen = function() {
+        return $q.when({
+          hide: function() {},
+          show: function() {}
+        });
+      };
+
       return service;
     };
   });

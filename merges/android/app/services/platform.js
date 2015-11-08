@@ -69,6 +69,12 @@
         });
       };
 
+      service.splashScreen = function() {
+        return $ionicPlatform.ready().then(function() {
+          return $window.navigator.splashscreen;
+        });
+      };
+
       return service;
     };
   });

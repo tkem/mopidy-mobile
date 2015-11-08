@@ -26,16 +26,21 @@
   });
 
   /* @ngInject */
-  module.controller('ServersController', function($q, $rootScope, $scope, connection, platform, popup, router, settings) {
+  module.controller('ServersController', function($log, $q, $rootScope, $scope, $timeout, connection, platform, popup, router, settings) {
     $scope.settings = settings.get({servers: []});
     $scope.zeroconf = {servers: []};
 
-    platform.servers(5000).then(
+    platform.servers(10000).then(
       function(servers) {
         $scope.zeroconf.servers = servers;
       },
-      angular.noop,
+      function(error) {
+        $log.error('Error retrieving servers', error);
+      },
       function(server) {
+        platform.splashScreen().then(function(splashScreen) {
+          $timeout(splashScreen.hide, 250);  // give view some time to update
+        });
         $scope.zeroconf.servers.push(server);
       }
     );
