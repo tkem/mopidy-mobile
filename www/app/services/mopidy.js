@@ -179,6 +179,16 @@
 
   /* @ngInject */
   module.factory('mopidy', function($log, $q) {
+    function logEvent() {
+      $log.debug.apply($log, Array.prototype.slice.call(arguments).map(function(obj) {
+        if (obj instanceof MessageEvent && obj.data) {
+          return angular.fromJson(obj.data);
+        } else {
+          return obj;
+        }
+      }));
+    }
+
     return function(settings) {
       return $q(function(resolve, reject) {
         var mopidy = new Mopidy(angular.extend({}, settings || {}, {
@@ -206,7 +216,7 @@
         } else {
           $log.info('Connecting to default WebSocket');
         }
-        mopidy.on($log.debug.bind($log));
+        mopidy.on(logEvent);
         mopidy.connect();
       });
     };
