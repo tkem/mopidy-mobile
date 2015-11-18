@@ -30,7 +30,7 @@
           connected = false;
           break;
         }
-        if (!event.startsWith('websocket')) {
+        if (event.indexOf('websocket:') !== 0) {
           $rootScope.$applyAsync(function(scope) {
             scope.$broadcast('connection:' + event, data);
           });
