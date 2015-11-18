@@ -1,3 +1,12 @@
+1.6.3 2015-11-18
+----------------
+
+- Show event details for incoming messages in logging view.
+
+- Do not use ``String.startsWith()``, which does not work on all
+  browsers (thanks to @joemarshall).
+
+
 1.6.2 2015-11-08
 ----------------
 
