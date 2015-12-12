@@ -150,7 +150,7 @@
           connection(function(mopidy) {
             // TODO: error handling
             return mopidy.playlists.create({name: name}).then(function(playlist) {
-              playlist.tracks = $scope.getTracks();
+              playlist.tracks = angular.copy($scope.getTracks());
               return mopidy.playlists.save({playlist: playlist});
             });
           });
