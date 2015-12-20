@@ -6,10 +6,10 @@
   </ion-nav-bar>
   <ion-content ng-controller="TrackController as track">
     <form class="list" name="form" ng-submit="add(track.uri).then(goBack)">
-      <label class="item item-input">
-        <span class="input-label" translate>URL</span>
+      <ion-input class="item item-input">
+        <ion-label translate>URL</ion-label>
         <input name="uri" ng-model="track.uri" placeholder="http://example.com/stream.mp3" required type="text">
-      </label>
+      </ion-input>
       <button class="button button-positive button-full item"
               ng-disabled="form.$invalid"
               translate

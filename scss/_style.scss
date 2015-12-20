@@ -20,14 +20,6 @@ $ionicons-font-path: "../lib/ionic/release/fonts" !default;
 /* include icomoon icons */
 @import "icomoon";
 
-/* FIXME: https://github.com/driftyco/ionic/issues/2932 */
-.bar-subfooter.has-tabs {
-    bottom: $tabs-height + $bar-footer-height;
-}
-.has-subfooter.has-tabs {
-    bottom: $tabs-height + $bar-footer-height + $bar-subfooter-height;
-}
-
 /* FIXME: ionic bug? */
 .bar .button.button-small.button-icon:before {
     font-size: $button-icon-size;
@@ -44,6 +36,18 @@ $ionicons-font-path: "../lib/ionic/release/fonts" !default;
     display: block;
     width: 32px;
     text-align: center;
+}
+
+/* FIXME: Override some hardcoded/missing colors */
+.item-select {
+  select {
+    color: $input-label-color !important;
+  }
+}
+.popup-body {
+  input {
+    background-color: transparent;
+  }
 }
 
 /* make ion-android-more-vertical as wide as other buttons */

@@ -6,31 +6,25 @@
   </ion-nav-bar>
   <ion-content ng-controller="ServerController as server">
     <form class="list" name="form" ng-submit="add({name: server.name, url: server.webSocketUrl()}).then(goBack)">
-      <label class="item item-input">
-        <span class="input-label" translate>Name</span>
+      <ion-input class="item item-input">
+        <ion-label translate>Name</ion-label>
         <input name="name" ng-model="server.name" placeholder="Mopidy Server" required type="text">
-      </label>
-      <label class="item item-input">
-        <span class="input-label" translate>Host</span>
+      </ion-input>
+      <ion-input class="item item-input">
+        <ion-label translate>Host</ion-label>
         <input name="host" ng-model="server.host" placeholder="192.168.1.1" required type="text">
-      </label>
-      <label class="item item-input">
-        <span class="input-label" translate>Port</span>
+      </ion-input>
+      <ion-input class="item item-input">
+        <ion-label translate>Port</ion-label>
         <input ng-model="server.port" placeholder="6680" required type="number">
-      </label>
-      <label class="item item-input">
-        <span class="input-label" translate>Path</span>
+      </ion-input>
+      <ion-input class="item item-input">
+        <ion-label translate>Path</ion-label>
         <input ng-model="server.path" placeholder="/mopidy/ws/" required type="text">
-      </label>
-      <label class="item item-toggle">
-        <span translate>Secure connection</span>
-        <label class="toggle">
-          <input ng-model="server.secure" type="checkbox">
-          <div class="track">
-            <div class="handle"></div>
-          </div>
-        </label>
-      </label>
+      </ion-input>
+      <ion-toggle ng-model="server.secure">
+        <ion-label translate>Secure connection</ion-label>
+      </ion-toggle>
       <button class="button button-positive button-full item"
               ng-disabled="form.$invalid"
               translate

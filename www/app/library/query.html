@@ -1,9 +1,9 @@
 <ion-view view-title="{{'Search {name}' | translate:(ref || {name: ('Library' | translate)}) }}">
   <ion-content>
     <form class="list" name="form" ng-submit="submit()">
-      <div class="item item-input item-button-right" ng-repeat="term in terms">
-        <label class="input-label">
-          <select ng-model="term.key" style="vertical-align: middle;">
+      <div class="item item-button-right row" ng-repeat="term in terms">
+        <ion-input class="col-33 item-select">
+          <select ng-model="term.key" style="max-width: 100%; padding-left: 8px; vertical-align: middle;">
             <option value="any" translate>Any</option>
             <option value="album" translate>Album</option>
             <option value="albumartist" translate>Album artist</option>
@@ -15,11 +15,13 @@
             <option value="performer" translate>Performer</option>
             <option value="track_name" translate>Track</option>
           </select>
-        </label>
-        <input ng-model="term.value"
-               ng-required="$index == 0 || $index != terms.length - 1"
-               placeholder="{{'Search term' | translate}}"
-               type="text">
+        </ion-input>
+        <ion-input class="col item-input">
+          <input ng-model="term.value"
+                 ng-required="$index == 0 || $index != terms.length - 1"
+                 placeholder="{{'Search term' | translate}}"
+                 type="text">
+        </ion-input>
         <button class="button button-clear button-icon button-small mopidy-mobile-icon-close"
                 ng-click="terms.splice($index, 1)"
                 ng-show="$index != terms.length - 1"
@@ -27,15 +29,9 @@
                 >
         </button>
       </div>
-      <label class="item item-toggle">
-        <span translate>Find exact</span>
-        <label class="toggle">
-          <input name="exact" ng-model="params.exact" type="checkbox">
-          <div class="track">
-            <div class="handle"></div>
-          </div>
-        </label>
-      </label>
+      <ion-toggle class="item item-toggle" name="exact" ng-model="params.exact">
+        <ion-label translate>Find exact</ion-label>
+      </ion-toggle>
       <button class="button button-positive button-full item"
               ng-disabled="form.$invalid"
               translate

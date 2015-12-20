@@ -51,28 +51,3 @@ $range-default-track-bg:          lighten($button-default-bg, 20%) !default;
 $checkbox-off-bg-color:           $dark !default;
 
 @import "style";
-
-/* FIXME Override some hardcoded/missing colors - move to _style.css? */
-.item {
-  p {
-    color: #aaa;
-  }
-}
-.item-complex .item-content, .item-radio .item-content {
-  background-color: $dark;
-}
-.item-select {
-  select {
-    color: $input-label-color !important;
-  }
-}
-.popup-body {
-  input {
-    background-color: transparent;
-  }
-}
-input[type="range"] {
-  &::-webkit-slider-thumb:before {
-    background: $light !important;
-  }
-}

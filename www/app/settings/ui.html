@@ -1,36 +1,30 @@
 <ion-view view-title="{{'Look and feel' | translate}}">
   <ion-content ng-controller="SettingsController as settings">
     <div class="list">
-      <label class="item item-input item-select">
-        <div class="input-label" translate>
-          Language
-        </div>
+      <ion-input class="item item-input item-select">
+        <ion-label translate>Language</ion-label>
         <select ng-model="settings.locale"
                 ng-options="id as locale.displayName for (id, locale) in settings.locales"
                 >
           <option value="" translate>Default</option>
         </select>
-      </label>
-      <label class="item item-input item-select">
-        <div class="input-label" translate>
-          Theme
-        </div>
+      </ion-input>
+      <ion-input class="item item-input item-select">
+        <ion-label translate>Theme</ion-label>
         <select ng-model="settings.stylesheet">
           <option value="css/ionic-dark.min.css">Ionic Dark</option>
           <option value="css/ionic-light.min.css">Ionic Light</option>
         </select>
-      </label>
-      <label class="item item-input item-select">
-        <div class="input-label" translate>
-          Default click action
-        </div>
+      </ion-input>
+      <ion-input class="item item-input item-select">
+        <ion-label translate>Default click action</ion-label>
         <select ng-model="settings.action">
           <option value="play" translate>Play now</option>
           <option value="next" translate>Play next</option>
           <option value="add" translate>Add to tracklist</option>
           <option value="replace" translate>Replace tracklist</option>
         </select>
-      </label>
+      </ion-input>
     </div>
   </ion-content>
 </ion-view>

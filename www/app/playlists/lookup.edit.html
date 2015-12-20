@@ -22,9 +22,9 @@
   </ion-nav-buttons>
   <ion-content>
     <form ng-submit="save().then(goBack)">
-      <label class="item item-input">
+      <ion-input class="item item-input">
         <input type="text" placeholder="{{'Name' | translate}}" ng-model="playlist.name">
-      </label>
+      </ion-input>
     </form>
     <ion-list show-delete="true" show-reorder="true">
       <ion-item ng-repeat="track in playlist.tracks">
