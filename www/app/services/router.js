@@ -113,7 +113,10 @@
         goBack: function() {
           $ionicHistory.nextViewOptions({disableAnimate: true});
           return $ionicHistory.goBack();
-        }
+        },
+          reload: function() {
+              return $state.go($state.current, {}, {reload: true});
+          }
       };
     };
   });

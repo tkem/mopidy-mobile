@@ -74,7 +74,7 @@
   });
 
   /* @ngInject */
-  module.controller('SettingsController', function($scope, $window, actions, coverart, locale, logging, popup, settings, stylesheet) {
+  module.controller('SettingsController', function($scope, $window, actions, coverart, locale, logging, popup, router, settings, stylesheet) {
     var self = this;
     // TODO: DRY settings defaults
     angular.extend(this, settings.get({
@@ -90,8 +90,8 @@
       return self.action;
     }, function(newValue, oldValue) {
       if (newValue !== oldValue) {
-        settings.extend({action: newValue});
         actions.setDefault(newValue);
+        settings.extend({action: newValue});
       }
     });
 
@@ -99,8 +99,8 @@
       return self.debug;
     }, function(newValue, oldValue) {
       if (newValue !== oldValue) {
-        settings.extend({debug: newValue});
         logging.debugEnabled(newValue);
+        settings.extend({debug: newValue});
       }
     });
 
@@ -108,17 +108,8 @@
       return self.locale;
     }, function(newValue, oldValue) {
       if (newValue !== oldValue) {
+        locale.set(newValue).then(router.clearCache).then(router.reload);
         settings.extend({locale: newValue});
-        // layout issues with ion-nav-bar back button title; see
-        // https://github.com/tkem/mopidy-mobile/issues/87
-        //
-        // router.clearCache();
-        // locale.set(newValue);
-        popup.confirm('Restart application').then(function(result) {
-          if (result) {
-            $window.location.reload(true);
-          }
-        });
       }
     });
 
@@ -126,8 +117,8 @@
       return self.stylesheet;
     }, function(newValue, oldValue) {
       if (newValue !== oldValue) {
-        settings.extend({stylesheet: newValue});
         stylesheet.set(newValue);
+        settings.extend({stylesheet: newValue});
       }
     });
 
@@ -140,8 +131,8 @@
           services.push(service);
         }
       });
-      settings.extend({coverart: services});
       coverart.services(services);
+      settings.extend({coverart: services});
     });
   });
 
