@@ -4,7 +4,7 @@
   "dependencies": {
     "angular-translate": "~2.8.1",
     "icomoon": "~0.1.0",
-    "ionic": "~1.2.1",
+    "ionic": "~1.2.4",
     "mopidy": "mopidy/mopidy.js#0.5.0"
   }
 }
