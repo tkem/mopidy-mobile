@@ -1,3 +1,13 @@
+1.6.5 2016-01-05
+----------------
+
+- Upgrade `ionic` to v1.2.4.
+
+- Form input and CSS cleanups.
+
+- Change language without restart.
+
+
 1.6.4 2015-12-12
 ----------------
 
