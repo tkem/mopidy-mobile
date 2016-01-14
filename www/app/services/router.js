@@ -1,24 +1,24 @@
 ;(function(module) {
   'use strict';
 
-  // FIXME: workarounds for cached views calling resolvers; see
-  // http://forum.ionicframework.com/t/state-resolving-and-cached-views-in-beta-14/17870/
+  var resolveCache = null;
 
-  function getByDelegateHref(elements, href) {
-    for (var i = elements.length - 1; i >= 0; --i) {
-      var element = elements.eq(i);
-      if (element.attr('delegate-href') === href) {
-        return element;
-      }
-    }
-    return null;
-  }
-
-  function wrapResolveFunction(name, fn) {
+  function wrapResolveFunction(state, key, fn) {
     /* @ngInject */
-    return function($injector, $ionicNavViewDelegate, $state, $stateParams) {
-      var href = $state.href(name, $stateParams);
-      if (!$ionicNavViewDelegate.isCached(href)) {
+    return function($injector, $log, $state, $stateParams) {
+      var href = $state.href(state, $stateParams);
+      var cached = resolveCache ? resolveCache.get(href) || resolveCache.put(href, {}) : null;
+      if (cached && key in cached) {
+        $log.debug('Resolve cache hit: ' + state + '.' + key + ' [' + href + ']');
+        return cached[key];
+      } else if (cached) {
+        $log.debug('Resolve cache miss: ' + state + '.' + key + ' [' + href + ']');
+        var resolve = $injector.invoke(fn, null, angular.extend(
+          {}, {'$stateParams': $stateParams, params: $stateParams}, $stateParams
+        ));
+        cached[key] = resolve;
+        return resolve;
+      } else {
         return $injector.invoke(fn, null, angular.extend(
           {}, {'$stateParams': $stateParams, params: $stateParams}, $stateParams
         ));
@@ -26,10 +26,10 @@
     };
   }
 
-  function wrapResolve(name, resolve) {
+  function wrapResolve(state, resolve) {
     var wrapper = {};
-    angular.forEach(resolve, function(factory, key) {
-      wrapper[key] = angular.isFunction(factory) ? wrapResolveFunction(name, factory) : factory;
+    angular.forEach(resolve, function(value, key) {
+      wrapper[key] = angular.isFunction(value) ? wrapResolveFunction(state, key, value) : value;
     });
     return wrapper;
   }
@@ -44,48 +44,24 @@
   }
 
   /* @ngInject */
-  module.config(function($provide) {
-    /* @ngInject */
-    $provide.decorator('ionViewDirective', function($delegate, $state, $stateParams) {
-      return $delegate.map(function(obj) {
-        var compile = obj.compile;
-        obj.compile = function(element, attrs) {
-          var href = $state.href($state.current.name, $stateParams);
-          attrs.$set('delegateHref', href);
-          return compile(element, attrs);
-        };
-        return obj;
-      });
-    });
-
-    /* @ngInject */
-    $provide.decorator('$ionicNavViewDelegate', function($delegate, $log) {
-      $delegate.isCached = function(href) {
-        for (var i = $delegate._instances.length - 1; i >= 0; --i) {
-          var elements = $delegate._instances[i].getViewElements();
-          var view = getByDelegateHref(elements, href);
-          if (view && view.attr('cache-view') != 'false') {
-            $log.debug('view ' + href + ' is cached');
-            return true;
-          }
-        }
-        return false;
-      };
-      return $delegate;
-    });
-  });
-
-  /* @ngInject */
   module.config(function($locationProvider) {
     $locationProvider.html5Mode(false);  // TODO: browser reload?
   });
 
   /* @ngInject */
-  module.provider('router', function RouterProvider($stateProvider, $urlRouterProvider) {
+  module.provider('router', function RouterProvider($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
     var provider = this;
 
     provider.fallbackUrl = function(url) {
       $urlRouterProvider.otherwise(url);
+    };
+
+    provider.maxCache = function(value) {
+      if (arguments.length) {
+          return $ionicConfigProvider.views.maxCache(value);
+      } else {
+          return $ionicConfigProvider.views.maxCache();
+      }
     };
 
     provider.state = function(name, config) {
@@ -99,9 +75,18 @@
     };
 
     /* @ngInject */
-    provider.$get = function($ionicHistory, $state) {
+    provider.$get = function($cacheFactory, $ionicConfig, $ionicHistory, $log, $state) {
+      var maxCache = $ionicConfig.views.maxCache();
+      if (maxCache) {
+          $log.debug('Creating resolve cache with capacity ' + maxCache);
+          resolveCache = $cacheFactory('resolves', {capacity: maxCache});
+      }
+
       return {
         clearCache: function() {
+          if (resolveCache) {
+            resolveCache.removeAll();
+          }
           return $ionicHistory.clearCache();
         },
         clearHistory: function() {
@@ -114,9 +99,9 @@
           $ionicHistory.nextViewOptions({disableAnimate: true});
           return $ionicHistory.goBack();
         },
-          reload: function() {
-              return $state.go($state.current, {}, {reload: true});
-          }
+        reload: function() {
+          return $state.go($state.current, {}, {reload: true});
+        }
       };
     };
   });

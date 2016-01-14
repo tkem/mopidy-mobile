@@ -103,21 +103,16 @@
   });
 
   /* @ngInject */
-  module.run(function($rootScope, platform) {
+  module.run(function($rootScope, actions, platform, router) {
+    $rootScope.actions = actions;
+    $rootScope.clearCache = router.clearCache.bind(router);
+    $rootScope.go = router.go.bind(router);
+    $rootScope.goBack = router.goBack.bind(router);
     $rootScope.platform = platform;
+
     platform.appVersion().then(function(version) {
       $rootScope.version = version;
     });
-  });
-
-  /* @ngInject */
-  module.run(function($rootScope, router) {
-    $rootScope.goBack = router.goBack.bind(router);
-  });
-
-  /* @ngInject */
-  module.run(function($rootScope, actions) {
-    $rootScope.actions = actions;
   });
 
   /* @ngInject */

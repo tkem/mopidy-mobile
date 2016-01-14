@@ -208,6 +208,8 @@
 
   /* @ngInject */
   module.controller('LibraryBrowseController', function($log, $scope, connection, items, ref) {
+    $log.debug('New LibraryBrowseController', items, ref);
+
     function getTracks(items, images) {
       var tracks = items.filter(function(ref) {
         return ref.type === 'track';
@@ -247,6 +249,8 @@
     $scope.refresh = function() {
       connection().then(function(mopidy) {
         return mopidy.library.refresh({uri: ref.uri});
+      }).then(function() {
+        return $scope.clearCache();
       }).then(function() {
         return $scope.reload();
       }).finally(function() {

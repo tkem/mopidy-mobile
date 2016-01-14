@@ -78,6 +78,8 @@
       connection().then(function(mopidy) {
         return mopidy.playlists.refresh({uri_scheme: null});
       }).then(function() {
+        return $scope.clearCache();
+      }).then(function() {
         return $scope.reload();
       }).finally(function() {
         $scope.$broadcast('scroll.refreshComplete');
