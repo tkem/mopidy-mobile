@@ -294,6 +294,9 @@ i {
             border: 0;
             vertical-align: top;
         }
+        button:before {
+            vertical-align: super !important;
+        }
     }
     .range {
         margin: 0;
