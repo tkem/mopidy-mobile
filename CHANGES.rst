@@ -1,9 +1,16 @@
-1.6.6 UNRELEASED
+1.6.6 2016-01-17
 ----------------
+
+- Add resolve cache (fixes ``TypeError`` when using Browser back
+  button).
+
+- Add padding to playback controls.
+
+- Various CSS improvements.
 
 - Upgrade ZeroConf plugin to v1.2.0.
 
-- Allow app to be installed on SD card.
+- Allow Android app to be installed on SD card.
 
 
 1.6.5 2016-01-05
