@@ -34,6 +34,8 @@ $item-default-text:               $button-default-text;
 $item-default-active-bg:          $button-default-active-bg;
 $item-default-active-border:      $button-default-active-border;
 
+$item-reorder-icon-color:         $light !default;
+
 $bar-transparency:                1 !default;
 
 $bar-default-bg:                  rgba($button-default-bg, $bar-transparency) !default;
@@ -47,7 +49,8 @@ $popup-background-color:          rgba(64,64,64,0.9) !default;
 $input-color:                     darken($base-color, 15%) !default;
 $input-label-color:               $base-color;
 
-$range-default-track-bg:          lighten($button-default-bg, 20%) !default;
+$range-default-track-bg:          #eee !default;
+
 $checkbox-off-bg-color:           $dark !default;
 
 @import "style";

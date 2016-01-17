@@ -22,7 +22,7 @@ $ionicons-font-path: "../lib/ionic/release/fonts" !default;
 
 /* FIXME: ionic bug? */
 .bar .button.button-small.button-icon:before {
-    font-size: $button-icon-size;
+    font-size: $button-icon-size !important;
 }
 
 /* FIXME: Ionic bug? */
@@ -36,6 +36,12 @@ $ionicons-font-path: "../lib/ionic/release/fonts" !default;
     display: block;
     width: 32px;
     text-align: center;
+}
+
+/* FIXME: icon-accessory style for button */
+.item-button-left .icon-accessory, .item-button-right .icon-accessory {
+  color: $item-icon-accessory-color;
+  font-size: $item-icon-accessory-font-size;
 }
 
 /* FIXME: Override some hardcoded/missing colors */
