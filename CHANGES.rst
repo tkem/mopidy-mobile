@@ -1,3 +1,11 @@
+1.6.7 2016-01-23
+----------------
+
+- Translate library root in view title.
+
+- Preload `icomoon` icon font.
+
+
 1.6.6 2016-01-17
 ----------------
 
