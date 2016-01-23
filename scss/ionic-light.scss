@@ -6,6 +6,7 @@ importing the local _style.scss.
 
 */
 
+/* use ionic-sprites for default thumbnails */
 $sprites-path:                          "ionic-sprites.png";
 $sprites-version:                       "0.0.1";
 
@@ -13,5 +14,18 @@ $mopidy-mobile-thumbnail-album-bg:      url("#{$sprites-path}?v=#{$sprites-versi
 $mopidy-mobile-thumbnail-artist-bg:     url("#{$sprites-path}?v=#{$sprites-version}") -64px 0;
 $mopidy-mobile-thumbnail-directory-bg:  url("#{$sprites-path}?v=#{$sprites-version}") -128px 0;
 $mopidy-mobile-thumbnail-track-bg:      url("#{$sprites-path}?v=#{$sprites-version}") -192px 0;
+
+/* include icomoon icons */
+@import "icomoon";
+
+/* everybody *loves* pacman */
+$mopidy-mobile-icon-consume:            icomoon-pacman !default;
+
+/* HACK: preload icomoon font */
+body:after {
+    content: ' ';
+    visibility: hidden;
+    font-family: $icomoon-font-family;
+}
 
 @import "style";

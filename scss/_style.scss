@@ -17,9 +17,6 @@ $ionicons-font-path: "../lib/ionic/release/fonts" !default;
 /* include default variables */
 @import "variables";
 
-/* include icomoon icons */
-@import "icomoon";
-
 /* FIXME: ionic bug? */
 .bar .button.button-small.button-icon:before {
     font-size: $button-icon-size !important;
