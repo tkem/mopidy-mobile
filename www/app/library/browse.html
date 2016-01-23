@@ -1,4 +1,4 @@
-<ion-view view-title="{{ref.name}}">
+<ion-view view-title="{{ref.name || ('Library' | translate)}}">
   <ion-nav-buttons side="secondary">
     <button class="mopidy-mobile-button-icon mopidy-mobile-icon-play"
             ng-click="actions.default(tracks)"

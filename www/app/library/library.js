@@ -2,7 +2,7 @@
   'use strict';
 
   var refParams = {
-    name: 'Library',
+    name: null,
     type: 'directory',
     uri: null
   };

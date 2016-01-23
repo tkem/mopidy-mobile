@@ -1,4 +1,4 @@
-<ion-view view-title="{{'Search {name}' | translate:(ref || {name: ('Library' | translate)}) }}">
+<ion-view view-title="{{'Search {name}' | translate:({name: ref.name || ('Library' | translate)})}}">
   <ion-content>
     <form class="list" name="form" ng-submit="submit()">
       <div class="item item-button-right row" ng-repeat="term in terms">
