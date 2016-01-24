@@ -307,20 +307,24 @@
           var width = options ? options.width : undefined;
           var height = options ? options.height : undefined;
           var cached = {};
-          models = models.filter(function(model) {
+          var params = [];
+          models.forEach(function(model) {
             var images = cache.get(model.uri);
             if (images) {
               cached[model.uri] = images;
-              return false;
             } else {
-              return true;
+              params.push(model);
             }
           });
           return $q.all(services.map(function(service) {
-            return service(models).catch(function(error) {
-              $log.error('Error loading cover art', error);
+            if (params.length) {
+              return service(params).catch(function(error) {
+                $log.error('Error loading cover art', error);
+                return {};
+              });
+            } else {
               return {};
-            });
+            }
           })).then(function(results) {
             return merge({}, results);
           }).then(function(result) {

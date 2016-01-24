@@ -1,6 +1,8 @@
 1.6.8 2016-01-25
 ----------------
 
+- Reduce delay when moving or deleting tracklist items.
+
 
 1.6.7 2016-01-23
 ----------------

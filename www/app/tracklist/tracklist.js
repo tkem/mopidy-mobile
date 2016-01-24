@@ -94,6 +94,9 @@
     };
 
     $scope.move = function(fromIndex, toIndex) {
+      // update local copy first for user feedback
+      var tlTracks = $scope.tlTracks.splice(fromIndex, 1);
+      $scope.tlTracks.splice(toIndex, 0, tlTracks[0]);
       return connection(function(mopidy) {
         return mopidy.tracklist.move({
           start: fromIndex,
@@ -101,7 +104,6 @@
           to_position: toIndex
         });
       });
-      // TODO: then(update $scope.tlTracks) -- race condition with event?
     };
 
     $scope.play = function(tlTrack) {
@@ -138,10 +140,12 @@
     };
 
     $scope.remove = function(tlTrack) {
+      // update local copy first for user feedback
+      var index = $scope.index(tlTrack);
+      $scope.tlTracks.splice(index, 1);
       return connection(function(mopidy) {
         return mopidy.tracklist.remove({criteria: {tlid: [tlTrack.tlid]}});
       });
-      // TODO: then(update $scope.tlTracks) -- race condition with event?
     };
 
     $scope.saveAs = function() {
@@ -238,12 +242,26 @@
 
     $scope.$watchCollection('tlTracks', function(newValue, oldValue) {
       if (newValue !== oldValue) {
-        coverart.getImages($scope.getTracks(), {
+        var images = {};
+        var tracks = [];
+
+        $scope.getTracks().forEach(function(track) {
+          var image = $scope.images[track.uri];
+          if (image) {
+            images[track.uri] = image;
+          } else {
+            tracks.push(track);
+          }
+        });
+
+        coverart.getImages(tracks, {
           width: $scope.thumbnail.width,
           height: $scope.thumbnail.height
-        }).then(function(images) {
-          $scope.images = images;
+        }).then(function(result) {
+          angular.extend(images, result);
         });
+
+        $scope.images = images;
       }
     });
 
