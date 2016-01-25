@@ -19,6 +19,7 @@
   <ion-content>
     <ion-list show-delete="true" show-reorder="true">
       <ion-item class="item-thumbnail-left"
+                ng-class="{'item-positive': tlTrack.tlid == currentTlTrack.tlid}"
                 ng-repeat="tlTrack in tlTracks"
                 >
         <img ng-class="{'mopidy-mobile-thumbnail-track': !images[tlTrack.track.uri].uri}"

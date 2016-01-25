@@ -3,6 +3,8 @@
 
 - Reduce delay when moving or deleting tracklist items.
 
+- Highlight current track in tracklist edit mode.
+
 
 1.6.7 2016-01-23
 ----------------
