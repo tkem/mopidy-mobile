@@ -5,6 +5,8 @@
 
 - Highlight current track in tracklist edit mode.
 
+- Improve Mopidy cover art provider latency.
+
 
 1.6.7 2016-01-23
 ----------------
