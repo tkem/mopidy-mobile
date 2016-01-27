@@ -20,6 +20,7 @@
     <preference name="android-manifest/@android:installLocation" value="auto" />
     <preference name="android-minSdkVersion" value="19" />
     <preference name="webviewbounce" value="false" />
+    <preference name="cordova-custom-config-autorestore" value="false" />
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
