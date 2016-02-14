@@ -64,7 +64,11 @@ $popup-background-color:          rgba(64,64,64,0.9) !default;
 $input-color:                     darken($base-color, 15%) !default;
 $input-label-color:               $base-color;
 
-$range-default-track-bg:          #eee !default;
+$range-default-track-bg:          #fff !default;
+
+.range input::-webkit-slider-thumb:before {
+    background: #000 !important;
+}
 
 $checkbox-off-bg-color:           $dark !default;
 
