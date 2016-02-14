@@ -1,3 +1,14 @@
+1.6.9 2016-02-14
+----------------
+
+- Make elapsed playback time track visible on Android with "Ionic
+  Dark" theme.
+
+- Show URI if no name is set for metadata models.
+
+- Upgrade `Cordova` to v6.0.0.
+
+
 1.6.8 2016-01-25
 ----------------
 
