@@ -88,6 +88,7 @@
         'Track info': 'Track info',
         'Tracklist': 'Tracklist',
         'Track': 'Track',
+        'URI': 'URI',
         'URL': 'URL',
         'Version {version}': 'Version {{version}}',
         '{count} tracks': '{{count}} tracks',

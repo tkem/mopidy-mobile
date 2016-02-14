@@ -25,9 +25,9 @@
         <img ng-class="{'mopidy-mobile-thumbnail-track': !images[tlTrack.track.uri].uri}"
              ng-src="{{images[tlTrack.track.uri].uri || thumbnail.src}}"
              >
-        <h2>{{tlTrack.track.name}}</h2>
+        <h2>{{tlTrack.track.name || tlTrack.track.uri}}</h2>
         <h3 class="mopidy-mobile-artists" ng-show="tlTrack.track.artists.length">
-          <span ng-repeat="artist in tlTrack.track.artists">{{artist.name}}</span>
+          <span ng-repeat="artist in tlTrack.track.artists">{{artist.name || artist.uri}}</span>
         </h3>
         <h4>{{tlTrack.track.album.name || tlTrack.track.genre || tlTrack.track.comment}}</h4>
         <ion-delete-button class="ion-minus-circled" ng-click="remove(tlTrack)">

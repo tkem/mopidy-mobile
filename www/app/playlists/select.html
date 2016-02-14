@@ -1,7 +1,7 @@
 <ion-list>
-  <ion-item ng-click="actions.addToPlaylist(playlist.uri, track) && $buttonTapped({}, $event)" 
+  <ion-item ng-click="actions.addToPlaylist(playlist.uri, track) && $buttonTapped({}, $event)"
             ng-repeat="playlist in playlists"
             >
-    {{playlist.name}}
+    {{playlist.name || playlist.uri}}
   </ion-item>
 </ion-list>

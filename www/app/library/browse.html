@@ -37,9 +37,9 @@
           <img ng-class="{'mopidy-mobile-thumbnail-track': !images[item.uri].uri}"
                ng-src="{{images[item.uri].uri || thumbnail.src}}"
                >
-          <h2>{{item.name}}</h2>
+          <h2>{{item.name || item.uri}}</h2>
           <h3 class="mopidy-mobile-artists" ng-show="item.artists.length">
-            <span ng-repeat="artist in item.artists">{{artist.name}}</span>
+            <span ng-repeat="artist in item.artists">{{artist.name || artist.uri}}</span>
           </h3>
           <h4>{{item.album.name || item.genre || item.comment}}</h4>
           <button class="mopidy-mobile-button-icon mopidy-mobile-icon-menu icon-accessory"
@@ -51,7 +51,7 @@
                   ui-sref="library.browse({type: item.type, name: item.name, uri: item.uri})"
                   >
           <i ng-class="'mopidy-mobile-icon-' + item.type"></i>
-          {{item.name}}
+          {{item.name || item.uri}}
           <i class="mopidy-mobile-icon-link icon-accessory"></i>
         </ion-item>
       </div>

@@ -19,7 +19,7 @@
   <ion-content>
     <ion-list show-delete="true">
       <ion-item ng-repeat="playlist in playlists | playlistOrder : order">
-        <h2>{{playlist.name}}</h2>
+        <h2>{{playlist.name || playlist.uri}}</h2>
         <h4>{{getScheme(playlist.uri)}}</h4>
         <ion-delete-button class="ion-minus-circled" ng-click="confirmDelete(playlist)">
         </ion-delete-button>
