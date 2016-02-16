@@ -100,7 +100,7 @@
           genre: {array: true},
           performer: {array: true},
           track_name: {array: true},
-          uris: {array: true, value: null}
+          uri: null
         },
         resolve: {
           /* @ngInject */
@@ -108,20 +108,20 @@
             return connection(function(mopidy) {
               var query = {};
               angular.forEach(params, function(values, key) {
-                if (angular.isArray(values) && key !== 'uris') {
+                if (angular.isArray(values)) {
                   query[key] = values;
                 }
               });
               return mopidy.library.search({
                 query: query,
-                uris: params.uris || null,
+                uris: params.uri ? [params.uri] : null,
                 exact: params.exact === 'true'
               });
             });
           }
         },
         templateUrl: 'app/library/search.html',
-        url: '?album&albumartist&any&artist&comment&composer&date&genre&performer&track_name&uri&exact'
+        url: '/{uri}?album&albumartist&any&artist&comment&composer&date&genre&performer&track_name&exact'
       },
     });
   });
@@ -290,7 +290,7 @@
 
     $scope.params = {
       exact: false,
-      uris: ref.uri ? [ref.uri] : undefined
+      uri: ref.uri
     };
 
     $scope.submit = function() {
