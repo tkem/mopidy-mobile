@@ -1,3 +1,13 @@
+1.6.10 2016-03-01
+-----------------
+
+- Wrap list item text in track info popup.
+
+- Add Spanish and Catalan translations provided by `slimer`.
+
+- Improve caching behavior for search results.
+
+
 1.6.9 2016-02-14
 ----------------
 
