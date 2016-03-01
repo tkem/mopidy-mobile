@@ -88,6 +88,7 @@
         'Track info': 'Titelinformationen',
         'Tracklist': 'Titel',
         'Track': 'Titel',
+        'Translations': 'Übersetzungen',
         'URI': 'URI',
         'URL': 'URL',
         'Version {version}': 'Version {{version}}',
