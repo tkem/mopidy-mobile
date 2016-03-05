@@ -31,7 +31,9 @@
   });
 
   /* @ngInject */
-  module.controller('TracklistController', function($q, $scope, connection, coverart, popoverMenu, popup) {
+  module.controller('TracklistController', function(
+      $log, $q, $scope, connection, coverart, paging, popoverMenu, popup
+  ) {
     // TODO: generic popover menu
     var popover = popoverMenu(
       [{
@@ -47,7 +49,9 @@
       }
     );
 
-    angular.extend($scope, {images: {}, options: {}});
+    $scope.images = {};
+    $scope.options = {};
+    $scope.tlTracks = [];
 
     $scope.add = function(uri) {
       return connection(function(mopidy) {
@@ -154,8 +158,9 @@
           connection(function(mopidy) {
             // TODO: error handling
             return mopidy.playlists.create({name: name}).then(function(playlist) {
-              playlist.tracks = angular.copy($scope.getTracks());
-              return mopidy.playlists.save({playlist: playlist});
+                var tracks = $scope.tlTracks.map(function(tlTrack) { return tlTrack.track; });
+                playlist.tracks = angular.copy(tracks);
+                return mopidy.playlists.save({playlist: playlist});
             });
           });
         }
@@ -199,19 +204,6 @@
       });
     };
 
-    $scope.$on('connection:state:online', function() {
-      connection(function(mopidy) {
-        return $q.all({
-          // TODO: use getCurrentTlid() - how to handle index in title?
-          currentTlTrack: mopidy.playback.getCurrentTlTrack(),
-          options: mopidy.tracklist.getOptions(),
-          tlTracks: mopidy.tracklist.getTlTracks()
-        });
-      }).then(function(results) {
-        angular.extend($scope, results);
-      });
-    });
-
     $scope.$on('connection:event:optionsChanged', function() {
       connection(function(mopidy) {
         return mopidy.tracklist.getOptions();
@@ -240,30 +232,33 @@
       $scope.reload();
     });
 
-    $scope.$watchCollection('tlTracks', function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        var images = {};
-        var tracks = [];
-
-        $scope.getTracks().forEach(function(track) {
-          var image = $scope.images[track.uri];
-          if (image) {
-            images[track.uri] = image;
-          } else {
-            tracks.push(track);
-          }
-        });
-
-        coverart.getImages(tracks, {
-          width: $scope.thumbnail.width,
-          height: $scope.thumbnail.height
-        }).then(function(result) {
-          angular.extend(images, result);
-        });
-
-        $scope.images = images;
-      }
-    });
+      (function() {
+          var promise = null;
+          $scope.$watchCollection('tlTracks', function(tlTracks) {
+              var tracks = [];
+              var images = $scope.images;
+              $scope.images = {};
+              tlTracks.forEach(function(tlTrack) {
+                  var track = tlTrack.track;
+                  if (track.uri in images) {
+                      $scope.images[track.uri] = images[track.uri];
+                  } else {
+                      tracks.push(track);
+                  }
+              });
+              if (promise) {
+                  paging.cancel(promise);
+              }
+              promise = paging(function(tracks) {
+                  return coverart.getImages(tracks, $scope.thumbnail);
+              }, tracks, 10);
+              promise.then(angular.noop, angular.noop, function(images) { 
+                  angular.extend($scope.images, images); 
+              }).then(function() {
+                  promise = null;
+              });
+          });
+      })();
 
     $scope.reload();
   });

@@ -1,4 +1,5 @@
 angular.module('app', [
+  'app.coverart',
   'app.library',
   'app.locale',
   'app.main',

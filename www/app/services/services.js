@@ -4,8 +4,9 @@ angular.module('app.services', [
   'app.services.coverart',
   'app.services.locale',
   'app.services.logging',
-  'app.services.platform',
   'app.services.mopidy',
+  'app.services.paging',
+  'app.services.platform',
   'app.services.router',
   'app.services.settings'
 ]);

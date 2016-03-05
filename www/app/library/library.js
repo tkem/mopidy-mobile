@@ -155,7 +155,9 @@
   });
 
   /* @ngInject */
-  module.controller('LibraryController', function($scope, connection, coverart, popoverMenu, popup, router) {
+  module.controller('LibraryController', function(
+      $log, $scope, connection, coverart, paging, popoverMenu, popup, router
+  ) {
     // TODO: generic popover menu
     var popover = popoverMenu([{
       text: 'Play now',
@@ -178,17 +180,14 @@
       scope: $scope
     });
 
-    $scope.getImages = function(models, images) {
-      if (!images) {
-        images = {};
-      }
-      coverart.getImages(models, {
-        width: $scope.thumbnail.width,
-        height: $scope.thumbnail.height
-      }).then(function(result) {
-        angular.extend(images, result);
-      });
-      return images;
+    $scope.cancel = function(promise) {
+      return paging.cancel(promise);
+    };
+
+    $scope.getThumbnailImages = function(models) {
+        return paging(function(models) {
+            return coverart.getImages(models, $scope.thumbnail);
+        }, models, 10);
     };
 
     $scope.info = function(track) {
@@ -204,6 +203,30 @@
             {text: 'OK', type: 'button-positive'}
           ]);
         });
+      });
+    };
+
+    $scope.lookup = function(refs) {
+      return connection().then(function(mopidy) {
+        var uris = refs.map(function(ref) { return ref.uri; });
+        return mopidy.library.lookup({uris: uris});
+      }).then(function(result) {
+        var models = {};
+        refs.forEach(function(ref) {
+          var tracks = result[ref.uri];
+          if (tracks && tracks.length) {
+            // TODO: artist
+            switch (ref.type) {
+            case 'album':
+              models[ref.uri] = tracks[0].album;
+              break;
+            case 'track':
+              models[ref.uri] = tracks[0];
+              break;
+            }
+          }
+        });
+        return models;
       });
     };
 
@@ -236,45 +259,23 @@
 
   /* @ngInject */
   module.controller('LibraryBrowseController', function($log, $q, $scope, connection, items, ref) {
-    function getTracks(scope, items) {
+    function models(items) {
       var tracks = items.filter(function(ref) { return ref.type === 'track'; });
-      // TODO: make limit configurable?
-      if (tracks.length && tracks.length <= 100) {
-        var objs = {};
-        tracks.forEach(function(ref) {
-          objs[ref.uri] = ref;
-        });
-        return connection().then(function(mopidy) {
-          return mopidy.library.lookup({uris: Object.keys(objs)});
-        }).then(function(result) {
-          angular.forEach(result, function(tracks, uri) {
-            if (tracks.length == 1) {
-              objs[uri] = tracks[0];
-            } else {
-              $log.warn('lookup returned ' + tracks.length + ' tracks', uri, tracks);
-            }
+      // FIXME: convert to iterate/paging
+      if (tracks.length && tracks.length < 1000) {
+        $scope.lookup(tracks).then(function(result) {
+          tracks.forEach(function(ref) {
+            angular.extend(ref, result[ref.uri] || {});
           });
-          return objs;
         });
-      } else {
-        return $q.when({});
       }
+      return items;
     }
 
-    function values(obj) {
-      return Object.keys(obj).map(function(key) { return obj[key]; });
-    }
-
-    $scope.items = items;
+    $scope.items = models(items);
     $scope.ref = ref;
     $scope.images = {};
-    $scope.tracks = {};
-
-    getTracks($scope, items).then(function(tracks) {
-      return $scope.getImages(values($scope.tracks = tracks));
-    }).then(function(images) {
-      $scope.images = images;
-    });
+    $scope.tracks = $scope.items.filter(function(ref) { return ref.type === 'track'; });
 
     $scope.refresh = function() {
       connection().then(function(mopidy) {
@@ -289,16 +290,26 @@
     };
 
     $scope.reload = function() {
+      // TODO: images
       return connection().then(function(mopidy) {
         return mopidy.library.browse({uri: ref.uri});
       }).then(function(items) {
-        return getTracks($scope.items = items);
-      }).then(function(tracks) {
-        return $scope.getImages(values($scope.tracks = tracks));
-      }).then(function(images) {
-        $scope.images = images;
+        $scope.tracks = items.filter(function(ref) { return ref.type === 'track'; });
+        $scope.items = models(items);
       });
     };
+
+    $scope.$on('$ionicView.enter', function() {
+      var promise = $scope.getThumbnailImages($scope.tracks.filter(function(ref) {
+        return !(ref.uri in $scope.images);
+      }));
+      var resolve = $scope.$on('$ionicView.leave', function() {
+        $scope.cancel(promise);
+      });
+      promise.then(angular.noop, angular.noop, function(images) {
+          angular.extend($scope.images, images);
+      }).then(resolve);
+    });
 
     $scope.$on('connection:state:online', function() {
       $scope.reload();
@@ -309,7 +320,7 @@
   module.controller('LibraryLookupController', function($scope, connection, ref, tracks) {
     $scope.ref = ref;
     $scope.tracks = tracks;
-    $scope.images = $scope.getImages(tracks);
+    $scope.images = {};
 
     $scope.refresh = function() {
       connection().then(function(mopidy) {
@@ -324,13 +335,25 @@
     };
 
     $scope.reload = function() {
+      // TODO: images
       return connection().then(function(mopidy) {
         return mopidy.library.lookup({uri: ref.uri});
       }).then(function(tracks) {
         $scope.tracks = tracks;
-        $scope.images = $scope.getImages(tracks);
       });
     };
+
+    $scope.$on('$ionicView.enter', function() {
+      var promise = $scope.getThumbnailImages($scope.tracks.filter(function(track) {
+        return !(track.uri in $scope.images);
+      }));
+      var resolve = $scope.$on('$ionicView.leave', function() {
+        $scope.cancel(promise);
+      });
+      promise.then(angular.noop, angular.noop, function(images) {
+          angular.extend($scope.images, images);
+      }).then(resolve);
+    });
 
     $scope.$on('connection:state:online', function() {
       $scope.reload();
@@ -374,31 +397,36 @@
       return (a.name || '').uri.localeCompare(b.name || '');
     }
 
-    function mergeResults(scope, results) {
+    function mergeResults(results) {
+      var obj = {};
       switch (results.length) {
       case 0:
-        scope.artists = scope.albums = scope.tracks = [];
+        // no result
+        obj.artists = obj.albums = obj.tracks = [];
         break;
       case 1:
         // single result - keep order
-        scope.artists = results[0].artists || [];
-        scope.albums = results[0].albums || [];
-        scope.tracks = results[0].tracks || [];
+        obj.artists = results[0].artists || [];
+        obj.albums = results[0].albums || [];
+        obj.tracks = results[0].tracks || [];
         break;
       default:
         // multiple results - merge and sort by name
-        scope.artists = Array.prototype.concat.apply([], results.map(function(result) {
+        obj.artists = Array.prototype.concat.apply([], results.map(function(result) {
           return result.artists || [];
         })).sort(compareModelsByName);
-        scope.albums = Array.prototype.concat.apply([], results.map(function(result) {
+        obj.albums = Array.prototype.concat.apply([], results.map(function(result) {
           return result.albums || [];
         })).sort(compareModelsByName);
-        scope.tracks = Array.prototype.concat.apply([], results.map(function(result) {
+        obj.tracks = Array.prototype.concat.apply([], results.map(function(result) {
           return result.tracks || [];
         })).sort(compareModelsByName);
       }
-      scope.images = scope.getImages([].concat(scope.artists, scope.albums, scope.tracks));
+      return obj;
     }
+
+    angular.extend($scope, mergeResults(results));
+    $scope.images = {};
 
     $scope.refresh = function() {
       connection().then(function(mopidy) {
@@ -413,18 +441,30 @@
     };
 
     $scope.reload = function() {
+      // TODO: images
       return connection().then(function(mopidy) {
         return mopidy.library.search({query: query, uris: uris, exact: exact});
       }).then(function(results) {
-        mergeResults($scope, results);
+        angular.extend($scope, mergeResults(results));
       });
     };
+
+    $scope.$on('$ionicView.enter', function() {
+      var models = [].concat($scope.artists, $scope.albums, $scope.tracks).filter(function(model) {
+        return !(model.uri in $scope.images);
+      });
+      var promise = $scope.getThumbnailImages(models);
+      var resolve = $scope.$on('$ionicView.leave', function() {
+        $scope.cancel(promise);
+      });
+      promise.then(angular.noop, angular.noop, function(images) {
+          angular.extend($scope.images, images);
+      }).then(resolve);
+    });
 
     $scope.$on('connection:state:online', function() {
       $scope.reload();
     });
-
-    mergeResults($scope, results);
   });
 
   /* @ngInject */
