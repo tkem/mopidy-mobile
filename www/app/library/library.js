@@ -1,12 +1,6 @@
 ;(function(module) {
   'use strict';
 
-  var refParams = {
-    name: null,
-    type: 'directory',
-    uri: null
-  };
-
   /* @ngInject */
   module.config(function(routerProvider) {
     routerProvider.states({
@@ -32,7 +26,11 @@
           },
           /* @ngInject */
           ref: function() {
-            return refParams;
+            return {
+              name: null,
+              type: 'directory',
+              uri: null
+            };
           }
         },
         templateUrl: 'app/library/browse.html',
@@ -40,7 +38,11 @@
       },
       'library.browse': {
         controller: 'LibraryBrowseController',
-        params: refParams,
+        params: {
+          name: null,
+          type: 'directory',
+          uri: null
+        },
         resolve: {
           /* @ngInject */
           items: function(connection, uri) {
@@ -58,7 +60,11 @@
       },
       'library.lookup': {
         controller: 'LibraryLookupController',
-        params: refParams,
+        params: {
+          name: null,
+          type: 'directory',
+          uri: null
+        },
         resolve: {
           /* @ngInject */
           ref: function(name, type, uri) {
@@ -76,7 +82,11 @@
       },
       'library.query': {
         controller: 'LibraryQueryController',
-        params: refParams,
+        params: {
+          name: null,
+          type: 'directory',
+          uri: null
+        },
         resolve: {
           /* @ngInject */
           ref: function(name, type, uri) {
@@ -100,28 +110,46 @@
           genre: {array: true},
           performer: {array: true},
           track_name: {array: true},
-          uri: null
+          uris: {array: true}
         },
         resolve: {
+          /* @ngInject */
+          exact: function(exact) {
+            return exact === 'true';
+          },
+          /* @ngInject */
+          query: function(params) {
+            var query = {};
+            angular.forEach(params, function(values, key) {
+              if (key !== 'uris' && key !== 'exact') {
+                query[key] = values;
+              }
+            });
+            return query;
+          },
           /* @ngInject */
           results: function(connection, params) {
             return connection(function(mopidy) {
               var query = {};
               angular.forEach(params, function(values, key) {
-                if (angular.isArray(values)) {
+                if (key !== 'uris' && key !== 'exact') {
                   query[key] = values;
                 }
               });
               return mopidy.library.search({
                 query: query,
-                uris: params.uri ? [params.uri] : null,
+                uris: params.uris || null,
                 exact: params.exact === 'true'
               });
             });
+          },
+          /* @ngInject */
+          uris: function(uris) {
+            return uris || null;
           }
         },
         templateUrl: 'app/library/search.html',
-        url: '/{uri}?album&albumartist&any&artist&comment&composer&date&genre&performer&track_name&exact'
+        url: '?album&albumartist&any&artist&comment&composer&date&genre&performer&track_name&uris&exact'
       },
     });
   });
@@ -207,44 +235,46 @@
   });
 
   /* @ngInject */
-  module.controller('LibraryBrowseController', function($log, $scope, connection, items, ref) {
-    $log.debug('New LibraryBrowseController', items, ref);
-
-    function getTracks(items, images) {
-      var tracks = items.filter(function(ref) {
-        return ref.type === 'track';
-      });
+  module.controller('LibraryBrowseController', function($log, $q, $scope, connection, items, ref) {
+    function getTracks(scope, items) {
+      var tracks = items.filter(function(ref) { return ref.type === 'track'; });
       // TODO: make limit configurable?
       if (tracks.length && tracks.length <= 100) {
         var objs = {};
         tracks.forEach(function(ref) {
           objs[ref.uri] = ref;
         });
-        connection().then(function(mopidy) {
+        return connection().then(function(mopidy) {
           return mopidy.library.lookup({uris: Object.keys(objs)});
         }).then(function(result) {
           angular.forEach(result, function(tracks, uri) {
             if (tracks.length == 1) {
-              angular.extend(objs[uri], tracks[0]);
+              objs[uri] = tracks[0];
             } else {
               $log.warn('lookup returned ' + tracks.length + ' tracks', uri, tracks);
             }
           });
-          return tracks;
-        }).then(function(tracks) {
-          $scope.getImages(tracks, images);
+          return objs;
         });
+      } else {
+        return $q.when({});
       }
-      return tracks;
     }
 
-    angular.extend($scope, {
-      items: items,
-      ref: ref,
-      images: {}
-    });
+    function values(obj) {
+      return Object.keys(obj).map(function(key) { return obj[key]; });
+    }
 
-    $scope.tracks = getTracks(items, $scope.images);
+    $scope.items = items;
+    $scope.ref = ref;
+    $scope.images = {};
+    $scope.tracks = {};
+
+    getTracks($scope, items).then(function(tracks) {
+      return $scope.getImages(values($scope.tracks = tracks));
+    }).then(function(images) {
+      $scope.images = images;
+    });
 
     $scope.refresh = function() {
       connection().then(function(mopidy) {
@@ -258,13 +288,15 @@
       });
     };
 
-    // TODO: replace with $state.go($state.current, {}, {reload: true});
     $scope.reload = function() {
       return connection().then(function(mopidy) {
         return mopidy.library.browse({uri: ref.uri});
       }).then(function(items) {
-        $scope.items = items;  // FIXME: this will probably not work
-        $scope.tracks = getTracks(items, $scope.images);
+        return getTracks($scope.items = items);
+      }).then(function(tracks) {
+        return $scope.getImages(values($scope.tracks = tracks));
+      }).then(function(images) {
+        $scope.images = images;
       });
     };
 
@@ -274,23 +306,45 @@
   });
 
   /* @ngInject */
-  module.controller('LibraryLookupController', function($scope, ref, tracks) {
-    angular.extend($scope, {'ref': ref, 'tracks': tracks});
-
+  module.controller('LibraryLookupController', function($scope, connection, ref, tracks) {
+    $scope.ref = ref;
+    $scope.tracks = tracks;
     $scope.images = $scope.getImages(tracks);
+
+    $scope.refresh = function() {
+      connection().then(function(mopidy) {
+        return mopidy.library.refresh({uri: ref.uri});
+      }).then(function() {
+        return $scope.clearCache();
+      }).then(function() {
+        return $scope.reload();
+      }).finally(function() {
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    };
+
+    $scope.reload = function() {
+      return connection().then(function(mopidy) {
+        return mopidy.library.lookup({uri: ref.uri});
+      }).then(function(tracks) {
+        $scope.tracks = tracks;
+        $scope.images = $scope.getImages(tracks);
+      });
+    };
+
+    $scope.$on('connection:state:online', function() {
+      $scope.reload();
+    });
   });
 
   /* @ngInject */
   module.controller('LibraryQueryController', function($scope, ref) {
-    angular.extend($scope, {'ref': ref});
+    $scope.ref = ref;
+    $scope.params = {exact: false, uris: ref.uri ? [ref.uri] : null};
+    $scope.terms = [{key: 'any', value: ''}];
 
     $scope.add = function(term) {
       $scope.terms.push(term);
-    };
-
-    $scope.params = {
-      exact: false,
-      uri: ref.uri
     };
 
     $scope.submit = function() {
@@ -307,8 +361,6 @@
       $scope.search(angular.extend(params, $scope.params));
     };
 
-    $scope.terms = [{key: 'any', value: ''}];
-
     $scope.$watch('terms', function(terms) {
       if (terms[terms.length - 1].value) {
         terms.push({key: 'any', value: ''});
@@ -317,42 +369,62 @@
   });
 
   /* @ngInject */
-  module.controller('LibrarySearchController', function(results, $scope) {
-    function compare(a, b) {
-      if ((a.name || '') > (b.name || '')) {
-        return 1;
-      } else if ((a.name || '') < (b.name || '')) {
-        return -1;
-      } else {
-        return 0;
+  module.controller('LibrarySearchController', function(connection, query, uris, exact, results, $log, $scope) {
+    function compareModelsByName(a, b) {
+      return (a.name || '').uri.localeCompare(b.name || '');
+    }
+
+    function mergeResults(scope, results) {
+      switch (results.length) {
+      case 0:
+        scope.artists = scope.albums = scope.tracks = [];
+        break;
+      case 1:
+        // single result - keep order
+        scope.artists = results[0].artists || [];
+        scope.albums = results[0].albums || [];
+        scope.tracks = results[0].tracks || [];
+        break;
+      default:
+        // multiple results - merge and sort by name
+        scope.artists = Array.prototype.concat.apply([], results.map(function(result) {
+          return result.artists || [];
+        })).sort(compareModelsByName);
+        scope.albums = Array.prototype.concat.apply([], results.map(function(result) {
+          return result.albums || [];
+        })).sort(compareModelsByName);
+        scope.tracks = Array.prototype.concat.apply([], results.map(function(result) {
+          return result.tracks || [];
+        })).sort(compareModelsByName);
       }
+      scope.images = scope.getImages([].concat(scope.artists, scope.albums, scope.tracks));
     }
 
-    switch (results.length) {
-    case 0:
-      $scope.artists = $scope.albums = $scope.tracks = [];
-      break;
-    case 1:
-      // single result - keep order
-      $scope.artists = results[0].artists || [];
-      $scope.albums = results[0].albums || [];
-      $scope.tracks = results[0].tracks || [];
-      break;
-    default:
-      // multiple results - merge and sort by name
-      $scope.artists = Array.prototype.concat.apply([], results.map(function(result) {
-        return result.artists || [];
-      })).sort(compare);
-      $scope.albums = Array.prototype.concat.apply([], results.map(function(result) {
-        return result.albums || [];
-      })).sort(compare);
-      $scope.tracks = Array.prototype.concat.apply([], results.map(function(result) {
-        return result.tracks || [];
-      })).sort(compare);
-    }
+    $scope.refresh = function() {
+      connection().then(function(mopidy) {
+        return mopidy.library.refresh({uri: uris && uris.length == 1 ? uris[0] : null});
+      }).then(function() {
+        return $scope.clearCache();
+      }).then(function() {
+        return $scope.reload();
+      }).finally(function() {
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    };
 
-    $scope.images = $scope.getImages([].concat($scope.artists, $scope.albums, $scope.tracks));
+    $scope.reload = function() {
+      return connection().then(function(mopidy) {
+        return mopidy.library.search({query: query, uris: uris, exact: exact});
+      }).then(function(results) {
+        mergeResults($scope, results);
+      });
+    };
 
+    $scope.$on('connection:state:online', function() {
+      $scope.reload();
+    });
+
+    mergeResults($scope, results);
   });
 
   /* @ngInject */

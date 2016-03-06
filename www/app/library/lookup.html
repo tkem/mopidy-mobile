@@ -12,6 +12,8 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
+    <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
+    </ion-refresher>
     <ion-list>
       <ion-item class="item-thumbnail-left item-button-right"
            collection-repeat="track in tracks"
