@@ -1,22 +1,37 @@
 Mopidy Mobile
 ========================================================================
 
-Mopidy Mobile is a Mopidy_ Web client extension for mobile devices,
-and a `hybrid app`_ for Android version 4.4 and higher.  Users of
-older Android versions may still access the Web extension using
-Google's `Chrome browser`_.  On Apple devices, the Web client should
-work with iOS 7 or higher.
+Mopidy Mobile aims to be a simple, easy to use remote that lets you
+fully control a Mopidy_ music server from your mobile device.  It is
+available as a `Web client extension
+<http://mopidy.readthedocs.org/en/latest/ext/web/>`_ and a `hybrid app
+<http://en.wikipedia.org/wiki/HTML5_in_mobile_devices#Hybrid_Mobile_Apps>`_
+for Android version 4.4 and higher.  Users of older Android versions
+may still access the Web extension using Google's `Chrome browser
+<https://play.google.com/store/apps/details?id=com.android.chrome>`_.
+On Apple devices, the Web client should work with iOS 7 or higher.
+
+In a nutshell, Mopidy Mobile lets you
+
+- Browse and search your entire Mopidy music library.
+- Search within selected directories only.
+- Edit the tracks in the current tracklist.
+- Create and edit playlists (requires Mopidy server v1.x).
+- Download cover art from selected online resources.
 
 
 Installation
 ------------------------------------------------------------------------
 
-The Web extension can be installed using pip_ by running::
+The Web extension can be installed from PyPi_ by running::
 
   pip install Mopidy-Mobile
 
-The Android app is available from the `Google Play`_ store.  You may
-also join the `Beta testing program`_ to preview unreleased versions.
+The Android app is available from the `Google Play
+<https://play.google.com/store/apps/details?id=at.co.kemmer.mopidy_mobile>`_
+store.  You may also join the `Beta testing program
+<https://play.google.com/apps/testing/at.co.kemmer.mopidy_mobile>`_ to
+preview unreleased versions.
 
 Note that the Web client is designed to be added to your home screen,
 so it is launched in full-screen "app mode".  In fact, the only major
@@ -24,7 +39,10 @@ difference between the Web client and the hybrid app is that the app
 will let you manage multiple Mopidy server instances.  Other than
 that, they are functionally equivalent.  If you don't know how to add
 a Web application to your home screen, there are plenty of
-instructions available online for both Android_ and iOS_.
+instructions available online for both `Android
+<https://www.google.at/search?q=android+chrome+add+to+homescreen>`_
+and `iOS
+<https://www.google.at/search?q=ios+safari+add+to+homescreen>`_.
 
 
 Configuration
@@ -50,12 +68,14 @@ extension:
 Building from Source
 ------------------------------------------------------------------------
 
-Mopidy Mobile is built using Ionic_, AngularJS_ and `Apache Cordova`_,
-and uses npm_ and gulp_ for its build system, so it is recommended to
-familiarize yourself with these before you start.
+Mopidy Mobile is built using `Ionic <http://ionicframework.com/>`_,
+`AngularJS <https://angularjs.org/>`_ and `Apache Cordova
+<http://cordova.apache.org/>`_, so it is recommended to familiarize
+yourself with these before you start.
 
-To build the Mopidy Web extension, you need to have npm_ and gulp_
-installed.  Then run::
+To build the Mopidy Web extension, you need to have `npm
+<http://www.npmjs.org/>`_ and `gulp <http://gulpjs.com/>`_ installed.
+Then run::
 
   npm install
   gulp install
@@ -63,8 +83,10 @@ installed.  Then run::
   pip install --editable .
 
 To build the hybrid app for Android, please follow Ionic's
-`installation guide`_ to make sure you have everything needed for
-Android development.  Then, in addition to the commands above, run::
+`installation guide
+<http://ionicframework.com/docs/guide/installation.html>`_ to make
+sure you have everything needed for Android development.  Then, in
+addition to the commands above, run::
 
   ionic resources android
   ionic platform add android
@@ -104,22 +126,8 @@ Licensed under the `Apache License, Version 2.0`_.
 
 
 .. _Mopidy: http://www.mopidy.com/
-.. _hybrid app: http://en.wikipedia.org/wiki/HTML5_in_mobile_devices#Hybrid_Mobile_Apps
-.. _Chrome browser: https://play.google.com/store/apps/details?id=com.android.chrome
 
-.. _pip: https://pip.pypa.io/en/latest/
-.. _Google Play: https://play.google.com/store/apps/details?id=at.co.kemmer.mopidy_mobile
-.. _Beta testing program: https://play.google.com/apps/testing/at.co.kemmer.mopidy_mobile
-.. _Android: https://www.google.at/search?q=android+chrome+add+to+homescreen
-.. _iOS: https://www.google.at/search?q=ios+safari+add+to+homescreen
-
-.. _Ionic: http://ionicframework.com/
-.. _AngularJS: https://angularjs.org/
-.. _Apache Cordova: http://cordova.apache.org/
-.. _npm: http://www.npmjs.org/
-.. _gulp: http://gulpjs.com/
-.. _installation guide: http://ionicframework.com/docs/guide/installation.html
-
+.. _PyPI: https://pypi.python.org/pypi/Mopidy-Mobile/
 .. _Issue Tracker: https://github.com/tkem/mopidy-mobile/issues/
 .. _Source Code: https://github.com/tkem/mopidy-mobile/
 .. _Change Log: https://github.com/tkem/mopidy-mobile/blob/master/CHANGES.rst
