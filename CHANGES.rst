@@ -1,3 +1,13 @@
+1.6.11 2016-03-08
+-----------------
+
+- Add "pull-to-refresh" to search and lookup views.
+
+- Limit number of URIs per ``get_images()`` request.
+
+- Handle empty image URLs in `last.fm` response.
+
+
 1.6.10 2016-03-01
 -----------------
 
