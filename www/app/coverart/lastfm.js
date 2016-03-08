@@ -57,8 +57,12 @@
     };
   }
 
+  function filterImage(image) {
+    return image['#text'];  // last.fm return empty URIs for podcasts, for example
+  }
+
   /* @ngInject */
-  module.service('coverart.lastfm', function($http, $q) {
+  module.service('coverart.lastfm', function($http, $log, $q) {
 
     function getImages(params) {
       var config = {params: angular.extend(params, {
@@ -69,13 +73,13 @@
       return $http.jsonp('http://ws.audioscrobbler.com/2.0/', config).then(function(result) {
         var data = result.data;
         if (data.album && data.album.image) {
-          return data.album.image.map(createImage);
+          return data.album.image.filter(filterImage).map(createImage);
         } else if (data.artist && data.artist.image) {
-          return data.artist.image.map(createImage);
+          return data.artist.image.filter(filterImage).map(createImage);
         } else if (data.track && data.track.image) {
-          return data.track.image.map(createImage);
+          return data.track.image.filter(filterImage).map(createImage);
         } else if (data.track && data.track.album && data.track.album.image) {
-          return data.track.album.image.map(createImage);
+          return data.track.album.image.filter(filterImage).map(createImage);
         } else {
           return [];
         }
@@ -96,7 +100,10 @@
           }
         }
       });
-      return $q.all(images);
+      return $q.all(images).catch(function(error) {
+        $log.error('Error loading last.fm cover art', error);
+        return {};
+      });
     };
   });
 
