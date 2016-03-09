@@ -1,3 +1,13 @@
+1.6.12 2016-03-10
+-----------------
+
+- Show track information and images for playlist items.
+
+- Limit number of URIs per ``lookup()`` request.
+
+- Various caching improvements.
+
+
 1.6.11 2016-03-08
 -----------------
 
