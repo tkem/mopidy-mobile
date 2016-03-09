@@ -4,6 +4,7 @@ angular.module('app', [
   'app.locale',
   'app.main',
   'app.playback',
+  'app.playlist',
   'app.playlists',
   'app.servers',
   'app.services',

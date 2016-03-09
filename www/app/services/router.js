@@ -58,9 +58,17 @@
 
     provider.maxCache = function(value) {
       if (arguments.length) {
-          return $ionicConfigProvider.views.maxCache(value);
+        return $ionicConfigProvider.views.maxCache(value);
       } else {
-          return $ionicConfigProvider.views.maxCache();
+        return $ionicConfigProvider.views.maxCache();
+      }
+    };
+
+    provider.forwardCache = function(value) {
+      if (arguments.length) {
+        return $ionicConfigProvider.views.forwardCache(value);
+      } else {
+        return $ionicConfigProvider.views.forwardCache();
       }
     };
 
@@ -78,8 +86,8 @@
     provider.$get = function($cacheFactory, $ionicConfig, $ionicHistory, $log, $state) {
       var maxCache = $ionicConfig.views.maxCache();
       if (maxCache) {
-          $log.debug('Creating resolve cache with capacity ' + maxCache);
-          resolveCache = $cacheFactory('resolves', {capacity: maxCache});
+        $log.debug('Creating resolve cache with capacity ' + maxCache);
+        resolveCache = $cacheFactory('resolves', {capacity: maxCache});
       }
 
       return {

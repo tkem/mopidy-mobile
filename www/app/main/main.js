@@ -110,6 +110,10 @@
     $rootScope.goBack = router.goBack.bind(router);
     $rootScope.platform = platform;
 
+    $rootScope.getURIScheme = function(uri) {
+      return uri ? uri.substr(0, uri.indexOf(':')) : null;
+    };
+
     platform.appVersion().then(function(version) {
       $rootScope.version = version;
     });
