@@ -36,23 +36,28 @@
         url: '/playlists/{uri}',
         controller: 'PlaylistController',
         template: '<ion-nav-view></ion-nav-view>',
+        params: {
+          name: null,
+          type: 'playlist',
+          uri: null
+        },
         resolve: {
-          /* @ngInject */
-          playlist: function(connection, uri) {
-            if (uri) {
-              return connection(function(mopidy) {
-                return mopidy.playlists.lookup({uri: uri});
-              });
-            } else {
-              return {uri: null, name: null, tracks: []};
-            }
-          },
           /* @ngInject */
           editable: function(connection) {
             return connection(function(mopidy) {
               // TODO: smarter handling based on scheme?
               return mopidy.playlists.editable;
             });
+          },
+          /* @ngInject */
+          items: function(connection, uri) {
+            return connection(function(mopidy) {
+              return uri ? mopidy.playlists.getItems({uri: uri}) : [];
+            });
+          },
+          /* @ngInject */
+          ref: function(name, type, uri) {
+            return {name: name, type: type, uri: uri};
           }
         }
       },
@@ -137,61 +142,46 @@
   });
 
   /* @ngInject */
-  module.controller('PlaylistController', function($q, $scope, actions, connection, editable, playlist, popoverMenu, popup) {
+  module.controller('PlaylistController', function(
+    $q, $scope, actions, connection, coverart, editable, items, paging, popoverMenu, popup, ref
+  ) {
     // TODO: generic popover menu
     var popover = popoverMenu([{
       text: 'Play now',
-      click: 'popover.hide() && actions.play(track)'
+      click: 'popover.hide() && actions.play(item)'
     }, {
       text: 'Play next',
-      click: 'popover.hide() && actions.next(track)'
+      click: 'popover.hide() && actions.next(item)'
     }, {
       text: 'Add to tracklist',
-      click: 'popover.hide() && actions.add(track)'
+      click: 'popover.hide() && actions.add(item)'
     }, {
       text: 'Show track info',
       hellip: true,
-      click: 'popover.hide() && info(track)'
+      click: 'popover.hide() && info(item)'
     }], {
       scope: $scope
     });
 
-    angular.extend($scope, {actions: actions, editable: editable, playlist: playlist});
+    $scope.actions = actions;
+    $scope.editable = editable;
+    $scope.images = {};
+    $scope.items = angular.copy(items);
+    $scope.ref = angular.copy(ref);
 
-    $scope.add = function(track) {
-      if ($scope.playlist.tracks) {
-        $scope.playlist.tracks.push(track);
-      } else {
-        $scope.playlist.tracks = [track];
-      }
-      return $q.when($scope.playlist.tracks);
+    $scope.add = function(item) {
+      $scope.items.push(item);
+      return $q.when($scope.items);
     };
 
-    $scope.cancel = function() {
+    $scope.info = function(item) {
       return connection(function(mopidy) {
-        if ($scope.playlist.uri) {
-          return mopidy.playlists.lookup({uri: $scope.playlist.uri});
-        } else {
-          return {uri: null, name: null, tracks: []};
-        }
-      }).then(function(playlist) {
-        $scope.playlist = playlist;
-        return playlist;
-      });
-    };
-
-    $scope.getScheme = function(uri) {
-      return uri ? uri.substr(0, uri.indexOf(':')) : null;
-    };
-
-    $scope.info = function(track) {
-      return connection(function(mopidy) {
-        return mopidy.library.lookup({uri: track.uri}).then(function(tracks) {
+        return mopidy.library.lookup({uri: item.uri}).then(function(tracks) {
           // FIXME: more elegant way of passing track?
           if (tracks && tracks.length) {
-            $scope.track = angular.extend({}, track, tracks[0]);
+            $scope.track = angular.extend({}, item, tracks[0]);
           } else {
-            $scope.track = track;
+            $scope.track = item;
           }
           popup.fromTemplateUrl('Track info', 'app/main/trackinfo.html', $scope, [
             {text: 'OK', type: 'button-positive'}
@@ -201,13 +191,13 @@
     };
 
     $scope.move = function(fromIndex, toIndex) {
-      var tracks = $scope.playlist.tracks.splice(fromIndex, 1);
-      $scope.playlist.tracks.splice(toIndex, 0, tracks[0]);
+      var items = $scope.items.splice(fromIndex, 1);
+      $scope.items.splice(toIndex, 0, items[0]);
     };
 
     $scope.popover = angular.extend({}, popover, {
       show: function(event) {
-        $scope.track = angular.element(event.target).scope().track;
+        $scope.item = angular.element(event.target).scope().item;
         event.preventDefault();
         event.stopPropagation();
         popover.show(event);
@@ -216,7 +206,9 @@
 
     $scope.refresh = function() {
       connection().then(function(mopidy) {
-        return mopidy.playlists.refresh({uri_scheme: $scope.getScheme($scope.playlist.uri)});
+        return mopidy.playlists.refresh({uri_scheme: $scope.getScheme($scope.ref.uri)});
+      }).then(function() {
+        return $scope.clearCache();
       }).then(function() {
         return $scope.reload();
       }).finally(function() {
@@ -224,37 +216,71 @@
       });
     };
 
-    // TODO: replace with $state.go($state.current, {}, {reload: true});
     $scope.reload = function() {
+      // "fake" reload
+      $scope.$broadcast('$ionicView.leave');
+      $scope.ref = angular.copy(ref);  // TODO: lookup?
       return connection().then(function(mopidy) {
-        return mopidy.playlists.lookup({uri: $scope.playlist.uri});
-      }).then(function(playlist) {
-        $scope.playlist = playlist;
+        return $scope.ref.uri ? mopidy.playlists.getItems({uri: $scope.ref.uri}) : [];
+      }).then(function(items) {
+        $scope.items = items;
+      }).then(function() {
+        $scope.$broadcast('$ionicView.enter');
       });
     };
 
     $scope.remove = function(index) {
-      $scope.playlist.tracks.splice(index, 1);
+      $scope.items.splice(index, 1);
     };
 
     $scope.save = function() {
       return connection(function(mopidy) {
-        if ($scope.playlist.uri) {
-          return mopidy.playlists.save({playlist: angular.copy($scope.playlist)});
-        } else {
-          return mopidy.playlists.create({
-            name: $scope.playlist.name
-          }).then(function(playlist) {
-            // TODO: error handling
-            playlist.tracks = angular.copy($scope.playlist.tracks);
-            return mopidy.playlists.save({playlist: playlist});
-          });
-        }
-      }).then(function(playlist) {
-        $scope.playlist = playlist;
-        return playlist;
+        return $scope.clearCache().then(function() {
+          return $scope.ref.uri ?
+            mopidy.playlists.lookup({uri: $scope.ref.uri}) :
+            mopidy.playlists.create({name: $scope.ref.name});
+        }).then(function(playlist) {
+          return mopidy.playlists.save({playlist: angular.extend(playlist, {
+            name: $scope.ref.name || playlist.name,
+            tracks: $scope.items.map(function(item) {
+              return { __model__: 'Track', name: item.name, uri: item.uri };
+            })
+          })});
+        }).then(function(playlist) {
+          $scope.ref = ref = {uri: playlist.uri, name: playlist.name, type: 'playlist'};
+        });
       });
     };
+
+    $scope.$on('$ionicView.enter', function() {
+      var refs = $scope.items.filter(function(item) {
+        return item.__model__ === 'Ref';
+      });
+      var promise = paging(function(items) {
+        var uris = items.map(function(item) { return item.uri; });
+        return connection().then(function(mopidy) {
+          return mopidy.library.lookup({uris: uris});
+        }).then(function(result) {
+          return items.map(function(item) {
+            var tracks = result[item.uri];
+            if (tracks && tracks.length == 1) {
+              return angular.extend(item, tracks[0]);
+            } else {
+              return item;
+            }
+          });
+        }).then(function(items) {
+          return coverart.getImages(items.filter(function(item) {
+            return !(item.uri in $scope.images);
+          }), $scope.thumbnail);
+        }).then(function(images) {
+          angular.extend($scope.images, images);
+        });
+      }, refs, 10);
+      promise.finally($scope.$on('$ionicView.leave', function() {
+        paging.cancel(promise);
+      }));
+    });
   });
 
   /* @ngInject */
@@ -274,16 +300,16 @@
   module.controller('PlaylistMenuController', function($scope, popoverMenu) {
     $scope.popover = popoverMenu([{
       text: 'Play now',
-      click: 'popover.hide() && actions.play(playlist.tracks)'
+      click: 'popover.hide() && actions.play(items)'
     }, {
       text: 'Play next',
-      click: 'popover.hide() && actions.next(playlist.tracks)'
+      click: 'popover.hide() && actions.next(items)'
     }, {
       text: 'Add to tracklist',
-      click: 'popover.hide() && actions.add(playlist.tracks)'
+      click: 'popover.hide() && actions.add(items)'
     }, {
       text: 'Replace tracklist',
-      click: 'popover.hide() && actions.replace(playlist.tracks)'
+      click: 'popover.hide() && actions.replace(items)'
     }], {
       scope: $scope
     });

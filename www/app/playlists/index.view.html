@@ -17,7 +17,7 @@
     <ion-list>
       <ion-item class="item-icon-right"
                 collection-repeat="playlist in playlists | playlistOrder : order"
-                ui-sref="playlists.lookup.list({uri: playlist.uri})"
+                ui-sref="playlists.lookup.list({uri: playlist.uri, name: playlist.name})"
                 >
         <h2>{{playlist.name || playlist.uri}}</h2>
         <h4>{{getScheme(playlist.uri)}}</h4>
