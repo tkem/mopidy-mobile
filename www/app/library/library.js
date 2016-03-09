@@ -1,6 +1,38 @@
 ;(function(module) {
   'use strict';
 
+  function mergeResults(results) {
+    function compareModelsByName(a, b) {
+      return (a.name || '').uri.localeCompare(b.name || '');
+    }
+
+    var obj = {};
+    switch (results.length) {
+    case 0:
+      // no result
+      obj.artists = obj.albums = obj.tracks = [];
+      break;
+    case 1:
+      // single result - keep order
+      obj.artists = results[0].artists || [];
+      obj.albums = results[0].albums || [];
+      obj.tracks = results[0].tracks || [];
+      break;
+    default:
+      // multiple results - merge and sort by name
+      obj.artists = Array.prototype.concat.apply([], results.map(function(result) {
+        return result.artists || [];
+      })).sort(compareModelsByName);
+      obj.albums = Array.prototype.concat.apply([], results.map(function(result) {
+        return result.albums || [];
+      })).sort(compareModelsByName);
+      obj.tracks = Array.prototype.concat.apply([], results.map(function(result) {
+        return result.tracks || [];
+      })).sort(compareModelsByName);
+    }
+    return obj;
+  }
+
   /* @ngInject */
   module.config(function(routerProvider) {
     routerProvider.states({
@@ -156,7 +188,7 @@
 
   /* @ngInject */
   module.controller('LibraryController', function(
-      $log, $scope, connection, coverart, paging, popoverMenu, popup, router
+    $log, $scope, connection, coverart, paging, popoverMenu, popup, router
   ) {
     // TODO: generic popover menu
     var popover = popoverMenu([{
@@ -180,16 +212,6 @@
       scope: $scope
     });
 
-    $scope.cancel = function(promise) {
-      return paging.cancel(promise);
-    };
-
-    $scope.getThumbnailImages = function(models) {
-        return paging(function(models) {
-            return coverart.getImages(models, $scope.thumbnail);
-        }, models, 10);
-    };
-
     $scope.info = function(track) {
       return connection(function(mopidy) {
         return mopidy.library.lookup({uri: track.uri}).then(function(tracks) {
@@ -203,30 +225,6 @@
             {text: 'OK', type: 'button-positive'}
           ]);
         });
-      });
-    };
-
-    $scope.lookup = function(refs) {
-      return connection().then(function(mopidy) {
-        var uris = refs.map(function(ref) { return ref.uri; });
-        return mopidy.library.lookup({uris: uris});
-      }).then(function(result) {
-        var models = {};
-        refs.forEach(function(ref) {
-          var tracks = result[ref.uri];
-          if (tracks && tracks.length) {
-            // TODO: artist
-            switch (ref.type) {
-            case 'album':
-              models[ref.uri] = tracks[0].album;
-              break;
-            case 'track':
-              models[ref.uri] = tracks[0];
-              break;
-            }
-          }
-        });
-        return models;
       });
     };
 
@@ -258,23 +256,13 @@
   });
 
   /* @ngInject */
-  module.controller('LibraryBrowseController', function($log, $q, $scope, connection, items, ref) {
-    function models(items) {
-      var tracks = items.filter(function(ref) { return ref.type === 'track'; });
-      // FIXME: convert to iterate/paging
-      if (tracks.length && tracks.length < 1000) {
-        $scope.lookup(tracks).then(function(result) {
-          tracks.forEach(function(ref) {
-            angular.extend(ref, result[ref.uri] || {});
-          });
-        });
-      }
-      return items;
-    }
-
-    $scope.items = models(items);
-    $scope.ref = ref;
+  module.controller('LibraryBrowseController', function(
+    $log, $scope, connection, coverart, items, paging, ref
+  ) {
     $scope.images = {};
+    $scope.items = angular.copy(items);
+    $scope.ref = angular.copy(ref);
+    // TODO: check usage in templates
     $scope.tracks = $scope.items.filter(function(ref) { return ref.type === 'track'; });
 
     $scope.refresh = function() {
@@ -290,25 +278,45 @@
     };
 
     $scope.reload = function() {
-      // TODO: images
+      // "fake" reload
+      $scope.$broadcast('$ionicView.leave');
       return connection().then(function(mopidy) {
         return mopidy.library.browse({uri: ref.uri});
       }).then(function(items) {
+        $scope.items = items;
+        // TODO: check usage in templates
         $scope.tracks = items.filter(function(ref) { return ref.type === 'track'; });
-        $scope.items = models(items);
+      }).then(function() {
+        $scope.$broadcast('$ionicView.enter');
       });
     };
 
     $scope.$on('$ionicView.enter', function() {
-      var promise = $scope.getThumbnailImages($scope.tracks.filter(function(ref) {
-        return !(ref.uri in $scope.images);
-      }));
-      var resolve = $scope.$on('$ionicView.leave', function() {
-        $scope.cancel(promise);
+      var refs = $scope.tracks.filter(function(item) {
+        return item.__model__ === 'Ref';
       });
-      promise.then(angular.noop, angular.noop, function(images) {
+      var promise = paging(function(items) {
+        var uris = items.map(function(item) { return item.uri; });
+        return connection().then(function(mopidy) {
+          return mopidy.library.lookup({uris: uris});
+        }).then(function(result) {
+          return items.map(function(item) {
+            var tracks = result[item.uri];
+            if (tracks && tracks.length == 1) {
+              return angular.extend(item, tracks[0]);
+            } else {
+              return item;
+            }
+          });
+        }).then(function(items) {
+          return coverart.getImages(items, $scope.thumbnail);
+        }).then(function(images) {
           angular.extend($scope.images, images);
-      }).then(resolve);
+        });
+      }, refs, 10);
+      promise.finally($scope.$on('$ionicView.leave', function() {
+        paging.cancel(promise);
+      }));
     });
 
     $scope.$on('connection:state:online', function() {
@@ -317,9 +325,11 @@
   });
 
   /* @ngInject */
-  module.controller('LibraryLookupController', function($scope, connection, ref, tracks) {
-    $scope.ref = ref;
-    $scope.tracks = tracks;
+  module.controller('LibraryLookupController', function(
+    $scope, connection, coverart, paging, ref, tracks
+  ) {
+    $scope.ref = angular.copy(ref);
+    $scope.tracks = angular.copy(tracks);
     $scope.images = {};
 
     $scope.refresh = function() {
@@ -335,34 +345,35 @@
     };
 
     $scope.reload = function() {
-      // TODO: images
+      // "fake" reload
+      $scope.$broadcast('$ionicView.leave');
       return connection().then(function(mopidy) {
         return mopidy.library.lookup({uri: ref.uri});
       }).then(function(tracks) {
         $scope.tracks = tracks;
+      }).then(function() {
+        $scope.$broadcast('$ionicView.enter');
       });
     };
 
     $scope.$on('$ionicView.enter', function() {
-      var promise = $scope.getThumbnailImages($scope.tracks.filter(function(track) {
+      var tracks = $scope.tracks.filter(function(track) {
         return !(track.uri in $scope.images);
-      }));
-      var resolve = $scope.$on('$ionicView.leave', function() {
-        $scope.cancel(promise);
       });
-      promise.then(angular.noop, angular.noop, function(images) {
+      var promise = paging(function(items) {
+        return coverart.getImages(items, $scope.thumbnail).then(function(images) {
           angular.extend($scope.images, images);
-      }).then(resolve);
-    });
-
-    $scope.$on('connection:state:online', function() {
-      $scope.reload();
+        });
+      }, tracks, 10);
+      promise.finally($scope.$on('$ionicView.leave', function() {
+        paging.cancel(promise);
+      }));
     });
   });
 
   /* @ngInject */
   module.controller('LibraryQueryController', function($scope, ref) {
-    $scope.ref = ref;
+    $scope.ref = angular.copy(ref);
     $scope.params = {exact: false, uris: ref.uri ? [ref.uri] : null};
     $scope.terms = [{key: 'any', value: ''}];
 
@@ -392,39 +403,9 @@
   });
 
   /* @ngInject */
-  module.controller('LibrarySearchController', function(connection, query, uris, exact, results, $log, $scope) {
-    function compareModelsByName(a, b) {
-      return (a.name || '').uri.localeCompare(b.name || '');
-    }
-
-    function mergeResults(results) {
-      var obj = {};
-      switch (results.length) {
-      case 0:
-        // no result
-        obj.artists = obj.albums = obj.tracks = [];
-        break;
-      case 1:
-        // single result - keep order
-        obj.artists = results[0].artists || [];
-        obj.albums = results[0].albums || [];
-        obj.tracks = results[0].tracks || [];
-        break;
-      default:
-        // multiple results - merge and sort by name
-        obj.artists = Array.prototype.concat.apply([], results.map(function(result) {
-          return result.artists || [];
-        })).sort(compareModelsByName);
-        obj.albums = Array.prototype.concat.apply([], results.map(function(result) {
-          return result.albums || [];
-        })).sort(compareModelsByName);
-        obj.tracks = Array.prototype.concat.apply([], results.map(function(result) {
-          return result.tracks || [];
-        })).sort(compareModelsByName);
-      }
-      return obj;
-    }
-
+  module.controller('LibrarySearchController', function(
+    $scope, connection, coverart, exact, paging, query, results, uris
+  ) {
     angular.extend($scope, mergeResults(results));
     $scope.images = {};
 
@@ -441,11 +422,14 @@
     };
 
     $scope.reload = function() {
-      // TODO: images
+      // "fake" reload
+      $scope.$broadcast('$ionicView.leave');
       return connection().then(function(mopidy) {
         return mopidy.library.search({query: query, uris: uris, exact: exact});
       }).then(function(results) {
         angular.extend($scope, mergeResults(results));
+      }).then(function() {
+        $scope.$broadcast('$ionicView.enter');
       });
     };
 
@@ -453,13 +437,14 @@
       var models = [].concat($scope.artists, $scope.albums, $scope.tracks).filter(function(model) {
         return !(model.uri in $scope.images);
       });
-      var promise = $scope.getThumbnailImages(models);
-      var resolve = $scope.$on('$ionicView.leave', function() {
-        $scope.cancel(promise);
-      });
-      promise.then(angular.noop, angular.noop, function(images) {
+      var promise = paging(function(items) {
+        return coverart.getImages(items, $scope.thumbnail).then(function(images) {
           angular.extend($scope.images, images);
-      }).then(resolve);
+        });
+      }, models, 10);
+      promise.finally($scope.$on('$ionicView.leave', function() {
+        paging.cancel(promise);
+      }));
     });
 
     $scope.$on('connection:state:online', function() {
