@@ -1,3 +1,11 @@
+1.6.13 2016-03-28
+-----------------
+
+- Skip stream and file URIs in Mopidy cover art provider.
+
+- Clear cache when adding tracks to playlist.
+
+
 1.6.12 2016-03-10
 -----------------
 
