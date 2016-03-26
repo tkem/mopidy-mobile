@@ -83,14 +83,17 @@
     });
 
     $scope.$on('connection:event:playlistsLoaded', function() {
+      $scope.clearCache();
       $scope.reload();
     });
 
     $scope.$on('connection:event:playlistChanged', function() {
+      $scope.clearCache();
       $scope.reload();
     });
 
     $scope.$on('connection:event:playlistDeleted', function() {
+      $scope.clearCache();
       $scope.reload();
     });
   });
