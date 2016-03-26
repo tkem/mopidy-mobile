@@ -1,11 +1,25 @@
 ;(function(module) {
   'use strict';
 
+  // workaround for https://github.com/mopidy/mopidy/issues/1486
+  function isNotStream(uri) {
+    var scheme = uri.split(':', 2)[0];
+    // case in point for model "source" attribute?
+    return ['file', 'http', 'https', 'mms', 'rtmp', 'rtmps', 'rtsp'].indexOf(scheme) == -1;
+  }
+
   /* @ngInject */
   module.service('coverart.mopidy', function($q, connection) {
     return function(models) {
+      var uris = models.map(function(model) { return model.uri; }).filter(isNotStream);
+
+      if (!uris.length) {
+        return $q.when({});
+      }
+
       return connection.settings().then(function(settings) {
         // resolve absolute path URIs as returned by mopidy-local-images
+        // FIXME: not necessary hosted environments?
         var resolve = settings.webSocketUrl ? function(image) {
           if (image.uri.charAt(0) == '/') {
             var match = /^wss?:\/\/([^\/]+)/.exec(settings.webSocketUrl);
@@ -16,11 +30,7 @@
         } : angular.identity;
 
         return connection().then(function(mopidy) {
-          return mopidy.library.getImages({
-            uris: models.map(function(model) {
-              return model.uri;
-            })
-          });
+          return mopidy.library.getImages({uris: uris});
         }).then(function(result) {
           return angular.forEach(result, function(images, uri, obj) {
             obj[uri] = images ? images.map(resolve) : images;
