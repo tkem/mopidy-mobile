@@ -1,8 +1,10 @@
 *.egg-info
 *.pyc
+*.swp
 .cache/
 .coverage
-.io-config.json
+.tox/
+MANIFEST
 build/
 dist/
 mopidy_mobile/www/*/
