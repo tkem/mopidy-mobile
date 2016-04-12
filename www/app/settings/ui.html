@@ -28,6 +28,16 @@
           <option value="replace" translate>Replace tracklist</option>
         </select>
       </ion-input>
+      <ion-input class="item item-input item-select">
+        <ion-label translate>Request timeout</ion-label>
+        <select ng-model="settings.timeout" convert-to-number>
+          <option value="5000" translate translate-values="{count: 5}">{count} seconds</option>
+          <option value="10000" translate translate-values="{count: 10}">{count} seconds</option>
+          <option value="15000" translate translate-values="{count: 15}">{count} seconds</option>
+          <option value="30000" translate translate-values="{count: 30}">{count} seconds</option>
+          <option value="60000" translate translate-values="{count: 60}">{count} seconds</option>
+        </select>
+      </ion-input>
     </div>
   </ion-content>
 </ion-view>

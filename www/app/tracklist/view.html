@@ -10,23 +10,12 @@
             >
     </button>
   </ion-nav-buttons>
-  <ion-nav-title ng-switch="tlTracks.length">
-    <span ng-switch-when="0" translate>
-      Empty
+  <ion-nav-title ng-switch="currentTlTrack || 'none'">
+    <span ng-switch-when="none" translate translate-values="{count: tlTracks.length}">
+      {count} tracks
     </span>
-    <span ng-switch-default>
-      <span ng-if="currentTlTrack"
-            translate
-            translate-values="{count: tlTracks.length, index: index(currentTlTrack) + 1}"
-            >
-        {index} of {count}
-      </span>
-      <span ng-if="!currentTlTrack"
-            translate
-            translate-values="{count: tlTracks.length}"
-            >
-        {count} tracks
-      </span>
+    <span ng-switch-default translate translate-values="{count: tlTracks.length, index: index(currentTlTrack) + 1}">
+      {index} of {count}
     </span>
   </ion-nav-title>
   <ion-content delegate-handle="tracklistScroll">

@@ -87,17 +87,17 @@
 
     $scope.info = function(item) {
       return connection(function(mopidy) {
-        return mopidy.library.lookup({uri: item.uri}).then(function(tracks) {
-          // FIXME: more elegant way of passing track?
-          if (tracks && tracks.length) {
-            $scope.track = angular.extend({}, item, tracks[0]);
-          } else {
-            $scope.track = item;
-          }
-          popup.fromTemplateUrl('Track info', 'app/main/trackinfo.html', $scope, [
-            {text: 'OK', type: 'button-positive'}
-          ]);
-        });
+        return mopidy.library.lookup({uri: item.uri});
+      }).then(function(tracks) {
+        // FIXME: more elegant way of passing track?
+        if (tracks && tracks.length) {
+          $scope.track = angular.extend({}, item, tracks[0]);
+        } else {
+          $scope.track = item;
+        }
+        popup.fromTemplateUrl('Track info', 'app/main/trackinfo.html', $scope, [
+          {text: 'OK', type: 'button-positive'}
+        ]);
       });
     };
 

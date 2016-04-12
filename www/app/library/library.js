@@ -214,17 +214,17 @@
 
     $scope.info = function(track) {
       return connection(function(mopidy) {
-        return mopidy.library.lookup({uri: track.uri}).then(function(tracks) {
-          // FIXME: more elegant way of passing track?
-          if (tracks && tracks.length) {
-            $scope.track = angular.extend({}, track, tracks[0]);
-          } else {
-            $scope.track = track;
-          }
-          popup.fromTemplateUrl('Track info', 'app/main/trackinfo.html', $scope, [
-            {text: 'OK', type: 'button-positive'}
-          ]);
-        });
+        return mopidy.library.lookup({uri: track.uri});
+      }).then(function(tracks) {
+        // FIXME: more elegant way of passing track?
+        if (tracks && tracks.length) {
+          $scope.track = angular.extend({}, track, tracks[0]);
+        } else {
+          $scope.track = track;
+        }
+        popup.fromTemplateUrl('Track info', 'app/main/trackinfo.html', $scope, [
+          {text: 'OK', type: 'button-positive'}
+        ]);
       });
     };
 

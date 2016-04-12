@@ -20,7 +20,7 @@ gulp.task('sass', ['sass:images'], function() {
   return gulp.src('scss/[^_]*.scss')
     .pipe(plugins.sass())
     .pipe(gulp.dest(paths.css))
-    .pipe(plugins.minifyCss({keepSpecialComments: 0}))
+    .pipe(plugins.cleanCss({keepSpecialComments: 0}))
     .pipe(plugins.rename({extname: '.min.css'}))
     .pipe(gulp.dest(paths.css));
 });
@@ -51,9 +51,11 @@ gulp.task('templates', function () {
 
 gulp.task('bundle', ['uglify', 'templates'], function() {
   return gulp.src([
-    paths.lib + '/ionic/release/js/ionic.bundle.min.js',
-    paths.lib + '/angular-translate/angular-translate.min.js',
     paths.lib + '/mopidy/dist/mopidy.min.js',
+    paths.lib + '/ionic/release/js/ionic.bundle.min.js',
+    paths.lib + '/messageformat/messageformat.js',
+    paths.lib + '/angular-translate/angular-translate.min.js',
+    paths.lib + '/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.min.js',
     paths.build + '/mopidy-mobile.min.js',
     paths.build + '/templates.min.js'
   ]).pipe(plugins.concat('mopidy-mobile.bundle.min.js'))

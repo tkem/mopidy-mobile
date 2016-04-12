@@ -22,6 +22,7 @@
     $translateProvider.useLoader('translationLoader');
     $translateProvider.useMissingTranslationHandler('missingTranslationHandler');
     $translateProvider.useSanitizeValueStrategy('escaped');
+    $translateProvider.useMessageFormatInterpolation();
   });
 
   module.factory('missingTranslationHandler', function($log) {

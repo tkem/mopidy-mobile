@@ -178,7 +178,8 @@
   }
 
   /* @ngInject */
-  module.factory('mopidy', function($log, $q) {
+  module.factory('mopidy', function($log, $q, $timeout) {
+
     function logEvent() {
       $log.debug.apply($log, Array.prototype.slice.call(arguments).map(function(obj) {
         if (obj instanceof MessageEvent && obj.data) {
@@ -189,14 +190,23 @@
       }));
     }
 
-    return function(settings) {
+    return function(settings, timeout) {
       return $q(function(resolve, reject) {
         var mopidy = new Mopidy(angular.extend({}, settings || {}, {
           autoConnect: false,
           callingConvention: 'by-position-or-by-name'
         }));
+        var timeoutPromise = timeout ? $timeout(function() {
+          reject(new Mopidy.ConnectionError('Connection timeout'));
+          timeoutPromise = reject = resolve = null;
+          mopidy.close();
+          mopidy.off();
+        }, timeout) : null;
         // .once() listeners are wrapped, so .off() doesn't work
         mopidy.once('state:online', function() {
+          if (timeoutPromise) {
+            $timeout.cancel(timeoutPromise);
+          }
           if (resolve) {
             reject = null;
             $log.info('Connected');
@@ -204,11 +214,13 @@
           }
         });
         mopidy.once('state:offline', function() {
+          if (timeoutPromise) {
+            $timeout.cancel(timeoutPromise);
+          }
           if (reject) {
-            resolve = null;
-            $log.error('Connection error');
+            reject(new Mopidy.ConnectionError());
             mopidy.close();
-            reject(mopidy);
+            mopidy.off();
           }
         });
         if (settings && settings.webSocketUrl) {

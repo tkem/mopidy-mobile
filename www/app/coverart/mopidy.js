@@ -17,24 +17,23 @@
         return $q.when({});
       }
 
-      return connection.settings().then(function(settings) {
-        // resolve absolute path URIs as returned by mopidy-local-images
-        // FIXME: not necessary hosted environments?
-        var resolve = settings.webSocketUrl ? function(image) {
-          if (image.uri.charAt(0) == '/') {
-            var match = /^wss?:\/\/([^\/]+)/.exec(settings.webSocketUrl);
-            return angular.extend({uri: 'http://' + match[1] + image.uri});
-          } else {
-            return image;
-          }
-        } : angular.identity;
+      // resolve absolute path URIs as returned by mopidy-local-images
+      // FIXME: not necessary hosted environments?
+      var settings = connection.settings();
+      var resolve = settings.webSocketUrl ? function(image) {
+        if (image.uri.charAt(0) == '/') {
+          var match = /^wss?:\/\/([^\/]+)/.exec(settings.webSocketUrl);
+          return angular.extend({uri: 'http://' + match[1] + image.uri});
+        } else {
+          return image;
+        }
+      } : angular.identity;
 
-        return connection().then(function(mopidy) {
-          return mopidy.library.getImages({uris: uris});
-        }).then(function(result) {
-          return angular.forEach(result, function(images, uri, obj) {
-            obj[uri] = images ? images.map(resolve) : images;
-          });
+      return connection().then(function(mopidy) {
+        return mopidy.library.getImages({uris: uris});
+      }).then(function(result) {
+        return angular.forEach(result, function(images, uri, obj) {
+          obj[uri] = images ? images.map(resolve) : images;
         });
       });
     };

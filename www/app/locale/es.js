@@ -1,4 +1,4 @@
-﻿;(function(module) {
+;(function(module) {
   'use strict';
 
   module.config(function(localeProvider) {
@@ -24,7 +24,7 @@
         'Comment': 'Comentario',
         'Composer': 'Compositor',
         'Configured servers': 'Servidores configurados',
-        'Connection error': 'Error de Conexión',
+        'ConnectionError': 'Error de conexión',
         'Consume mode': 'Modo cosumo',
         'Cover art': 'Portada',
         'Create playlist': 'Crear playlist',
@@ -39,7 +39,7 @@
         'Edit playlist': 'Editar playlist',
         'Edit playlists': 'Editar playlists',
         'Edit tracklist': 'Editar lista de pistas',
-        'Empty': 'Vacio',
+        'Error': 'Error',
         'Exit': 'Salir',
         'Find exact': 'Buscar exacto',
         'Genre': 'Género',
@@ -66,6 +66,7 @@
         'Pull to refresh': 'Tirar para refrescar',
         'Remove server': 'Quitar servidor',
         'Replace tracklist': 'Reemplazar lista de pistas',
+        'Request timeout': 'Tiempo de consulta agotado',
         'Reset all settings to default values and restart application': 'Volver a los valores originales y reiniciar la aplicación',
         'Reset': 'Valores orginales',
         'Restart application': 'Reiniciar aplicación',
@@ -76,24 +77,27 @@
         'Search here': 'Buscar aquí',
         'Search results': 'Resultados de la busqueda',
         'Search term': 'Término a buscar',
-        'Search {name}': 'Buscar {{name}}',
+        'Search {name}': 'Buscar {name}',
         'Search': 'Buscar',
         'Secure connection': 'Conexión segura',
+        'ServerError': 'Error del servidor',
         'Settings': 'Configuración',
         'Show track info': 'Mostrar información de la pista',
         'Sort by name': 'Ordernar por nombre',
         'Sort by scheme': 'Ordenar por esquema',
         'Theme': 'Tema',
         'Then pull to refresh, or add a server manually.': 'Entonces tire para refrescar, o añada un servidor manualmente.',
+        'TimeoutError': 'Error de tiempo agotado',
         'Track info': 'Información de la Pista',
         'Tracklist': 'Lista de Pistas',
         'Track': 'Pista',
         'Translations': 'Traducciones',
         'URI': 'URI',
         'URL': 'URL',
-        'Version {version}': 'Versión {{version}}',
-        '{count} tracks': '{{count}} pistas',
-        '{index} of {count}': '{{index}} de {{count}}',
+        'Version {version}': 'Versión {version}',
+        '{count} seconds': '{count, plural, one{1 segundo} other{# segundos}}',
+        '{count} tracks': '{count, plural, =0{Sin Pistas} one{1 Pista} other{# Pistas}}',
+        '{index} of {count}': '{index} de {count}',
       }
     });
   });

@@ -1,129 +1,17 @@
 ;(function(module) {
   'use strict';
 
-  var loadingOptions = {
-    delay: undefined,
-    duration: undefined
-  };
+  function TimeoutError(message) {
+    this.name = 'TimeoutError';
+    this.message = message;
+  }
 
-  var settings = {
-    // TBD
-  };
+  TimeoutError.prototype = Object.create(Error.prototype);
+  TimeoutError.prototype.constructor = TimeoutError;
 
-  /* @ngInject */
-  module.provider('connection', function() {
-    var provider = this;
-
-    /* @ngInject */
-    provider.$get = function($ionicLoading, $log, $q, $timeout, $rootScope, connectionErrorHandler, mopidy) {
-      var connected = false;
-      var pending = 0;
-
-      function notify(event, data) {
-        switch (event) {
-        case 'state:online':
-          $log.info('Mopidy connection online');
-          connected = true;
-          break;
-        case 'state:offline':
-          $log.warn('Mopidy connection offline');
-          connected = false;
-          break;
-        }
-        if (event.indexOf('websocket:') !== 0) {
-          $rootScope.$applyAsync(function(scope) {
-            scope.$broadcast('connection:' + event, data);
-          });
-        }
-      }
-
-      function connect(settings) {
-        $ionicLoading.show();
-        return mopidy(settings).then(
-          function(mopidy) {
-            connected = true;
-            $ionicLoading.hide();
-            mopidy.on(notify.bind(mopidy));
-            return mopidy;
-          },
-          function() {
-            connected = false;
-            $ionicLoading.hide();
-            throw {name: 'ConnectionError'};  // TODO: throw real error
-          }
-        );
-      }
-
-      var promise = null;
-
-      var connection = function connection(callback) {
-        if (callback) {
-          if (pending++ === 0) {
-            $ionicLoading.show(loadingOptions);
-          }
-          return promise.then(callback).finally(function() {
-            if (--pending === 0) {
-              // see http://forum.ionicframework.com/t/ionicloading-bug/8001
-              if (loadingOptions.delay) {
-                $timeout(function() {
-                  var body = angular.element(document.body);
-                  if (!pending && body.hasClass('loading-active')) {
-                    $log.debug('Loading overlay still active!');
-                    $ionicLoading.hide();
-                  }
-                }, loadingOptions.delay);
-              }
-              $ionicLoading.hide();
-            } else {
-              $log.debug('Requests pending: ' + pending);
-            }
-          }).catch(function(error) {
-            return connectionErrorHandler(error, connection, callback);
-          });
-        } else {
-          return promise;
-        }
-      };
-
-      connection.reset = function(webSocketUrl) {
-        if (promise) {
-          promise.finally(function(mopidy) {
-            mopidy.close();
-            mopidy.off();
-          });
-        }
-        if (webSocketUrl) {
-          settings.webSocketUrl = webSocketUrl;
-        }
-        promise = connect(settings);
-        return promise;
-      };
-
-      connection.settings = function() {
-        return promise.then(function() {
-          return settings;
-        });
-      };
-
-      return connection;
-    };
-
-    provider.loadingOptions = function(value) {
-      if (arguments.length) {
-        angular.extend(loadingOptions, value);
-      } else {
-        return angular.copy(loadingOptions);
-      }
-    };
-
-    provider.settings = function(value) {
-      if (arguments.length) {
-        angular.extend(settings, value);
-      } else {
-        return angular.copy(settings);
-      }
-    };
-  });
+  var connectionTimeout = null;
+  var requestTimeout = null;
+  var settings = {};
 
   module.factory('connectionErrorHandler', function($log) {
     return function(error/*, connection, callback*/) {
@@ -138,4 +26,115 @@
     };
   });
 
-})(angular.module('app.services.connection', ['app.services.mopidy', 'ionic']));
+  /* @ngInject */
+  module.provider('connection', function() {
+    var provider = this;
+
+    /* @ngInject */
+    provider.$get = function($log, $q, $timeout, $rootScope, connectionErrorHandler, loading, mopidy)
+    {
+      function notify(event, data) {
+        switch (event) {
+        case 'state:online':
+          $log.info('Mopidy connection online');
+          break;
+        case 'state:offline':
+          $log.warn('Mopidy connection offline');
+          break;
+        }
+        if (event.indexOf('websocket:') !== 0) {
+          $rootScope.$applyAsync(function(scope) {
+            scope.$broadcast('connection:' + event, data);
+          });
+        }
+      }
+
+      function connect() {
+        loading.show();
+        return mopidy(settings, connectionTimeout).then(function(mopidy) {
+          mopidy.on(notify.bind(mopidy));
+          return mopidy;
+        }).finally(loading.hide);
+      }
+
+      function request(connection, fn) {
+        return connection().then(function(mopidy) {
+          loading.show();
+          return $q(function(resolve, reject) {
+            if (requestTimeout) {
+              $timeout(function() { reject(new TimeoutError()); }, requestTimeout);
+            }
+            $q.when(fn(mopidy)).then(resolve, reject);
+          }).finally(loading.hide);
+        }).catch(function(error) {
+          return $q.when(connectionErrorHandler(error, connection, fn));
+        });
+      }
+
+      function connection(fn) {
+        if (fn) {
+          return request(connection, fn);
+        } else if (connection._promise) {
+          return connection._promise;
+        } else {
+          return (connection._promise = connect());
+        }
+      }
+
+      connection.close = function() {
+        if (connection._promise) {
+          connection._promise.then(function(mopidy) {
+            mopidy.close();
+            mopidy.off();
+          });
+          delete connection._promise;
+        }
+      };
+
+      connection.reset = function(webSocketUrl) {
+        connection.close();
+        if (webSocketUrl) {
+          settings.webSocketUrl = webSocketUrl;
+        }
+        return connection().catch(function(error) {
+          return $q.when(connectionErrorHandler(error, connection));
+        });
+      };
+
+      connection.connectionTimeout = provider.connectionTimeout;
+
+      connection.requestTimeout = provider.requestTimeout;
+
+      connection.settings = function() {
+        return angular.copy(settings);
+      };
+
+      return connection;
+    };
+
+    provider.connectionTimeout = function(value) {
+      if (arguments.length) {
+        connectionTimeout = value;
+      } else {
+        return connectionTimeout;
+      }
+    };
+
+    provider.requestTimeout = function(value) {
+      if (arguments.length) {
+        requestTimeout = value;
+      } else {
+        return requestTimeout;
+      }
+    };
+
+    provider.settings = function(value) {
+      if (arguments.length) {
+        angular.extend(settings, value);
+      } else {
+        return angular.copy(settings);
+      }
+    };
+  });
+
+})(angular.module('app.services.connection', ['app.services.mopidy', 'app.ui.loading']));

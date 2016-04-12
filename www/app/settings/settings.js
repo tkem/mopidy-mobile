@@ -10,6 +10,21 @@
   }
 
   /* @ngInject */
+  module.directive('convertToNumber', function() {
+    return {
+      require: 'ngModel',
+      link: function(scope, element, attrs, ngModel) {
+        ngModel.$parsers.push(function(val) {
+          return parseInt(val, 10);
+        });
+        ngModel.$formatters.push(function(val) {
+          return '' + val;
+        });
+      }
+    };
+  });
+
+  /* @ngInject */
   module.config(function(routerProvider) {
     routerProvider.states({
       'settings': {
@@ -74,14 +89,15 @@
   });
 
   /* @ngInject */
-  module.controller('SettingsController', function($scope, $window, actions, coverart, locale, logging, popup, router, settings, stylesheet) {
+  module.controller('SettingsController', function($scope, $window, actions, connection, coverart, locale, logging, popup, router, settings, stylesheet) {
     var self = this;
     // TODO: DRY settings defaults
     angular.extend(this, settings.get({
       action: actions.getDefault(),
       coverart: ['mopidy'],
       debug: false,
-      stylesheet: stylesheet.get()
+      stylesheet: stylesheet.get(),
+      timeout: 15000
     }));
     self.coverart = fromKeys(self.coverart, true);
     self.locales = locale.all();
@@ -119,6 +135,15 @@
       if (newValue !== oldValue) {
         stylesheet.set(newValue);
         settings.extend({stylesheet: newValue});
+      }
+    });
+
+    $scope.$watch(function() {
+      return self.timeout;
+    }, function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        connection.requestTimeout(newValue);
+        settings.extend({timeout: newValue});
       }
     });
 
@@ -216,7 +241,7 @@
   });
 
   /* @ngInject */
-  module.run(function($window, actions, coverart, locale, logging, settings, stylesheet) {
+  module.run(function($window, actions, connection, coverart, locale, logging, settings, stylesheet) {
     // migrate pre-1.4 user settings
     var storage = $window.localStorage;
     angular.forEach(['action', 'locale', 'stylesheet'], function(item) {
@@ -233,10 +258,12 @@
       coverart: ['mopidy'],
       debug: false,
       locale: '',
-      stylesheet: stylesheet.get()
+      stylesheet: stylesheet.get(),
+      timeout: 15000
     });
 
     actions.setDefault(obj.action);
+    connection.requestTimeout(obj.timeout);
     coverart.use(obj.coverart);
     locale.set(obj.locale);
     logging.debugEnabled(obj.debug);

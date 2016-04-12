@@ -12,17 +12,17 @@
     /* @ngInject */
     $provide.decorator('connectionErrorHandler', function($delegate, $filter, $ionicPopup) {
       var translate = $filter('translate');
-      var reset = false;
+      var retries = 0;
 
       return function(error, connection, callback) {
         try {
-          $delegate.apply($delegate, arguments);
+          $delegate.apply($delegate, arguments);  // log error
         } catch (e) {
           // default handler throws error
         }
 
         var options = {
-          title: error.name || translate('Error'),
+          title: translate(error.name || 'Error'),
           subTitle: error.message || '',
           buttons: [{
             text: translate('Ignore'),
@@ -34,21 +34,26 @@
             onTap: function() { return true; }
           }]
         };
+
         if (error.data && error.data.message) {
           options.template = '<pre>' + error.data.message + '</pre>';
         }
+
         return $ionicPopup.show(options).then(function(retry) {
           if (!retry) {
+            retries = 0;
             throw error;
           }
-          if (reset) {
-            connection.reset();
+          if (callback) {
+            if (++retries % 2 === 0) {
+              connection.close();
+            }
+            var promise = connection(callback);
+            promise.then(function() { retries = 0; });
+            return promise;
           } else {
-            reset = true;
+            return connection.reset();
           }
-          return connection(callback, true).finally(function() {
-            reset = false;
-          });
         });
       };
     });
@@ -56,10 +61,6 @@
 
   /* @ngInject */
   module.config(function(connectionProvider) {
-    connectionProvider.loadingOptions({
-      delay: 100,
-      duration: 10000  // defensive
-    });
     connectionProvider.settings({
       backoffDelayMax: 2000,
       backoffDelayMin: 500

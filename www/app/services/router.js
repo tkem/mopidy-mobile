@@ -5,18 +5,18 @@
 
   function wrapResolveFunction(state, key, fn) {
     /* @ngInject */
-    return function($injector, $log, $state, $stateParams) {
+    return function($injector, $log, $q, $state, $stateParams) {
       var href = $state.href(state, $stateParams);
-      var cached = resolveCache ? resolveCache.get(href) || resolveCache.put(href, {}) : null;
-      if (cached && key in cached) {
+      var cache = resolveCache ? resolveCache.get(href) || resolveCache.put(href, {}) : null;
+      if (cache && key in cache) {
         $log.debug('Resolve cache hit: ' + state + '.' + key + ' [' + href + ']');
-        return cached[key];
-      } else if (cached) {
+        return cache[key];
+      } else if (cache) {
         $log.debug('Resolve cache miss: ' + state + '.' + key + ' [' + href + ']');
         var resolve = $injector.invoke(fn, null, angular.extend(
           {}, {'$stateParams': $stateParams, params: $stateParams}, $stateParams
         ));
-        cached[key] = resolve;
+        $q.when(resolve).then(function() { cache[key] = resolve; });
         return resolve;
       } else {
         return $injector.invoke(fn, null, angular.extend(

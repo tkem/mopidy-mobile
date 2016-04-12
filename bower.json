@@ -2,7 +2,8 @@
   "name": "mopidy-mobile",
   "private": "true",
   "dependencies": {
-    "angular-translate": "~2.8.1",
+    "angular-translate": "~2.11.0",
+    "angular-translate-interpolation-messageformat": "~2.11.0",
     "icomoon": "~0.1.0",
     "ionic": "~1.2.4",
     "mopidy": "mopidy/mopidy.js#0.5.0"
