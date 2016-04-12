@@ -202,10 +202,16 @@
           }
         });
       },
+      restart: function() {
+        $window.location.reload(true);
+      },
       popover: popoverMenu([{
         text: 'Reset',
         click: 'popover.hide() && reset()',
         hellip: true
+      }, {
+        text: 'Restart',
+        click: 'popover.hide() && restart()',
       }, {
         text: 'Exit',
         click: 'popover.hide() && platform.exitApp()',
