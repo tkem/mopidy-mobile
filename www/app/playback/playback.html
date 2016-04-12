@@ -35,13 +35,23 @@
       <div class="col" ng-if="!track">
         <h2 translate>Nothing playing</h2>
       </div>
+
       <div class="col" ng-if="track">
         <h2>{{track.name || track.uri}}</h2>
         <h3 class="mopidy-mobile-artists" ng-show="track.artists.length">
           <span ng-repeat="artist in track.artists">{{artist.name || artist.uri}}</span>
         </h3>
-        <h4>{{streamTitle || track.album.name || track.genre || track.comment}}</h4>
+        <div class="hidden-landscape">
+          <h4>{{streamTitle || track.album.name || track.genre}}</h4>
+        </div>
+        <div class="hidden-portrait">
+          <h4 ng-show="streamTitle">{{streamTitle}}</h4>
+          <h4 ng-show="track.album.name">{{track.album.name}}</h4>
+          <h4 ng-show="track.genre">{{track.genre}}</h4>
+          <h4 ng-show="track.date || track.album.date">{{track.date || track.album.date}}</h4>
+        </div>
       </div>
+
       <div class="col" ng-if="image">
         <img ng-src="{{image.uri}}">
       </div>

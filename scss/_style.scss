@@ -255,16 +255,15 @@ i {
     text-align: center;
     h2, h3, h4 {
         margin-top: 0;
+        margin-bottom: 4px;
     }
     h2 {
         font-size: 16px;
         font-weight: bold;
-        margin-bottom: 2px;
     }
     h3 {
         font-size: 14px;
         font-weight: inherit;
-        margin-bottom: 4px;
     }
     h4 {
         font-size: 12px;
@@ -320,6 +319,18 @@ img.mopidy-mobile-logo {
     content: "\00b7";
     padding: 0 1ex;
 }
+
+/* hide depending on orientation */
+@mixin orientation-display-none($selector, $orientation) {
+    @media (orientation: $orientation) {
+        #{$selector} {
+            display:none;
+        }
+    }
+}
+
+@include orientation-display-none('.hidden-portrait', 'portrait');
+@include orientation-display-none('.hidden-landscape', 'landscape');
 
 /* custom responsive-grid-break with orientation selector */
 @mixin orientation-grid-break($selector, $orientation) {
