@@ -19,6 +19,11 @@ In a nutshell, Mopidy Mobile lets you
 - Create and edit playlists (requires Mopidy server v1.x).
 - Download cover art from selected online resources.
 
+Mopidy Mobile's user interface comes with both light and dark themes
+to match your mood, and so far has been translated to English, German,
+Spanish and Catalan.  Last but not least, it also features a beloved
+80's arcade game character icon to represent Mopidy's consume mode.
+
 
 Installation
 ------------------------------------------------------------------------

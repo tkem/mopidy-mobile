@@ -1,3 +1,13 @@
+1.7.0 2016-04-14
+----------------
+
+- Add request timeouts.
+
+- Add "Restart" option.
+
+- Show extra track information in landscape mode.
+
+
 1.6.13 2016-03-28
 -----------------
 
