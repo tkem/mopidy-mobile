@@ -66,7 +66,7 @@
         'Pull to refresh': 'Tirar per a refrescar',
         'Remove server': 'Treure servidor',
         'Replace tracklist': 'Substituir llista de pistes',
-        'Request timeout': 'Temp de consulta esgotat',
+        'Request timeout': 'Temps de consulta esgotat',
         'Reset all settings to default values and restart application': 'Tornar als valor originals i reiniciar la aplicació',
         'Reset': 'Valors orginals',
         'Restart application': 'Reiniciar aplicació',
