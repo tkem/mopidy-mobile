@@ -14,13 +14,14 @@
   <preference name="AutoHideSplashScreen" value="false"/>
   <preference name="BackupWebStorage" value="none"/>
   <preference name="DisallowOverscroll" value="true"/>
-  <preference name="SplashScreen" value="screen"/>
-  <preference name="SplashScreenDelay" value="10000"/>
+  <preference name="FadeSplashScreen" value="false"/>
+  <preference name="ShowSplashScreenSpinner" value="false"/>
+  <preference name="SplashShowOnlyFirstTime" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="android-manifest/@android:installLocation" value="auto"/>
   <preference name="android-minSdkVersion" value="19"/>
-  <preference name="webviewbounce" value="false"/>
   <preference name="cordova-custom-config-autorestore" value="false"/>
+  <preference name="webviewbounce" value="false"/>
   <feature name="StatusBar">
     <param name="ios-package" onload="true" value="CDVStatusBar"/>
   </feature>
@@ -45,10 +46,10 @@
     <splash src="resources/android/splash/drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
   </platform>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
+  <plugin name="cordova-custom-config" spec="~2.0.0"/>
   <plugin name="cordova-plugin-appversion" spec="~1.0.0"/>
-  <plugin name="cordova-plugin-inappbrowser" spec="~1.0.1"/>
-  <plugin name="cordova-plugin-splashscreen" spec="~2.1.0"/>
-  <plugin name="cordova-plugin-whitelist" spec="~1.0.0"/>
-  <plugin name="cordova-custom-config" spec="~1.1.0"/>
-  <plugin name="cordova-zeroconf-plugin" spec="~1.2.0"/>
+  <plugin name="cordova-plugin-inappbrowser" spec="~1.4.0"/>
+  <plugin name="cordova-plugin-splashscreen" spec="~3.2.2"/>
+  <plugin name="cordova-plugin-whitelist" spec="~1.2.2"/>
+  <plugin name="cordova-zeroconf-plugin" spec="~1.2.1"/>
 </widget>
