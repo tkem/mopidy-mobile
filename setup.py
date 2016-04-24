@@ -1,17 +1,14 @@
 from __future__ import unicode_literals
 
-import os
-import re
-
 from setuptools import find_packages, setup
-
-assert os.path.exists('mopidy_mobile/www/mopidy-mobile.bundle.min.js')
 
 
 def get_version(filename):
-    with open(filename) as fh:
-        metadata = dict(re.findall("__([a-z]+)__ = '([^']+)'", fh.read()))
-        return metadata['version']
+    from re import findall
+    with open(filename) as f:
+        metadata = dict(findall("__([a-z]+)__ = '([^']+)'", f.read()))
+    return metadata['version']
+
 
 setup(
     name='Mopidy-Mobile',

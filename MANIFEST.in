@@ -3,6 +3,8 @@ include LICENSE
 include MANIFEST.in
 include README.rst
 include mopidy_mobile/ext.conf
+include tox.ini
 
 recursive-include mopidy_mobile/www *
+
 recursive-include tests *.py
