@@ -33,9 +33,10 @@
 
       service.servers = function(timeout) {
         return $ionicPlatform.ready().then(function() {
+          var zeroconf = $window.cordova.plugins.zeroconf;
           var deferred = $q.defer();
 
-          $window.ZeroConf.watch('_mopidy-http._tcp.local.', function(obj) {
+          zeroconf.watch('_mopidy-http._tcp.local.', function(obj) {
             var url = obj.service.urls[0];
             $log.debug('zeroconf: ' + obj.action + ' ' + url, obj.service);
             switch (obj.action) {
@@ -60,7 +61,7 @@
             });
             deferred.resolve(result);
             if (--watchers === 0) {
-              $window.ZeroConf.unwatch('_mopidy-http._tcp.local.');
+              zeroconf.unwatch('_mopidy-http._tcp.local.');
               servers = {};
             }
           });
