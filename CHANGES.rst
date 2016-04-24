@@ -1,3 +1,13 @@
+1.7.1 2016-04-24
+----------------
+
+- Add Chrome splash screen and theme color support.
+
+- Switch to ``cordova-plugin-zeroconf``.
+
+- Update Cordova plugins.
+
+
 1.7.0 2016-04-14
 ----------------
 
