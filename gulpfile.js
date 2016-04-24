@@ -78,7 +78,7 @@ gulp.task('clean', function(cb) {
   del([
     paths.build,
     paths.css,
-    paths.dist + '{app,css,images,lib,*.min.js}'
+    paths.dist + '{app,css,lib,*.min.js}'
   ], cb);
 });
 
