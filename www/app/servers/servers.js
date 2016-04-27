@@ -30,7 +30,7 @@
     $scope.settings = settings.get({servers: []});
     $scope.zeroconf = {servers: []};
 
-    platform.servers(10000).then(
+    platform.servers(3000).then(
       function(servers) {
         $scope.zeroconf.servers = servers;
       },
@@ -43,7 +43,11 @@
         });
         $scope.zeroconf.servers.push(server);
       }
-    );
+    ).finally(function() {
+      platform.splashScreen().then(function(splashScreen) {
+        splashScreen.hide();
+      });
+    });
 
     $scope.add = function(server) {
       $scope.settings.servers.push(server);
