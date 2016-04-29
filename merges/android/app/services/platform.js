@@ -1,10 +1,6 @@
 ;(function(module) {
   'use strict';
 
-  // zeroconf
-  var servers = {};
-  var watchers = 0;
-
   /* @ngInject */
   module.provider('platform', function PlatformProvider() {
     var provider = this;
@@ -18,7 +14,7 @@
     };
 
     /* @ngInject */
-    provider.$get = function($ionicPlatform, $log, $q, $timeout, $window) {
+    provider.$get = function($ionicPlatform, $window) {
       var service = provider;
 
       service.appVersion = function() {
@@ -31,48 +27,15 @@
         ionic.Platform.exitApp();
       };
 
-      service.servers = function(timeout) {
+      service.splashscreen = function() {
         return $ionicPlatform.ready().then(function() {
-          var zeroconf = $window.cordova.plugins.zeroconf;
-          var deferred = $q.defer();
-
-          zeroconf.watch('_mopidy-http._tcp.local.', function(obj) {
-            var url = obj.service.urls[0];
-            $log.debug('zeroconf: ' + obj.action + ' ' + url, obj.service);
-            switch (obj.action) {
-            case 'added':
-              servers[url] = {
-                name: obj.service.name,
-                url: url.replace(/^http/, 'ws') + '/mopidy/ws/'
-              };
-              deferred.notify(servers[url]);
-              break;
-            case 'removed':
-              delete servers[url];
-              break;
-            }
-          });
-
-          ++watchers;
-          $timeout(timeout).then(function() {
-            var result = [];
-            angular.forEach(servers, function(server) {
-              result.push(server);
-            });
-            deferred.resolve(result);
-            if (--watchers === 0) {
-              zeroconf.unwatch('_mopidy-http._tcp.local.');
-              servers = {};
-            }
-          });
-
-          return deferred.promise;
+          return $window.navigator.splashscreen;
         });
       };
 
-      service.splashScreen = function() {
+      service.zeroconf = function() {
         return $ionicPlatform.ready().then(function() {
-          return $window.navigator.splashscreen;
+          return $window.cordova.plugins.zeroconf;
         });
       };
 

@@ -8,5 +8,6 @@ angular.module('app.services', [
   'app.services.paging',
   'app.services.platform',
   'app.services.router',
+  'app.services.servers',
   'app.services.settings'
 ]);

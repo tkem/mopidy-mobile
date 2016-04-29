@@ -26,33 +26,21 @@
   });
 
   /* @ngInject */
-  module.controller('ServersController', function($log, $q, $rootScope, $scope, $timeout, connection, platform, popup, router, settings) {
-    $scope.settings = settings.get({servers: []});
-    $scope.zeroconf = {servers: []};
+  module.controller('ServersController', function($log, $q, $rootScope, $scope, $timeout, connection, popup, router, servers) {
+    $scope.servers = servers();
 
-    platform.servers(3000).then(
-      function(servers) {
-        $scope.zeroconf.servers = servers;
-      },
-      function(error) {
-        $log.error('Error retrieving servers', error);
-      },
-      function(server) {
-        platform.splashScreen().then(function(splashScreen) {
-          $timeout(splashScreen.hide, 250);  // give view some time to update
-        });
-        $scope.zeroconf.servers.push(server);
-      }
-    ).finally(function() {
-      platform.splashScreen().then(function(splashScreen) {
-        splashScreen.hide();
-      });
+    $scope.$on('servers:added', function(event, server) {
+      $log.info('Mopidy server added', server);
+      $scope.servers = servers();
+    });
+
+    $scope.$on('servers:removed', function(event, server) {
+      $log.info('Mopidy server removed', server);
+      $scope.servers = servers();
     });
 
     $scope.add = function(server) {
-      $scope.settings.servers.push(server);
-      settings.extend({'servers': $scope.settings.servers});
-      return $q.when();
+      return $q.when(servers.add(server));
     };
 
     $scope.connect = function(url) {
@@ -66,44 +54,21 @@
       });
     };
 
-    $scope.merge = function() {
-      var servers = {};
-      for (var i = arguments.length - 1; i >= 0; --i) {
-        for (var j = arguments[i].length - 1; j >= 0; --j) {
-          var server = arguments[i][j];
-          servers[server.url] = server;
-        }
-      }
-      return Object.keys(servers).map(function(url) {
-        return servers[url];
+    $scope.refresh = function() {
+      servers.refresh().then(function() {
+        $scope.servers = servers();
+      }).finally(function() {
+        $scope.$broadcast('scroll.refreshComplete');
       });
     };
 
-    $scope.refresh = function() {
-      platform.servers(5000).then(
-        function(servers) {
-          $scope.zeroconf.servers = servers;
-        },
-        angular.noop,
-        function(server) {
-          $scope.zeroconf.servers.push(server);
-        }
-      );
-      $scope.$broadcast('scroll.refreshComplete');
-    };
-
-    $scope.remove = function(index) {
+    $scope.remove = function(server) {
       return popup.confirm('Remove server').then(function(result) {
         if (result) {
-          $scope.settings.servers.splice(index, 1);
-          settings.extend({'servers': $scope.settings.servers});
+          servers.remove(server);
         }
       });
     };
-
-    $scope.$watchCollection('settings.servers', function(value) {
-      $scope.settings = settings.extend({servers: value});
-    });
   });
 
   /* @ngInject */
@@ -118,26 +83,6 @@
       var scheme = this.secure ? 'wss' : 'ws';
       return [scheme, '://', this.host, ':', this.port, this.path].join('');
     };
-  });
-
-  /* @ngInject */
-  module.run(function($rootScope, connection, platform) {
-    if (platform.isHosted()) {
-      platform.servers().then(function(servers) {
-        connection.reset(servers[0].url);
-      });
-    }
-  });
-
-  /* @ngInject */
-  module.run(function($log, $window, settings) {
-    var storage = $window.localStorage;
-    var key = 'mopidy-mobile.servers';
-
-    if (storage[key]) {
-      settings.extend({servers: angular.fromJson(storage[key])});
-      delete storage[key];
-    }
   });
 
 })(angular.module('app.servers', ['app.services', 'app.ui']));

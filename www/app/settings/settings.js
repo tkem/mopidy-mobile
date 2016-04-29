@@ -192,18 +192,22 @@
   });
 
   /* @ngInject */
-  module.controller('SettingsMenuController', function($scope, $window, popoverMenu, popup, settings) {
+  module.controller('SettingsMenuController', function($scope, $window, popoverMenu, platform, popup, settings) {
     angular.extend($scope, {
       reset: function() {
         popup.confirm('Reset all settings to default values and restart application').then(function(result) {
           if (result) {
             settings.clear();
-            $window.location.reload(true);
+            $scope.restart();
           }
         });
       },
       restart: function() {
-        $window.location.reload(true);
+        platform.splashscreen().then(function(splashscreen) {
+          splashscreen.show();
+        }).finally(function() {
+          $window.location.reload(true);
+        });
       },
       popover: popoverMenu([{
         text: 'Reset',

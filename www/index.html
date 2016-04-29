@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-web-socket-url="ws://localhost:6680/mopidy/ws">
+<html>
   <head>
     <title>Mopidy Mobile</title>
     <meta http-equiv="Content-Security-Policy" content="default-src *; img-src * data:; style-src 'self' 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
@@ -39,6 +39,7 @@
     <script src="app/services/paging.js"></script>
     <script src="app/services/platform.js"></script>
     <script src="app/services/router.js"></script>
+    <script src="app/services/servers.js"></script>
     <script src="app/services/services.js"></script>
     <script src="app/services/settings.js"></script>
     <script src="app/settings/settings.js"></script>
@@ -52,7 +53,7 @@
     <script src="app/ui/ui.js"></script>
 
   </head>
-  <body ng-app="app">
+  <body ng-app="app" data-web-socket-url1="ws://localhost:6680/mopidy/ws">
     <ion-nav-bar class="bar-stable">
       <ion-nav-back-button></ion-nav-back-button>
     </ion-nav-bar>

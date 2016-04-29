@@ -104,6 +104,14 @@
   });
 
   /* @ngInject */
+  module.run(function($rootElement, connection) {
+    var webSocketUrl = $rootElement.attr('data-web-socket-url');
+    if (angular.isString(webSocketUrl)) {
+      connection.reset(webSocketUrl);
+    }
+  });
+
+  /* @ngInject */
   module.run(function($rootScope, actions, platform, router) {
     $rootScope.actions = actions;
     $rootScope.clearCache = router.clearCache.bind(router);
@@ -128,6 +136,22 @@
       height: 64,
       src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
     };
+  });
+
+  /* @ngInject */
+  module.run(function($log, $rootScope, $timeout, platform, servers) {
+    $log.info('Starting Mopidy Mobile');
+    platform.splashscreen().then(function(splashscreen) {
+      if (servers().length === 0) {
+        var timeout = $timeout(splashscreen.hide, 3000);
+        $rootScope.$on('servers:added', function() {
+          $timeout.cancel(timeout);
+          $timeout(splashscreen.hide, 250);  // give view some time to update
+        });
+      } else {
+        $timeout(splashscreen.hide, 500);  // give view some time to update
+      }
+    });
   });
 
 })(angular.module('app.main', ['app.services', 'app.ui', 'ionic']));

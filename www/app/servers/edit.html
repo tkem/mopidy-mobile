@@ -13,10 +13,10 @@
   </ion-nav-buttons>
   <ion-content>
     <ion-list show-delete="true">
-      <ion-item ng-repeat="server in settings.servers">
+      <ion-item ng-repeat="server in servers | filter:{auto: false}">
         <h2>{{server.name}}</h2>
         <h4>{{server.url}}</h4>
-        <ion-delete-button class="ion-minus-circled" ng-click="remove($index)">
+        <ion-delete-button class="ion-minus-circled" ng-click="remove(server)">
         </ion-delete-button>
       </ion-item>
     </ion-list>

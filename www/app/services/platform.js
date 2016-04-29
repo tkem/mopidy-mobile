@@ -6,13 +6,10 @@
     var provider = this;
 
     provider.isHosted = function() {
-      // TODO: $rootElementProvider.$get(), or better way?
       return angular.isString(angular.element(document.body).attr('data-web-socket-url'));
     };
 
-    provider.isWebView = function() {
-      return false;
-    };
+    provider.isWebView = ionic.Platform.isWebView;
 
     /* @ngInject */
     provider.$get = function($q, $rootElement) {
@@ -23,27 +20,19 @@
       };
 
       service.exitApp = function() {
-        // scripts may only close windows opened by them
+        ionic.Platform.exitApp();
       };
 
-      service.servers = function() {
-        var webSocketUrl = $rootElement.attr('data-web-socket-url');
-        if (angular.isString(webSocketUrl)) {
-          return $q.when([{name: null, url: webSocketUrl}]);
-        } else {
-          return $q.when([]);
-        }
+      service.splashscreen = function() {
+        return $q.when({show: angular.noop, hide: angular.noop});
       };
 
-      service.splashScreen = function() {
-        return $q.when({
-          hide: function() {},
-          show: function() {}
-        });
+      service.zeroconf = function() {
+        return $q.when({watch: angular.noop, unwatch: angular.noop, close: angular.noop});
       };
 
       return service;
     };
   });
 
-})(angular.module('app.services.platform', []));
+})(angular.module('app.services.platform', ['ionic']));

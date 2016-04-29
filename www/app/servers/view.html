@@ -19,17 +19,17 @@
     <ion-refresher on-refresh="refresh()" pulling-text="{{'Pull to refresh' | translate}}">
     </ion-refresher>
 
-    <div class="padding" ng-if="settings.servers.length == 0 && zeroconf.servers.length == 0">
+    <div class="padding" ng-if="servers.length == 0">
       <h2 translate>No servers found</h2>
       <p translate>Please make sure Zeroconf is enabled for any Mopidy servers in the same WiFi network as your device.</p>
       <p translate>Then pull to refresh, or add a server manually.</p>
     </div>
 
-    <div class="list" ng-if="settings.servers.length != 0 || zeroconf.servers.length != 0">
+    <div class="list" ng-if="servers.length != 0">
       <a class="item item-icon-right"
          ng-class="{'item-positive': server.url == webSocketUrl}"
          ng-click="connect(server.url)"
-         ng-repeat="server in merge(settings.servers, zeroconf.servers) | orderBy: name"
+         ng-repeat="server in servers | orderBy: name"
          >
         <h2>{{server.name}}</h2>
         <h4>{{server.url}}</h4>
