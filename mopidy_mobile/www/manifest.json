@@ -2,7 +2,6 @@
   "name": "{{title}}",
   "start_url": "index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#119831",
   "theme_color": "#119831",
   "icons": [{
