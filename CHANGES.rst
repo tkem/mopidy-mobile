@@ -1,3 +1,13 @@
+1.7.2 2016-05-01
+----------------
+
+- Auto-rotate Web client when added to Android home screen.
+
+- Improve startup time (hiding splash screen) for Cordova app.
+
+- Refactor ZeroConf handling.
+
+
 1.7.1 2016-04-24
 ----------------
 
