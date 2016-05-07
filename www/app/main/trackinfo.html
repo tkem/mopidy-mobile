@@ -31,6 +31,14 @@
     </h2>
     <h4 translate>Album artist</h4>
   </div>
+  <div class="item" ng-if="track.track_no">
+    <h2>{{track.track_no}}</h2>
+    <h4 translate>Track number</h4>
+  </div>
+  <div class="item" ng-if="track.disc_no">
+    <h2>{{track.disc_no}}</h2>
+    <h4 translate>Disc number</h4>
+  </div>
   <div class="item" ng-if="track.genre">
     <h2>{{track.genre}}</h2>
     <h4 translate>Genre</h4>
