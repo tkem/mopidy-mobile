@@ -1,3 +1,11 @@
+1.7.3 2016-05-07
+----------------
+
+- Upgrade Ionic to v1.3.0.
+
+- Show track and disc number in track info dialog.
+
+
 1.7.2 2016-05-01
 ----------------
 
