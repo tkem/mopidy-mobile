@@ -1,3 +1,9 @@
+1.7.5 2016-08-04
+----------------
+
+- Fix merging of search results from multiple backends.
+
+
 1.7.4 2016-05-08
 ----------------
 
