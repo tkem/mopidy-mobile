@@ -3,7 +3,7 @@
 
   function mergeResults(results) {
     function compareModelsByName(a, b) {
-      return (a.name || '').uri.localeCompare(b.name || '');
+      return (a.name || '').localeCompare(b.name || '');
     }
 
     var obj = {};
