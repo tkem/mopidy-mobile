@@ -1,10 +1,5 @@
-*.egg-info
-*.pyc
-*.swp
 .cache/
-.coverage
 .tox/
-MANIFEST
 build/
 dist/
 mopidy_mobile/www/*/
@@ -18,3 +13,9 @@ resources/ios/icon/
 resources/ios/splash/
 www/css/
 www/lib/
+*.egg-info
+*.pyc
+*.swp
+.*.json
+.coverage
+MANIFEST
