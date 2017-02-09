@@ -17,29 +17,36 @@
       }
 
       function watch(zeroconf) {
+        $log.info('Starting zeroconf discovery');
         zeroconf.watch('_mopidy-http._tcp.local.', function(obj) {
-          var url = obj.service.urls[0];  // TODO: IPv4/IPv6
-          if (url) {
-            var server = {
-              name: obj.service.name,
-              url: url.replace(/^http/, 'ws') + '/mopidy/ws/'
-            };
-            switch (obj.action) {
-            case 'added':
-              if (!(url in detected)) {
-                detected[url] = server;
-                notify(obj.action, server);
+          try {
+            var url = obj.service.urls[0];  // TODO: IPv4/IPv6
+            if (url) {
+              var server = {
+                name: obj.service.name,
+                url: url.replace(/^http/, 'ws') + '/mopidy/ws/'
+              };
+              switch (obj.action) {
+              case 'added':
+                if (!(url in detected)) {
+                  detected[url] = server;
+                  notify(obj.action, server);
+                }
+                break;
+              case 'removed':
+                if (url in detected) {
+                  delete detected[url];
+                  notify(obj.action, server);
+                }
+                break;
               }
-              break;
-            case 'removed':
-              if (url in detected) {
-                delete detected[url];
-                notify(obj.action, server);
-              }
-              break;
             }
+            $log.debug('zeroconf:' + obj.action + ' ' + url, obj);
+          } catch (error) {
+            $log.error('ZeroConf error:', error, obj);
           }
-          $log.debug('zeroconf:' + obj.action + ' ' + url, obj);
+        }, function(error) {
+          $log.error('ZeroConf error:', error);
         });
       }
 

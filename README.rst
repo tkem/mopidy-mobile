@@ -104,17 +104,9 @@ Project Resources
     :target: https://pypi.python.org/pypi/Mopidy-Mobile/
     :alt: Latest PyPI version
 
-.. image:: http://img.shields.io/pypi/dm/Mopidy-Mobile.svg?style=flat
-    :target: https://pypi.python.org/pypi/Mopidy-Mobile/
-    :alt: Number of PyPI downloads
-
 .. image:: http://img.shields.io/travis/tkem/mopidy-mobile/master.svg?style=flat
     :target: https://travis-ci.org/tkem/mopidy-mobile/
     :alt: Travis CI build status
-
-.. image:: http://img.shields.io/coveralls/tkem/mopidy-mobile/master.svg?style=flat
-   :target: https://coveralls.io/r/tkem/mopidy-mobile/
-   :alt: Test coverage
 
 - `Issue Tracker`_
 - `Source Code`_

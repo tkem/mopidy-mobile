@@ -28,4 +28,7 @@ body:after {
     font-family: $icomoon-font-family;
 }
 
+/* FIXME: Ionic v1.3.2 sets button-clear color to transparent */
+$button-default-border:                 #b2b2b2 !default;
+
 @import "style";
