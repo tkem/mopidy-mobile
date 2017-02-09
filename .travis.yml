@@ -19,6 +19,5 @@ install:
 - gulp install
 
 script:
-- ionic resources android
 - ionic platform add android
 - ionic build android

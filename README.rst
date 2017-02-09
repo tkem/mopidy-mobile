@@ -93,7 +93,6 @@ To build the hybrid app for Android, please follow Ionic's
 sure you have everything needed for Android development.  Then, in
 addition to the commands above, run::
 
-  ionic resources android
   ionic platform add android
   ionic run android
 
