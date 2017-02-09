@@ -431,26 +431,12 @@
   });
 
   /* @ngInject */
-  module.run(function($document, $log, connection) {
+  module.run(function($document, $log, connection, actions) {
     $document.on('volumeupbutton', function() {
-      $log.debug('volumeupbutton');
-      connection(function(mopidy) {
-        return mopidy.mixer.getVolume().then(function(volume) {
-          if (volume < 100) {
-            return mopidy.mixer.setVolume({volume: Math.min(volume + 10, 100)});
-          }
-        });
-      });
+      actions.increaseVolume();
     });
     $document.on('volumedownbutton', function() {
-      $log.debug('volumedownbutton');
-      connection(function(mopidy) {
-        return mopidy.mixer.getVolume().then(function(volume) {
-          if (volume > 0) {
-            return mopidy.mixer.setVolume({volume: Math.max(volume - 10, 0)});
-          }
-        });
-      });
+      actions.decreaseVolume();
     });
   });
 

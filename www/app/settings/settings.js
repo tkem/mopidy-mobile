@@ -105,7 +105,8 @@
       coverart: ['mopidy'],
       debug: false,
       stylesheet: stylesheet.get(),
-      timeout: 15000
+      timeout: 15000,
+      volumestep: 10
     }));
     self.coverart = fromKeys(self.coverart, true);
     self.locales = locale.all();
@@ -152,6 +153,15 @@
       if (newValue !== oldValue) {
         connection.requestTimeout(newValue);
         settings.extend({timeout: newValue});
+      }
+    });
+
+    $scope.$watch(function() {
+      return self.volumestep;
+    }, function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        actions.setVolumeStep(newValue);
+        settings.extend({volumestep: newValue});
       }
     });
 
@@ -293,10 +303,12 @@
       debug: false,
       locale: '',
       stylesheet: stylesheet.get(),
-      timeout: 15000
+      timeout: 15000,
+      volumestep: 10
     });
 
     actions.setDefault(obj.action);
+    actions.setVolumeStep(obj.volumestep);
     connection.requestTimeout(obj.timeout);
     coverart.use(obj.coverart);
     locale.set(obj.locale);

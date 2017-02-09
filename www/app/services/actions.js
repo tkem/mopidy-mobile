@@ -23,6 +23,7 @@
   }
 
   var defaultAction = 'play';
+  var volumeStep = 10;
 
   /* @ngInject */
   module.service('actions', function(connection) {
@@ -82,6 +83,26 @@
       });
     };
 
+    this.increaseVolume = function() {
+      return connection(function(mopidy) {
+        return mopidy.mixer.getVolume().then(function(volume) {
+          if (volume < 100) {
+            return mopidy.mixer.setVolume({volume: Math.min(volume + volumeStep, 100)});
+          }
+        });
+      });
+    }
+
+    this.decreaseVolume = function() {
+      return connection(function(mopidy) {
+        return mopidy.mixer.getVolume().then(function(volume) {
+          if (volume > 0) {
+            return mopidy.mixer.setVolume({volume: Math.max(volume - volumeStep, 0)});
+          }
+        });
+      });
+    }
+    
     this.default = function(obj) {
       return this[defaultAction](obj);
     };
@@ -92,6 +113,14 @@
 
     this.setDefault = function(action) {
       defaultAction = action;
+    };
+
+    this.getVolumeStep = function() {
+      return volumeStep;
+    };
+
+    this.setVolumeStep = function(value) {
+      volumeStep = value;
     };
   });
 

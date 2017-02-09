@@ -98,6 +98,7 @@
         'URI': 'URI',
         'URL': 'URL',
         'Version {version}': 'Version {version}',
+        'Volume keys': 'Volume keys',
         '{count} seconds': '{count, plural, one{1 second} other{# seconds}}',
         '{count} tracks': '{count, plural, =0{No tracks} one{1 track} other{# tracks}}',
         '{index} of {count}': '{index} of {count}',
