@@ -27,6 +27,15 @@
         ionic.Platform.exitApp();
       };
 
+      service.share = function(subject, message) {
+        return $ionicPlatform.ready().then(function() {
+          return $window.plugins.socialsharing.shareWithOptions({
+            subject: subject,
+            message: message
+          });
+        });
+      };
+
       service.splashscreen = function() {
         return $ionicPlatform.ready().then(function() {
           return $window.navigator.splashscreen;

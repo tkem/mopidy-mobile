@@ -83,6 +83,7 @@
         'Secure connection': 'Conexión segura',
         'ServerError': 'Error del servidor',
         'Settings': 'Configuración',
+        'Share': 'Compartir',
         'Show track info': 'Mostrar información de la pista',
         'Sort by name': 'Ordernar por nombre',
         'Sort by scheme': 'Ordenar por esquema',

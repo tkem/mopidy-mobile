@@ -83,6 +83,7 @@
         'Secure connection': 'Sichere Verbindung',
         'ServerError': 'Serverfehler',
         'Settings': 'Einstellungen',
+        'Share': 'Teilen',
         'Show track info': 'Titelinformationen',
         'Sort by name': 'Nach Name',
         'Sort by scheme': 'Nach Schema',

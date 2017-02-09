@@ -19,5 +19,6 @@ install:
 - gulp install
 
 script:
+- gulp dist
 - ionic platform add android
 - ionic build android

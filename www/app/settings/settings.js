@@ -1,6 +1,14 @@
 ;(function(module) {
   'use strict';
 
+  function stringify(obj) {
+    try {
+      return JSON.stringify(obj);
+    } catch(error) {
+      return '' + obj;
+    }
+  }
+
   function fromKeys(keys, value) {
     var obj = {};
     for (var i = keys.length - 1; i >= 0; --i) {
@@ -161,10 +169,21 @@
     });
   });
 
-  module.controller('LoggingController', function($scope, logging) {
+  module.controller('LoggingController', function($log, $scope, $window, logging, platform) {
     angular.extend($scope, {
       clear: logging.clear,
       records: logging.records,
+      share: function() {
+        var subject = 'Mopidy Mobile ' + $scope.version;
+        var message = logging.records.map(function(record) {
+          return [record.level, record.time, record.args.map(stringify).join(' ')].join('\t');
+        }).join('\n');
+        return platform.share(subject, message).then(function(result) {
+          $log.debug('Sharing log returned', result);
+        }).catch(function(error) {
+          $log.error('Error sharing log:', error);
+        });
+      },
       toJson: function(obj) {
         // FIXME: workaround for Error, etc.
         var json = angular.toJson(obj);
@@ -182,6 +201,11 @@
       popover: popoverMenu([{
         text: 'Debug messages',
         model: 'settings.debug'
+      }, {
+        text: 'Share',
+        click: 'popover.hide() && share()',
+        hidden: '!platform.share',
+        hellip: true
       }, {
         text: 'Clear',
         click: 'popover.hide() && clear()'
