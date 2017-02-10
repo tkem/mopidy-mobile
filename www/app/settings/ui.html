@@ -28,21 +28,6 @@
           <option value="replace" translate>Replace tracklist</option>
         </select>
       </ion-input>
-      <ion-input class="item item-input item-select" ng-show="platform.isWebView()">
-        <ion-label translate>Volume keys</ion-label>
-        <select ng-model="settings.volumestep" convert-to-number>
-          <option value="1">&plusmn;1</option>
-          <option value="2">&plusmn;2</option>
-          <option value="3">&plusmn;3</option>
-          <option value="4">&plusmn;4</option>
-          <option value="5">&plusmn;5</option>
-          <option value="6">&plusmn;6</option>
-          <option value="7">&plusmn;7</option>
-          <option value="8">&plusmn;8</option>
-          <option value="9">&plusmn;9</option>
-          <option value="10">&plusmn;10</option>
-        </select>
-      </ion-input>
       <ion-input class="item item-input item-select">
         <ion-label translate>Request timeout</ion-label>
         <select ng-model="settings.timeout" convert-to-number>
@@ -51,6 +36,21 @@
           <option value="15000" translate translate-values="{count: 15}">{count} seconds</option>
           <option value="30000" translate translate-values="{count: 30}">{count} seconds</option>
           <option value="60000" translate translate-values="{count: 60}">{count} seconds</option>
+        </select>
+      </ion-input>
+      <ion-input class="item item-input item-select" ng-show="platform.isWebView()">
+        <ion-label translate>Volume keys</ion-label>
+        <select ng-model="settings.volumestep" convert-to-number>
+          <option value="1">&plusmn;1%</option>
+          <option value="2">&plusmn;2%</option>
+          <option value="3">&plusmn;3%</option>
+          <option value="4">&plusmn;4%</option>
+          <option value="5">&plusmn;5%</option>
+          <option value="6">&plusmn;6%</option>
+          <option value="7">&plusmn;7%</option>
+          <option value="8">&plusmn;8%</option>
+          <option value="9">&plusmn;9%</option>
+          <option value="10">&plusmn;10%</option>
         </select>
       </ion-input>
     </div>
