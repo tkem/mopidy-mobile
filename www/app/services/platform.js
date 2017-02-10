@@ -27,6 +27,14 @@
         return $q.when({show: angular.noop, hide: angular.noop});
       };
 
+      service.updatePlaybackControls = function(scope) {
+        return $q.when(undefined);
+      };
+
+      service.updatePlaybackState = function(state) {
+        return $q.when(undefined);
+      };
+
       service.zeroconf = function() {
         return $q.when({watch: angular.noop, unwatch: angular.noop, close: angular.noop});
       };

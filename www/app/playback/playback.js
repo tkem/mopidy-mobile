@@ -70,7 +70,7 @@
   });
 
   /* @ngInject */
-  module.controller('PlaybackCtrl', function($q, $scope, $window, connection, coverart, timer) {
+  module.controller('PlaybackCtrl', function($log, $q, $scope, $window, connection, coverart, platform, timer) {
     function setCurrentTlTrack(currentTlTrack) {
       return connection(function(mopidy) {
         // TODO: only call eotTrack if needed
@@ -81,10 +81,6 @@
           mopidy.playback.getStreamTitle()
         );
       }).then(function(results) {
-        //$log.log('current: ' + (currentTlTrack ? currentTlTrack.tlid : null));
-        //$log.log('eot: ' + (results[0] ? results[0].tlid : null));
-        //$log.log('next: ' + results[1]);
-        //$log.log('previous: ' + results[2]);
         if (currentTlTrack) {
           $scope.track = currentTlTrack.track;
         } else if (results[0]) {
@@ -100,8 +96,14 @@
         if ($scope.track) {
           coverart.getImage($scope.track).then(function(image) {
             $scope.image = image;
+            platform.updatePlaybackControls($scope).catch(function(error) {
+              $log.error('Error updating playback controls:', error);
+            });
           });
         }
+        platform.updatePlaybackControls($scope).catch(function(error) {
+          $log.error('Error updating playback controls:', error);
+        });
         return $scope.track;
       });
     }
@@ -264,6 +266,7 @@
       } else {
         positionTimer.stop();
       }
+      platform.updatePlaybackState($scope.state);
     });
 
     $scope.$on('connection:event:seeked', function(event, data) {
