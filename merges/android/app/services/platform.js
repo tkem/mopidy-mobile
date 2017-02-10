@@ -65,15 +65,19 @@
         playbackScope = scope;
         return $ionicPlatform.ready().then(function() {
           return $q(function(resolve, reject) {
-            $window.MusicControls.create({
-              track: getTitle(scope),
-              artist: getSubtitle(scope),
-              cover: scope.image && scope.image.uri ? scope.image.uri : 'app/settings/icon.png',
-              isPlaying: scope.state === 'playing',
-              hasPrev: scope.hasPrevious,
-              hasNext: scope.hasNext,
-              hasClose: false  // TBD
-            }, resolve, reject);
+            if (scope.track) {
+              $window.MusicControls.create({
+                track: getTitle(scope),
+                artist: getSubtitle(scope),
+                cover: scope.image && scope.image.uri ? scope.image.uri : 'app/settings/icon.png',
+                isPlaying: scope.state === 'playing',
+                hasPrev: scope.hasPrevious,
+                hasNext: scope.hasNext,
+                hasClose: false  // TBD
+              }, resolve, reject);
+            } else {
+              $window.MusicControls.destroy(resolve, reject);
+            }
           });
         });
       };
