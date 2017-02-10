@@ -116,7 +116,7 @@ Project Resources
 License
 ------------------------------------------------------------------------
 
-Copyright (c) 2015, 2016 Thomas Kemmer.
+Copyright (c) 2015-2017 Thomas Kemmer.
 
 Licensed under the `Apache License, Version 2.0`_.
 

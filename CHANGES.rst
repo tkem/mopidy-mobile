@@ -1,3 +1,19 @@
+1.8.0 2017-02-10
+----------------
+
+- Make hardware volume key step configurable.
+
+- Add Music Controls plugin.
+
+- Add option to share log messages for Cordova app.
+
+- Add Android resources to repository.
+
+- Update cover art archive logo.
+
+- Update dependencies.
+
+
 1.7.5 2016-08-04
 ----------------
 
