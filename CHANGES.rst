@@ -13,6 +13,8 @@
 
 - Update dependencies.
 
+- Remove ``icomoon`` font.
+
 
 1.7.5 2016-08-04
 ----------------

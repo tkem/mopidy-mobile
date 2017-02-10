@@ -15,19 +15,6 @@ $mopidy-mobile-thumbnail-artist-bg:     url("#{$sprites-path}?v=#{$sprites-versi
 $mopidy-mobile-thumbnail-directory-bg:  url("#{$sprites-path}?v=#{$sprites-version}") -128px 0;
 $mopidy-mobile-thumbnail-track-bg:      url("#{$sprites-path}?v=#{$sprites-version}") -192px 0;
 
-/* include icomoon icons */
-@import "icomoon";
-
-/* everybody *loves* pacman */
-$mopidy-mobile-icon-consume:            icomoon-pacman !default;
-
-/* HACK: preload icomoon font */
-body:after {
-    content: ' ';
-    visibility: hidden;
-    font-family: $icomoon-font-family;
-}
-
 /* FIXME: Ionic v1.3.2 sets button-clear color to transparent */
 $button-default-border:                 #b2b2b2 !default;
 

@@ -83,6 +83,15 @@ i {
     @extend .icon
 }
 
+button {
+    svg {
+        fill: currentColor;
+        height: 40px;
+        vertical-align: middle;
+        padding-bottom: 4px;
+    }
+}
+
 /* wider popup if generated from template */
 .popup-container.mopidy-mobile-popup .popup {
     width: 80% !important;
