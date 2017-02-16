@@ -1,28 +1,30 @@
 Mopidy Mobile
 ========================================================================
 
-Mopidy Mobile aims to be a simple, easy to use remote that lets you
-fully control a Mopidy_ music server from your mobile device.  It is
+Mopidy Mobile is a simple, easy to use remote that lets you fully
+control a Mopidy_ music server from your mobile device.  It is
 available as a `Web client extension
 <http://mopidy.readthedocs.org/en/latest/ext/web/>`_ and a `hybrid app
 <http://en.wikipedia.org/wiki/HTML5_in_mobile_devices#Hybrid_Mobile_Apps>`_
-for Android version 4.4 and higher.  Users of older Android versions
+for Android version 4.4 and later.  Users of older Android versions
 may still access the Web extension using Google's `Chrome browser
 <https://play.google.com/store/apps/details?id=com.android.chrome>`_.
-On Apple devices, the Web client should work with iOS 7 or higher.
+On Apple devices, the Web client should work when running iOS 7 or
+later.
 
 In a nutshell, Mopidy Mobile lets you
 
-- Browse and search your entire Mopidy music library.
-- Search within selected directories only.
-- Edit the tracks in the current tracklist.
-- Create and edit playlists (requires Mopidy server v1.x).
-- Download cover art from selected online resources.
+- browse and search your entire Mopidy music library.
+- search within selected directories only.
+- edit the tracks in the current tracklist.
+- create and edit playlists (requires Mopidy server v1.x).
+- retrieve cover art from selected online resources.
 
-Mopidy Mobile's user interface comes with both light and dark themes
-to match your mood, and so far has been translated to English, German,
-Spanish and Catalan.  Last but not least, it also features a beloved
-80's arcade game character icon to represent Mopidy's consume mode.
+Additionally, the Android app allows you to
+
+- control playback from your device's lock screen.
+- change volume using your device's hardware buttons.
+- switch between multiple Mopidy servers on your network.
 
 
 Installation
@@ -39,11 +41,8 @@ store.  You may also join the `Beta testing program
 preview unreleased versions.
 
 Note that the Web client is designed to be added to your home screen,
-so it is launched in full-screen "app mode".  In fact, the only major
-difference between the Web client and the hybrid app is that the app
-will let you manage multiple Mopidy server instances.  Other than
-that, they are functionally equivalent.  If you don't know how to add
-a Web application to your home screen, there are plenty of
+so it is launched in full-screen "app mode".  If you don't know how to
+add a Web application to your home screen, there are plenty of
 instructions available online for both `Android
 <https://www.google.at/search?q=android+chrome+add+to+homescreen>`_
 and `iOS
@@ -56,8 +55,8 @@ Configuration
 The following configuration values are available for the Web
 extension:
 
-- ``mobile/enabled``: Whether the Mopidy Mobile Web extension should
-  be enabled.  Defaults to ``true``.
+- ``mobile/enabled``: Whether the extension should be enabled.
+  Defaults to ``true``.
 
 - ``mobile/title``: The Web application's title, which will also be
   displayed when added to your home screen.  The variables
@@ -73,8 +72,9 @@ extension:
 Building from Source
 ------------------------------------------------------------------------
 
-Mopidy Mobile is built using `Ionic <http://ionicframework.com/>`_,
-`AngularJS <https://angularjs.org/>`_ and `Apache Cordova
+Mopidy Mobile is built using `Ionic v1
+<http://ionicframework.com/docs/v1/>`_, `AngularJS
+<https://angularjs.org/>`_ and `Apache Cordova
 <http://cordova.apache.org/>`_, so it is recommended to familiarize
 yourself with these before you start.
 
@@ -87,14 +87,22 @@ Then run::
   gulp dist
   pip install --editable .
 
-To build the hybrid app for Android, please follow Ionic's
-`installation guide
-<http://ionicframework.com/docs/guide/installation.html>`_ to make
-sure you have everything needed for Android development.  Then, in
-addition to the commands above, run::
+To build the app for Android, please follow Ionic's `installation
+guide <http://ionicframework.com/docs/guide/installation.html>`_ to
+make sure you have everything needed for Android development.  Then,
+in addition to the commands above, run::
 
   ionic platform add android
-  ionic run android
+  ionic build android
+
+Please refer to the `Ionic CLI <http://ionicframework.com/docs/cli/>`_
+documentation for further information on how to run the app on an
+actual device, or in a Web browser or emulator for testing.
+
+Due to lack of resources, the app has *not* been tested on iOS, and is
+unlikely to run unchanged on that platform.  However, being a hybrid
+app, it shouldn't take too much effort to make it work, so please feel
+free to fork this and give it a try!
 
 
 Project Resources
