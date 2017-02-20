@@ -1,4 +1,4 @@
-1.8.0 2017-02-10
+1.8.0 2017-02-20
 ----------------
 
 - Make hardware volume key step configurable.
