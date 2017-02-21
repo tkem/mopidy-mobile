@@ -19,6 +19,7 @@ In a nutshell, Mopidy Mobile lets you
 - edit the tracks in the current tracklist.
 - create and edit playlists (requires Mopidy server v1.x).
 - retrieve cover art from selected online resources.
+- choose from multiple available user interface languages.
 
 Additionally, the Android app allows you to
 
@@ -99,10 +100,10 @@ Please refer to the `Ionic CLI <http://ionicframework.com/docs/cli/>`_
 documentation for further information on how to run the app on an
 actual device, or in a Web browser or emulator for testing.
 
-Due to lack of resources, the app has *not* been tested on iOS, and is
-unlikely to run unchanged on that platform.  However, being a hybrid
-app, it shouldn't take too much effort to make it work, so please feel
-free to fork this and give it a try!
+Due to lack of resources, iOS is *not* supported, and it is unlikely
+that the app will run unchanged on that platform.  However, being a
+hybrid app, it shouldn't take too much effort to make it work, so
+please feel free to fork and give it a try!
 
 
 Project Resources
