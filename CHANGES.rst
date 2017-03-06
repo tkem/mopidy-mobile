@@ -1,3 +1,13 @@
+1.8.1 2017-03-11
+----------------
+
+- Improve notification handling.
+
+- Update Spanish and Catalan translations.
+
+- Update consume mode icon.
+
+
 1.8.0 2017-02-20
 ----------------
 
