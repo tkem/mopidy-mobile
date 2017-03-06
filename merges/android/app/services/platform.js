@@ -1,13 +1,11 @@
 ;(function(module) {
   'use strict';
 
-  function getTitle(scope) {
-    return scope.track ? scope.track.name || scope.track.uri || '' : '';
-  }
-
-  function getSubtitle(scope) {
-    if (!scope.track) {
-      return scope.streamTitle || '';
+  function getNotificationSubtitle(scope) {
+    if (scope.streamTitle) {
+      return scope.streamTitle;
+    } else if (!scope.track) {
+      return 'n/a';  // this shouldn't happen
     } else if (scope.track.artists && scope.track.artists.length) {
       return scope.track.artists.map(function(obj) { return obj.name }).join(' ');
     } else if (scope.track.album && scope.track.album.name) {
@@ -30,9 +28,10 @@
     };
 
     /* @ngInject */
-    provider.$get = function($ionicPlatform, $q, $window) {
+    provider.$get = function($ionicPlatform, $log, $q, $window) {
       var service = provider;
       var playbackScope = null;
+      var paused = false;
 
       service.appVersion = function() {
         return $ionicPlatform.ready().then(function() {
@@ -62,22 +61,23 @@
       };
 
       service.updatePlaybackControls = function(scope) {
-        playbackScope = scope;
         return $ionicPlatform.ready().then(function() {
           return $q(function(resolve, reject) {
-            if (scope.track) {
+            if (scope && scope.track) {
               $window.MusicControls.create({
-                track: getTitle(scope),
-                artist: getSubtitle(scope),
+                track: scope.track.name || scope.track.uri || '',
+                artist: getNotificationSubtitle(scope),
                 cover: scope.image && scope.image.uri ? scope.image.uri : 'app/settings/icon.png',
+                dismissable: paused,
                 isPlaying: scope.state === 'playing',
                 hasPrev: scope.hasPrevious,
                 hasNext: scope.hasNext,
-                hasClose: false  // TBD
+                hasClose: false
               }, resolve, reject);
             } else {
               $window.MusicControls.destroy(resolve, reject);
             }
+            playbackScope = scope;
           });
         });
       };
@@ -95,6 +95,14 @@
       };
 
       $ionicPlatform.ready().then(function() {
+        $window.document.addEventListener("pause", function() {
+          $window.MusicControls.updateDismissable(true);
+          paused = true;
+        });
+        $window.document.addEventListener("resume", function() {
+          $window.MusicControls.updateDismissable(false);
+          paused = false;
+        });
         $window.MusicControls.subscribe(function(action) {
           if (playbackScope) {
             switch(action) {
