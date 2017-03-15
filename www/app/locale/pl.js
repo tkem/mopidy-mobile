@@ -6,10 +6,10 @@
       language: 'pl',
       displayName: 'Polski',
       messages: {
-        'About': 'About',
+        'About': 'O aplikacji',
         'Add server': 'Dodaj serwer',
         'Add stream': 'Dodaj strumień',
-        'Add to playlist': 'Dodaj do playlisty',
+        'Add to playlist': 'Dodaj do listy odtwarzania',
         'Add to tracklist': 'Dodaj do listy utworów',
         'Album artist': 'Wykonawca',
         'Album': 'Album',
