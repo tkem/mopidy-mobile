@@ -112,45 +112,24 @@
   });
 
   /* @ngInject */
-  module.run(function($rootScope, actions, platform, router) {
+  module.run(function($log, $rootScope, actions, platform, router) {
     $rootScope.actions = actions;
     $rootScope.clearCache = router.clearCache.bind(router);
     $rootScope.go = router.go.bind(router);
     $rootScope.goBack = router.goBack.bind(router);
     $rootScope.platform = platform;
-
-    $rootScope.getURIScheme = function(uri) {
-      return uri ? uri.substr(0, uri.indexOf(':')) : null;
-    };
-
-    platform.appVersion().then(function(version) {
-      $rootScope.version = version;
-    });
-  });
-
-  /* @ngInject */
-  module.run(function($rootScope) {
     // TODO: get from CSS
     $rootScope.thumbnail = {
       width: 64,
       height: 64,
       src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
     };
-  });
-
-  /* @ngInject */
-  module.run(function($log, $rootScope, $timeout, platform, servers) {
-    $log.info('Starting Mopidy Mobile');
-    platform.splashscreen().then(function(splashscreen) {
-      if (servers().length === 0) {
-        var timeout = $timeout(splashscreen.hide, 3000);
-        $rootScope.$on('servers:added', function() {
-          $timeout.cancel(timeout);
-          $timeout(splashscreen.hide, 250);  // give view some time to update
-        });
-      } else {
-        $timeout(splashscreen.hide, 500);  // give view some time to update
-      }
+    $rootScope.getURIScheme = function(uri) {
+      return uri ? uri.substr(0, uri.indexOf(':')) : null;
+    };
+    platform.appVersion().then(function(version) {
+      $log.info('Starting Mopidy Mobile ' + version);
+      $rootScope.version = version;
     });
   });
 

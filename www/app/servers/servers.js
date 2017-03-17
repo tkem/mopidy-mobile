@@ -26,7 +26,7 @@
   });
 
   /* @ngInject */
-  module.controller('ServersController', function($log, $q, $rootScope, $scope, $timeout, connection, popup, router, servers) {
+  module.controller('ServersController', function($log, $q, $rootScope, $scope, $timeout, connection, mopidy, platform, popup, router, servers, settings) {
     $scope.servers = servers();
 
     $scope.$on('servers:added', function(event, server) {
@@ -43,14 +43,16 @@
       return $q.when(servers.add(server));
     };
 
-    $scope.connect = function(url) {
-      $rootScope.webSocketUrl = url;
-      return connection.reset(url).then(function() {
+    $scope.connect = function(server, mopidy) {
+      $rootScope.webSocketUrl = server.url;
+      return connection.reset(server.url, mopidy).then(function() {
         return router.clearCache();
       }).then(function() {
         return router.clearHistory();
       }).then(function() {
         return router.go('playback');
+      }).then(function() {
+        settings.extend({server: server});
       });
     };
 
@@ -69,6 +71,36 @@
         }
       });
     };
+
+    if (!$rootScope.webSocketUrl) {
+      $q(function(resolve, reject) {
+        var options = settings.get({server: null});
+        if (options.server && options.server.url) {
+          resolve(options.server);
+        } else {
+          reject();
+        }
+      }).then(function(server) {
+        return mopidy({webSocketUrl: server.url}, 3000).then(function(mopidy) {
+          return $scope.connect(server, mopidy);
+        }).catch(function(error) {
+          $log.warn('Error connecting to ' + server.url, error);
+          throw error;
+        });
+      }).catch(function() {
+        platform.splashscreen().then(function(splashscreen) {
+          if ($scope.servers.length !== 0) {
+            $timeout(splashscreen.hide, 250);  // give view some time to update
+          } else {
+            var timeout = $timeout(splashscreen.hide, 1000);
+            $scope.$on('servers:added', function() {
+              $timeout.cancel(timeout);
+              splashscreen.hide();
+            });
+          }
+        });
+      });
+    }
   });
 
   /* @ngInject */

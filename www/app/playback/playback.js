@@ -70,7 +70,7 @@
   });
 
   /* @ngInject */
-  module.controller('PlaybackCtrl', function($log, $q, $scope, $window, connection, coverart, platform, timer) {
+  module.controller('PlaybackCtrl', function($log, $q, $scope, $timeout, $window, connection, coverart, platform, timer) {
     function setCurrentTlTrack(currentTlTrack) {
       return connection(function(mopidy) {
         // TODO: only call eotTrack if needed
@@ -309,7 +309,11 @@
       positionTimer.stop();
     });
 
-    $scope.reload();
+    $scope.reload().finally(function() {
+      platform.splashscreen().then(function(splashscreen) {
+        $timeout(splashscreen.hide, 250);  // give view some time to update
+      });
+    });
   });
 
   /* @ngInject */

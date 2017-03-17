@@ -91,10 +91,14 @@
         }
       };
 
-      connection.reset = function(webSocketUrl) {
+      connection.reset = function(webSocketUrl, mopidy) {
         connection.close();
         if (webSocketUrl) {
           settings.webSocketUrl = webSocketUrl;
+        }
+        if (mopidy) {
+          mopidy.on(notify.bind(mopidy));
+          connection._promise = $q.when(mopidy);
         }
         return connection().catch(function(error) {
           return $q.when(connectionErrorHandler(error, connection));

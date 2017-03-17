@@ -28,7 +28,7 @@
     <div class="list" ng-if="servers.length != 0">
       <a class="item item-icon-right"
          ng-class="{'item-positive': server.url == webSocketUrl}"
-         ng-click="connect(server.url)"
+         ng-click="connect(server)"
          ng-repeat="server in servers | orderBy: name"
          >
         <h2>{{server.name}}</h2>
