@@ -27,11 +27,11 @@
         return $q.when({show: angular.noop, hide: angular.noop});
       };
 
-      service.updatePlaybackControls = function(scope) {
+      service.updatePlaybackControls = function(/*scope*/) {
         return $q.when(undefined);
       };
 
-      service.updatePlaybackState = function(state) {
+      service.updatePlaybackState = function(/*state*/) {
         return $q.when(undefined);
       };
 

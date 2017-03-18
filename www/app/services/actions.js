@@ -91,7 +91,7 @@
           }
         });
       });
-    }
+    };
 
     this.decreaseVolume = function() {
       return connection(function(mopidy) {
@@ -101,8 +101,8 @@
           }
         });
       });
-    }
-    
+    };
+
     this.default = function(obj) {
       return this[defaultAction](obj);
     };

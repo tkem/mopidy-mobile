@@ -7,7 +7,7 @@
     } else if (!scope.track) {
       return 'n/a';  // this shouldn't happen
     } else if (scope.track.artists && scope.track.artists.length) {
-      return scope.track.artists.map(function(obj) { return obj.name }).join(' ');
+      return scope.track.artists.map(function(obj) { return obj.name; }).join(' ');
     } else if (scope.track.album && scope.track.album.name) {
       return scope.track.album.name;
     } else {
@@ -95,11 +95,11 @@
       };
 
       $ionicPlatform.ready().then(function() {
-        $window.document.addEventListener("pause", function() {
+        $window.document.addEventListener('pause', function() {
           $window.MusicControls.updateDismissable(true);
           paused = true;
         });
-        $window.document.addEventListener("resume", function() {
+        $window.document.addEventListener('resume', function() {
           $window.MusicControls.updateDismissable(false);
           paused = false;
         });
