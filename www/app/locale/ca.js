@@ -97,7 +97,6 @@
         'Translations': 'Traduccions',
         'URI': 'URI',
         'URL': 'URL',
-        'Version {version}': 'Versió {version}',
         'Volume keys': 'Tecles de volum',
         '{count} seconds': '{count, plural, one{1 segon} other{# segons}}',
         '{count} tracks': '{count, plural, =0{Sense Pistes} one{1 Pista} other{# Pistes}}',

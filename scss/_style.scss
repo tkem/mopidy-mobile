@@ -313,15 +313,27 @@ button {
     }
 }
 
-/* logo/image styles */
+/* about page header */
+.mopidy-mobile-about {
+    img {
+        float: left;
+        margin-right: 10px;
+        height: 64px;
+        width: 64px;
+    }
+    h1 {
+        font-size: 22px;
+        margin: 0;
+        padding-top: 10px;
+    }
+    font-size: 12px;
+    margin: 0;
+}
+
+/* minor styles */
 a img.mopidy-mobile-image {
     height: 32px;
     vertical-align: text-bottom;
-}
-
-img.mopidy-mobile-logo {
-    float: left;
-    margin-right:10px;
 }
 
 .mopidy-mobile-artists span + span:before{
@@ -333,7 +345,7 @@ img.mopidy-mobile-logo {
 @mixin orientation-display-none($selector, $orientation) {
     @media (orientation: $orientation) {
         #{$selector} {
-            display:none;
+            display: none;
         }
     }
 }

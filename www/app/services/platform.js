@@ -16,7 +16,7 @@
       var service = provider;
 
       service.appVersion = function() {
-        return $q.when($rootElement.attr('data-version') || 'dev');
+        return $q.when($rootElement.attr('data-version') || 'develop');
       };
 
       service.exitApp = function() {
