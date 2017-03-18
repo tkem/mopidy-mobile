@@ -1,3 +1,15 @@
+1.8.2 UNRELEASED
+----------------
+
+- Automatically connect to last server on startup.
+
+- Add Polish translation.
+
+- Redesign "About" page.
+
+- Fix jslint errors.
+
+
 1.8.1 2017-03-11
 ----------------
 
