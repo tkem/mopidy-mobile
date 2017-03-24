@@ -1,4 +1,4 @@
-1.8.2 UNRELEASED
+1.8.2 2017-03-24
 ----------------
 
 - Automatically connect to last server on startup.
