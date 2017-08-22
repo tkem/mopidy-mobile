@@ -106,6 +106,25 @@ hybrid app, it shouldn't take too much effort to make it work, so
 please feel free to fork and give it a try!
 
 
+Contributing Translations
+------------------------------------------------------------------------
+
+If you'd like to see Mopidy Mobile in *your* native language, start by
+having a look at the existing `translations <./www/app/locale>`_.
+Mopidy Mobile uses `angular-translate
+<https://angular-translate.github.io/>`_ for internationalization, and
+stores translations as simple text files.  Just take one of the
+existing files and replace all foreign language text as you see fit.
+Words within curly brackets ``{...}`` are placeholders, used either
+for variable names (``{name}``) which needn't be translated, or for
+pluralization (``{count, plural, one{1 Sekunde} other{# Sekunden}}``)
+so you can provide different texts for zero (=0), one, or multiple
+(``other``, with ``#`` being replaced by the actual number) seconds or
+tracks.  When you're done, please open a new issue - or even a
+full-fledged pull request, if you like - for submitting your
+translations.
+
+
 Project Resources
 ------------------------------------------------------------------------
 
