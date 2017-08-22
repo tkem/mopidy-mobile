@@ -98,8 +98,8 @@
         'URI': 'URI',
         'URL': 'URL',
         'Volume keys': 'Hlasitosť',
-        '{count} seconds': '{count, plural, one{1 sekunda} other{# sekund(y)}}',
-        '{count} tracks': '{count, plural, =0{skladieb} one{1 skladba} other{# skladieb}}',
+        '{count} seconds': '{count, plural, =1{1 sekunda} =2{2 sekundy} =3{3 sekundy} =4{4 sekundy} other{# sekund}}',
+        '{count} tracks': '{count, plural, =0{skladieb} =1{1 skladba} =2{2 skladby} =3{3 skladby} =4{4 skladby} other{# skladieb}}',
         '{index} of {count}': '{index} of {count}',
       }
     });
