@@ -1,4 +1,4 @@
-1.8.3 UNRELEASED
+1.8.3 2017-08-29
 ----------------
 
 - Add Slovak translation (courtesy of Peter Kuderjavy).
@@ -13,7 +13,7 @@
 
 - Automatically connect to last server on startup.
 
-- Add Polish translation.
+- Add Polish translation (courtesy of Andrzej Raczkowski).
 
 - Redesign "About" page.
 
@@ -25,7 +25,7 @@
 
 - Improve notification handling.
 
-- Update Spanish and Catalan translations.
+- Update Spanish and Catalan translations (courtesy of slimer).
 
 - Update consume mode icon.
 
