@@ -93,8 +93,8 @@ guide <http://ionicframework.com/docs/guide/installation.html>`_ to
 make sure you have everything needed for Android development.  Then,
 in addition to the commands above, run::
 
-  ionic platform add android
-  ionic build android
+  ionic cordova platform add android
+  ionic cordova build android
 
 Please refer to the `Ionic CLI <http://ionicframework.com/docs/cli/>`_
 documentation for further information on how to run the app on an

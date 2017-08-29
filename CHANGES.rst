@@ -1,3 +1,13 @@
+1.8.3 UNRELEASED
+----------------
+
+- Add Slovak translation (courtesy of Peter Kuderjavy).
+
+- Add translation instructions to ``README.rst``.
+
+- Update dependencies.
+
+
 1.8.2 2017-03-24
 ----------------
 
