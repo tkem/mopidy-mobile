@@ -105,7 +105,7 @@
         });
         $window.MusicControls.subscribe(function(action) {
           if (playbackScope) {
-            switch(action) {
+            switch(JSON.parse(action).message) {
             case 'music-controls-next':
               playbackScope.next();
               break;
