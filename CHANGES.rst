@@ -1,3 +1,13 @@
+1.8.4 UNRELEASED
+----------------
+
+- Upgrade Music Controls plugin.
+
+- Upgrade Zeroconf plugin.
+
+- Update dependencies.
+
+
 1.8.3 2017-08-29
 ----------------
 
