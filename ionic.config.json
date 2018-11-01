@@ -1,12 +1,15 @@
 {
   "name": "Mopidy Mobile",
-  "app_id": "1fb3912a",
-  "type": "ionic1",
   "integrations": {
     "gulp": {},
     "cordova": {}
   },
+  "type": "ionic1",
   "watchPatterns": [
-    "scss/**/*"
-  ]
+    "scss/**/*",
+    "www/**/*",
+    "!www/lib/**/*",
+    "!www/**/*.map"
+  ],
+  "pro_id": "1fb3912a"
 }
