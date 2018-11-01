@@ -10,6 +10,22 @@
       var configured = settings.get({'servers': []}).servers;
       var detected = {};
 
+      function createServer(service) {
+        if (service.ipv4Addresses.length) {
+          return {
+            name: service.name,
+            url: 'ws://' + service.ipv4Addresses[0] + ':' + service.port + '/mopidy/ws/'
+          };
+        } else if (service.ipv6Addresses.length) {
+          return {
+            name: service.name,
+            url: 'ws://' + service.ipv6Addresses[0] + ':' + service.port + '/mopidy/ws/'
+          };
+        } else {
+          return null;
+        }
+      }
+
       function notify(action, server) {
         $rootScope.$applyAsync(function(scope) {
           scope.$broadcast('servers:' + action, angular.copy(server));
@@ -18,35 +34,28 @@
 
       function watch(zeroconf) {
         $log.info('Starting zeroconf discovery');
-        zeroconf.watch('_mopidy-http._tcp.local.', function(obj) {
-          try {
-            var url = obj.service.urls[0];  // TODO: IPv4/IPv6
-            if (url) {
-              var server = {
-                name: obj.service.name,
-                url: url.replace(/^http/, 'ws') + '/mopidy/ws/'
-              };
-              switch (obj.action) {
-              case 'added':
-                if (!(url in detected)) {
-                  detected[url] = server;
-                  notify(obj.action, server);
-                }
-                break;
-              case 'removed':
-                if (url in detected) {
-                  delete detected[url];
-                  notify(obj.action, server);
-                }
-                break;
+        zeroconf.watch('_mopidy-http._tcp.', 'local.', function(obj) {
+          $log.debug('Zeroconf:' + obj.action, obj);
+          switch (obj.action) {
+            case 'added':
+              break;
+            case 'resolved':
+              var server = createServer(obj.service);
+              if (!(server.url in detected)) {
+                detected[server.url] = server;
+                notify(obj.action, server);
               }
-            }
-            $log.debug('zeroconf:' + obj.action + ' ' + url, obj);
-          } catch (error) {
-            $log.error('ZeroConf error:', error, obj);
+              break;
+            case 'removed':
+              var server = createServer(obj.service);
+              if (server.url in detected) {
+                delete detected[server.url];
+                notify(obj.action, server);
+              }
+              break;
           }
         }, function(error) {
-          $log.error('ZeroConf error:', error);
+          $log.error('Zeroconf error:', error);
         });
       }
 
@@ -57,7 +66,7 @@
       }
 
       platform.zeroconf().then(watch).catch(function(error) {
-        $log.error('ZeroConf not available', error);
+        $log.error('Zeroconf not available', error);
       });
 
       function servers() {
@@ -96,7 +105,7 @@
         return platform.zeroconf().then(reset).then(function() {
           return $timeout(1000);  // TODO: resolve on first server found
         }).catch(function(error) {
-          $log.error('ZeroConf not available', error);
+          $log.error('Zeroconf not available', error);
         });
       };
 
