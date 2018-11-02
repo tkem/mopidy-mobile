@@ -16,11 +16,13 @@
             name: service.name,
             url: 'ws://' + service.ipv4Addresses[0] + ':' + service.port + '/mopidy/ws/'
           };
+        /* FIXME: ignore IPv6 addresses for now
         } else if (service.ipv6Addresses.length) {
           return {
             name: service.name,
-            url: 'ws://' + service.ipv6Addresses[0] + ':' + service.port + '/mopidy/ws/'
+            url: 'ws://[' + service.ipv6Addresses[0] + ']:' + service.port + '/mopidy/ws/'
           };
+        */
         } else {
           return null;
         }
@@ -33,7 +35,7 @@
       }
 
       function watch(zeroconf) {
-        $log.info('Starting zeroconf discovery');
+        $log.debug('Starting zeroconf discovery');
         zeroconf.watch('_mopidy-http._tcp.', 'local.', function(obj) {
           $log.debug('Zeroconf:' + obj.action, obj);
           switch (obj.action) {
@@ -41,14 +43,14 @@
               break;
             case 'resolved':
               var server = createServer(obj.service);
-              if (!(server.url in detected)) {
+              if (server && !(server.url in detected)) {
                 detected[server.url] = server;
                 notify(obj.action, server);
               }
               break;
             case 'removed':
               var server = createServer(obj.service);
-              if (server.url in detected) {
+              if (server && server.url in detected) {
                 delete detected[server.url];
                 notify(obj.action, server);
               }
