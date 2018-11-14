@@ -1,4 +1,4 @@
-1.8.4 UNRELEASED
+1.8.4 2018-11-14
 ----------------
 
 - Upgrade Music Controls plugin.
