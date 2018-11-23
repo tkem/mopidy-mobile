@@ -148,7 +148,8 @@ Copyright (c) 2015-2017 Thomas Kemmer.
 
 Translations: `slimer <https://github.com/slimer/>`_ (Español,
 Català), `Andrzej Raczkowski <https://github.com/araczkowski/>`_
-(Polski), `Peter Kuderjavy <mailto:kuderjavy@gmail.com>`_ (Slovak).
+(Polski), `Peter Kuderjavy <mailto:kuderjavy@gmail.com>`_ (Slovak),
+`Gilbert Brault <https://github.com/gbrault>`_ (Français).
 
 Licensed under the `Apache License, Version 2.0`_.
 

@@ -99,9 +99,9 @@
         'URL': 'URL',
         'Volume keys': 'Touches du Volume',
         '{count} seconds': '{count, plural, one{1 second} other{# seconds}}',
-        '{count} tracks': '{count, plural, =0{Pas de Piste} une{1 piste} other{# pistes}}',
+        '{count} tracks': '{count, plural, =0{Pas de Piste} one{1 piste} other{# pistes}}',
         '{index} of {count}': '{index} parmi {count}',
       }
     });
   });
-})(angular.module('app.locale.en', ['app.services.locale']));
+})(angular.module('app.locale.fr', ['app.services.locale']));
