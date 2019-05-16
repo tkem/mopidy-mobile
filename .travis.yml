@@ -2,18 +2,15 @@ language: android
 
 android:
   components:
-  - tools
-  - platform-tools
-  - tools
-  - extra
-  - build-tools-27.0.1
-  - android-27
-
-jdk:
-- oraclejdk8
+    - tools
+    - platform-tools
+    - tools
+    - extra
+    - build-tools-28.0.3
+    - android-28
 
 before_install:
-- nvm install 6
+- nvm install 8
 
 install:
 - npm install -g cordova gulp
