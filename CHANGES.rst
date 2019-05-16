@@ -1,3 +1,13 @@
+1.9.0 UNRELEASED
+----------------
+
+- Add Android 8.0 adaptive icons.
+
+- Add French translation (courtesy of gbrault).
+
+- Update dependencies.
+
+
 1.8.4 2018-11-14
 ----------------
 

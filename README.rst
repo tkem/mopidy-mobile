@@ -144,7 +144,7 @@ Project Resources
 License
 ------------------------------------------------------------------------
 
-Copyright (c) 2015-2017 Thomas Kemmer.
+Copyright (c) 2015-2019 Thomas Kemmer.
 
 Translations: `slimer <https://github.com/slimer/>`_ (Español,
 Català), `Andrzej Raczkowski <https://github.com/araczkowski/>`_
