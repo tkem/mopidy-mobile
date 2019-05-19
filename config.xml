@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="428" id="at.co.kemmer.mopidy_mobile" version="1.9.0" xmlns="http://www.w3.org/ns/widgets">
+<widget android-versionCode="428" id="at.co.kemmer.mopidy_mobile" version="1.9.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Mopidy Mobile</name>
     <description>Simple remote client for the Mopidy music server</description>
     <author email="tkemmer@computer.org">Thomas Kemmer</author>
@@ -20,6 +20,9 @@
     </feature>
     <icon src="res/android/icon/drawable-xhdpi-icon.png" />
     <platform name="android">
+        <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
         <resource-file src="res/android/colors.xml" target="/app/src/main/res/values/colors.xml" />
         <icon background="@color/background" density="mdpi" foreground="res/android/icon/mipmap-mdpi-icon-fg.png" src="res/android/icon/drawable-mdpi-icon.png" />
         <icon background="@color/background" density="hdpi" foreground="res/android/icon/mipmap-hdpi-icon-fg.png" src="res/android/icon/drawable-hdpi-icon.png" />
