@@ -52,7 +52,7 @@ gulp.task('templates', function () {
 gulp.task('bundle', ['uglify', 'templates'], function() {
   return gulp.src([
     paths.lib + '/mopidy/dist/mopidy.min.js',
-    paths.lib + '/ionic/release/js/ionic.bundle.min.js',
+    paths.lib + '/ionic/js/ionic.bundle.min.js',
     paths.lib + '/messageformat/messageformat.js',
     paths.lib + '/angular-translate/angular-translate.min.js',
     paths.lib + '/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.min.js',
@@ -68,7 +68,8 @@ gulp.task('dist', ['sass', 'bundle'], function() {
     'www/css/**/*.png',
     'www/app/**/*.gif',
     'www/app/**/*.png',
-    'www/lib/ionic/release/fonts/**',
+    'www/app/**/*.svg',
+    'www/lib/ionic/fonts/**',
   ], {base: 'www'})
     .pipe(gulp.dest(paths.dist));
 });
