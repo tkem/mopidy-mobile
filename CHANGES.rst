@@ -1,4 +1,4 @@
-1.9.0 UNRELEASED
+1.9.0 2019-05-29
 ----------------
 
 - Add Android 8.0 adaptive icons.
