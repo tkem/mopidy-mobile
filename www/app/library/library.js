@@ -105,8 +105,10 @@
           /* @ngInject */
           tracks: function(connection, uri) {
             return connection(function(mopidy) {
-              return mopidy.library.lookup({uri: uri});
-            });
+              return mopidy.library.lookup({uris: [uri]});
+	    }).then(function(result) {
+              return result[uri];
+	    });
           }
         },
         templateUrl: 'app/library/lookup.html',
@@ -214,7 +216,9 @@
 
     $scope.info = function(track) {
       return connection(function(mopidy) {
-        return mopidy.library.lookup({uri: track.uri});
+        return mopidy.library.lookup({uris: [track.uri]});
+      }).then(function(result) {
+        return result[track.uri];
       }).then(function(tracks) {
         // FIXME: more elegant way of passing track?
         if (tracks && tracks.length) {
@@ -348,7 +352,9 @@
       // "fake" reload
       $scope.$broadcast('$ionicView.leave');
       return connection().then(function(mopidy) {
-        return mopidy.library.lookup({uri: ref.uri});
+        return mopidy.library.lookup({uris: [ref.uri]});
+      }).then(function(result) {
+        return result[ref.uri];
       }).then(function(tracks) {
         $scope.tracks = tracks;
       }).then(function() {

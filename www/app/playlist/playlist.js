@@ -87,7 +87,9 @@
 
     $scope.info = function(item) {
       return connection(function(mopidy) {
-        return mopidy.library.lookup({uri: item.uri});
+        return mopidy.library.lookup({uris: [item.uri]});
+      }).then(function(result) {
+        return result[item.uri];
       }).then(function(tracks) {
         // FIXME: more elegant way of passing track?
         if (tracks && tracks.length) {

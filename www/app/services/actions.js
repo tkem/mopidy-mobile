@@ -4,17 +4,9 @@
   function addParams(obj, pos) {
     var params = {};
     if (angular.isArray(obj)) {
-      if (obj.length && obj[0].__type__ === 'Track') {
-        params.tracks = obj;
-      } else {
-        params.uris = obj.map(function(model) { return model.uri; });
-      }
+      params.uris = obj.map(function(model) { return model.uri; });
     } else {
-      if (obj.__type__ === 'Track') {
-        params.tracks = [obj];
-      } else {
-        params.uri = obj.uri;
-      }
+      params.uris = [obj.uri];
     }
     if (angular.isNumber(pos)) {
       params.at_position = pos;
@@ -35,7 +27,9 @@
 
     this.addToPlaylist = function(uri, obj) {
       return connection(function(mopidy) {
-        return mopidy.library.lookup({uri: obj.uri}).then(function(tracks) {
+        return mopidy.library.lookup({uris: [obj.uri]}).then(function(result) {
+          return result[obj.uri];
+        }).then(function(tracks) {
           return tracks || [];
         }).then(function(tracks) {
           return mopidy.playlists.lookup({uri: uri}).then(function(playlist) {
