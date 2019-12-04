@@ -20,4 +20,4 @@ install:
 script:
 - gulp dist
 - cordova platform add android
-- cordova build android
+- cordova build android -- --packageType=bundle
