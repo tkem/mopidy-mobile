@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="430" id="at.co.kemmer.mopidy_mobile" version="1.9.1" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget android-versionCode="431" id="at.co.kemmer.mopidy_mobile" version="1.9.1" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Mopidy Mobile</name>
     <description>Simple remote client for the Mopidy music server</description>
     <author email="tkemmer@computer.org">Thomas Kemmer</author>
