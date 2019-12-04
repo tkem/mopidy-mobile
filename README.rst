@@ -159,6 +159,6 @@ Licensed under the `Apache License, Version 2.0`_.
 .. _PyPI: https://pypi.python.org/pypi/Mopidy-Mobile/
 .. _Issue Tracker: https://github.com/tkem/mopidy-mobile/issues/
 .. _Source Code: https://github.com/tkem/mopidy-mobile/
-.. _Change Log: https://github.com/tkem/mopidy-mobile/blob/master/CHANGES.rst
+.. _Change Log: https://github.com/tkem/mopidy-mobile/blob/master/CHANGELOG.rst
 
 .. _Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0

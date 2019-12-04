@@ -1,3 +1,11 @@
+1.9.1 UNRELEASED
+----------------
+
+- Remove deprecated Mopidy Core API parameters.
+
+- Update dependencies.
+
+
 1.9.0 2019-05-29
 ----------------
 

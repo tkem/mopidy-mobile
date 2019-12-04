@@ -14,4 +14,5 @@ www/lib/
 *.swp
 .*.json
 .coverage
+build.json
 MANIFEST
