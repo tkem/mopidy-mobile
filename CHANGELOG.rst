@@ -1,7 +1,9 @@
-1.9.1 UNRELEASED
+1.9.1 2019-12-05
 ----------------
 
 - Remove deprecated Mopidy Core API parameters.
+
+- Officially support Python 3.
 
 - Update dependencies.
 
