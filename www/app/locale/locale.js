@@ -4,6 +4,7 @@ angular.module('app.locale', [
   'app.locale.en',
   'app.locale.es',
   'app.locale.fr',
+  'app.locale.nl',
   'app.locale.pl',
   'app.locale.sk'
 ]);
