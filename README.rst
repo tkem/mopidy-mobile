@@ -6,7 +6,7 @@ control a Mopidy_ music server from your mobile device.  It is
 available as a `Web client extension
 <http://mopidy.readthedocs.org/en/latest/ext/web/>`_ and a `hybrid app
 <http://en.wikipedia.org/wiki/HTML5_in_mobile_devices#Hybrid_Mobile_Apps>`_
-for Android version 4.4 and later.  Users of older Android versions
+for Android version 5.1 and later.  Users of older Android versions
 may still access the Web extension using Google's `Chrome browser
 <https://play.google.com/store/apps/details?id=com.android.chrome>`_.
 On Apple devices, the Web client should work when running iOS 7 or
@@ -144,7 +144,7 @@ Project Resources
 License
 ------------------------------------------------------------------------
 
-Copyright (c) 2015-2019 Thomas Kemmer.
+Copyright (c) 2015-2020 Thomas Kemmer.
 
 Translations: `slimer <https://github.com/slimer/>`_ (Español,
 Català), `Andrzej Raczkowski <https://github.com/araczkowski/>`_
