@@ -4,7 +4,7 @@
   module.config(function(localeProvider) {
     localeProvider.locale('nl', {
       language: 'nl',
-      displayName: 'Dutch',
+      displayName: 'Nederlands',
       messages: {
         'About': 'Over',
         'Add server': 'Server toevoegen',
