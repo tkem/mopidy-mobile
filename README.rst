@@ -149,7 +149,8 @@ Copyright (c) 2015-2020 Thomas Kemmer.
 Translations: `slimer <https://github.com/slimer/>`_ (Español,
 Català), `Andrzej Raczkowski <https://github.com/araczkowski/>`_
 (Polski), `Peter Kuderjavy <mailto:kuderjavy@gmail.com>`_ (Slovak),
-`Gilbert Brault <https://github.com/gbrault>`_ (Français).
+`Gilbert Brault <https://github.com/gbrault>`_ (Français),
+`wimpie <https://github.com/70MM13>`_ (Nederlands).
 
 Licensed under the `Apache License, Version 2.0`_.
 

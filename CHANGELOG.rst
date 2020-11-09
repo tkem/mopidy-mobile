@@ -1,3 +1,13 @@
+1.10.0 UNRELEASED
+-----------------
+
+- Require Android 5.1 or greater for Cordova app.
+
+- Add Dutch translation (courtesy of wimpie).
+
+- Update dependencies.
+
+
 1.9.1 2019-12-05
 ----------------
 
