@@ -1,4 +1,4 @@
-1.10.0 UNRELEASED
+1.10.0 2020-11-18
 -----------------
 
 - Require Android 5.1 or greater for Cordova app.
