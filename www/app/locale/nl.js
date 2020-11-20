@@ -92,7 +92,7 @@
         'TimeoutError': 'Tijdslimiet fout',
         'Track info': 'Trackinfo',
         'Track number': 'Tracknummer',
-        'Track': 'Track',
+        'Track': 'Titel',
         'Tracklist': 'Tracklijst',
         'Translations': 'Vertalingen',
         'URI': 'URI',
