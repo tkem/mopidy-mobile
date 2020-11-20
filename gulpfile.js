@@ -1,8 +1,15 @@
+const { series, parallel } = require('gulp');
+
 var bower = require('bower');
 var del = require('del');
 var gulp = require('gulp');
 var paths = require('./gulp.config.json');
 var plugins = require('gulp-load-plugins')();
+
+var sass = require('gulp-sass');
+var cleanCss = require('gulp-clean-css');
+var rename = require ('gulp-rename');
+
 
 gulp.task('install', function() {
   return bower.commands.install()
@@ -16,14 +23,18 @@ gulp.task('sass:images', function() {
     .pipe(gulp.dest(paths.css));
 });
 
-gulp.task('sass', ['sass:images'], function() {
+//gulp.task('sass', ['sass:images'], function() {
+gulp.task('sass', gulp.series('sass:images', function() {
   return gulp.src('scss/[^_]*.scss')
-    .pipe(plugins.sass())
+    //.pipe(plugins.sass())
+    .pipe(sass())
     .pipe(gulp.dest(paths.css))
-    .pipe(plugins.cleanCss({keepSpecialComments: 0}))
-    .pipe(plugins.rename({extname: '.min.css'}))
+    //.pipe(plugins.cleanCss({keepSpecialComments: 0}))
+    .pipe(cleanCss({keepSpecialComments: 0}))
+    //.pipe(plugins.rename({extname: '.min.css'}))
+    .pipe(rename({extname: '.min.css'}))
     .pipe(gulp.dest(paths.css));
-});
+}) );
 
 gulp.task('jshint', function() {
   return gulp.src(['www/app/**/*.js', 'merges/*/app/**/*.js'])
@@ -49,7 +60,8 @@ gulp.task('templates', function () {
     .pipe(gulp.dest(paths.build));
 });
 
-gulp.task('bundle', ['uglify', 'templates'], function() {
+//gulp.task('bundle', ['uglify', 'templates'], function() {
+gulp.task('bundle', gulp.series( gulp.parallel('uglify', 'templates'), function() {
   return gulp.src([
     paths.lib + '/mopidy/dist/mopidy.min.js',
     paths.lib + '/ionic/js/ionic.bundle.min.js',
@@ -60,9 +72,9 @@ gulp.task('bundle', ['uglify', 'templates'], function() {
     paths.build + '/templates.min.js'
   ]).pipe(plugins.concat('mopidy-mobile.bundle.min.js'))
     .pipe(gulp.dest(paths.dist));
-});
+}));
 
-gulp.task('dist', ['sass', 'bundle'], function() {
+gulp.task('dist', gulp.series( gulp.parallel('sass', 'bundle'), function() {
   return gulp.src([
     'www/css/*.min.css',
     'www/css/**/*.png',
@@ -72,7 +84,7 @@ gulp.task('dist', ['sass', 'bundle'], function() {
     'www/lib/ionic/fonts/**',
   ], {base: 'www'})
     .pipe(gulp.dest(paths.dist));
-});
+}));
 
 gulp.task('clean', function(cb) {
   del([
@@ -82,4 +94,5 @@ gulp.task('clean', function(cb) {
   ], cb);
 });
 
-gulp.task('default', ['sass', 'jshint']);
+//gulp.task('default', ['sass', 'jshint']);
+gulp.task('default', gulp.parallel('sass', 'jshint'));
