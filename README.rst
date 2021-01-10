@@ -150,7 +150,8 @@ Translations: `slimer <https://github.com/slimer/>`_ (Español,
 Català), `Andrzej Raczkowski <https://github.com/araczkowski/>`_
 (Polski), `Peter Kuderjavy <mailto:kuderjavy@gmail.com>`_ (Slovak),
 `Gilbert Brault <https://github.com/gbrault>`_ (Français),
-`wimpie <https://github.com/70MM13>`_ (Nederlands).
+`wimpie <https://github.com/70MM13>`_ (Nederlands),
+`Tom Aurlund <mailto:tom.aurlund@gmail.com>`_ (Norwegian).
 
 Licensed under the `Apache License, Version 2.0`_.
 
