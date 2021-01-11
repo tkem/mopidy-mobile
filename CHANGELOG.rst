@@ -1,3 +1,13 @@
+1.11.0 UNRELEASED
+-----------------
+
+- Add Norwegian translation (courtesy of Tom Aurlund).
+
+- Update Dutch translation (courtesy of wimpie).
+
+- Update dependencies.
+
+
 1.10.0 2020-11-18
 -----------------
 
