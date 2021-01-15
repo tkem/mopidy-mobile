@@ -4,8 +4,8 @@ angular.module('app.locale', [
   'app.locale.en',
   'app.locale.es',
   'app.locale.fr',
+  'app.locale.nb',
   'app.locale.nl',
-  'app.locale.no',
   'app.locale.pl',
   'app.locale.sk'
 ]);

@@ -2,18 +2,18 @@
   'use strict';
 
   module.config(function(localeProvider) {
-    localeProvider.locale('no', {
-      language: 'no',
-      displayName: 'Norsk',
+    localeProvider.locale('nb', {
+      language: 'nb',
+      displayName: 'Norsk Bokmål',
       messages: {
         'About': 'Om',
         'Add server': 'Legg til tjener',
         'Add stream': 'Legg til strøm',
         'Add to playlist': 'Legg til spilleliste',
         'Add to tracklist': 'Legg til sporliste',
-        'Album artist': 'Album artist',  
+        'Album artist': 'Album artist',
         'Album': 'Album',
-        'Any': 'Alle',  
+        'Any': 'Alle',
         'Artist': 'Artist',
         'Back': 'Tilbake',
         'Bitrate': 'Bithastighet',
@@ -50,7 +50,7 @@
         'Library': 'Bibliotek',
         'Licenses': 'Lisenser',
         'Logging': 'Logging',
-        'Look and feel': 'Utseende', 
+        'Look and feel': 'Utseende',
         'Mopidy servers': 'Mopidy Server',
         'Name': 'Navn',
         'No servers found': 'Ingen tjenere funnet',
@@ -84,7 +84,7 @@
         'ServerError': 'Tjenerfeil',
         'Settings': 'Innstillinger',
         'Share': 'Del',
-        'Show track info': 'Hvis sporinformasjon',
+        'Show track info': 'Vis sporinformasjon',
         'Sort by name': 'Sortert etter navn',
         'Sort by scheme': 'Sortert etter skjema',
         'Theme': 'Design',
@@ -104,4 +104,4 @@
       }
     });
   });
-})(angular.module('app.locale.no', ['app.services.locale']));
+})(angular.module('app.locale.nb', ['app.services.locale']));
