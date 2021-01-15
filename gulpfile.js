@@ -50,7 +50,7 @@ gulp.task('jshint', function() {
 gulp.task('uglify', function() {
   return gulp.src(['www/app/**/*.js'])
     .pipe(plugins.concat('mopidy-mobile.js'))
-    .pipe(plugins.uglify({mangle: false}))
+    .pipe(plugins.uglify({mangle: false, compress: false}))
     .pipe(plugins.rename({extname: '.min.js'}))
     .pipe(gulp.dest(paths.build));
 });
