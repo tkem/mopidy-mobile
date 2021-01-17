@@ -90,7 +90,9 @@
           },
           set: function(id) {
             locale = id || getLocale();
-            $ionicConfig.backButton.text(locales[locale].messages['Back']);
+            if (locales[locale] && locales[locale].messages) {
+              $ionicConfig.backButton.text(locales[locale].messages['Back']);
+            }
             return $translate.use(locale);
           }
         };
