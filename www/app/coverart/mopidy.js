@@ -22,8 +22,10 @@
       var settings = connection.settings();
       var resolve = settings.webSocketUrl ? function(image) {
         if (image.uri.charAt(0) == '/') {
-          var match = /^wss?:\/\/([^\/]+)/.exec(settings.webSocketUrl);
-          return angular.extend({uri: 'http://' + match[1] + image.uri});
+          var url = new URL(settings.webSocketUrl);
+          var protocol = url.protocol === 'ws' ? 'http' : 'https';
+          var uri = protocol + '://' + url.hostname + ":" + url.port + image.uri;
+          return angular.extend({ uri });
         } else {
           return image;
         }
