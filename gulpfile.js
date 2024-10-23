@@ -4,7 +4,7 @@ var del = require('del');
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var rename = require ('gulp-rename');
-var sass = require('gulp-sass');
+var sass = require('gulp-sass')(require('sass'));
 
 var paths = {
   'build': 'build/',

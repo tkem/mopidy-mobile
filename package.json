@@ -31,9 +31,10 @@
         "gulp-jshint": "^2.1",
         "gulp-load-plugins": "^2.0",
         "gulp-rename": "^2.0",
-        "gulp-sass": "^4.1",
+        "gulp-sass": "^5.1",
         "gulp-uglify": "^3.0",
-        "gulp-util": "^3.0"
+        "gulp-util": "^3.0",
+        "sass": "^1.80.3"
     },
     "cordova": {
         "platforms": [
