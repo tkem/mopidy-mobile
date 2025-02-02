@@ -1,5 +1,9 @@
-1.11.0 UNRELEASED
+1.11.0 2025-02-02
 -----------------
+
+- Improve Mopidy v4.0 compatibility.
+
+- Update build environment (courtesy of Boris Gjenero).
 
 - Add Norwegian translation (courtesy of Tom Aurlund).
 
