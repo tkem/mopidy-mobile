@@ -50,7 +50,7 @@
           var pos = angular.isNumber(index) ? index + 1 : null;
           return mopidy.tracklist.add(addParams(obj, pos));
         }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
+          return mopidy.playback.play({tlid: tlTracks[0].tlid});
         });
       });
     };
@@ -72,7 +72,7 @@
         return mopidy.tracklist.clear().then(function() {
           return mopidy.tracklist.add(addParams(obj));
         }).then(function(tlTracks) {
-          return mopidy.playback.play({tl_track: tlTracks[0]});
+          return mopidy.playback.play({tlid: tlTracks[0].tlid});
         });
       });
     };

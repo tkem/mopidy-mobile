@@ -112,7 +112,7 @@
 
     $scope.play = function(tlTrack) {
       return connection(function(mopidy) {
-        return mopidy.playback.play({tl_track: angular.copy(tlTrack)});
+        return mopidy.playback.play({tlid: tlTrack.tlid});
       });
     };
 
