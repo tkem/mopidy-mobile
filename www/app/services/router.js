@@ -114,7 +114,17 @@
     };
   });
 
-  /* @ngInject */
+  /* @ ng Inject */
+  /* This breaks direct navigation to links when the page loads,
+   * for example causing
+   * http://127.0.0.1:6680/mobile/index.html#/tracklist
+   * to go to
+   * http://127.0.0.1:6680/mobile/index.html#/
+   * and then end up at
+   * http://127.0.0.1:6680/mobile/index.html#/playback
+   * because that is the angular-ui-router otherwise() location.
+   * I'm leaving this here, but disabled, because I don't know what
+   * else might break if I disable this.
   module.run(function($location, $log) {
     // workaround for lost history/back view after browser reload
     if ($location.url()) {
@@ -123,5 +133,6 @@
       $location.replace();
     }
   });
+   */
 
 })(angular.module('app.services.router', ['ionic']));
