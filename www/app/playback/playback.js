@@ -408,6 +408,9 @@
           {text: 'OK', type: 'button-positive'}
         ]);
       },
+      showInfo: function() {
+        return $scope.info($scope.track);
+      },
       selectPlaylist: function(track) {
         return connection(function(mopidy) {
           return mopidy.playlists.asList();
@@ -427,7 +430,7 @@
       }, {
         text: 'Show track info',
         hellip: true,
-        click: 'popover.hide() && info(track)'
+        click: 'popover.hide().then(showInfo)'
       }], {
         scope: $scope
       })

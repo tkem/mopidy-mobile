@@ -43,7 +43,7 @@
       }, {
         text: 'Show track info',
         hellip: true,
-        click: 'popover.hide() && info(track)'
+        click: 'popover.hide().then(showInfo)'
       }], {
         scope: $scope
       }
@@ -95,6 +95,10 @@
       popup.fromTemplateUrl('Track info', 'app/main/trackinfo.html', $scope, [
         {text: 'OK', type: 'button-positive'}
       ]);
+    };
+
+    $scope.showInfo = function() {
+      return $scope.info($scope.track);
     };
 
     $scope.move = function(fromIndex, toIndex) {
