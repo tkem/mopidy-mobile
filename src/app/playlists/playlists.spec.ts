@@ -186,19 +186,16 @@ describe('PlaylistPage', () => {
     await flush();
     expect(page.uri).toBe('m3u:test.m3u');
     expect(page.name()).toBe('Test');
-    expect(page.editable()).toBe(true);
     expect(connection.mopidy.playlists.getItems).toHaveBeenCalledWith({ uri: 'm3u:test.m3u' });
     expect(page.items()).toEqual(items);
     expect(details.load).toHaveBeenCalledWith(items, expect.anything(), expect.any(AbortSignal));
   });
 
-  it('handles read-only and missing playlists', async () => {
-    connection.mopidy.playlists.editable = false;
+  it('handles missing playlists', async () => {
     connection.mopidy.playlists.getItems.mockResolvedValue(null);
     const page = create();
     page.ngOnInit();
     await flush();
-    expect(page.editable()).toBe(false);
     expect(page.items()).toEqual([]);
   });
 

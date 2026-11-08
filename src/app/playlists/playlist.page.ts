@@ -60,11 +60,9 @@ import { ThumbnailComponent } from '../shared/thumbnail.component';
           <ion-button [disabled]="!items().length" (click)="actions.default(items())">
             <ion-icon slot="icon-only" name="play" />
           </ion-button>
-          @if (editable()) {
-            <ion-button (click)="edit()">
-              <ion-icon slot="icon-only" name="pencil" />
-            </ion-button>
-          }
+          <ion-button (click)="edit()">
+            <ion-icon slot="icon-only" name="pencil" />
+          </ion-button>
           <ion-button (click)="menu.tracks($event, items())">
             <ion-icon slot="icon-only" name="ellipsis-vertical" />
           </ion-button>
@@ -104,7 +102,6 @@ export class PlaylistPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   readonly name = signal<string | null>(null);
-  readonly editable = signal(false);
   readonly items = signal<Model[]>([]);
   readonly images = signal<Record<string, Image | null>>({});
 
@@ -133,11 +130,8 @@ export class PlaylistPage implements OnInit {
     this.uri = this.route.snapshot.paramMap.get('uri') || '';
     this.name.set(this.route.snapshot.queryParamMap.get('name'));
     this.connection
-      .call((mopidy) => Promise.all([mopidy.playlists.editable, mopidy.playlists.getItems({ uri: this.uri })]))
-      .then(([editable, items]) => {
-        this.editable.set(!!editable);
-        this.setItems(items || []);
-      })
+      .call((mopidy) => mopidy.playlists.getItems({ uri: this.uri }))
+      .then((items) => this.setItems(items || []))
       .catch((error) => this.logging.warn('Error loading playlist ' + this.uri, error));
   }
 

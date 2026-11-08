@@ -19,6 +19,8 @@ v2.0.0 UNRELEASED
 
 - Add unit test suite based on Vitest (``npm test``).
 
+- Drop compatibility shims for Mopidy servers older than v1.1.
+
 
 1.11.0 2025-02-02
 -----------------

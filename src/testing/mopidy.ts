@@ -24,7 +24,7 @@ export function image(uri: string, width?: number, height = width): Image {
 }
 
 /**
- * A fake Mopidy client API, as seen by the application after `shim()`.
+ * A fake Mopidy client API, as seen by the application after `extend()`.
  *
  * All methods are `vi.fn()` mocks resolving to sensible defaults, which
  * tests may override with `mockResolvedValue()` etc.
@@ -74,7 +74,6 @@ export function createMopidyApi(): any {
         Promise.resolve({ __model__: 'Playlist', uri: 'm3u:' + name + '.m3u', name, tracks: [] }),
       ),
       delete: resolved(true),
-      editable: true,
       getItems: resolved([]),
       lookup: resolved(null),
       refresh: resolved(null),
@@ -98,7 +97,7 @@ export function createMopidyApi(): any {
 
 type MethodSpec = Record<string, { description: string; params: { name: string }[] }>;
 
-/** The API description of a Mopidy 3.x server, as returned by `core.describe`. */
+/** The API description of a current Mopidy server, as returned by `core.describe`. */
 export const MOPIDY_API: MethodSpec = {
   'core.get_version': { description: '', params: [] },
   'core.library.browse': { description: '', params: [{ name: 'uri' }] },
@@ -128,29 +127,6 @@ export const MOPIDY_API: MethodSpec = {
   'core.tracklist.next_track': { description: '', params: [{ name: 'tl_track' }] },
   'core.tracklist.previous_track': { description: '', params: [{ name: 'tl_track' }] },
 };
-
-/**
- * The API description of an old (pre-1.0) Mopidy server, lacking newer
- * methods and parameters emulated by `shim()`.
- */
-export const MOPIDY_0_19_API: MethodSpec = Object.fromEntries(
-  Object.entries({
-    ...MOPIDY_API,
-    'core.library.lookup': { description: '', params: [{ name: 'uri' }] },
-    'core.library.search': { description: '', params: [{ name: 'query' }, { name: 'uris' }] },
-    'core.library.find_exact': { description: '', params: [{ name: 'query' }, { name: 'uris' }] },
-    'core.tracklist.add': { description: '', params: [{ name: 'tracks' }, { name: 'at_position' }] },
-    'core.playlists.get_playlists': { description: '', params: [] },
-    'core.playback.get_mute': { description: '', params: [] },
-    'core.playback.set_mute': { description: '', params: [{ name: 'value' }] },
-    'core.playback.get_volume': { description: '', params: [] },
-    'core.playback.set_volume': { description: '', params: [{ name: 'volume' }] },
-  }).filter(
-    ([name]) =>
-      !name.startsWith('core.mixer.') &&
-      !['core.library.get_images', 'core.playback.get_stream_title', 'core.playlists.as_list', 'core.playlists.get_items'].includes(name),
-  ),
-);
 
 interface JsonRpcRequest {
   jsonrpc: string;
