@@ -10,7 +10,7 @@
     },
     "scripts": {
         "postinstall": "bower install --config.interactive=false && npm run lib",
-        "lib": "copyfiles -u 1 \"node_modules/mopidy/dist/*.js\" www/lib",
+        "lib": "esbuild node_modules/mopidy/src/mopidy.js --bundle --global-name=Mopidy --target=es2015 --log-level=warning --outfile=www/lib/mopidy/dist/mopidy.js && esbuild node_modules/mopidy/src/mopidy.js --bundle --global-name=Mopidy --target=es2015 --log-level=warning --minify --outfile=www/lib/mopidy/dist/mopidy.min.js",
         "lint": "jshint www/app merges",
         "sass": "copyfiles -u 1 \"scss/*.png\" www/css && sass --no-source-map --style=compressed --load-path=. --silence-deprecation=import,global-builtin,color-functions,slash-div,mixed-decls scss/ionic-light.scss:www/css/ionic-light.min.css scss/ionic-dark.scss:www/css/ionic-dark.min.css",
         "watch": "npm run sass && sass --watch --no-source-map --style=compressed --load-path=. --silence-deprecation=import,global-builtin,color-functions,slash-div,mixed-decls scss/ionic-light.scss:www/css/ionic-light.min.css scss/ionic-dark.scss:www/css/ionic-dark.min.css",
@@ -33,8 +33,10 @@
         "bower": "^1.8.10",
         "copyfiles": "^2.4.1",
         "cordova": "^13.0.0",
+        "esbuild": "^0.28.2",
+        "events": "^3.3.0",
         "jshint": "^2.13.6",
-        "mopidy": "^0.5.0",
+        "mopidy": "^1.3.0",
         "rimraf": "^6.1.4",
         "sass": "^1.80.3",
         "uglify-js": "^3.19.3"

@@ -37,19 +37,20 @@
       function watch(zeroconf) {
         $log.debug('Starting zeroconf discovery');
         zeroconf.watch('_mopidy-http._tcp.', 'local.', function(obj) {
+          var server;
           $log.debug('Zeroconf:' + obj.action, obj);
           switch (obj.action) {
             case 'added':
               break;
             case 'resolved':
-              var server = createServer(obj.service);
+              server = createServer(obj.service);
               if (server && !(server.url in detected)) {
                 detected[server.url] = server;
                 notify(obj.action, server);
               }
               break;
             case 'removed':
-              var server = createServer(obj.service);
+              server = createServer(obj.service);
               if (server && server.url in detected) {
                 delete detected[server.url];
                 notify(obj.action, server);

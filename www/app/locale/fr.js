@@ -1,3 +1,4 @@
+/* jshint quotmark: false */  // double quotes for strings containing apostrophes
 ;(function(module) {
   'use strict';
 

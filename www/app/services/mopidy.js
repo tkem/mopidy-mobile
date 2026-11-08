@@ -41,7 +41,7 @@
       var lookup = mopidy.library.lookup;
       mopidy.library.lookup = function(params) {
         if ('uris' in params) {
-          return Mopidy.when.all(params.uris.map(function(uri) {
+          return Promise.all(params.uris.map(function(uri) {
             return lookup({uri: uri});
           })).then(function(results) {
             return zipObject(params.uris, results);
@@ -111,7 +111,7 @@
         },
         // FIXME: see https://github.com/mopidy/mopidy/issues/977
         getOptions: function() {
-          return Mopidy.when.all([
+          return Promise.all([
             mopidy.tracklist.getConsume(),
             mopidy.tracklist.getRandom(),
             mopidy.tracklist.getRepeat(),
@@ -128,7 +128,7 @@
           });
         },
         getStreamTitle: function() {
-          return Mopidy.when(null);
+          return Promise.resolve(null);
         }
       },
       library: {
@@ -190,19 +190,25 @@
       }));
     }
 
+    function logEvents(mopidy) {
+      mopidy.on('state', logEvent);
+      mopidy.on('event', logEvent);
+      angular.forEach(['websocket:incomingMessage', 'websocket:outgoingMessage'], function(name) {
+        mopidy.on(name, logEvent.bind(null, name));
+      });
+    }
+
     return function(settings, timeout) {
       return $q(function(resolve, reject) {
         var mopidy = new Mopidy(angular.extend({}, settings || {}, {
-          autoConnect: false,
-          callingConvention: 'by-position-or-by-name'
+          autoConnect: false
         }));
         var timeoutPromise = timeout ? $timeout(function() {
           reject(new Mopidy.ConnectionError('Connection timeout'));
           timeoutPromise = reject = resolve = null;
           mopidy.close();
-          mopidy.off();
+          mopidy.removeAllListeners();
         }, timeout) : null;
-        // .once() listeners are wrapped, so .off() doesn't work
         mopidy.once('state:online', function() {
           if (timeoutPromise) {
             $timeout.cancel(timeoutPromise);
@@ -220,7 +226,7 @@
           if (reject) {
             reject(new Mopidy.ConnectionError());
             mopidy.close();
-            mopidy.off();
+            mopidy.removeAllListeners();
           }
         });
         if (settings && settings.webSocketUrl) {
@@ -228,7 +234,7 @@
         } else {
           $log.info('Connecting to default WebSocket');
         }
-        mopidy.on(logEvent);
+        logEvents(mopidy);
         mopidy.connect();
       });
     };

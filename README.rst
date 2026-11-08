@@ -9,7 +9,7 @@ available as a `Web client extension
 for Android version 7.0 and later.  Users of older Android versions
 may still access the Web extension using Google's `Chrome browser
 <https://play.google.com/store/apps/details?id=com.android.chrome>`_.
-On Apple devices, the Web client should work when running iOS 7 or
+On Apple devices, the Web client should work when running iOS 10 or
 later.
 
 In a nutshell, Mopidy Mobile lets you

@@ -74,12 +74,12 @@
     function setCurrentTlTrack(currentTlTrack) {
       return connection(function(mopidy) {
         // TODO: only call eotTrack if needed
-        return mopidy.constructor.when.join(
+        return $q.all([
           mopidy.tracklist.eotTrack({tl_track: null}),
           mopidy.tracklist.getNextTlid(),
           mopidy.tracklist.getPreviousTlid(),
           mopidy.playback.getStreamTitle()
-        );
+        ]);
       }).then(function(results) {
         if (currentTlTrack) {
           $scope.track = currentTlTrack.track;
@@ -239,10 +239,10 @@
       return connection(function(mopidy) {
         if ($scope.options.repeat && $scope.options.single) {
           // TODO: setOptions() API?
-          return mopidy.constructor.when.join(
+          return $q.all([
             mopidy.tracklist.setRepeat({value: false}),
             mopidy.tracklist.setSingle({value: false})
-          );
+          ]);
         } else if ($scope.options.repeat) {
           return mopidy.tracklist.setSingle({value: true});
         } else {

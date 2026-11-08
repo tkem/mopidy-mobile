@@ -18,6 +18,7 @@
   "globals": {
     "angular": false,
     "ionic": false,
-    "Mopidy": false
+    "Mopidy": false,
+    "Promise": false
   }
 }

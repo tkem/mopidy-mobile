@@ -42,17 +42,20 @@
           $log.warn('Mopidy connection offline');
           break;
         }
-        if (event.indexOf('websocket:') !== 0) {
-          $rootScope.$applyAsync(function(scope) {
-            scope.$broadcast('connection:' + event, data);
-          });
-        }
+        $rootScope.$applyAsync(function(scope) {
+          scope.$broadcast('connection:' + event, data);
+        });
+      }
+
+      function subscribe(mopidy) {
+        mopidy.on('state', notify);
+        mopidy.on('event', notify);
       }
 
       function connect() {
         loading.show();
         return mopidy(settings, connectionTimeout).then(function(mopidy) {
-          mopidy.on(notify.bind(mopidy));
+          subscribe(mopidy);
           return mopidy;
         }).finally(loading.hide);
       }
@@ -85,7 +88,7 @@
         if (connection._promise) {
           connection._promise.then(function(mopidy) {
             mopidy.close();
-            mopidy.off();
+            mopidy.removeAllListeners();
           });
           delete connection._promise;
         }
@@ -97,7 +100,7 @@
           settings.webSocketUrl = webSocketUrl;
         }
         if (mopidy) {
-          mopidy.on(notify.bind(mopidy));
+          subscribe(mopidy);
           connection._promise = $q.when(mopidy);
         }
         return connection().catch(function(error) {
