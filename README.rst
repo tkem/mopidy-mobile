@@ -6,7 +6,7 @@ control a Mopidy_ music server from your mobile device.  It is
 available as a `Web client extension
 <http://mopidy.readthedocs.org/en/latest/ext/web/>`_ and a `hybrid app
 <http://en.wikipedia.org/wiki/HTML5_in_mobile_devices#Hybrid_Mobile_Apps>`_
-for Android version 5.1 and later.  Users of older Android versions
+for Android version 7.0 and later.  Users of older Android versions
 may still access the Web extension using Google's `Chrome browser
 <https://play.google.com/store/apps/details?id=com.android.chrome>`_.
 On Apple devices, the Web client should work when running iOS 7 or
@@ -79,26 +79,33 @@ Mopidy Mobile is built using `Ionic v1
 <http://cordova.apache.org/>`_, so it is recommended to familiarize
 yourself with these before you start.
 
-To build the Mopidy Web extension, you need to have `npm
-<http://www.npmjs.org/>`_ and `gulp <http://gulpjs.com/>`_ installed.
+To build the Mopidy Web extension, you need to have `Node.js
+<https://nodejs.org/>`_ and `npm <https://www.npmjs.com/>`_ installed.
 Then run::
 
   npm install
-  gulp install
-  gulp dist
+  npx gulp install
+  npx gulp dist
   pip install --editable .
 
-To build the app for Android, please follow Ionic's `installation
-guide <http://ionicframework.com/docs/guide/installation.html>`_ to
-make sure you have everything needed for Android development.  Then,
-in addition to the commands above, run::
+To build the app for Android, please follow the Cordova `Android
+platform guide
+<https://cordova.apache.org/docs/en/latest/guide/platforms/android/>`_
+to make sure you have everything needed for Android development
+(JDK, Android SDK and Gradle).  You can verify your setup with ``npx
+cordova requirements android``.  Then, in addition to the commands
+above, run::
 
-  ionic cordova platform add android
-  ionic cordova build android
+  npx cordova platform add android
+  npx cordova build android
 
-Please refer to the `Ionic CLI <http://ionicframework.com/docs/cli/>`_
-documentation for further information on how to run the app on an
-actual device, or in a Web browser or emulator for testing.
+To install and run the app on a connected device or emulator, use::
+
+  npx cordova run android
+
+Please refer to the `Cordova CLI
+<https://cordova.apache.org/docs/en/latest/reference/cordova-cli/>`_
+documentation for further information.
 
 Due to lack of resources, iOS is *not* supported, and it is unlikely
 that the app will run unchanged on that platform.  However, being a
@@ -131,10 +138,6 @@ Project Resources
 .. image:: http://img.shields.io/pypi/v/Mopidy-Mobile.svg?style=flat
     :target: https://pypi.python.org/pypi/Mopidy-Mobile/
     :alt: Latest PyPI version
-
-.. image:: http://img.shields.io/travis/tkem/mopidy-mobile/master.svg?style=flat
-    :target: https://travis-ci.org/tkem/mopidy-mobile/
-    :alt: Travis CI build status
 
 - `Issue Tracker`_
 - `Source Code`_
