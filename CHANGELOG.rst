@@ -15,6 +15,10 @@ v2.0.0 UNRELEASED
 
 - Fix discovered Zeroconf servers not showing up until refreshed.
 
+- Fix Slovak translations of messages with placeholders.
+
+- Add unit test suite based on Vitest (``npm test``).
+
 
 1.11.0 2025-02-02
 -----------------

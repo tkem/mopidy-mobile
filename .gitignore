@@ -2,6 +2,7 @@
 .cache/
 .tox/
 build/
+coverage/
 dist/
 node_modules/
 out-tsc/

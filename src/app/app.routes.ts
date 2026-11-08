@@ -3,6 +3,11 @@ import { Routes } from '@angular/router';
 
 import { PlatformService } from './services/platform.service';
 
+/** The default view: the playback view when hosted by a Mopidy server, the server list otherwise. */
+function defaultRoute(): string {
+  return inject(PlatformService).isHosted() ? '/playback' : '/servers';
+}
+
 const serverRoutes: Routes = [
   { path: '', loadComponent: () => import('./servers/servers.page').then((m) => m.ServersPage) },
   { path: 'add', loadComponent: () => import('./servers/servers-add.page').then((m) => m.ServersAddPage) },
@@ -13,7 +18,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: () => (inject(PlatformService).isHosted() ? '/playback' : '/servers'),
+    redirectTo: defaultRoute,
   },
   {
     path: 'servers',
@@ -80,5 +85,5 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: defaultRoute },
 ];

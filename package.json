@@ -15,6 +15,9 @@
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
         "lint": "ng lint",
+        "test": "ng test --watch=false",
+        "test:watch": "ng test",
+        "test:coverage": "ng test --watch=false --code-coverage",
         "dist": "ng build && node scripts/dist.js",
         "clean": "rimraf --glob .angular build www \"mopidy_mobile/www/*.{js,css,txt}\" \"mopidy_mobile/www/{app,assets,css,lib,media}\""
     },
@@ -47,12 +50,15 @@
         "@angular/cli": "^20.3.0",
         "@angular/compiler-cli": "^20.3.0",
         "@eslint/js": "^9.39.5",
+        "@vitest/coverage-v8": "^3.2.7",
         "angular-eslint": "^20.7.0",
         "cordova": "^13.0.0",
         "eslint": "^9.39.0",
+        "jsdom": "^26.1.0",
         "rimraf": "^6.1.4",
         "typescript": "~5.9.0",
-        "typescript-eslint": "^8.46.0"
+        "typescript-eslint": "^8.46.0",
+        "vitest": "^3.2.7"
     },
     "cordova": {
         "platforms": [

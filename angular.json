@@ -99,6 +99,22 @@
           },
           "defaultConfiguration": "development"
         },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "runner": "vitest",
+            "buildTarget": "mopidy-mobile:build:development",
+            "setupFiles": [
+              "src/testing/setup.ts"
+            ],
+            "codeCoverageExclude": [
+              "src/testing/**",
+              "src/app/locale/**",
+              "src/main.ts"
+            ]
+          }
+        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {

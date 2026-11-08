@@ -92,6 +92,14 @@ extension.  Use ``npm start`` to run a local development server,
 ``npm run lint`` to check the TypeScript sources and templates, and
 ``npm run clean`` to remove all generated files.
 
+Unit tests are written with `Vitest <https://vitest.dev/>`_ and run
+in a `jsdom <https://github.com/jsdom/jsdom>`_ environment via the
+Angular CLI, so no browser is required.  Test files live next to the
+sources as ``*.spec.ts``, with shared test helpers in ``src/testing``.
+Run ``npm test`` to execute the test suite once, ``npm run test:watch``
+to re-run tests on changes, and ``npm run test:coverage`` to produce a
+code coverage report.
+
 To build the app for Android, please follow the Cordova `Android
 platform guide
 <https://cordova.apache.org/docs/en/latest/guide/platforms/android/>`_
