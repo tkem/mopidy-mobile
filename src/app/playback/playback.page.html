@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button [color]="mixer.mute() ? 'danger' : undefined" (click)="mixer.setMute(!mixer.mute())">
+        <ion-icon slot="icon-only" name="volume-mute" />
+      </ion-button>
+    </ion-buttons>
+    <ion-range class="volume" aria-label="Volume" [min]="0" [max]="100" [value]="mixer.volume()" (ionInput)="setVolume($event)">
+      <ion-icon slot="start" name="volume-low" />
+      <ion-icon slot="end" name="volume-high" />
+    </ion-range>
+    <ion-buttons slot="end">
+      <ion-button (click)="showMenu($event)">
+        <ion-icon slot="icon-only" name="ellipsis-vertical" />
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content [pullingText]="'Pull to refresh' | translate" />
+  </ion-refresher>
+
+  <div class="playback">
+    @if (playback.track(); as track) {
+      <div class="info">
+        <h2>{{ track.name || track.uri }}</h2>
+        @if (track.artists?.length) {
+          <h3>{{ track.artists | artists }}</h3>
+        }
+        <div class="hidden-landscape">
+          <h4>{{ playback.streamTitle() || track.album?.name || track.genre }}</h4>
+        </div>
+        <div class="hidden-portrait">
+          @if (playback.streamTitle()) {
+            <h4>{{ playback.streamTitle() }}</h4>
+          }
+          @if (track.album?.name) {
+            <h4>{{ track.album?.name }}</h4>
+          }
+          @if (track.genre) {
+            <h4>{{ track.genre }}</h4>
+          }
+          @if (track.date || track.album?.date) {
+            <h4>{{ track.date || track.album?.date }}</h4>
+          }
+        </div>
+      </div>
+      @if (playback.image(); as image) {
+        <div class="cover">
+          <img [src]="image.uri" alt="" />
+        </div>
+      }
+    } @else {
+      <div class="info">
+        <h2>{{ 'Nothing playing' | translate }}</h2>
+      </div>
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="position">
+    <ion-range
+      aria-label="Position"
+      [min]="0"
+      [max]="playback.track()?.length || 0"
+      [disabled]="!playback.track()?.length"
+      [value]="playback.position()"
+      (ionKnobMoveStart)="playback.seekStart()"
+      (ionChange)="seek($event)"
+    >
+      <div slot="start" class="time">{{ playback.position() | duration }}</div>
+      <div slot="end" class="time">{{ playback.track()?.length | duration }}</div>
+    </ion-range>
+  </ion-toolbar>
+  <ion-toolbar>
+    <div class="controls">
+      <ion-button fill="clear" size="small" [color]="playback.options().random ? 'primary' : 'medium'" (click)="playback.toggleRandom()">
+        <ion-icon slot="icon-only" name="shuffle" />
+      </ion-button>
+      <ion-button fill="clear" color="dark" [disabled]="!playback.hasPrevious()" (click)="playback.previous()">
+        <ion-icon slot="icon-only" name="play-skip-back" />
+      </ion-button>
+      <ion-button fill="clear" color="dark" class="large" (click)="playback.togglePlay()">
+        <ion-icon slot="icon-only" [name]="playback.state() !== 'playing' ? 'play' : 'pause'" />
+      </ion-button>
+      <ion-button fill="clear" color="dark" [disabled]="playback.state() === 'stopped'" (click)="playback.stop()">
+        <ion-icon slot="icon-only" name="stop" />
+      </ion-button>
+      <ion-button fill="clear" color="dark" [disabled]="!playback.hasNext()" (click)="playback.next()">
+        <ion-icon slot="icon-only" name="play-skip-forward" />
+      </ion-button>
+      <ion-button fill="clear" size="small" [color]="playback.options().repeat ? 'primary' : 'medium'" (click)="playback.toggleRepeat()">
+        <ion-icon slot="icon-only" [name]="playback.options().single ? 'refresh' : 'repeat'" />
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

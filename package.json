@@ -4,21 +4,29 @@
     "homepage": "https://github.com/tkem/mopidy-mobile/",
     "description": "Mopidy Web client for mobile devices",
     "license": "Apache-2.0",
+    "private": true,
     "repository": {
         "type": "git",
         "url": "https://github.com/tkem/mopidy-mobile.git"
     },
     "scripts": {
-        "postinstall": "bower install --config.interactive=false && npm run lib",
-        "lib": "esbuild node_modules/mopidy/src/mopidy.js --bundle --global-name=Mopidy --target=es2015 --log-level=warning --outfile=www/lib/mopidy/dist/mopidy.js && esbuild node_modules/mopidy/src/mopidy.js --bundle --global-name=Mopidy --target=es2015 --log-level=warning --minify --outfile=www/lib/mopidy/dist/mopidy.min.js",
-        "lint": "jshint www/app merges",
-        "sass": "copyfiles -u 1 \"scss/*.png\" www/css && sass --no-source-map --style=compressed --load-path=. --silence-deprecation=import,global-builtin,color-functions,slash-div,mixed-decls scss/ionic-light.scss:www/css/ionic-light.min.css scss/ionic-dark.scss:www/css/ionic-dark.min.css",
-        "watch": "npm run sass && sass --watch --no-source-map --style=compressed --load-path=. --silence-deprecation=import,global-builtin,color-functions,slash-div,mixed-decls scss/ionic-light.scss:www/css/ionic-light.min.css scss/ionic-dark.scss:www/css/ionic-dark.min.css",
-        "bundle": "node bundle.js",
-        "dist": "npm run sass && npm run bundle && copyfiles -u 1 \"www/css/*.min.css\" \"www/css/**/*.png\" \"www/app/**/*.{gif,png,svg}\" \"www/lib/ionic/fonts/**\" mopidy_mobile/www",
-        "clean": "rimraf --glob build www/css \"mopidy_mobile/www/{app,css,lib,*.min.js}\""
+        "ng": "ng",
+        "start": "ng serve",
+        "build": "ng build",
+        "watch": "ng build --watch --configuration development",
+        "lint": "ng lint",
+        "dist": "ng build && node scripts/dist.js",
+        "clean": "rimraf --glob .angular build www \"mopidy_mobile/www/*.{js,css,txt}\" \"mopidy_mobile/www/{app,assets,css,lib,media}\""
     },
     "dependencies": {
+        "@angular/common": "^20.3.0",
+        "@angular/compiler": "^20.3.0",
+        "@angular/core": "^20.3.0",
+        "@angular/forms": "^20.3.0",
+        "@angular/platform-browser": "^20.3.0",
+        "@angular/router": "^20.3.0",
+        "@ionic/angular": "^8.8.0",
+        "@messageformat/core": "^3.4.0",
         "cordova-android": "^15.1.0",
         "cordova-plugin-add-swift-support": "^2.0.2",
         "cordova-plugin-appversion": "^1.0.0",
@@ -26,20 +34,25 @@
         "cordova-plugin-music-controls2": "^3.0.7",
         "cordova-plugin-x-socialsharing": "^6.0.4",
         "cordova-plugin-zeroconf": "^1.4.2",
-        "es6-promise-plugin": "^4.2.2"
+        "es6-promise-plugin": "^4.2.2",
+        "events": "^3.3.0",
+        "ionicons": "^7.4.0",
+        "mopidy": "^1.3.0",
+        "rxjs": "~7.8.0",
+        "tslib": "^2.8.0",
+        "zone.js": "~0.15.0"
     },
     "devDependencies": {
-        "@ionic/v1-toolkit": "^3.2.15",
-        "bower": "^1.8.10",
-        "copyfiles": "^2.4.1",
+        "@angular/build": "^20.3.0",
+        "@angular/cli": "^20.3.0",
+        "@angular/compiler-cli": "^20.3.0",
+        "@eslint/js": "^9.39.5",
+        "angular-eslint": "^20.7.0",
         "cordova": "^13.0.0",
-        "esbuild": "^0.28.2",
-        "events": "^3.3.0",
-        "jshint": "^2.13.6",
-        "mopidy": "^1.3.0",
+        "eslint": "^9.39.0",
         "rimraf": "^6.1.4",
-        "sass": "^1.80.3",
-        "uglify-js": "^3.19.3"
+        "typescript": "~5.9.0",
+        "typescript-eslint": "^8.46.0"
     },
     "cordova": {
         "platforms": [
