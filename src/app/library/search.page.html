@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/library" [text]="'Back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ 'Search results' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!tracks().length" (click)="actions.default(tracks())">
+        <ion-icon slot="icon-only" name="play" />
+      </ion-button>
+      <ion-button (click)="menu.tracks($event, tracks())">
+        <ion-icon slot="icon-only" name="ellipsis-vertical" />
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content [pullingText]="'Pull to refresh' | translate" />
+  </ion-refresher>
+
+  <ion-list class="app-long-list">
+    @for (artist of artists(); track $index) {
+      <ion-item button [detail]="true" (click)="lookup(artist)">
+        <app-thumbnail slot="start" type="artist" [image]="images()[artist.uri]" />
+        <ion-label>
+          <h2>{{ artist.name || artist.uri }}</h2>
+        </ion-label>
+      </ion-item>
+    }
+    @for (album of albums(); track $index) {
+      <ion-item button [detail]="true" (click)="lookup(album)">
+        <app-thumbnail slot="start" type="album" [image]="images()[album.uri]" />
+        <ion-label>
+          <h2>{{ album.name || album.uri }}</h2>
+          <h3>{{ album.artists | artists }}</h3>
+        </ion-label>
+      </ion-item>
+    }
+    @for (track of tracks(); track $index) {
+      <ion-item button [detail]="false" (click)="actions.default(track)">
+        <app-thumbnail slot="start" [image]="images()[track.uri]" />
+        <ion-label>
+          <h2>{{ track.name || track.uri }}</h2>
+          <h3>{{ track.artists | artists }}</h3>
+          <p>{{ track.album?.name || track.genre || track.comment }}</p>
+        </ion-label>
+        <ion-button slot="end" fill="clear" color="medium" (click)="menu.track($event, track)">
+          <ion-icon slot="icon-only" name="ellipsis-vertical" />
+        </ion-button>
+      </ion-item>
+    }
+  </ion-list>
+</ion-content>

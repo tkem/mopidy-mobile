@@ -73,25 +73,32 @@ extension:
 Building from Source
 ------------------------------------------------------------------------
 
-Mopidy Mobile is built using `Ionic v1
-<http://ionicframework.com/docs/v1/>`_, `AngularJS
-<https://angularjs.org/>`_ and `Apache Cordova
+Mopidy Mobile is built using `Ionic <https://ionicframework.com/>`_,
+`Angular <https://angular.dev/>`_ and `Apache Cordova
 <http://cordova.apache.org/>`_, so it is recommended to familiarize
 yourself with these before you start.
 
 To build the Mopidy Web extension, you need to have `Node.js
-<https://nodejs.org/>`_ and `npm <https://www.npmjs.com/>`_ installed.
-Then run::
+<https://nodejs.org/>`_ (version 20.19, 22.12 or later) and `npm
+<https://www.npmjs.com/>`_ installed.  Then run::
 
   npm install
   npm run dist
   pip install --editable .
 
-Third-party Web libraries are installed using `Bower
-<https://bower.io/>`_, which is run automatically by ``npm install``.
-Use ``npm run lint`` to check the JavaScript sources, ``npm run
-watch`` to rebuild the stylesheets when the SCSS sources change, and
+``npm run dist`` builds the application into the ``www`` directory,
+and copies the result to ``mopidy_mobile/www`` for use by the Web
+extension.  Use ``npm start`` to run a local development server,
+``npm run lint`` to check the TypeScript sources and templates, and
 ``npm run clean`` to remove all generated files.
+
+Unit tests are written with `Vitest <https://vitest.dev/>`_ and run
+in a `jsdom <https://github.com/jsdom/jsdom>`_ environment via the
+Angular CLI, so no browser is required.  Test files live next to the
+sources as ``*.spec.ts``, with shared test helpers in ``src/testing``.
+Run ``npm test`` to execute the test suite once, ``npm run test:watch``
+to re-run tests on changes, and ``npm run test:coverage`` to produce a
+code coverage report.
 
 To build the app for Android, please follow the Cordova `Android
 platform guide
@@ -101,6 +108,7 @@ to make sure you have everything needed for Android development
 cordova requirements android``.  Then, in addition to the commands
 above, run::
 
+  npm run build
   npx cordova platform add android
   npx cordova build android
 
@@ -108,7 +116,9 @@ To install and run the app on a connected device or emulator, use::
 
   npx cordova run android
 
-Please refer to the `Cordova CLI
+Note that ``npm run build`` has to be run again whenever the sources
+have changed, since Cordova only packages the contents of the ``www``
+directory.  Please refer to the `Cordova CLI
 <https://cordova.apache.org/docs/en/latest/reference/cordova-cli/>`_
 documentation for further information.
 
@@ -122,10 +132,10 @@ Contributing Translations
 ------------------------------------------------------------------------
 
 If you'd like to see Mopidy Mobile in *your* native language, start by
-having a look at the existing `translations <./www/app/locale>`_.
-Mopidy Mobile uses `angular-translate
-<https://angular-translate.github.io/>`_ for internationalization, and
-stores translations as simple text files.  Just take one of the
+having a look at the existing `translations <./src/app/locale>`_.
+Mopidy Mobile uses `ICU MessageFormat
+<https://messageformat.github.io/messageformat/guide/>`_ for
+internationalization, and stores translations as simple text files.  Just take one of the
 existing files and replace all foreign language text as you see fit.
 Words within curly brackets ``{...}`` are placeholders, used either
 for variable names (``{name}``) which needn't be translated, or for

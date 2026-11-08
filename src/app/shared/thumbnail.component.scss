@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+
+ion-thumbnail {
+  --size: var(--app-thumbnail-size);
+}
+
+.placeholder {
+  width: var(--app-thumbnail-size);
+  height: var(--app-thumbnail-size);
+  background-image: url('../../assets/thumbnails.png');
+  background-repeat: no-repeat;
+}
+
+.album {
+  background-position: 0 0;
+}
+
+.artist {
+  background-position: -64px 0;
+}
+
+.directory {
+  background-position: -128px 0;
+}
+
+.track {
+  background-position: -192px 0;
+}

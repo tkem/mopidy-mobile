@@ -1,0 +1,75 @@
+// Global application styles.
+
+// loading indicator, blocking user interaction while shown
+.app-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.app-loading-indicator {
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  line-height: 0;
+
+  ion-spinner {
+    color: #fff;
+  }
+}
+
+// popover menus
+.app-menu {
+  --width: auto;
+  --min-width: 200px;
+  --max-width: 90vw;
+
+  ion-list {
+    padding: 0;
+  }
+}
+
+// wrap long error messages in alerts
+.app-error-alert .alert-message {
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+// highlight the currently playing tracklist item
+ion-item.app-current {
+  --color: var(--ion-color-primary);
+}
+
+// artists, separated by middle dots
+.app-artists span + span::before {
+  content: '\00b7';
+  padding: 0 1ex;
+}
+
+// avoid rendering items that are off screen in long lists
+ion-list.app-long-list > ion-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 80px;
+}
+
+// item labels with track details
+ion-item ion-label h2 {
+  font-weight: 500;
+}
+
+ion-item ion-label h3,
+ion-item ion-label p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Material Design back buttons show an icon only, leaving room for titles
+.md ion-back-button::part(text) {
+  display: none;
+}

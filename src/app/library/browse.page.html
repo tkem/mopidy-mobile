@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    @if (ref().uri) {
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/library" [text]="'Back' | translate" />
+      </ion-buttons>
+    }
+    <ion-title>{{ ref().name || ('Library' | translate) }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!tracks().length" (click)="actions.default(tracks())">
+        <ion-icon slot="icon-only" name="play" />
+      </ion-button>
+      <ion-button (click)="query()">
+        <ion-icon slot="icon-only" name="search" />
+      </ion-button>
+      <ion-button (click)="menu.tracks($event, tracks())">
+        <ion-icon slot="icon-only" name="ellipsis-vertical" />
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content [pullingText]="'Pull to refresh' | translate" />
+  </ion-refresher>
+
+  <ion-searchbar
+    enterkeyhint="search"
+    [(ngModel)]="q"
+    [placeholder]="('Search here' | translate) + '...'"
+    (keyup.enter)="search()"
+  />
+
+  <ion-list class="app-long-list">
+    @for (item of items(); track $index) {
+      @if (item.type === 'track') {
+        <ion-item button [detail]="false" (click)="actions.default(item)">
+          <app-thumbnail slot="start" [image]="images()[item.uri]" />
+          <ion-label>
+            <h2>{{ item.name || item.uri }}</h2>
+            <h3>{{ item.artists | artists }}</h3>
+            <p>{{ item.album?.name || item.genre || item.comment }}</p>
+          </ion-label>
+          <ion-button slot="end" fill="clear" color="medium" (click)="menu.track($event, item)">
+            <ion-icon slot="icon-only" name="ellipsis-vertical" />
+          </ion-button>
+        </ion-item>
+      } @else {
+        <ion-item button [detail]="true" (click)="browse(item)">
+          <ion-icon slot="start" [name]="icon(item.type)" />
+          <ion-label>{{ item.name || item.uri }}</ion-label>
+        </ion-item>
+      }
+    }
+  </ion-list>
+</ion-content>

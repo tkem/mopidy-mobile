@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>{{title}}</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width,height=device-height">
+    <meta name="viewport" content="viewport-fit=cover,width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="color-scheme" content="light dark">
 
     <!-- Android/Chrome -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -23,13 +24,12 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{static_url('images/apple-touch-icon-76x76.png')}}">
     <link rel="apple-touch-startup-image" href="{{static_url('images/splash-320x480.png')}}">
 
-    <link id="stylesheet" rel="stylesheet" href="{{static_url('css/ionic-light.min.css')}}">
-    <script src="{{static_url('mopidy-mobile.bundle.min.js')}}"></script>
+    <!-- application files built by "npm run dist" -->
+    <link rel="stylesheet" href="{{static_url('styles.css')}}">
+    <script src="{{static_url('polyfills.js')}}" type="module"></script>
+    <script src="{{static_url('main.js')}}" type="module"></script>
   </head>
-  <body ng-app="app" data-version="{{version}}" data-web-socket-url="{{ws_url}}">
-    <ion-nav-bar class="bar-stable">
-      <ion-nav-back-button></ion-nav-back-button>
-    </ion-nav-bar>
-    <ion-nav-view></ion-nav-view>
+  <body data-version="{{version}}" data-web-socket-url="{{ws_url}}">
+    <app-root></app-root>
   </body>
 </html>

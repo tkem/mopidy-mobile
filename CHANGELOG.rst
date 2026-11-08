@@ -1,3 +1,27 @@
+v2.0.0 UNRELEASED
+-----------------
+
+- Port to Ionic 8 and Angular 20.
+
+- Build with the Angular CLI instead of Bower and custom scripts.
+
+- Update user interface to current Ionic components and styles,
+  including a dark theme based on Ionic's dark palette.
+
+- Load cover art from last.fm and the Cover Art Archive via HTTPS.
+
+- Fix playback view sometimes showing an outdated track after the
+  tracklist changed.
+
+- Fix discovered Zeroconf servers not showing up until refreshed.
+
+- Fix Slovak translations of messages with placeholders.
+
+- Add unit test suite based on Vitest (``npm test``).
+
+- Drop compatibility shims for Mopidy servers older than v1.1.
+
+
 1.11.0 2025-02-02
 -----------------
 

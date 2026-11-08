@@ -7,6 +7,9 @@
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
+    <!-- Load the app from file:// URLs, so it may connect to Mopidy servers
+         via plain ws:// and http://; this also allows loading the app's
+         JavaScript modules, which are blocked for file:// URLs otherwise. -->
     <preference name="AndroidInsecureFileModeEnabled" value="true" />
     <preference name="AutoHideSplashScreen" value="false" />
     <preference name="DisallowOverscroll" value="true" />
