@@ -8,6 +8,16 @@
         "type": "git",
         "url": "https://github.com/tkem/mopidy-mobile.git"
     },
+    "scripts": {
+        "postinstall": "bower install --config.interactive=false && npm run lib",
+        "lib": "copyfiles -u 1 \"node_modules/mopidy/dist/*.js\" www/lib",
+        "lint": "jshint www/app merges",
+        "sass": "copyfiles -u 1 \"scss/*.png\" www/css && sass --no-source-map --style=compressed --load-path=. --silence-deprecation=import,global-builtin,color-functions,slash-div,mixed-decls scss/ionic-light.scss:www/css/ionic-light.min.css scss/ionic-dark.scss:www/css/ionic-dark.min.css",
+        "watch": "npm run sass && sass --watch --no-source-map --style=compressed --load-path=. --silence-deprecation=import,global-builtin,color-functions,slash-div,mixed-decls scss/ionic-light.scss:www/css/ionic-light.min.css scss/ionic-dark.scss:www/css/ionic-dark.min.css",
+        "bundle": "node bundle.js",
+        "dist": "npm run sass && npm run bundle && copyfiles -u 1 \"www/css/*.min.css\" \"www/css/**/*.png\" \"www/app/**/*.{gif,png,svg}\" \"www/lib/ionic/fonts/**\" mopidy_mobile/www",
+        "clean": "rimraf --glob build www/css \"mopidy_mobile/www/{app,css,lib,*.min.js}\""
+    },
     "dependencies": {
         "cordova-android": "^15.1.0",
         "cordova-plugin-add-swift-support": "^2.0.2",
@@ -21,19 +31,13 @@
     "devDependencies": {
         "@ionic/v1-toolkit": "^3.2.15",
         "bower": "^1.8.10",
+        "copyfiles": "^2.4.1",
         "cordova": "^13.0.0",
-        "del": "^6.0.0",
-        "gulp": "^4.0.2",
-        "gulp-angular-templatecache": "^3.0",
-        "gulp-clean-css": "^4.3",
-        "gulp-concat": "^2.6",
-        "gulp-jshint": "^2.1",
-        "gulp-load-plugins": "^2.0",
-        "gulp-rename": "^2.0",
-        "gulp-sass": "^5.1",
-        "gulp-uglify": "^3.0",
-        "gulp-util": "^3.0",
-        "sass": "^1.80.3"
+        "jshint": "^2.13.6",
+        "mopidy": "^0.5.0",
+        "rimraf": "^6.1.4",
+        "sass": "^1.80.3",
+        "uglify-js": "^3.19.3"
     },
     "cordova": {
         "platforms": [

@@ -84,9 +84,14 @@ To build the Mopidy Web extension, you need to have `Node.js
 Then run::
 
   npm install
-  npx gulp install
-  npx gulp dist
+  npm run dist
   pip install --editable .
+
+Third-party Web libraries are installed using `Bower
+<https://bower.io/>`_, which is run automatically by ``npm install``.
+Use ``npm run lint`` to check the JavaScript sources, ``npm run
+watch`` to rebuild the stylesheets when the SCSS sources change, and
+``npm run clean`` to remove all generated files.
 
 To build the app for Android, please follow the Cordova `Android
 platform guide
