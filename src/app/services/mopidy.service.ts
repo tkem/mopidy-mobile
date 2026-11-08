@@ -60,6 +60,8 @@ export class MopidyFactory {
       let timer: ReturnType<typeof setTimeout> | null = null;
 
       const destroy = () => {
+        // a failed connection has already scheduled a reconnect
+        mopidy.connect = () => undefined;
         mopidy.close();
         mopidy.removeAllListeners();
       };

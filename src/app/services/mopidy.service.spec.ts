@@ -110,6 +110,21 @@ describe('MopidyFactory', () => {
     await expect(promise).rejects.toBeInstanceOf(ConnectionError);
   });
 
+  it('does not reconnect after the connection failed', async () => {
+    vi.useFakeTimers();
+    try {
+      const connect = vi.spyOn(Mopidy.prototype as any, 'connect');
+      const socket = new FakeWebSocket();
+      const promise = factory.create(settings(socket));
+      socket.close();
+      await expect(promise).rejects.toBeInstanceOf(ConnectionError);
+      await vi.advanceTimersByTimeAsync(10000);
+      expect(connect).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('rejects with a connection error on timeout', async () => {
     vi.useFakeTimers();
     try {

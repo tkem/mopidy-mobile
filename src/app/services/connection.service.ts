@@ -123,6 +123,7 @@ export class ConnectionService {
 
   /** Reconnect, optionally to a new server or using an existing client. */
   reset(webSocketUrl?: string | null, mopidy?: MopidyApi): Promise<MopidyApi> {
+    const replaced = !!this.promise;
     this.close();
     if (webSocketUrl) {
       this.settings.webSocketUrl = webSocketUrl;
@@ -131,7 +132,17 @@ export class ConnectionService {
       this.subscribe(mopidy);
       this.promise = Promise.resolve(mopidy);
     }
-    return this.get().catch((error) => this.handleError(error));
+    return this.get().then(
+      (mopidy) => {
+        if (replaced) {
+          // the new client is already online, so tell observers holding
+          // state of the previous connection to reload
+          this.events.next({ name: 'state:online', data: undefined });
+        }
+        return mopidy;
+      },
+      (error) => this.handleError(error),
+    );
   }
 
   getSettings(): MopidySettings {

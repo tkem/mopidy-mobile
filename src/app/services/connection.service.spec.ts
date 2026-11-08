@@ -296,6 +296,29 @@ describe('ConnectionService', () => {
       expect(await service.get()).toBe(mopidy);
     });
 
+    it('notifies observers when replacing a connection', async () => {
+      const online = vi.fn();
+      service.on('state:online').subscribe(online);
+      await service.get();
+      await service.reset('ws://other:6680/mopidy/ws/');
+      expect(online).toHaveBeenCalledTimes(1);
+    });
+
+    it('notifies observers when replacing a connection with an existing client', async () => {
+      const online = vi.fn();
+      service.on('state:online').subscribe(online);
+      await service.get();
+      await service.reset('ws://given:6680/mopidy/ws/', createMopidyApi());
+      expect(online).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not notify observers on the first connection', async () => {
+      const online = vi.fn();
+      service.on('state:online').subscribe(online);
+      await service.reset('ws://first:6680/mopidy/ws/');
+      expect(online).not.toHaveBeenCalled();
+    });
+
     it('reports failures and retries on request', async () => {
       const error = Object.assign(new Error(), { name: 'ConnectionError' });
       factory.create.mockRejectedValueOnce(error);
