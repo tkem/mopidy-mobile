@@ -245,7 +245,7 @@
       },
       popover: popoverMenu([{
         text: 'Reset',
-        click: 'popover.hide() && reset()',
+        click: 'popover.hide().then(reset)',
         hellip: true
       }, {
         text: 'Restart',

@@ -69,7 +69,7 @@
     }, {
       text: 'Show track info',
       hellip: true,
-      click: 'popover.hide() && info(item)'
+      click: 'popover.hide().then(showInfo)'
     }], {
       scope: $scope
     });
@@ -101,6 +101,11 @@
           {text: 'OK', type: 'button-positive'}
         ]);
       });
+    };
+
+    // The popup opens only when the menu has hidden, see the tracklist.
+    $scope.showInfo = function() {
+      return $scope.info($scope.item);
     };
 
     $scope.move = function(fromIndex, toIndex) {
