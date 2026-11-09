@@ -408,6 +408,12 @@
           {text: 'OK', type: 'button-positive'}
         ]);
       },
+      showInfo: function() {
+        return $scope.info($scope.track);
+      },
+      showPlaylists: function() {
+        return $scope.selectPlaylist($scope.track);
+      },
       selectPlaylist: function(track) {
         return connection(function(mopidy) {
           return mopidy.playlists.asList();
@@ -423,11 +429,11 @@
       popover: popoverMenu([{
         text: 'Add to playlist',
         hellip: true,
-        click: 'popover.hide() && selectPlaylist(track)'
+        click: 'popover.hide().then(showPlaylists)'
       }, {
         text: 'Show track info',
         hellip: true,
-        click: 'popover.hide() && info(track)'
+        click: 'popover.hide().then(showInfo)'
       }], {
         scope: $scope
       })

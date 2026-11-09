@@ -205,11 +205,11 @@
     }, {
       text: 'Add to playlist',
       hellip: true,
-      click: 'popover.hide() && selectPlaylist(track)'
+      click: 'popover.hide().then(showPlaylists)'
     }, {
       text: 'Show track info',
       hellip: true,
-      click: 'popover.hide() && info(track)'
+      click: 'popover.hide().then(showInfo)'
     }], {
       scope: $scope
     });
@@ -230,6 +230,15 @@
           {text: 'OK', type: 'button-positive'}
         ]);
       });
+    };
+
+    // Popups open only when the menu has hidden, see showInfo of the tracklist.
+    $scope.showInfo = function() {
+      return $scope.info($scope.track);
+    };
+
+    $scope.showPlaylists = function() {
+      return $scope.selectPlaylist($scope.track);
     };
 
     $scope.popover = angular.extend({}, popover, {
